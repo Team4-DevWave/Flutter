@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 class registerScreen extends StatefulWidget {
   const registerScreen({super.key});
@@ -14,8 +15,16 @@ class _registerScreenState extends State<registerScreen> {
       debugShowCheckedModeBanner: false,
       
       home:Scaffold(
-        backgroundColor: Color.fromARGB(255, 189, 110, 8),
-        body: Text("Hello"),
+        backgroundColor: Color.fromRGBO(19, 19, 19,1),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              
+              Text("Thredit",style: TextStyle(color: Colors.white),)
+            ],
+          ),
+        ),
       ),
     ),);
   }
