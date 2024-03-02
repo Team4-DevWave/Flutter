@@ -20,7 +20,6 @@ class _registerScreenState extends State<registerScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              
               Text("Thredit",style: TextStyle(color: Colors.white),)
             ],
           ),
