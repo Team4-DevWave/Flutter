@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:threddit_app/features/notifications/view_model/methods.dart';
+import 'package:http/http.dart' as http;
 
 class testScreen extends StatefulWidget {
   const testScreen({super.key});
@@ -87,6 +90,34 @@ class _testScreenState extends State<testScreen> {
     });
   }
 
+  void sendPushNotification(String token, String body, String title) async {
+    try {
+      await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+          headers: <String, String>{
+            'content-type': 'application/json',
+            'Authorization':
+                'key=AAAAcq4OPFk:APA91bH5-K3x3Z9iCA1JAbGiJ6GMcYUiKEZAwT4Bz26W7bIJIHHNqMs3QsARuZDjOnlchh02Urm8EpYjygA-89qAzElIWzhhL5Y3cLI7HqSdEpP3vSpzbLWT0oQoJKQKdlMr6O1S3xD1'
+          },
+          body: jsonEncode(<String, dynamic>{
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'status': 'done',
+              //payload
+              'body': body,
+              'title': title
+            },
+            "notification": <String, dynamic>{
+              "title": title,
+              "body": body,
+              "android_channel_id": "threddit_app"
+            },
+            "to": token,
+          }));
+      // ignore: empty_catches
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -108,6 +139,17 @@ class _testScreenState extends State<testScreen> {
               String name = username.text.trim();
               String titletext = title.text;
               String bodytext = body.text;
+
+              if (name.isNotEmpty) {
+                DocumentSnapshot snap = await FirebaseFirestore.instance
+                    .collection("UserTokens")
+                    .doc(name)
+                    .get();
+                String token = snap["token"];
+                print(token);
+                //Send notification
+                sendPushNotification(token, bodytext, titletext);
+              }
             },
             child: Container(
                 margin: const EdgeInsets.all(20),
