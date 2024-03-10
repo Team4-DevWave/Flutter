@@ -1,0 +1,24 @@
+name: Analayze PR
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  analyze_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+      - name: Install flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.13.2"
+          channel: "stable"
+          cache: true
+      - name: Check flutter version
+        run: flutter --version
+      - name: Run dart analyzer
+        run: flutter analyze
+      - name: Build the app
+        run: flutter build apk
