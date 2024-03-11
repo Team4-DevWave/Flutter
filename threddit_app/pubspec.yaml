@@ -43,6 +43,7 @@ dependencies:
 
   flutter_riverpod: ^2.4.10
   riverpod_annotation: ^2.3.4
+  google_fonts: ^6.2.0
 
 
 dev_dependencies:
@@ -72,8 +73,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/Reddit_Icon_FullColor.png
+    - assets/images/google.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -87,6 +89,20 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+  - family: RedditSans
+    fonts:
+      - asset: assets/fonts/RedditSans-SemiBold.ttf
+      - asset: assets/fonts/RedditSans-Bold.ttf
+      - asset: assets/fonts/RedditSans-BoldItalic.ttf
+      - asset: assets/fonts/RedditSans-ExtraBold.ttf
+      - asset: assets/fonts/RedditSans-ExtraBoldItalic.ttf
+      - asset: assets/fonts/RedditSans-Regular.ttf
+      - asset: assets/fonts/RedditSans-SemiBoldItalic.ttf
+      - asset: assets/fonts/RedditSans-Light.ttf
+      - asset: assets/fonts/RedditSans-LightItalic.ttf
+      - asset: assets/fonts/RedditSans-Italic.ttf
+
   # fonts:
   #   - family: Schyler
   #     fonts:
