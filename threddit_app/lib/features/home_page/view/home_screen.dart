@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
+  @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
@@ -13,9 +10,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      builder: (context, child) => MaterialApp(
+    return MaterialApp(
         
         debugShowCheckedModeBanner: false,
         home: SafeArea(
@@ -85,7 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ),
           ),
-        ),
       );
     
   }
