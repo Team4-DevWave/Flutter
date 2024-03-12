@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_app/theme/colors.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   @override
@@ -6,81 +9,118 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _openEndDrawer() {
+    _scaffoldKey.currentState!.openEndDrawer();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  // void _closeEndDrawer() {
+  //   Navigator.of(context).pop();
+  // }
+
   final List<String> tabs = ['Home', 'Popular', 'Watch', 'Latest'];
-  int currentPageIndex = 0;
+  int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        
-        debugShowCheckedModeBanner: false,
-        home: SafeArea(
-          top: true,
-          child: Scaffold(
-            backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
-            appBar: AppBar(
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
-              actions: [
-                SafeArea(
-                  child: Row(
-                    children: [
-                      Theme(
-                        data: ThemeData.from(
-                            colorScheme: ColorScheme.fromSeed(
-                                seedColor: Colors.grey.shade700)),
-                        child: DropdownMenu<String>(
-                          inputDecorationTheme: InputDecorationTheme(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                                  outlineBorder: const BorderSide(color: Colors.transparent)),
-                          textStyle: const TextStyle(color: Colors.white),
-                          dropdownMenuEntries: tabs
-                              .map<DropdownMenuEntry<String>>((String string) {
-                            return DropdownMenuEntry(
-                                value: string, label: string);
-                          }).toList(),
-                          initialSelection: tabs[0],
-                        ),
-                      ),
-                      const SizedBox(width: 150),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.search),
-                      ),
-                      DrawerButton(
-                        
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-            drawer: Drawer(
-                child: ListView(
-              padding: const EdgeInsets.all(2),
-              children: const [
-                DrawerHeader(child: Text('Recently Visited')),
-              ],
-            )),
-            bottomNavigationBar: NavigationBar(
-              onDestinationSelected: (int index) {
-                setState(() {
-                  currentPageIndex = index;   
-                });
-              },
-              selectedIndex: currentPageIndex,
-              destinations: const [
-              NavigationDestination(icon: Icon(Icons.home, color: Colors.white,), label: 'Home', ),
-              NavigationDestination(icon: Icon(Icons.people_alt, color: Colors.white,), label: 'Communities'),
-              NavigationDestination(icon: Icon(Icons.add, color: Colors.white,), label: 'Create'),
-              NavigationDestination(icon: Icon(Icons.chat_bubble_outline_outlined, color: Colors.white,), label: 'Chat'),
-              NavigationDestination(icon: Icon(Icons.notifications, color: Colors.white,), label: 'Notification'),
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          Row(
+            children: [
+              const SizedBox(width: 150),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.search),
+              ),
+              IconButton(
+                onPressed: () {
+                  _openEndDrawer();
+                },
+                icon: const Icon(Icons.circle_sharp),
+              ),
             ],
-            backgroundColor:const Color.fromRGBO(19, 19, 19, 1),
-            ),
-            ),
+          )
+        ],
+        title: DropdownMenu<String>(
+          inputDecorationTheme: const InputDecorationTheme(
+            border: InputBorder.none,
           ),
-      );
-    
+          textStyle: const TextStyle(color: Colors.white),
+          dropdownMenuEntries:
+              tabs.map<DropdownMenuEntry<String>>((String string) {
+            return DropdownMenuEntry(value: string, label: string);
+          }).toList(),
+          initialSelection: tabs[0],
+        ),
+      ),
+      drawer: Drawer(
+          child: ListView(
+        padding: const EdgeInsets.all(2),
+        children: const [
+          DrawerHeader(child: Text('Recently Visited')),
+        ],
+      )),
+      endDrawer: Drawer(
+        backgroundColor: AppColors.backgroundColor,
+        child: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, childAspectRatio: 2 / 3),
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        unselectedItemColor: AppColors.realWhiteColor,
+        selectedItemColor: AppColors.redditOrangeColor,
+        backgroundColor: AppColors.backgroundColor,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: Color.fromARGB(255, 255, 255, 255),
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.people_alt,
+              color: Color.fromARGB(255, 255, 255, 255),
+            ),
+            label: 'Communities',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add,
+              color: Color.fromARGB(255, 255, 255, 255),
+            ),
+            label: 'Create',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.chat_bubble_outline_outlined,
+              color: Color.fromARGB(255, 255, 255, 255),
+            ),
+            label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.notifications,
+              color: Color.fromARGB(255, 255, 255, 255),
+            ),
+            label: 'Notification',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
+    );
   }
 }

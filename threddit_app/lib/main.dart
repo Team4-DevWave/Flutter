@@ -16,9 +16,9 @@ final redditTheme = ThemeData().copyWith(
         foregroundColor: Colors.white.withOpacity(0.5)));
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
   if (Platform.isWindows) {
+    WidgetsFlutterBinding.ensureInitialized();
+    await windowManager.ensureInitialized();
     WindowManager.instance.setMinimumSize(const Size(690, 500));
   }
   runApp(const ProviderScope(
@@ -39,7 +39,7 @@ class App extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: redditTheme,
-            home: const RegisterScreen(),
+            home: const HomeScreen(),
           );
         });
   }
