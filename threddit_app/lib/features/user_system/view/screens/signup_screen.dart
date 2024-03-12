@@ -20,6 +20,7 @@ class SignUpScreen extends StatelessWidget {
           child: Image.asset(
             Photos.snoLogo,
             width: 40.w,
+            height: 40.h,
           ),
         ),
         actions: [
@@ -63,7 +64,7 @@ class SignUpScreen extends StatelessWidget {
               Text(
                 'Hi new friend, welcome to Reddit',
                 style: AppTextStyles.primaryTextStyle
-                    .copyWith(fontSize: 25.sp, fontWeight: FontWeight.w600),
+                    .copyWith(fontSize: 25.spMin, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 25.h),
@@ -107,7 +108,7 @@ class SignUpScreen extends StatelessWidget {
                     style: AppButtons.registerButtons,
                     child: Text('Continue',
                         style: AppTextStyles.primaryTextStyle.copyWith(
-                          fontSize: 16.sp,
+                          fontSize: 16.spMin,
                           fontWeight: FontWeight.w600,
                         )),
                   )

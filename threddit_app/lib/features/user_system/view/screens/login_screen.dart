@@ -19,6 +19,7 @@ class LogInScreen extends StatelessWidget {
           child: Image.asset(
             Photos.snoLogo,
             width: 40.w,
+            height: 40.h,
           ),
         ),
         actions: [
@@ -63,7 +64,7 @@ class LogInScreen extends StatelessWidget {
               Text(
                 'Log in to Reddit',
                 style: AppTextStyles.primaryTextStyle
-                    .copyWith(fontSize: 28.sp, fontWeight: FontWeight.w600),
+                    .copyWith(fontSize: 28.spMin, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 25.h),
@@ -121,7 +122,7 @@ class LogInScreen extends StatelessWidget {
                     style: AppButtons.registerButtons,
                     child: Text('Continue',
                         style: AppTextStyles.primaryTextStyle.copyWith(
-                          fontSize: 16.h,
+                          fontSize: 16.spMin,
                           fontWeight: FontWeight.w600,
                         )),
                   )
