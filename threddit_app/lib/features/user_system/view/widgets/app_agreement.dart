@@ -9,7 +9,7 @@ class AppAgreement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lisecneStyle = AppTextStyles.primaryTextStyle
-        .copyWith(fontSize: 13.sp, color: Colors.white.withOpacity(0.5));
+        .copyWith(fontSize: 11.spMin, color: Colors.white.withOpacity(0.5));
 
     return RichText(
       textAlign: TextAlign.center,
