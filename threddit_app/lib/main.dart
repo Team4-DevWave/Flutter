@@ -1,11 +1,24 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_app/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/register_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+final redditTheme = ThemeData().copyWith(
+    scaffoldBackgroundColor: AppColors.backgroundColor,
+    appBarTheme: const AppBarTheme().copyWith(
+        backgroundColor: AppColors.backgroundColor,
+        foregroundColor: Colors.white.withOpacity(0.5)));
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  if (Platform.isWindows) {
+    WindowManager.instance.setMinimumSize(const Size(690, 500));
+  }
   runApp(const ProviderScope(
     child: App(),
   ));
@@ -20,14 +33,10 @@ class App extends StatelessWidget {
         designSize: const Size(360, 690),
         minTextAdapt: true,
         splitScreenMode: true,
-        builder: (_, child) {
+        builder: (context, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: ThemeData().copyWith(
-                scaffoldBackgroundColor: AppColors.backgroundColor,
-                appBarTheme: const AppBarTheme().copyWith(
-                    backgroundColor: AppColors.backgroundColor,
-                    foregroundColor: Colors.white.withOpacity(0.5))),
+            theme: redditTheme,
             home: const RegisterScreen(),
           );
         });

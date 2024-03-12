@@ -25,8 +25,23 @@ class LogInScreen extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (ctx) => const SignUpScreen(),
+                PageRouteBuilder(
+                  transitionDuration: const Duration(milliseconds: 150),
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const SignUpScreen(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    var begin = const Offset(-1.0, 0.0);
+                    var end = Offset.zero;
+                    var curve = Curves.ease;
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
+
+                    return SlideTransition(
+                      position: animation.drive(tween),
+                      child: child,
+                    );
+                  },
                 ),
               );
             },
@@ -56,11 +71,11 @@ class LogInScreen extends StatelessWidget {
               SizedBox(height: 15.h),
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Divider(
                       color: AppColors.whiteColor,
-                      height: 1,
-                      thickness: 1,
+                      height: 1.h,
+                      thickness: 1.h,
                     ),
                   ),
                   Padding(
@@ -70,11 +85,11 @@ class LogInScreen extends StatelessWidget {
                       style: AppTextStyles.primaryTextStyle,
                     ),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Divider(
                       color: AppColors.whiteColor,
-                      height: 1,
-                      thickness: 1,
+                      height: 1.h,
+                      thickness: 1.h,
                     ),
                   ),
                 ],
@@ -100,13 +115,13 @@ class LogInScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   const AppAgreement(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
                   ElevatedButton(
                     onPressed: () {},
                     style: AppButtons.registerButtons,
                     child: Text('Continue',
                         style: AppTextStyles.primaryTextStyle.copyWith(
-                          fontSize: 16,
+                          fontSize: 16.h,
                           fontWeight: FontWeight.w600,
                         )),
                   )
