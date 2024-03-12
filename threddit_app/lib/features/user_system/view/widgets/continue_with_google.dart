@@ -24,7 +24,10 @@ class ContinueWithGoogle extends StatelessWidget {
             ),
             Text(
               'Continue with Google',
-              style: AppTextStyles.registerButtons,
+              style: AppTextStyles.primaryTextStyle.copyWith(
+                fontSize: 19,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
