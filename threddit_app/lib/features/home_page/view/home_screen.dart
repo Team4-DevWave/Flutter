@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
-=======
+
 import 'package:threddit_app/theme/colors.dart';
 
->>>>>>> Stashed changes
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   @override
