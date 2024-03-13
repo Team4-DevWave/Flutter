@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 import 'package:threddit_app/theme/colors.dart';
+import 'package:threddit_app/features/user_system/view/widgets/settings_title.dart';
+
 const List<String> genders = <String>['Man', 'Woman'];
 
 class BasicSettings extends StatefulWidget {
@@ -15,8 +17,8 @@ class _BasicSettingsState extends State<BasicSettings> {
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return Column(
-      children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start ,children: [
+      const SettingsTitle(title: "BASIC SETTINGS"),
         ListTile(
           leading: Icon(Icons.settings),
           title: Text("Update email address"),

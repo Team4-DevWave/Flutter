@@ -24,22 +24,9 @@ class AccountSettingsScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text("Account Settings")),
         body: ListView(children: [
-          SettingsTitle(title: "BASIC SETTINGS"),
           BasicSettings(),
-          Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-          child: Text("CONNECTED ACCOUNTS", style: AppTextStyles.secondaryTextStyle),
-          ),
           ConnectedAccounts(),
-          Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-          child: Text("CONTACT SETTINGS", style: AppTextStyles.secondaryTextStyle),
-          ),
           ContactSettings(),
-          Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-          child: Text("SAFETY", style: AppTextStyles.secondaryTextStyle),
-          ),
           Safety(),
         ]
         )

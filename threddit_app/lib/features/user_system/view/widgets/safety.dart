@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/theme/text_styles.dart';
+import 'package:threddit_app/features/user_system/view/widgets/settings_title.dart';
+
 var isFollowable = false;
 class Safety extends StatefulWidget {
   @override
@@ -10,7 +12,8 @@ class _SafetyState extends State<Safety> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start ,children: [
+      const SettingsTitle(title: "SAFETY"),
       ListTile(
           leading: Icon(Icons.block),
           title: Text("Manage blocked accounts"),
