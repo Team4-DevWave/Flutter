@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_screenutil: ^5.9.0  
-  
+  dio: ^5.4.1
   # For Notifications
   # firebase_core: ^2.26.0
   # cupertino_icons: ^1.0.6
