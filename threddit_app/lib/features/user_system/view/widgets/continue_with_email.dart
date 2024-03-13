@@ -26,8 +26,7 @@ class ContinueWithEmail extends StatelessWidget {
             ),
             Text(
               'Continue with email',
-              style: AppTextStyles.primaryTextStyle.copyWith(
-                fontSize: 17.spMin,
+              style: AppTextStyles.buttonTextStyle.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
