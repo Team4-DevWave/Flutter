@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_app/features/home_page/view/home_screen.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
 
@@ -33,6 +34,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          //Navigator.popAndPushNamed(context, );
+        }, icon: const Icon(Icons.close)),
         actions: [
           ElevatedButton(
             //this button should only be pressable when there is a title provided
