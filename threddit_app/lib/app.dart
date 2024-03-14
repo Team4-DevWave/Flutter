@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_app/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/register_screen.dart';
 import 'package:threddit_app/theme/theme.dart';
 import 'package:http/http.dart' as http;
