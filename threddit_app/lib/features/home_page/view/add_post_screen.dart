@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_app/features/home_page/view/home_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_app/features/home_page/home_page_provider.dart';
+//import 'package:threddit_app/features/home_page/view/home_screen.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
+import 'package:threddit_app/features/home_page/view/widgets/next_button.dart';
 
-class AddPostScreen extends StatefulWidget {
+class AddPostScreen extends ConsumerStatefulWidget {
   const AddPostScreen({super.key});
 
   @override
-  State<AddPostScreen> createState() => _AddPostScreenState();
+  ConsumerState<AddPostScreen> createState() => _AddPostScreenState();
 }
 
-class _AddPostScreenState extends State<AddPostScreen> {
+class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   late String postTitle;
   late String postBody;
   late TextEditingController _titleController;
@@ -29,27 +32,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
     _bodytextController.dispose();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: (){
-          //Navigator.popAndPushNamed(context, );
+          ref.read(currentScreenProvider.notifier).returnToPrevious();
         }, icon: const Icon(Icons.close)),
         actions: [
-          ElevatedButton(
-            //this button should only be pressable when there is a title provided
-            //it redirects to choose a community to post on page
-            onPressed: () {},
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.blue),
-            ),
-             child: const Text(
-              'Next',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+          NextButton(titleController: _titleController),
         ],
       ),
       body: Column(
@@ -76,6 +69,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 onChanged: (value) => {
                   setState(() {
                     postTitle = value;
+                    print(postTitle);
                   })
                 },
               ),
@@ -106,16 +100,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 ),
               ),
             ),
-            Positioned(
-              bottom: MediaQuery.of(context).viewInsets.bottom + 10,
-              left: 0,
-              right: 0,
-              child: Row(children: [
+            Row(children: [
                 IconButton(onPressed: (){}, icon: const Icon(Icons.add_link_rounded), color: AppColors.realWhiteColor,),
                 IconButton(onPressed: (){}, icon: const Icon(Icons.image_outlined), color: AppColors.realWhiteColor,),
                 
               ],)
-            )
+            
           ]),
     );
   }

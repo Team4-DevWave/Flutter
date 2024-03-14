@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_app/features/home_page/view/add_post_screen.dart';
 import 'package:threddit_app/features/home_page/view/chat_screen.dart';
 import 'package:threddit_app/features/home_page/view/community_screen.dart';
 import 'package:threddit_app/features/home_page/view/home_screen.dart';
 import 'package:threddit_app/features/home_page/view/notifications_screen.dart';
 import 'package:threddit_app/theme/colors.dart';
+import 'package:threddit_app/features/home_page/home_page_provider.dart';
 
-class MainScreenLayout extends StatefulWidget {
+
+class MainScreenLayout extends ConsumerStatefulWidget {
   const MainScreenLayout({super.key});
   @override
-  State<MainScreenLayout> createState() => _MainScreenLayout();
+  ConsumerState<MainScreenLayout> createState() => _MainScreenLayout();
 }
 
-class _MainScreenLayout extends State<MainScreenLayout> {
+class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final List<Widget> _screens = [
@@ -23,28 +26,19 @@ class _MainScreenLayout extends State<MainScreenLayout> {
     const NotificationsScreen()
   ];
 
-  int _selectedIndex = 0;
-
-  void _openEndDrawer() {
-    _scaffoldKey.currentState!.openEndDrawer();
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  void _closeEndDrawer() {
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final selectedIndex = ref.watch(currentScreenProvider);
+
+    void onItemTapped(int index) {
+    ref.read(currentScreenProvider.notifier).updateCurrentScreen(index);
+  }
+
+    
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.backgroundColor,
-      body: _screens[_selectedIndex],
+      body: _screens[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         unselectedItemColor: AppColors.realWhiteColor,
@@ -87,8 +81,8 @@ class _MainScreenLayout extends State<MainScreenLayout> {
             label: 'Notification',
           ),
         ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        currentIndex: selectedIndex,
+        onTap: onItemTapped,
       ),
     );
   }
