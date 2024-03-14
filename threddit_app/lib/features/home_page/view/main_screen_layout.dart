@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/features/home_page/view/add_post_screen.dart';
 import 'package:threddit_app/theme/colors.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class MainScreenLayout extends StatefulWidget {
+  const MainScreenLayout({super.key});
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MainScreenLayout> createState() => _MainScreenLayout();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MainScreenLayout extends State<MainScreenLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _openEndDrawer() {
@@ -20,10 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    if (index==0)
-    {
-      
-    }
+    if (index == 0) {}
     if (index == 2) {
       Navigator.push(
           context, MaterialPageRoute(builder: (ctx) => const AddPostScreen()));
@@ -87,50 +83,57 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisCount: 2, childAspectRatio: 2 / 3),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        unselectedItemColor: AppColors.realWhiteColor,
-        selectedItemColor: AppColors.redditOrangeColor,
-        backgroundColor: AppColors.backgroundColor,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
-            label: 'Home',
+      bottomNavigationBar: BottomAppBar(
+
+        color: AppColors.backgroundColor,
+        child: IconTheme(
+          data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+          child: Row(
+            children: [
+              IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.home,
+                    color: Color.fromARGB(255, 255, 255, 255),
+                  )),
+                  const Spacer(),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.people_alt,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
+              ),
+              const Spacer(),
+              
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.add,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
+              ),
+              const Spacer(),
+              
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.chat_outlined,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
+              ),
+              const Spacer(),
+              
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.notifications,
+                  color: Color.fromARGB(255, 255, 255, 255),
+                ),
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.people_alt,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
-            label: 'Communities',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.add,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
-            label: 'Create',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.chat_bubble_outline_outlined,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.notifications,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
-            label: 'Notification',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        ),  
       ),
     );
   }

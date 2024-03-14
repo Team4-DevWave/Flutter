@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:threddit_app/features/home_page/view/add_post_screen.dart';
 import 'package:threddit_app/features/home_page/view/home_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_app/features/home_page/view/main_screen_layout.dart';
 import 'package:threddit_app/features/user_system/view/screens/register_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
@@ -39,7 +41,7 @@ class App extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: redditTheme,
-            home: const HomeScreen(),
+            home: MainScreenLayout(),
           );
         });
   }
