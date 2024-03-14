@@ -16,4 +16,8 @@ class AuthController {
   void signInWithGoogle() {
     _authRepository.signInWithGoogle();
   }
+
+  void signOutWithGoogle() {
+    _authRepository.signOutGoogle();
+  }
 }

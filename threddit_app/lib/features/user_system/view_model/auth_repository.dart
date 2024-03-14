@@ -44,4 +44,9 @@ class AuthRepository {
       print(e);
     }
   }
+
+  void signOutGoogle() async {
+    await _googleSignIn.signOut();
+    print("User signed out from Google");
+  }
 }
