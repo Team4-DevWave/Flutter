@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_app/app/route.dart';
 import 'package:threddit_app/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
 import 'package:threddit_app/features/user_system/view/widgets/continue_with_google.dart';
@@ -27,25 +28,7 @@ class SignUpScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pushReplacement(
-                PageRouteBuilder(
-                  transitionDuration: const Duration(milliseconds: 150),
-                  pageBuilder: (context, animation, secondaryAnimation) =>
-                      const LogInScreen(),
-                  transitionsBuilder:
-                      (context, animation, secondaryAnimation, child) {
-                    var begin = const Offset(1.0, 0.0);
-                    var end = Offset.zero;
-                    var curve = Curves.ease;
-                    var tween = Tween(begin: begin, end: end)
-                        .chain(CurveTween(curve: curve));
-                    return SlideTransition(
-                      position: animation.drive(tween),
-                      child: child,
-                    );
-                  },
-                ),
-              );
+              Navigator.pushNamed(context, RouteClass.loginScreen);
             },
             child: Text(
               'Log in',
