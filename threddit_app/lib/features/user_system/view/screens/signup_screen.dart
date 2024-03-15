@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
 import 'package:threddit_app/features/user_system/view/widgets/continue_with_google.dart';
+import 'package:threddit_app/features/user_system/view/widgets/text_form.dart';
 import 'package:threddit_app/theme/button_styles.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/photos.dart';
@@ -15,6 +15,7 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Center(
           child: Image.asset(
@@ -53,69 +54,77 @@ class SignUpScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 13.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Column(children: [
-              SizedBox(height: 20.h),
-              Text(
-                'Hi new friend, welcome to Reddit',
-                style: AppTextStyles.primaryTextStyle
-                    .copyWith(fontSize: 25.spMin, fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 25.h),
-              const ContinueWithGoogle(),
-              SizedBox(height: 15.h),
-              Row(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 13.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Column(
                 children: [
-                  Expanded(
-                    child: Divider(
-                      color: AppColors.whiteColor,
-                      height: 1.h,
-                      thickness: 1.h,
-                    ),
+                  SizedBox(height: 20.h),
+                  Text(
+                    'Hi new friend, welcome to Reddit',
+                    style: AppTextStyles.primaryTextStyle.copyWith(
+                        fontSize: 25.spMin, fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 13.w),
-                    child: Text(
-                      'OR',
-                      style: AppTextStyles.primaryTextStyle,
-                    ),
+                  SizedBox(height: 25.h),
+                  const ContinueWithGoogle(),
+                  SizedBox(height: 15.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: AppColors.whiteColor,
+                          height: 1.h,
+                          thickness: 1.h,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 13.w),
+                        child: Text(
+                          'OR',
+                          style: AppTextStyles.primaryTextStyle,
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: AppColors.whiteColor,
+                          height: 1.h,
+                          thickness: 1.h,
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: Divider(
-                      color: AppColors.whiteColor,
-                      height: 1.h,
-                      thickness: 1.h,
-                    ),
-                  ),
-                ],
-              ),
-            ]),
-            Container(
-              margin: EdgeInsets.only(bottom: 15.h),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  const AppAgreement(),
-                  SizedBox(height: 24.h),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: AppButtons.registerButtons,
-                    child: Text('Continue',
-                        style: AppTextStyles.primaryTextStyle.copyWith(
-                          fontSize: 16.spMin,
-                          fontWeight: FontWeight.w600,
-                        )),
+                  SizedBox(height: 13.h),
+                  const TextForm(
+                    identifier: 'SignUp',
                   )
                 ],
               ),
-            ),
-          ],
+              Container(
+                margin: EdgeInsets.only(bottom: 15.h),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const AppAgreement(),
+                    SizedBox(height: 24.h),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: AppButtons.registerButtons,
+                      child: Text('Continue',
+                          style: AppTextStyles.primaryTextStyle.copyWith(
+                            fontSize: 16.spMin,
+                            fontWeight: FontWeight.w600,
+                          )),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
