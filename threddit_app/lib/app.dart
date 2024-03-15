@@ -34,7 +34,7 @@ class App extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: redditTheme,
-            home: const RegisterScreen(),
+            home: const PostScreen(),
           );
         });
   }
