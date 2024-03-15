@@ -32,15 +32,16 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     _bodytextController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-          ref.read(currentScreenProvider.notifier).returnToPrevious();
-        }, icon: const Icon(Icons.close)),
+        leading: IconButton(
+            onPressed: () {
+              ref.read(currentScreenProvider.notifier).returnToPrevious();
+            },
+            icon: const Icon(Icons.close)),
         actions: [
           NextButton(titleController: _titleController),
         ],
@@ -53,7 +54,8 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
               padding: const EdgeInsets.all(10),
               child: TextField(
                 controller: _titleController,
-                style: const TextStyle(fontSize: 24, color: AppColors.realWhiteColor),
+                style: const TextStyle(
+                    fontSize: 24, color: AppColors.realWhiteColor),
                 cursorColor: AppColors.redditOrangeColor,
                 cursorWidth: 1.5,
                 decoration: const InputDecoration(
@@ -69,43 +71,50 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                 onChanged: (value) => {
                   setState(() {
                     postTitle = value;
-                    print(postTitle);
                   })
                 },
               ),
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: TextFormField(
-                  keyboardType: TextInputType.text,
-                  controller: _bodytextController,
-                  style: const TextStyle(fontSize: 16, color: AppColors.realWhiteColor),
-                  cursorColor: AppColors.redditOrangeColor,
-                  cursorWidth: 1.5,
-                  decoration: const InputDecoration(
-                      labelText: 'body text (optional)',
-                      focusColor: null,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      labelStyle: TextStyle(
-                          color: AppColors.whiteColor,
-                          fontSize: 16)),
-                  onChanged: (value) => {
-                    setState(() {
-                      postBody = value;
-                    })
-                  }
-                ),
+                    keyboardType: TextInputType.text,
+                    controller: _bodytextController,
+                    style: const TextStyle(
+                        fontSize: 16, color: AppColors.realWhiteColor),
+                    cursorColor: AppColors.redditOrangeColor,
+                    cursorWidth: 1.5,
+                    decoration: const InputDecoration(
+                        labelText: 'body text (optional)',
+                        focusColor: null,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        labelStyle: TextStyle(
+                            color: AppColors.whiteColor, fontSize: 16)),
+                    onChanged: (value) => {
+                          setState(() {
+                            postBody = value;
+                          })
+                        }),
               ),
             ),
-            Row(children: [
-                IconButton(onPressed: (){}, icon: const Icon(Icons.add_link_rounded), color: AppColors.realWhiteColor,),
-                IconButton(onPressed: (){}, icon: const Icon(Icons.image_outlined), color: AppColors.realWhiteColor,),
-                
-              ],)
-            
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.add_link_rounded),
+                  color: AppColors.realWhiteColor,
+                ),
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.image_outlined),
+                  color: AppColors.realWhiteColor,
+                ),
+              ],
+            )
           ]),
     );
   }
