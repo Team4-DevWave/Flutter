@@ -1,27 +1,26 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-
-import 'package:flutter/services.dart';
-
-import 'package:threddit_app/features/home_page/view/home_screen.dart';
-
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_app/features/home_page/view/main_screen_layout.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_app/theme/colors.dart';
+import 'package:flutter/services.dart';
+import 'package:threddit_app/features/home_page/view/home_screen.dart';
 import 'package:threddit_app/app.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
+await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  //Limit the window minimization
   if (Platform.isWindows) {
+    WidgetsFlutterBinding.ensureInitialized();
     await windowManager.ensureInitialized();
     WindowManager.instance.setMinimumSize(const Size(690, 500));
   }
+
 
   //Locking mobile to portraitUp
   SystemChrome.setPreferredOrientations([
@@ -32,4 +31,5 @@ void main() async {
       child: App(),
     ));
   });
+
 }

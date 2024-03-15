@@ -10,81 +10,86 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> tabs = ['Home', 'Popular', 'Watch', 'Latest'];
-  int currentPageIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+    final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
+
+  void _openEndDrawer() {
+    _scaffoldKey.currentState!.openEndDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        
-        debugShowCheckedModeBanner: false,
-        home: SafeArea(
-          top: true,
-          child: Scaffold(
-            backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
-            appBar: AppBar(
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
-              actions: [
-                SafeArea(
-                  child: Row(
-                    children: [
-                      Theme(
-                        data: ThemeData.from(
-                            colorScheme: ColorScheme.fromSeed(
-                                seedColor: Colors.grey.shade700)),
-                        child: DropdownMenu<String>(
-                          inputDecorationTheme: InputDecorationTheme(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                                  outlineBorder: const BorderSide(color: Colors.transparent)),
-                          textStyle: const TextStyle(color: Colors.white),
-                          dropdownMenuEntries: tabs
-                              .map<DropdownMenuEntry<String>>((String string) {
-                            return DropdownMenuEntry(
-                                value: string, label: string);
-                          }).toList(),
-                          initialSelection: tabs[0],
-                        ),
-                      ),
-                      const SizedBox(width: 150),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.search),
-                      ),
-                      DrawerButton(
-                        
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-            drawer: Drawer(
-                child: ListView(
-              padding: const EdgeInsets.all(2),
-              children: const [
-                DrawerHeader(child: Text('Recently Visited')),
-              ],
-            )),
-            bottomNavigationBar: NavigationBar(
-              onDestinationSelected: (int index) {
-                setState(() {
-                  currentPageIndex = index;   
-                });
-              },
-              selectedIndex: currentPageIndex,
-              destinations: const [
-              NavigationDestination(icon: Icon(Icons.home, color: Colors.white,), label: 'Home', ),
-              NavigationDestination(icon: Icon(Icons.people_alt, color: Colors.white,), label: 'Communities'),
-              NavigationDestination(icon: Icon(Icons.add, color: Colors.white,), label: 'Create'),
-              NavigationDestination(icon: Icon(Icons.chat_bubble_outline_outlined, color: Colors.white,), label: 'Chat'),
-              NavigationDestination(icon: Icon(Icons.notifications, color: Colors.white,), label: 'Notification'),
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.search),
+              ),
+               IconButton(
+                onPressed: () {
+                  _openEndDrawer();
+                },
+                icon: const Icon(Icons.person_rounded),
+              ),
             ],
-            backgroundColor:const Color.fromRGBO(19, 19, 19, 1),
-            ),
-            ),
+        title: DropdownMenu<String>(
+          inputDecorationTheme: const InputDecorationTheme(
+            border: InputBorder.none,
           ),
-      );
-    
+          textStyle: const TextStyle(color: Colors.white),
+          dropdownMenuEntries:
+              tabs.map<DropdownMenuEntry<String>>((String string) {
+            return DropdownMenuEntry(value: string, label: string);
+          }).toList(),
+          initialSelection: tabs[0],
+          onSelected: (String? value){
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Changed to tab $value')));
+          },
+        ),
+      ),
+      drawer: Drawer(
+         elevation: double.maxFinite,
+          backgroundColor: AppColors.backgroundColor,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundColor.withOpacity(.5),
+                ),
+                child: const Text(
+                  'Your Communities',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              ListTile(
+                title: const Text('Item 1', style: TextStyle(color:Colors.white),),
+                onTap: () {
+                  // Update UI based on item selected
+                },
+              ),
+              ListTile(
+                title: const Text('Item 2', style: TextStyle(color:Colors.white)),
+                onTap: () {
+                  // Update UI based on item selected
+                },
+              ),
+              // Add more ListTile widgets for other items if needed
+            ],
+          ),
+        ),
+      endDrawer: Drawer(
+        backgroundColor: AppColors.backgroundColor,
+        child: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, childAspectRatio: 2 / 3),
+        ),
+      ),
+    );
   }
 }
