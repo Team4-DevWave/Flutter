@@ -20,7 +20,7 @@ class _PasswordFormState extends State<PasswordForm> {
               setState(() {
                 showText = !showText;
               });
-            }, icon: showText ? Icon(Icons.visibility_off) : Icon(Icons.visibility)),
+            }, icon: showText ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility)),
       ),
       obscureText: !showText,
     );

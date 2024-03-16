@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:threddit_app/features/user_system/view/widgets/password_form.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
+import 'package:threddit_app/features/user_system/view/widgets/save_changes.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
   const ChangePasswordScreen({super.key});
@@ -27,15 +28,16 @@ class ChangePasswordScreen extends StatelessWidget {
                   Text("u/xxxxx", style: AppTextStyles.primaryTextStyle),
                 ],
               ),
-              
               PasswordForm("Current password"),
               PasswordForm("New password"),
               Container(
-                child:
-                    TextButton(onPressed: () {}, child: Text("Forgot password?")),
+                child: TextButton(
+                    onPressed: () {}, child: Text("Forgot password?")),
                 alignment: Alignment.topRight,
               ),
               PasswordForm("Confirm new password"),
+              Spacer(),
+              SaveChanges(),
             ],
           ),
         ));

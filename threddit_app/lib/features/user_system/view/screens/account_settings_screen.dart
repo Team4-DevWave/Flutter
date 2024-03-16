@@ -26,7 +26,7 @@ class AccountSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Account Settings")),
+        appBar: AppBar(title: const Text("Account Settings")),
         body: ListView(children: [
           BasicSettings(),
           ConnectedAccounts(),

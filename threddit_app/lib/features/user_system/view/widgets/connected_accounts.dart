@@ -13,10 +13,10 @@ class _ConnectedAcccountsState extends State<ConnectedAccounts> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start ,children: [
       const SettingsTitle(title: "CONNECTED ACCOUNTS"),
       ListTile(
-          leading: ImageIcon(AssetImage("assets/images/google.png")),
-          title: Text("Google"),
+          leading: const ImageIcon(AssetImage("assets/images/google.png")),
+          title: const Text("Google"),
           titleTextStyle: AppTextStyles.primaryTextStyle,
-          trailing: TextButton(onPressed: () {}, child: Text("Connect", style: TextStyle(color: Colors.blue),))),
+          trailing: TextButton(onPressed: () {}, child: const Text("Connect", style: TextStyle(color: Colors.blue),))),
     //   ListTile(
     //       leading: ImageIcon(AssetImage("assets/images/facebook.png")),
     //       title: Text("Facebook"),
