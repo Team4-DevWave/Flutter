@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_app/features/user_system/view_model/auth_repository.dart';
+import 'package:threddit_app/models/user.dart';
+
+
 
 final authControllerProvider = Provider(
   (ref) => AuthController(

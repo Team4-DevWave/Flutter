@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/posting/data/data.dart';
-import 'package:threddit_app/features/posting/model/post.dart';
+import 'package:threddit_app/models/post.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
@@ -15,7 +15,7 @@ class _HomeScreenPostCard extends State<HomeScreenPostCard> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final difference = now.difference(widget.post.date);
+    final difference = now.difference(widget.post.createdAt);
     final hoursSincePost = difference.inHours;
 
     return Container(
@@ -40,7 +40,7 @@ class _HomeScreenPostCard extends State<HomeScreenPostCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('r/${widget.post.community.name}',
+                    Text('r/${widget.post.communityName}',
                         style: AppTextStyles.primaryTextStyle.copyWith(
                             fontSize: 12,
                             color: const Color.fromARGB(98, 255, 255, 255),

@@ -1,9 +1,6 @@
-
-import 'package:threddit_app/features/commenting/model/comment.dart';
-import 'package:threddit_app/features/community/models/community.dart';
-import 'package:threddit_app/features/posting/model/post.dart';
-
-
+import 'package:threddit_app/models/comment.dart';
+import 'package:threddit_app/models/community.dart';
+import 'package:threddit_app/models/post.dart';
 
 final List<Post> posts = [
   Post(
@@ -11,61 +8,62 @@ final List<Post> posts = [
     title: "I've calling my sister by her full given name when she deadnames my niece ",
     link: 'https://example.com',
     description: "nwnedoiwnoqlksndwenfoiewfnoweinfonwkndkwnod neondoiewndfoewnjndneqwondoiewndoiwenfnwenoewnwncnwondoewnewocnownocwneoicwoencowencowencowneodskmcolnwdoenladnciwenkd  owndowneoi",
-    date: DateTime.now(),
-    community: Community(
-      id: '1',
-      name: 'Sample Community',
-      description: 'This is a sample community.',
-    ),
+    communityName: 'Sample Community',
+    communityProfilePic: 'sample_community_profile_pic_url',
     upvotes: ['user1', 'user2'],
     downvotes: ['user3', 'user4'],
     commentCount: 10,
     username: 'user1',
     uid: 'user1_uid',
-    content: 'This is the content of the sample post.',
-     
+    type: 'type1',
+    createdAt: DateTime.now(),
+    awards: ['award1', 'award2'],
   ),
   Post(
     id: '2',
     title: 'Sample Post 2',
     link: 'https://example.com',
     description: 'This is another sample post description.',
-    date: DateTime.now().subtract(Duration(days: 1)),
-    community: Community(
-      id: '2',
-      name: 'Another Community',
-      description: 'This is another sample community.',
-    ),
+    communityName: 'Another Community',
+    communityProfilePic: 'another_community_profile_pic_url',
     upvotes: ['user1', 'user3'],
     downvotes: ['user2'],
-    commentCount: 5,
+    commentCount: 0,
     username: 'user2',
     uid: 'user2_uid',
-    content: 'This is the content of another sample post.',
+    type: 'type2',
+    createdAt: DateTime.now().subtract(Duration(days: 1)),
+    awards: [],
   ),
 ];
 
-final List<Comment> comments =[
-    Comment(
-      id: 'comment_1',
-      content: 'This is the first comment.',
-      username: 'User1',
-      date: DateTime.now().subtract(Duration(hours: 1)),
-      
-    ),
-    Comment(
-      id: 'comment_2',
-      content: 'This is the second comment.',
-      username: 'User2',
-      date: DateTime.now().subtract(Duration(hours: 2)),
-      
-    ),
-    Comment(
-      id: 'comment_3',
-      content: 'This is the third comment.',
-      username: 'User3',
-      date: DateTime.now().subtract(Duration(hours: 3)),
-      
-    ),
-    // Add more dummy comments as needed
-  ];
+final List<Comment> comments = [
+  Comment(
+    text: 'This is the first comment.',
+    createdAt: DateTime.now().subtract(Duration(hours: 1)),
+    postId: '1', // Assuming postId
+    username: 'User1',
+    profilePic: 'profile_pic_url', // Assuming profile picture URL
+    upvotes: ['user1', 'user2'],
+    downvotes: ['user3', 'user4'],
+  ),
+  Comment(
+    text: 'This is the second comment.',
+    createdAt: DateTime.now().subtract(Duration(hours: 2)),
+    postId: '1', // Assuming postId
+    username: 'User2',
+    profilePic: 'profile_pic_url', // Assuming profile picture URL
+    upvotes: ['user1', 'user3'],
+    downvotes: ['user2'],
+  ),
+  Comment(
+    text: 'This is the third comment.',
+    createdAt: DateTime.now().subtract(Duration(hours: 3)),
+    postId: '1', // Assuming postId
+    username: 'User3',
+    profilePic: 'profile_pic_url', // Assuming profile picture URL
+    upvotes: ['user1'],
+    downvotes: [],
+  ),
+  // Add more dummy comments as needed
+];

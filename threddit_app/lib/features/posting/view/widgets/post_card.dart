@@ -1,21 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_app/features/posting/data/data.dart';
-import 'package:threddit_app/features/posting/model/post.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_app/features/posting/view_model/post_provider.dart';
+import 'package:threddit_app/models/post.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
-class PostCard extends StatefulWidget {
-  const PostCard({super.key, required this.post});
+
+
+class PostCard extends ConsumerStatefulWidget {
+  const PostCard({Key? key, required this.post, required this.uid, required this.onCommentPressed});
   final Post post;
+  final String uid;
+  final VoidCallback onCommentPressed;
   @override
   _PostCardState createState() => _PostCardState();
 }
 
-class _PostCardState extends State<PostCard> {
+class _PostCardState extends ConsumerState<PostCard> {
+  
+   
   @override
   Widget build(BuildContext context) {
+
+  void upVotePost(WidgetRef ref) async {
+  final upvoteFunction = ref.read(postUpvoteProvider(widget.post));
+  upvoteFunction(widget.uid);
+  setState(() {
+    
+  });
+}
+void downVotePost(WidgetRef ref) async {
+  final downvoteFunction = ref.read(postDownvoteProvider(widget.post));
+  downvoteFunction(widget.uid);
+  setState(() {
+    
+  });
+}
+  
+     final isTypeImage = widget.post.type == 'image';
+    final isTypeText = widget.post.type == 'text';
+    final isTypeLink = widget.post.type == 'link';
+
     final now = DateTime.now();
-    final difference = now.difference(widget.post.date);
+    final createdAt = widget.post.createdAt ?? now;
+    final difference = now.difference(widget.post.createdAt);
     final hoursSincePost = difference.inHours;
 
     return Container(
@@ -40,7 +68,7 @@ class _PostCardState extends State<PostCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('r/${widget.post.community.name}',
+                    Text('r/${widget.post.communityName}',
                         style: AppTextStyles.primaryTextStyle.copyWith(
                             fontSize: 12,
                             color: const Color.fromARGB(98, 255, 255, 255),
@@ -93,16 +121,21 @@ class _PostCardState extends State<PostCard> {
               ),
               Row(
                 children: [
-                  IconButton(onPressed: (){}, icon:const Icon (Icons.arrow_upward_outlined, size: 30,) ),
+                  IconButton(onPressed: (){upVotePost(ref);}, icon:const Icon (Icons.arrow_upward_outlined, size: 30,),color: widget.post.upvotes.contains(widget.uid) ? const Color.fromARGB(255, 217, 77, 67) : Colors.white,),
+                  
                   Text('${widget.post.upvotes.length-widget.post.downvotes.length==0?"vote":widget.post.upvotes.length-widget.post.downvotes.length}',style: AppTextStyles.primaryTextStyle.copyWith(color: AppColors.whiteColor),),
-                  IconButton(onPressed: (){}, icon:const Icon (Icons.arrow_downward_outlined, size: 30,) ),
-                  IconButton(onPressed: (){}, icon: const Icon(Icons.comment)),
-                  Text('${widget.post.commentCount}',style: AppTextStyles.primaryTextStyle.copyWith(color: AppColors.whiteColor)),
+                  IconButton(onPressed: (){downVotePost(ref);}, icon:const Icon (Icons.arrow_downward_outlined, size: 30,),color: widget.post.downvotes.contains(widget.uid) ? Color.fromARGB(255, 97, 137, 212) : Colors.white, ),
+                  IconButton(onPressed: widget.onCommentPressed, icon: const Icon(Icons.comment)),
+                  Text('${widget.post.commentCount==0?"comment":widget.post.commentCount}',style: AppTextStyles.primaryTextStyle.copyWith(color: AppColors.whiteColor)),
                   Expanded(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(onPressed: (){}, icon: const Icon(Icons.refresh)),
+                        if(widget.uid==widget.post.uid)
+                        IconButton(onPressed: (){}, icon: Icon(Icons.delete)),
+                        if(widget.uid!=widget.post.uid)
+                        IconButton(onPressed: (){}, icon: const Icon(Icons.refresh))
+
                       ],
                     ),
                   )

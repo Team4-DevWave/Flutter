@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_app/features/commenting/model/comment.dart';
+import 'package:threddit_app/models/comment.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
@@ -14,7 +14,7 @@ class _CommentItemState extends State<CommentItem> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final difference = now.difference(widget.comment.date);
+    final difference = now.difference(widget.comment.createdAt);
     final hoursSincePost = difference.inHours;
 
     return Padding(
@@ -62,7 +62,7 @@ class _CommentItemState extends State<CommentItem> {
                 height: 10,
               ),
               Text(
-                widget.comment.content,
+                widget.comment.text,
                 style: AppTextStyles.primaryTextStyle
                     .copyWith(color: Colors.white, fontSize: 15),
               ),
