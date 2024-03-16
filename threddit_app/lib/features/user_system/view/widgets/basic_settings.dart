@@ -1,4 +1,8 @@
+
+
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:threddit_app/features/user_system/view/screens/change_password_screen.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/features/user_system/view/widgets/settings_title.dart';
@@ -13,9 +17,15 @@ class BasicSettings extends StatefulWidget {
 
 class _BasicSettingsState extends State<BasicSettings> {
   String pickedGender = genders.first;
-  void _selectAccountSetting(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => UpdateEmailScreen()));
+  Country selectedCountry = Country.worldWide;
+  void _selectBasicSetting(BuildContext context, String settingName) {
+    if (settingName == "email") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (ctx) => UpdateEmailScreen()));
+    } else if (settingName == "password") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (ctx) => ChangePasswordScreen()));
+    }
   }
 
   @override
@@ -27,33 +37,50 @@ class _BasicSettingsState extends State<BasicSettings> {
       children: [
         const SettingsTitle(title: "BASIC SETTINGS"),
         ListTile(
-          leading: Icon(Icons.settings),
-          title: Text("Update email address"),
+          leading: const Icon(Icons.settings),
+          title: const Text("Update email address"),
           titleTextStyle: AppTextStyles.primaryTextStyle,
-          subtitle: Text("xxxxxx@gmail.com"),
-          trailing: Icon(Icons.navigate_next),
+          subtitle: const Text("xxxxxx@gmail.com"),
+          trailing: const Icon(Icons.navigate_next),
           onTap: () {
-            _selectAccountSetting(context);
+            _selectBasicSetting(context, "email");
           },
         ),
         ListTile(
-          leading: Icon(Icons.settings),
-          title: Text("Change password"),
+          leading: const Icon(Icons.settings),
+          title: const Text("Change password"),
           titleTextStyle: AppTextStyles.primaryTextStyle,
-          trailing: Icon(Icons.navigate_next),
+          trailing: const Icon(Icons.navigate_next),
+          onTap: () {
+            _selectBasicSetting(context, "password");
+          },
         ),
         ListTile(
-          leading: Icon(Icons.location_pin),
-          title: Text("Country"),
+          leading: const Icon(Icons.location_pin),
+          title: const Text("Country"),
+          subtitle: Text(
+              selectedCountry.displayName),
           titleTextStyle: AppTextStyles.primaryTextStyle,
-          trailing: Icon(Icons.navigate_next),
+          trailing: const Icon(Icons.navigate_next),
+          onTap: () {
+            showCountryPicker(                
+                context: context,
+                onSelect: (Country country) {
+                  setState(() {
+                    selectedCountry = country;
+                  });
+                },
+                countryListTheme: CountryListThemeData(
+                    backgroundColor: AppColors.backgroundColor,
+                    textStyle: AppTextStyles.primaryTextStyle));
+          },
         ),
         ListTile(
-          leading: Icon(Icons.person),
-          title: Text("Gender"),
+          leading: const Icon(Icons.person),
+          title: const Text("Gender"),
           titleTextStyle: AppTextStyles.primaryTextStyle,
           trailing: DropdownButton(
-            icon: Icon(Icons.arrow_downward),
+            icon: const Icon(Icons.arrow_downward),
             onChanged: (String? value) {
               setState(() {
                 pickedGender = value!;
