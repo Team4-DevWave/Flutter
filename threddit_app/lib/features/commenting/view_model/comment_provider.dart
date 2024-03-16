@@ -13,3 +13,19 @@ final addCommentProvider = FutureProvider.autoDispose.family<void, List<String>>
   final repository = ref.watch(commentRepositoryProvider);
   await repository.addComment(data[0],data[1],data[2]); //the give list should include 3 values: the comment text, the post ID, the userID
 });
+
+final commentUpvoteProvider = Provider.autoDispose.family<void Function(String), Comment>((ref, comment) {
+  final repository = ref.watch(commentRepositoryProvider);
+  return (String userID) {
+    repository.upVote(comment, userID);
+    
+  };
+});
+
+final commentDownvoteProvider = Provider.autoDispose.family<void Function(String), Comment>((ref, comment) {
+  final repository = ref.watch(commentRepositoryProvider);
+  return (String userID) {
+    repository.downVote(comment, userID);
+    
+  };
+});

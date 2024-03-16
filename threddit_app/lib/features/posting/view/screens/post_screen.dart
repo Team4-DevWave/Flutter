@@ -10,18 +10,18 @@ import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/features/commenting/view_model/comment_provider.dart';
 
 class PostScreen extends ConsumerStatefulWidget {
-  const PostScreen({super.key,required this.currentPost});
+  const PostScreen({super.key, required this.currentPost});
   final Post currentPost;
   @override
   _PostScreenState createState() => _PostScreenState();
 }
 
 class _PostScreenState extends ConsumerState<PostScreen> {
-  
   @override
   void initState() {
     super.initState();
   }
+
    void _openAddCommentOverlay() {
     showModalBottomSheet(
         useSafeArea: true,
@@ -32,86 +32,71 @@ class _PostScreenState extends ConsumerState<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
-  
-    return Consumer(
-      builder: (context, ref, child) {
-         AsyncValue<List<Comment>> postComments =
-            ref.watch(commentsProvider(widget.currentPost.id));
-      return MaterialApp(
-        home: SafeArea(
-          child: Scaffold(
-            backgroundColor: const Color.fromARGB(199, 10, 10, 10),
-            appBar: AppBar(
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
-              leading: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.arrow_back),
-              ),
-              actions: [
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.search),
-                    ),
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
-                    IconButton(
-                        onPressed: () {}, icon: const Icon(Icons.more_horiz)),
-                    Builder(
-                      // Use Builder to obtain a Scaffold's context
-                      builder: (context) => IconButton(
-                        icon: const Icon(Icons.face_2_rounded),
-                        onPressed: () => Scaffold.of(context).openEndDrawer(),
-                      ),
-                    ),
-                    const SizedBox(width: 5)
-                  ],
-                ),
-              ],
+    List<Comment> postComments =
+        comments.where((comment) => comment.postId == widget.currentPost.id).toList();
+    return MaterialApp(
+      home: SafeArea(
+        child: Scaffold(
+          backgroundColor: const Color.fromARGB(199, 10, 10, 10),
+          appBar: AppBar(
+            iconTheme: const IconThemeData(color: Colors.white),
+            backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
+            leading: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.arrow_back),
             ),
-            endDrawer: Drawer(
-              backgroundColor: AppColors.backgroundColor,
-              width: 330,
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  //TODO: add drawer items
+            actions: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.search),
+                  ),
+                  IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
+                  IconButton(
+                      onPressed: () {}, icon: const Icon(Icons.more_horiz)),
+                  Builder(
+                    // Use Builder to obtain a Scaffold's context
+                    builder: (context) => IconButton(
+                      icon: const Icon(Icons.face_2_rounded),
+                      onPressed: () => Scaffold.of(context).openEndDrawer(),
+                    ),
+                  ),
+                  const SizedBox(width: 5)
                 ],
               ),
-            ),
-            body: Column(
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      PostCard(
-                        post: widget.currentPost,
-                        uid: 'user1',
-                        onCommentPressed: _openAddCommentOverlay,
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 8)),
-                      postComments.when(
-                        data: (comments) => Column(
-                          children: comments
-                              .map((comment) => CommentItem(comment: comment))
-                              .toList(),
-                        ),
-                        loading: () => const CircularProgressIndicator(),
-                        error: (error, stackTrace) =>
-                            Text('Error fetching comments: $error'),
-                      ),
-                    ],
-                  ),
-                ),
-                 AddComment(postID: widget.currentPost.id,uid:'user1')
+            ],
+          ),
+          endDrawer: Drawer(
+            backgroundColor: AppColors.backgroundColor,
+            width: 330,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                //TODO: add drawer items
               ],
             ),
           ),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    PostCard(
+                      post: widget.currentPost,
+                      uid: 'user1',
+                      onCommentPressed: _openAddCommentOverlay,
+                    ),
+                    const Padding(padding: EdgeInsets.only(bottom: 8)),
+                    ...postComments.map((comment) => CommentItem(comment: comment,uid: 'user1',)).toList(),
+                  ],
+                ),
+              ),
+              AddComment(postID: widget.currentPost.id,uid:'user1',)
+            ],
+          ),
         ),
-      );
-      }
+      ),
     );
   }
-  
 }

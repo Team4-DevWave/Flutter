@@ -29,4 +29,26 @@ class CommentRepository {
     comments.add(newComment);
     print(comments.where((element) => element.postId=="1"));
   }
+Future<void> upVote(Comment comment, String userID) async {
+    if (comment.downvotes.contains(userID)) {
+      comment.downvotes.remove(userID);
+    }
+    if (comment.upvotes.contains(userID)) {
+      comment.upvotes.remove(userID);
+    } else {
+      comment.upvotes.add(userID);
+    }
+   
+  }
+Future<void> downVote(Comment comment, String userID) async {
+    if (comment.upvotes.contains(userID)) {
+      comment.upvotes.remove(userID);
+    }
+    if (comment.downvotes.contains(userID)) {
+      comment.downvotes.remove(userID);
+    } else {
+      comment.downvotes.add(userID);
+    }
+
+}
 }
