@@ -1,46 +1,34 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:threddit_app/features/home_page/view/home_screen.dart';
+
+import 'package:flutter/services.dart';
+
+//import 'package:threddit_app/features/home_page/view/home_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_app/features/user_system/view/screens/register_screen.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/theme/colors.dart';
+import 'package:threddit_app/app.dart';
 import 'package:window_manager/window_manager.dart';
-
-final redditTheme = ThemeData().copyWith(
-    scaffoldBackgroundColor: AppColors.backgroundColor,
-    appBarTheme: const AppBarTheme().copyWith(
-        backgroundColor: AppColors.backgroundColor,
-        foregroundColor: Colors.white.withOpacity(0.5)));
+// import 'package:firebase_core/firebase_core.dart';
+// import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+  //Limit the window minimization
   if (Platform.isWindows) {
+    await windowManager.ensureInitialized();
     WindowManager.instance.setMinimumSize(const Size(690, 500));
   }
-  runApp(const ProviderScope(
-    child: App(),
-  ));
-}
 
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
-        designSize: const Size(360, 690),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: redditTheme,
-            home: const RegisterScreen(),
-          );
-        });
-  }
+  //Locking mobile to portraitUp
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((fn) {
+    //Call app class to start the app
+    runApp(const ProviderScope(
+      child: App(),
+    ));
+  });
 }
