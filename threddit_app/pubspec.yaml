@@ -46,6 +46,7 @@ dependencies:
   google_fonts: ^6.2.0
   window_manager: ^0.3.8
   persistent_bottom_nav_bar: ^5.0.2
+  image_picker: ^1.0.7
 
 
 
