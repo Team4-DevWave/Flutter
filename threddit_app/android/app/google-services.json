@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1050902103954",
+    "project_id": "threddit-app",
+    "storage_bucket": "threddit-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050902103954:android:768d7e1ce7eb186380e34b",
+        "android_client_info": {
+          "package_name": "com.example.threddit_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjG0k8MbVS_BJj2-0n8MXMgdits9pzqY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
