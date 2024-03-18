@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_app/features/user_system/view_model/auth_controller.dart';
 import 'package:threddit_app/theme/button_styles.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
-class ContinueWithEmail extends StatelessWidget {
+class ContinueWithEmail extends ConsumerWidget {
   const ContinueWithEmail({super.key});
 
+  void signOutWithGoogle(WidgetRef ref) {
+    ref.read(authControllerProvider).signOutWithGoogle();
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () => signOutWithGoogle(ref),
       style: AppButtons.registerButtons,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 15.h),
@@ -26,8 +32,7 @@ class ContinueWithEmail extends StatelessWidget {
             ),
             Text(
               'Continue with email',
-              style: AppTextStyles.primaryTextStyle.copyWith(
-                fontSize: 17.spMin,
+              style: AppTextStyles.buttonTextStyle.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),

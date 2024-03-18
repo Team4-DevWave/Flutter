@@ -3,6 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+final Uri _urlAgreement =
+    Uri.parse('https://www.redditinc.com/policies/user-agreement');
+final Uri _urlPrivacy =
+    Uri.parse('https://www.reddit.com/policies/privacy-policy');
+
+Future<void> _launchUrlAgreement() async {
+  if (!await launchUrl(_urlAgreement)) {
+    throw Exception('Could not launch $_urlAgreement');
+  }
+}
+
+Future<void> _launchUrlPrivacy() async {
+  if (!await launchUrl(_urlPrivacy)) {
+    throw Exception('Could not launch $_urlPrivacy');
+  }
+}
 
 class AppAgreement extends StatelessWidget {
   const AppAgreement({super.key});
@@ -20,10 +38,7 @@ class AppAgreement extends StatelessWidget {
           TextSpan(
             text: 'User Agreement',
             style: lisecneStyle.copyWith(color: AppColors.redditOrangeColor),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                // Handle tap on 'Privacy Policy'
-              },
+            recognizer: TapGestureRecognizer()..onTap = _launchUrlAgreement,
           ),
           TextSpan(
               text: ' and acknowledge that you understand the ',
@@ -31,10 +46,7 @@ class AppAgreement extends StatelessWidget {
           TextSpan(
             text: 'Privacy Policy',
             style: lisecneStyle.copyWith(color: AppColors.redditOrangeColor),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                // Handle tap on 'Privacy Policy'
-              },
+            recognizer: TapGestureRecognizer()..onTap = _launchUrlPrivacy,
           ),
           const TextSpan(text: '.'),
         ],
