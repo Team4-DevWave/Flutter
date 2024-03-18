@@ -54,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               SizedBox(height: ScreenUtil().statusBarHeight),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                //crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset(
                     Photos.snoLogo,

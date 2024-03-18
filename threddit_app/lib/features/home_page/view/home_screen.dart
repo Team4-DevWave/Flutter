@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {},
                       icon: const Icon(Icons.search),
                     ),
-                    DrawerButton()
+                    const DrawerButton()
                   ],
                 ),
               )

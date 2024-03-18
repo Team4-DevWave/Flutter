@@ -10,8 +10,9 @@ class TextForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayedText =
+    final String displayedText =
         (identifier == 'login' ? 'Email or Username' : 'Email');
+
     return Form(
       child: Column(
         children: [
@@ -35,7 +36,7 @@ class TextForm extends StatelessWidget {
                   EdgeInsets.symmetric(vertical: 18.0.h, horizontal: 20.0.w),
               counter: const SizedBox.shrink(),
             ),
-            validator: (value) => '',
+            validator: (value) => 'demoo',
           ),
           TextFormField(
             style: AppTextStyles.primaryTextStyle,
