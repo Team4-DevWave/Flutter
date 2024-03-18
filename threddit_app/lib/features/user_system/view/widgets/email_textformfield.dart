@@ -50,7 +50,7 @@ class EmailTextFromField extends ConsumerWidget {
         counter: const SizedBox.shrink(),
       ),
       validator: emailSignupValidator,
-      autovalidateMode: AutovalidateMode.always,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }

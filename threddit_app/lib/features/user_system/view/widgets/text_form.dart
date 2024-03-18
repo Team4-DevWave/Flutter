@@ -1,3 +1,4 @@
+// text_form.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,10 +17,16 @@ class TextForm extends ConsumerWidget {
     final emailController = TextEditingController();
 
     final formKey = GlobalKey<FormState>();
-    ref.read(continueSignupProvider.notifier).toggleBottomOnAndOff(formKey);
+
+    void updateFormValidity() {
+      final isValid =
+          formKey.currentState != null && formKey.currentState!.validate();
+      ref.read(continueSignupProvider.notifier).updateFormValidity(isValid);
+    }
 
     return Form(
       key: formKey,
+      onChanged: updateFormValidity,
       child: Column(
         children: [
           EmailTextFromField(
