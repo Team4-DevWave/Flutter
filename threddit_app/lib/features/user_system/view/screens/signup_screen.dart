@@ -11,7 +11,7 @@ import 'package:threddit_app/theme/photos.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
 class SignUpScreen extends ConsumerWidget {
-  const SignUpScreen({Key? key});
+  const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

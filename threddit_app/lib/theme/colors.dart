@@ -7,4 +7,5 @@ class AppColors {
   static const Color whiteColor = Color.fromARGB(133, 255, 255, 255);
   static const Color whiteGlowColor = Color.fromARGB(255, 255, 255, 255);
   static const Color whiteHideColor = Color.fromARGB(77, 255, 255, 255);
+  static const Color errorColor = Color.fromRGBO(140, 32, 28, 1);
 }

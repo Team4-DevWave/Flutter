@@ -1,65 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/theme/colors.dart';
-import 'package:threddit_app/theme/text_styles.dart';
+import 'package:threddit_app/features/user_system/view/widgets/email_textformfield.dart';
+import 'package:threddit_app/features/user_system/view/widgets/password_textformfield.dart';
+import 'package:threddit_app/features/user_system/view_model/continue_signup_controller.dart';
 
-class TextForm extends StatelessWidget {
+class TextForm extends ConsumerWidget {
   const TextForm({super.key, required this.identifier});
 
   final String identifier;
 
   @override
-  Widget build(BuildContext context) {
-    final String displayedText =
-        (identifier == 'login' ? 'Email or Username' : 'Email');
+  Widget build(BuildContext context, WidgetRef ref) {
+    final passwordController = TextEditingController();
+    final emailController = TextEditingController();
+
+    final formKey = GlobalKey<FormState>();
+    ref.read(continueSignupProvider.notifier).toggleBottomOnAndOff(formKey);
 
     return Form(
+      key: formKey,
       child: Column(
         children: [
-          TextFormField(
-            style: AppTextStyles.primaryTextStyle,
-            maxLength: 50,
-            decoration: InputDecoration(
-              hintText: displayedText,
-              hintStyle: AppTextStyles.primaryTextStyle,
-              filled: true,
-              fillColor: AppColors.registerButtonColor,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0),
-                borderSide: const BorderSide(color: AppColors.whiteColor),
-              ),
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 18.0.h, horizontal: 20.0.w),
-              counter: const SizedBox.shrink(),
-            ),
-            validator: (value) => 'demoo',
+          EmailTextFromField(
+            controller: emailController,
+            identifier: identifier,
           ),
-          TextFormField(
-            style: AppTextStyles.primaryTextStyle,
-            maxLength: 50,
-            obscureText: true,
-            decoration: InputDecoration(
-              hintText: 'Password',
-              hintStyle: AppTextStyles.primaryTextStyle,
-              filled: true,
-              fillColor: AppColors.registerButtonColor,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0.r),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(25.0.r),
-                borderSide: const BorderSide(color: AppColors.whiteColor),
-              ),
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 18.0.h, horizontal: 20.0.w),
-              counter: const SizedBox.shrink(),
-            ),
-            validator: (value) => '',
+          SizedBox(
+            height: 8.h,
+          ),
+          PasswordTextFormField(
+            controller: passwordController,
+            identifier: identifier,
           ),
         ],
       ),

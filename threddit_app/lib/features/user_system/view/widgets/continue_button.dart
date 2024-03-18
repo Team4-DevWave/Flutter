@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_app/features/user_system/view_model/continue_signup_controller.dart';
 import 'package:threddit_app/theme/button_styles.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
-//will watch if the input is valid the on pressed is not null
-//and the textstyle is the glow one
-class ContinueButton extends StatelessWidget {
+class ContinueButton extends ConsumerWidget {
   const ContinueButton({super.key, required this.identifier});
 
   final String identifier;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isOn = ref.watch(continueSignupProvider);
     return ElevatedButton(
-      onPressed: null,
+      onPressed: (isOn) ? () {} : null,
       style: AppButtons.choiceButtonTheme,
       child: Text(
         'Continue',
