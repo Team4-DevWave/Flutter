@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/app/route.dart';
+import 'package:threddit_app/features/community/view/create_community.dart';
 import 'package:threddit_app/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_app/features/posting/data/data.dart';
 import 'package:threddit_app/features/posting/view/screens/post_screen.dart';
@@ -26,7 +27,7 @@ class App extends StatelessWidget {
             onGenerateRoute: RouteClass.generateRoute,
             debugShowCheckedModeBanner: false,
             theme: redditTheme,
-            home: PostScreen(currentPost:posts[0]),
+            home: CreateCommunity(),
           );
         });
   }

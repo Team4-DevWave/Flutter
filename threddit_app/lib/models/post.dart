@@ -5,8 +5,8 @@ class Post {
   final String title;
   final String? link;
   final String? description;
-  final String communityName;
-  final String communityProfilePic;
+ final String? communityName;
+  final String? communityProfilePic;
   final List<String> upvotes;
   final List<String> downvotes;
   final int commentCount;
@@ -20,8 +20,8 @@ class Post {
     required this.title,
     this.link,
     this.description,
-    required this.communityName,
-    required this.communityProfilePic,
+   this.communityName,
+   this.communityProfilePic,
     required this.upvotes,
     required this.downvotes,
     required this.commentCount,
