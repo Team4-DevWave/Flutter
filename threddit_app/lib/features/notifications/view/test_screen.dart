@@ -32,7 +32,7 @@ class _testScreenState extends State<testScreen> {
 
   //remeber to try to make it aync and initialize to await
   //@mipmap/ic_launcher icon of notification
-  // for background we need to modifed littte bit
+  //for background we need to modifed littte bit
   initInfo() {
     var androidInitialize =
         const AndroidInitializationSettings('@mipmap/ic_launcher');
