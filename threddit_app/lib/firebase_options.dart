@@ -44,6 +44,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
+
     apiKey: 'AIzaSyC44i_G-LlgGCuCm3hnkamhgDgLcQ59Uu4',
     appId: '1:492546440281:web:7c6a32e4bc6307877dc548',
     messagingSenderId: '492546440281',
@@ -67,15 +68,18 @@ class DefaultFirebaseOptions {
     messagingSenderId: '492546440281',
     projectId: 'threadit-c20a3',
     storageBucket: 'threadit-c20a3.appspot.com',
+
     iosBundleId: 'com.example.thredditApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
+
     apiKey: 'AIzaSyCfJMyQV4JF6bN4Ic8kjc8Ikyj83D_LiCA',
     appId: '1:492546440281:ios:de642069bcbb938c7dc548',
     messagingSenderId: '492546440281',
     projectId: 'threadit-c20a3',
     storageBucket: 'threadit-c20a3.appspot.com',
+
     iosBundleId: 'com.example.thredditApp.RunnerTests',
   );
 }
