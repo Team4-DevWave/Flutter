@@ -49,11 +49,6 @@ class _AppState extends State<App> {
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print(
-          "=================================onMessage=======================");
-      print(
-          "onMessage : ${message.notification?.title} ${message.notification?.body}");
-
       BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
           message.notification!.body.toString(),
           htmlFormatBigText: true,
