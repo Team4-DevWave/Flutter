@@ -9,10 +9,9 @@ class ChangePasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          title: Text("Change password"),
+          title: const Text("Change password"),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -21,23 +20,23 @@ class ChangePasswordScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.person,
                     color: AppColors.redditOrangeColor,
                   ),
                   Text("u/xxxxx", style: AppTextStyles.primaryTextStyle),
                 ],
               ),
-              PasswordForm("Current password"),
-              PasswordForm("New password"),
+              const PasswordForm("Current password"),
+              const PasswordForm("New password"),
               Container(
-                child: TextButton(
-                    onPressed: () {}, child: Text("Forgot password?")),
                 alignment: Alignment.topRight,
+                child: TextButton(
+                    onPressed: () {}, child: const Text("Forgot password?")),
               ),
-              PasswordForm("Confirm new password"),
-              Spacer(),
-              SaveChanges(),
+              const PasswordForm("Confirm new password"),
+              const Spacer(),
+              const SaveChanges(),
             ],
           ),
         ));

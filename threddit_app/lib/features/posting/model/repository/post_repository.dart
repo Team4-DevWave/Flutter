@@ -1,6 +1,4 @@
-import 'package:threddit_app/models/comment.dart';
-import 'package:threddit_app/models/post.dart';
-import 'package:threddit_app/features/posting/data/data.dart';
+import 'package:threddit_app/features/commenting/model/post.dart';
 
 class PostRepository {
   Future<void> upVote(Post post, String userID) async {
@@ -12,9 +10,9 @@ class PostRepository {
     } else {
       post.upvotes.add(userID);
     }
-   
   }
-Future<void> downVote(Post post, String userID) async {
+
+  Future<void> downVote(Post post, String userID) async {
     if (post.upvotes.contains(userID)) {
       post.upvotes.remove(userID);
     }
@@ -25,4 +23,3 @@ Future<void> downVote(Post post, String userID) async {
     }
   }
 }
-

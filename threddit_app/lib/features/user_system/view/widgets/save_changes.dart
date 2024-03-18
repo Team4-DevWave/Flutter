@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SaveChanges extends StatefulWidget {
+  const SaveChanges({super.key});
+
   @override
   State<SaveChanges> createState() => _SaveChangesState();
 }
@@ -8,8 +10,7 @@ class SaveChanges extends StatefulWidget {
 class _SaveChangesState extends State<SaveChanges> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -20,9 +21,9 @@ class _SaveChangesState extends State<SaveChanges> {
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  backgroundColor: const Color.fromARGB(255, 253, 253, 253),
-                  ),
+                shape: const StadiumBorder(),
+                backgroundColor: const Color.fromARGB(255, 253, 253, 253),
+              ),
               child: const Text("Cancel"),
             ),
           ),
@@ -31,7 +32,7 @@ class _SaveChangesState extends State<SaveChanges> {
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
-                  backgroundColor: Color.fromARGB(255, 0, 140, 255)),
+                  backgroundColor: const Color.fromARGB(255, 0, 140, 255)),
               child: const Text("Save"),
             ),
           ),

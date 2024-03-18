@@ -1,13 +1,14 @@
-import 'package:threddit_app/models/comment.dart';
-import 'package:threddit_app/models/community.dart';
-import 'package:threddit_app/models/post.dart';
+import 'package:threddit_app/features/commenting/model/comment.dart';
+import 'package:threddit_app/features/commenting/model/post.dart';
 
 final List<Post> posts = [
   Post(
     id: '1',
-    title: "I've calling my sister by her full given name when she deadnames my niece ",
+    title:
+        "I've calling my sister by her full given name when she deadnames my niece ",
     link: 'https://example.com',
-    description: "nwnedoiwnoqlksndwenfoiewfnoweinfonwkndkwnod neondoiewndfoewnjndneqwondoiewndoiwenfnwenoewnwncnwondoewnewocnownocwneoicwoencowencowencowneodskmcolnwdoenladnciwenkd  owndowneoi",
+    description:
+        "nwnedoiwnoqlksndwenfoiewfnoweinfonwkndkwnod neondoiewndfoewnjndneqwondoiewndoiwenfnwenoewnwncnwondoewnewocnownocwneoicwoencowencowencowneodskmcolnwdoenladnciwenkd  owndowneoi",
     communityName: 'Sample Community',
     communityProfilePic: 'sample_community_profile_pic_url',
     upvotes: ['user1', 'user2'],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/commenting/view_model/comment_provider.dart';
-import 'package:threddit_app/models/comment.dart';
+import 'package:threddit_app/features/commenting/model/comment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
@@ -15,23 +15,19 @@ class CommentItem extends ConsumerStatefulWidget {
 
 class _CommentItemState extends ConsumerState<CommentItem> {
   @override
-  
   Widget build(BuildContext context) {
+    void upVotePost(WidgetRef ref) async {
+      final upvoteFunction = ref.read(commentUpvoteProvider(widget.comment));
+      upvoteFunction(widget.uid);
+      setState(() {});
+    }
 
-  void upVotePost(WidgetRef ref) async {
-  final upvoteFunction = ref.read(commentUpvoteProvider(widget.comment));
-  upvoteFunction(widget.uid);
-  setState(() {
-    
-  });
-}
-void downVotePost(WidgetRef ref) async {
-  final downvoteFunction = ref.read(commentDownvoteProvider(widget.comment));
-  downvoteFunction(widget.uid);
-  setState(() {
-    
-  });
-}
+    void downVotePost(WidgetRef ref) async {
+      final downvoteFunction =
+          ref.read(commentDownvoteProvider(widget.comment));
+      downvoteFunction(widget.uid);
+      setState(() {});
+    }
 
     final now = DateTime.now();
     final difference = now.difference(widget.comment.createdAt);
@@ -44,15 +40,15 @@ void downVotePost(WidgetRef ref) async {
           color: AppColors.backgroundColor,
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 2.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   const Padding(
-                    padding:EdgeInsets.only(right: 10.0),
-                    child:  CircleAvatar(
+                    padding: EdgeInsets.only(right: 10.0),
+                    child: CircleAvatar(
                       radius: 18,
                     ),
                   ),
@@ -89,11 +85,39 @@ void downVotePost(WidgetRef ref) async {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(onPressed: (){}, icon: Icon(Icons.more_horiz_outlined)),
-                  IconButton(onPressed: (){}, icon: Icon(Icons.reply_outlined)),
-                  IconButton(onPressed: (){upVotePost(ref);}, icon:const Icon (Icons.arrow_upward_outlined, size: 30,),color: widget.comment.upvotes.contains(widget.uid) ? const Color.fromARGB(255, 217, 77, 67) : Colors.white,),
-                    Text('${widget.comment.upvotes.length-widget.comment.downvotes.length==0?"vote":widget.comment.upvotes.length-widget.comment.downvotes.length}',style: AppTextStyles.primaryTextStyle.copyWith(color: AppColors.whiteColor),),
-                    IconButton(onPressed: (){downVotePost(ref);}, icon:const Icon (Icons.arrow_downward_outlined, size: 30,),color: widget.comment.downvotes.contains(widget.uid) ? Color.fromARGB(255, 97, 137, 212) : Colors.white, ),
+                  IconButton(
+                      onPressed: () {}, icon: Icon(Icons.more_horiz_outlined)),
+                  IconButton(
+                      onPressed: () {}, icon: Icon(Icons.reply_outlined)),
+                  IconButton(
+                    onPressed: () {
+                      upVotePost(ref);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_upward_outlined,
+                      size: 30,
+                    ),
+                    color: widget.comment.upvotes.contains(widget.uid)
+                        ? const Color.fromARGB(255, 217, 77, 67)
+                        : Colors.white,
+                  ),
+                  Text(
+                    '${widget.comment.upvotes.length - widget.comment.downvotes.length == 0 ? "vote" : widget.comment.upvotes.length - widget.comment.downvotes.length}',
+                    style: AppTextStyles.primaryTextStyle
+                        .copyWith(color: AppColors.whiteColor),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      downVotePost(ref);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_downward_outlined,
+                      size: 30,
+                    ),
+                    color: widget.comment.downvotes.contains(widget.uid)
+                        ? Color.fromARGB(255, 97, 137, 212)
+                        : Colors.white,
+                  ),
                 ],
               )
             ],

@@ -148,11 +148,7 @@ class Post {
         awards.hashCode;
   }
 
-  void upVote(String userID) async
-  {
-    if(downvotes.contains(userID))
-    {
-      
-    }
+  void upVote(String userID) async {
+    if (downvotes.contains(userID)) {}
   }
 }

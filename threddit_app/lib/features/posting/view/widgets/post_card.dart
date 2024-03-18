@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_app/features/posting/view_model/post_provider.dart';
-import 'package:threddit_app/models/post.dart';
+import 'package:threddit_app/features/commenting/model/post.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
-
-
 class PostCard extends ConsumerStatefulWidget {
-  const PostCard({Key? key, required this.post, required this.uid, required this.onCommentPressed});
+  const PostCard(
+      {Key? key,
+      required this.post,
+      required this.uid,
+      required this.onCommentPressed});
   final Post post;
   final String uid;
   final VoidCallback onCommentPressed;
@@ -17,27 +19,21 @@ class PostCard extends ConsumerStatefulWidget {
 }
 
 class _PostCardState extends ConsumerState<PostCard> {
-  
-   
   @override
   Widget build(BuildContext context) {
+    void upVotePost(WidgetRef ref) async {
+      final upvoteFunction = ref.read(postUpvoteProvider(widget.post));
+      upvoteFunction(widget.uid);
+      setState(() {});
+    }
 
-  void upVotePost(WidgetRef ref) async {
-  final upvoteFunction = ref.read(postUpvoteProvider(widget.post));
-  upvoteFunction(widget.uid);
-  setState(() {
-    
-  });
-}
-void downVotePost(WidgetRef ref) async {
-  final downvoteFunction = ref.read(postDownvoteProvider(widget.post));
-  downvoteFunction(widget.uid);
-  setState(() {
-    
-  });
-}
-  
-     final isTypeImage = widget.post.type == 'image';
+    void downVotePost(WidgetRef ref) async {
+      final downvoteFunction = ref.read(postDownvoteProvider(widget.post));
+      downvoteFunction(widget.uid);
+      setState(() {});
+    }
+
+    final isTypeImage = widget.post.type == 'image';
     final isTypeText = widget.post.type == 'text';
     final isTypeLink = widget.post.type == 'link';
 
@@ -119,30 +115,58 @@ void downVotePost(WidgetRef ref) async {
                     color: const Color.fromARGB(196, 255, 255, 255),
                     fontSize: 15),
               ),
-              Row(
-                children: [
-                  IconButton(onPressed: (){upVotePost(ref);}, icon:const Icon (Icons.arrow_upward_outlined, size: 30,),color: widget.post.upvotes.contains(widget.uid) ? const Color.fromARGB(255, 217, 77, 67) : Colors.white,),
-                  
-                  Text('${widget.post.upvotes.length-widget.post.downvotes.length==0?"vote":widget.post.upvotes.length-widget.post.downvotes.length}',style: AppTextStyles.primaryTextStyle.copyWith(color: AppColors.whiteColor),),
-                  IconButton(onPressed: (){downVotePost(ref);}, icon:const Icon (Icons.arrow_downward_outlined, size: 30,),color: widget.post.downvotes.contains(widget.uid) ? Color.fromARGB(255, 97, 137, 212) : Colors.white, ),
-                  IconButton(onPressed: widget.onCommentPressed, icon: const Icon(Icons.comment)),
-                  Text('${widget.post.commentCount==0?"comment":widget.post.commentCount}',style: AppTextStyles.primaryTextStyle.copyWith(color: AppColors.whiteColor)),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        if(widget.uid==widget.post.uid)
-                        IconButton(onPressed: (){}, icon: Icon(Icons.delete)),
-                        if(widget.uid!=widget.post.uid)
-                        IconButton(onPressed: (){}, icon: const Icon(Icons.refresh))
-
-                      ],
-                    ),
-                  )
-               
-               ],
-              )
-          
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    upVotePost(ref);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_upward_outlined,
+                    size: 30,
+                  ),
+                  color: widget.post.upvotes.contains(widget.uid)
+                      ? const Color.fromARGB(255, 217, 77, 67)
+                      : Colors.white,
+                ),
+                Text(
+                  '${widget.post.upvotes.length - widget.post.downvotes.length == 0 ? "vote" : widget.post.upvotes.length - widget.post.downvotes.length}',
+                  style: AppTextStyles.primaryTextStyle
+                      .copyWith(color: AppColors.whiteColor),
+                ),
+                IconButton(
+                  onPressed: () {
+                    downVotePost(ref);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_downward_outlined,
+                    size: 30,
+                  ),
+                  color: widget.post.downvotes.contains(widget.uid)
+                      ? Color.fromARGB(255, 97, 137, 212)
+                      : Colors.white,
+                ),
+                IconButton(
+                    onPressed: widget.onCommentPressed,
+                    icon: const Icon(Icons.comment)),
+                Text(
+                    '${widget.post.commentCount == 0 ? "comment" : widget.post.commentCount}',
+                    style: AppTextStyles.primaryTextStyle
+                        .copyWith(color: AppColors.whiteColor)),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (widget.uid == widget.post.uid)
+                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                      if (widget.uid != widget.post.uid)
+                        IconButton(
+                            onPressed: () {}, icon: const Icon(Icons.refresh))
+                    ],
+                  ),
+                )
+              ],
+            )
           ],
         ),
       ),
