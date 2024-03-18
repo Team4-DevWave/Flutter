@@ -20,5 +20,8 @@ void main() async {
     WindowManager.instance.setMinimumSize(const Size(690, 500));
   }
 
-  runApp(App());
+
+  runApp(const ProviderScope(child: App()));
 }
+
+
