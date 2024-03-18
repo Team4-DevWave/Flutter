@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 //import 'package:image_picker/image_picker.dart';
-import 'package:threddit_app/features/home_page/home_page_provider.dart';
-import 'package:threddit_app/features/home_page/view/widgets/image_picker.dart';
+import 'package:threddit_app/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_app/features/home_page/view/widgets/next_button.dart';
 //import 'package:threddit_app/features/home_page/view/home_screen.dart';
 //import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -59,7 +58,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
     if (_imagesList != null) {
       content = SizedBox(
-        height: 150,
+        height: 250,
         width: double.maxFinite,
         child: ListView.builder(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -69,7 +68,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                 return Image.file(
                   File(_imagesList![index].path),
                   width: MediaQuery.of(context).size.width - 8,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                 );
             }),
       );
@@ -92,6 +91,9 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               child: TextField(
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 controller: _titleController,
                 style: const TextStyle(
                     fontSize: 24, color: AppColors.realWhiteColor),
@@ -123,7 +125,11 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: TextFormField(
+                  onTapOutside: (event) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                     keyboardType: TextInputType.text,
+                    maxLines: null,
                     controller: _bodytextController,
                     style: const TextStyle(
                         fontSize: 16, color: AppColors.realWhiteColor),
@@ -144,7 +150,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                         }),
               ),
             ),
-            Row(
+            Row(                
               children: [
                 IconButton(
                   onPressed: _pickMulti,

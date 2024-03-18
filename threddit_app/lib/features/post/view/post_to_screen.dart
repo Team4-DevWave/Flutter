@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 //import 'package:threddit_app/features/home_page/home_page_provider.dart';
 import 'package:threddit_app/theme/colors.dart';
+import 'package:threddit_app/theme/text_styles.dart';
 
 class PostToScreen extends ConsumerStatefulWidget {
   const PostToScreen({super.key});
@@ -43,25 +44,18 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            TextField(
-              controller: _communityText,
-              style: const TextStyle(color: Colors.white, fontSize: 18),
-              maxLines: 1,
-              decoration:  const InputDecoration(
-                  prefixIcon: Icon(Icons.search, size: 30),
-                  prefixIconConstraints: BoxConstraints.tightForFinite(height:18, ),
-                  border: InputBorder.none,
-                  fillColor:  Color.fromARGB(255, 11, 7, 7),
-                  labelText: 'Search for a community',
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  labelStyle: TextStyle(
-                    color: Color.fromARGB(255, 144, 145, 144),
-                  )),
-              onChanged: (String? value) => setState(
-                () {
-                  _communityText.text = value!;
-                },
-              ),
+            SearchBar(
+              hintText: "Search for a community",
+              constraints: const BoxConstraints(minHeight: 40, maxHeight: 200),
+              side: MaterialStatePropertyAll(BorderSide(style: BorderStyle.none, color: Colors.transparent)),
+              backgroundColor: const MaterialStatePropertyAll(
+                  Color.fromARGB(255, 30, 30, 30)),
+              leading: const Icon(Icons.search, color: AppColors.realWhiteColor,),
+              shadowColor: null,
+              textStyle: MaterialStatePropertyAll(AppTextStyles.primaryTextStyle),
+              onChanged: (text){
+                //update provider
+              },
             ),
             Container(
                 //child: get communities from database

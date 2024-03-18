@@ -6,7 +6,7 @@ import 'package:threddit_app/features/home_page/view/community_screen.dart';
 import 'package:threddit_app/features/home_page/view/home_screen.dart';
 import 'package:threddit_app/features/home_page/view/notifications_screen.dart';
 import 'package:threddit_app/theme/colors.dart';
-import 'package:threddit_app/features/home_page/home_page_provider.dart';
+import 'package:threddit_app/features/home_page/view_model/home_page_provider.dart';
 
 
 class MainScreenLayout extends ConsumerStatefulWidget {
@@ -82,6 +82,7 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
           ),
         ],
         currentIndex: selectedIndex,
+        
         onTap: onItemTapped,
       ),
     );

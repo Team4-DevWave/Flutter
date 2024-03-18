@@ -11,7 +11,8 @@ final redditTheme = ThemeData().copyWith(
     scaffoldBackgroundColor: AppColors.backgroundColor,
     appBarTheme: const AppBarTheme().copyWith(
         backgroundColor: AppColors.backgroundColor,
-        foregroundColor: Colors.white.withOpacity(0.5)));
+        foregroundColor: Colors.white.withOpacity(0.5)),
+        splashFactory: InkRipple.splashFactory);
 
 void main() async {
   if (Platform.isWindows) {
