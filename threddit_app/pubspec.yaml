@@ -49,6 +49,7 @@ dependencies:
   riverpod_annotation: ^2.3.4
   google_fonts: ^6.2.0
   window_manager: ^0.3.8
+  country_picker: ^2.0.25
 
   persistent_bottom_nav_bar: ^5.0.2
 
