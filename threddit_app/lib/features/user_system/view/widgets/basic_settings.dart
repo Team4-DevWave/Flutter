@@ -1,5 +1,3 @@
-
-
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/user_system/view/screens/change_password_screen.dart';
@@ -20,18 +18,16 @@ class _BasicSettingsState extends State<BasicSettings> {
   Country selectedCountry = Country.worldWide;
   void _selectBasicSetting(BuildContext context, String settingName) {
     if (settingName == "email") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => UpdateEmailScreen()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (ctx) => const UpdateEmailScreen()));
     } else if (settingName == "password") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => ChangePasswordScreen()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (ctx) => const ChangePasswordScreen()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -58,12 +54,11 @@ class _BasicSettingsState extends State<BasicSettings> {
         ListTile(
           leading: const Icon(Icons.location_pin),
           title: const Text("Country"),
-          subtitle: Text(
-              selectedCountry.displayName),
+          subtitle: Text(selectedCountry.displayName),
           titleTextStyle: AppTextStyles.primaryTextStyle,
           trailing: const Icon(Icons.navigate_next),
           onTap: () {
-            showCountryPicker(                
+            showCountryPicker(
                 context: context,
                 onSelect: (Country country) {
                   setState(() {

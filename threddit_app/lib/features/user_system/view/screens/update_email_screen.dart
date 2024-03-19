@@ -9,19 +9,17 @@ class UpdateEmailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          title: Text("Update email address"),
+          title: const Text("Update email address"),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.person,
                     color: AppColors.redditOrangeColor,
                   ),
@@ -37,17 +35,17 @@ class UpdateEmailScreen extends StatelessWidget {
                 ],
               ),
               TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                 labelText: "New email address",
               )),
-              PasswordForm("Reddit password"),
+              const PasswordForm("Reddit password"),
               Container(
                 child: TextButton(
-                    onPressed: () {}, child: Text("Forgot password?")),
+                    onPressed: () {}, child: const Text("Forgot password?")),
                 alignment: Alignment.topRight,
               ),
-              Spacer(),
-              SaveChanges(),
+              const Spacer(),
+              const SaveChanges(),
             ],
           ),
         ));

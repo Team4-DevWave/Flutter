@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/app/route.dart';
-import 'package:threddit_app/features/user_system/view/screens/signup_screen.dart';
 import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
 import 'package:threddit_app/features/user_system/view/widgets/continue_with_google.dart';
 import 'package:threddit_app/features/user_system/view/widgets/text_form.dart';
@@ -106,7 +105,11 @@ class LogInScreen extends StatelessWidget {
                     const AppAgreement(),
                     SizedBox(height: 24.h),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        //must changed
+                        Navigator.popAndPushNamed(
+                            context, RouteClass.initRoute);
+                      },
                       style: AppButtons.registerButtons,
                       child: Text('Continue',
                           style: AppTextStyles.primaryTextStyle.copyWith(

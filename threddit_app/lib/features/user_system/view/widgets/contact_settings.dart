@@ -11,24 +11,24 @@ class ContactSettings extends StatefulWidget {
 class _ContactSettingState extends State<ContactSettings> {
   void _enterNotifcationSettings(BuildContext context) {
     Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => NotificationsSettingsScreen()));
+        context,
+        MaterialPageRoute(
+            builder: (ctx) => const NotificationsSettingsScreen()));
   }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Column(crossAxisAlignment: CrossAxisAlignment.start ,children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const SettingsTitle(title: "CONTACT SETTINGS"),
       ListTile(
-          leading: const Icon(Icons.notifications),
-          title: const Text("Manage notifications"),
-          titleTextStyle: AppTextStyles.primaryTextStyle,
-          trailing: const Icon(Icons.navigate_next),
-          onTap: (){
-            _enterNotifcationSettings(context);
-
-          },
-          
+        leading: const Icon(Icons.notifications),
+        title: const Text("Manage notifications"),
+        titleTextStyle: AppTextStyles.primaryTextStyle,
+        trailing: const Icon(Icons.navigate_next),
+        onTap: () {
+          _enterNotifcationSettings(context);
+        },
       ),
-     ]);
+    ]);
   }
 }

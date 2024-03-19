@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-//import 'package:threddit_app/features/home_page/home_page_provider.dart';
 import 'package:threddit_app/theme/colors.dart';
 
 class PostToScreen extends ConsumerStatefulWidget {
@@ -47,8 +46,9 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
               controller: _communityText,
               style: const TextStyle(color: Colors.white, fontSize: 18),
               maxLines: 1,
-              decoration:  InputDecoration(
-                  prefixIcon: _communityText.text.isEmpty?  Icon(Icons.search) :  null,
+              decoration: InputDecoration(
+                  prefixIcon:
+                      _communityText.text.isEmpty ? Icon(Icons.search) : null,
                   border: InputBorder.none,
                   fillColor: const Color.fromARGB(255, 11, 7, 7),
                   labelText: 'Search for a community',

@@ -44,37 +44,42 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDM_39s59IOINF7zrI1TnVaNVPqeEwThcw',
-    appId: '1:1050902103954:web:814abddab4f0d73a80e34b',
-    messagingSenderId: '1050902103954',
-    projectId: 'threddit-app',
-    authDomain: 'threddit-app.firebaseapp.com',
-    storageBucket: 'threddit-app.appspot.com',
+
+    apiKey: 'AIzaSyC44i_G-LlgGCuCm3hnkamhgDgLcQ59Uu4',
+    appId: '1:492546440281:web:7c6a32e4bc6307877dc548',
+    messagingSenderId: '492546440281',
+    projectId: 'threadit-c20a3',
+    authDomain: 'threadit-c20a3.firebaseapp.com',
+    storageBucket: 'threadit-c20a3.appspot.com',
+    measurementId: 'G-MFNWEWX467',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCjG0k8MbVS_BJj2-0n8MXMgdits9pzqY0',
-    appId: '1:1050902103954:android:768d7e1ce7eb186380e34b',
-    messagingSenderId: '1050902103954',
-    projectId: 'threddit-app',
-    storageBucket: 'threddit-app.appspot.com',
+    apiKey: 'AIzaSyAENbXgE0gfxXWXqoaRBoIqJdMjO6WkD1M',
+    appId: '1:492546440281:android:ad10abdb97bc59b17dc548',
+    messagingSenderId: '492546440281',
+    projectId: 'threadit-c20a3',
+    storageBucket: 'threadit-c20a3.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBWPqAXlaFWIOxPYEwndQQl5b4InJsKYTo',
-    appId: '1:1050902103954:ios:9fce3bbf561f44c180e34b',
-    messagingSenderId: '1050902103954',
-    projectId: 'threddit-app',
-    storageBucket: 'threddit-app.appspot.com',
+    apiKey: 'AIzaSyCfJMyQV4JF6bN4Ic8kjc8Ikyj83D_LiCA',
+    appId: '1:492546440281:ios:c5a4ccdb9721ba9b7dc548',
+    messagingSenderId: '492546440281',
+    projectId: 'threadit-c20a3',
+    storageBucket: 'threadit-c20a3.appspot.com',
+
     iosBundleId: 'com.example.thredditApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBWPqAXlaFWIOxPYEwndQQl5b4InJsKYTo',
-    appId: '1:1050902103954:ios:9232d721c52206d380e34b',
-    messagingSenderId: '1050902103954',
-    projectId: 'threddit-app',
-    storageBucket: 'threddit-app.appspot.com',
+
+    apiKey: 'AIzaSyCfJMyQV4JF6bN4Ic8kjc8Ikyj83D_LiCA',
+    appId: '1:492546440281:ios:de642069bcbb938c7dc548',
+    messagingSenderId: '492546440281',
+    projectId: 'threadit-c20a3',
+    storageBucket: 'threadit-c20a3.appspot.com',
+
     iosBundleId: 'com.example.thredditApp.RunnerTests',
   );
 }

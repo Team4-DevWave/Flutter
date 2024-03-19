@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/app/route.dart';
-import 'package:threddit_app/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
 import 'package:threddit_app/features/user_system/view/widgets/register_buttons.dart';
 import 'package:threddit_app/theme/colors.dart';

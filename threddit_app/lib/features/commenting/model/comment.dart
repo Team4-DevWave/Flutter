@@ -1,6 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
-final uuid= Uuid();
+
+const uuid = Uuid();
+
 class Comment {
   final String id;
   final String text;
@@ -10,7 +11,7 @@ class Comment {
   final String? profilePic;
   final List<String> upvotes;
   final List<String> downvotes;
-  
+
   Comment({
     required this.text,
     required this.createdAt,
@@ -19,7 +20,7 @@ class Comment {
     this.profilePic,
     required this.upvotes,
     required this.downvotes,
-  }):id=uuid.v4();
+  }) : id = uuid.v4();
 
   Comment copyWith({
     String? id,
@@ -28,7 +29,7 @@ class Comment {
     String? postId,
     String? username,
     String? profilePic,
-     List<String>? upvotes,
+    List<String>? upvotes,
     List<String>? downvotes,
   }) {
     return Comment(
@@ -83,12 +84,17 @@ class Comment {
         other.postId == postId &&
         other.username == username &&
         other.profilePic == profilePic;
-        
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ text.hashCode ^ createdAt.hashCode ^ upvotes.hashCode ^
-        downvotes.hashCode ^postId.hashCode ^ username.hashCode ^ profilePic.hashCode;
+    return id.hashCode ^
+        text.hashCode ^
+        createdAt.hashCode ^
+        upvotes.hashCode ^
+        downvotes.hashCode ^
+        postId.hashCode ^
+        username.hashCode ^
+        profilePic.hashCode;
   }
 }
