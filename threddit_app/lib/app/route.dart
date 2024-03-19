@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_app/features/commenting/model/post.dart';
 import 'package:threddit_app/features/home_page/view/screens/add_post_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/chat_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/community_screen.dart';
@@ -6,6 +7,7 @@ import 'package:threddit_app/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_app/features/home_page/view/screens/notifications_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/post_to_screen.dart';
+import 'package:threddit_app/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/account_settings_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/blocked_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/change_password_screen.dart';
@@ -80,7 +82,11 @@ class RouteClass {
       case updateEmailScreen:
         return MaterialPageRoute(builder: (_) => const UpdateEmailScreen());
       case postScreen:
-      //return MaterialPageRoute(builder: (_) => const PostScreen());
+        var data = settings.arguments as Post;
+        return MaterialPageRoute(
+            builder: (_) => PostScreen(
+                  currentPost: data,
+                ));
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }
