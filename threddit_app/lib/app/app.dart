@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/app/route.dart';
+import 'package:threddit_app/features/community/view/community_screen.dart';
+import 'package:threddit_app/features/posting/data/data.dart';
 import 'package:threddit_app/theme/theme.dart';
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:threddit_app/features/notifications/view_model/methods.dart';
@@ -126,6 +127,7 @@ class _AppState extends State<App> {
             onGenerateRoute: RouteClass.generateRoute,
             debugShowCheckedModeBanner: false,
             theme: redditTheme,
+            home: CommunityScreen(name: 'Flutter Community',community:communities[0]),
           );
         });
   }

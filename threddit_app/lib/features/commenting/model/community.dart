@@ -3,15 +3,17 @@ import 'package:flutter/foundation.dart';
 class Community {
   final String id;
   final String name;
-  final String? avatar;
+  final String avatar;
   final List<String> members;
   final List<String> mods;
+  String? description;
   Community({
     required this.id,
     required this.name,
-    this.avatar,
+    required this.avatar,
     required this.members,
     required this.mods,
+    this.description,
   });
 
   Community copyWith({
@@ -21,6 +23,7 @@ class Community {
     String? avatar,
     List<String>? members,
     List<String>? mods,
+    String? description,
   }) {
     return Community(
       id: id ?? this.id,
@@ -28,6 +31,7 @@ class Community {
       avatar: avatar ?? this.avatar,
       members: members ?? this.members,
       mods: mods ?? this.mods,
+      description: description ?? this.description,
     );
   }
 
@@ -38,6 +42,7 @@ class Community {
       'avatar': avatar,
       'members': members,
       'mods': mods,
+      'description':description,
     };
   }
 
@@ -48,12 +53,13 @@ class Community {
       avatar: map['avatar'] ?? '',
       members: List<String>.from(map['members']),
       mods: List<String>.from(map['mods']),
+      description: map['description'] ?? '',
     );
   }
 
   @override
   String toString() {
-    return 'Community(id: $id, name: $name,  avatar: $avatar, members: $members, mods: $mods)';
+    return 'Community(id: $id, name: $name,  avatar: $avatar, members: $members, mods: $mods, description: $description)';
   }
 
   @override
@@ -70,6 +76,6 @@ class Community {
 
   @override
   int get hashCode {
-    return id.hashCode ^ name.hashCode ^  avatar.hashCode ^ members.hashCode ^ mods.hashCode;
+    return id.hashCode ^ name.hashCode ^  avatar.hashCode ^ members.hashCode ^ mods.hashCode ^ description.hashCode;
   }
 }
