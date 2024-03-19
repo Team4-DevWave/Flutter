@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
 import 'package:threddit_app/features/user_system/view/widgets/continue_with_google.dart';
+import 'package:threddit_app/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_app/features/user_system/view/widgets/text_form.dart';
 import 'package:threddit_app/features/user_system/view_model/navigate_signup.dart';
 import 'package:threddit_app/theme/button_styles.dart';
 import 'package:threddit_app/theme/colors.dart';
-import 'package:threddit_app/theme/photos.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
 class LogInScreen extends ConsumerWidget {
@@ -16,21 +16,9 @@ class LogInScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Photos.appBarLogo,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              ref.read(navigateSignup)(context);
-            },
-            child: Text(
-              'Sign up',
-              style: AppTextStyles.primaryTextStyle,
-            ),
-          ),
-        ],
+      appBar: RegisterAppBar(
+        action: () => ref.read(navigateSignup)(context),
+        title: 'Sign up',
       ),
       body: SingleChildScrollView(
         child: Padding(

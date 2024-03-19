@@ -14,7 +14,7 @@ class AppTextStyles {
   );
 
   static TextStyle primaryTextStyle = GoogleFonts.roboto(
-    color: const Color.fromARGB(200, 255, 255, 255),
+    color: AppColors.whiteColor,
   );
 
   static TextStyle primaryButtonHideTextStyle = GoogleFonts.roboto(

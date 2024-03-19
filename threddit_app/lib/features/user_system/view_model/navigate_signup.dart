@@ -5,7 +5,6 @@ import 'package:threddit_app/features/user_system/view/screens/signup_screen.dar
 final navigateSignup = Provider((ref) => (BuildContext context) {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 150),
           pageBuilder: (context, animation, secondaryAnimation) =>
               const SignUpScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {

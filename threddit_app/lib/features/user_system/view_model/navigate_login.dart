@@ -5,7 +5,6 @@ import 'package:threddit_app/features/user_system/view/screens/login_screen.dart
 final navgationProvider = Provider((ref) => (BuildContext context) {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 150),
           pageBuilder: (context, animation, secondaryAnimation) =>
               const LogInScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
