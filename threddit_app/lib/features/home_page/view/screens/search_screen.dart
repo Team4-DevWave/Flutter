@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_app/features/home_page/view/widgets/search_bar_widget.dart';
 import 'package:threddit_app/theme/colors.dart';
-import 'package:threddit_app/theme/text_styles.dart';
 
 class SearchScreen extends ConsumerStatefulWidget{
   const SearchScreen({super.key});
