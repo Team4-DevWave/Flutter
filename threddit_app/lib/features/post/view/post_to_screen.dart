@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_app/features/home_page/view/widgets/communities_list.dart';
-import 'package:threddit_app/features/home_page/view/widgets/left_drawer_tiles.dart';
-//import 'package:threddit_app/features/home_page/home_page_provider.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
