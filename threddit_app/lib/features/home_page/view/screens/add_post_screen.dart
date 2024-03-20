@@ -163,19 +163,19 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         color: AppColors.backgroundColor,
         height: 50,
         child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: _pickMulti,
-                        icon: const Icon(Icons.image),
-                        color: AppColors.realWhiteColor,
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.link),
-                        color: AppColors.realWhiteColor,
-                      ),
-                    ],
-                  ),
+          children: [
+            IconButton(
+              onPressed: _pickMulti,
+              icon: const Icon(Icons.image),
+              color: AppColors.realWhiteColor,
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.link),
+              color: AppColors.realWhiteColor,
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTextStyles {
   static TextStyle welcomeScreen = TextStyle(
     fontFamily: 'RedditSans',
-    fontSize: 55.spMin,
+    fontSize: 46.spMin,
     color: const Color.fromARGB(190, 255, 255, 255),
     fontWeight: FontWeight.w700,
     letterSpacing: -0.5.w,
@@ -14,6 +14,11 @@ class AppTextStyles {
 
   static TextStyle primaryTextStyle = GoogleFonts.roboto(
     color: const Color.fromARGB(200, 255, 255, 255),
+  );
+
+  static TextStyle buttonTextStyle = GoogleFonts.roboto(
+    color: const Color.fromARGB(200, 255, 255, 255),
+    fontSize: 17.spMin,
   );
 
   static TextStyle secondaryTextStyle = GoogleFonts.notoSans(

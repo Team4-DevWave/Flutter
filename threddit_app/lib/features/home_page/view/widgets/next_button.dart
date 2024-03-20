@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 //import 'package:threddit_app/features/home_page/home_page_provider.dart';
 import 'package:threddit_app/features/post/view/post_to_screen.dart';
+import 'package:threddit_app/features/home_page/view/screens/post_to_screen.dart';
 import 'package:threddit_app/theme/colors.dart';
 
 class NextButton extends StatelessWidget {
@@ -23,11 +24,11 @@ class NextButton extends StatelessWidget {
       if (titleController.text.isNotEmpty) {
         Navigator.push(
             context, MaterialPageRoute(builder: (ctx) => const PostToScreen()));
-      }
-      else{
+      } else {
         null;
       }
     }
+
     return ElevatedButton(
       onPressed: onNext,
       //the button is greyed out at first until the user enters a title
