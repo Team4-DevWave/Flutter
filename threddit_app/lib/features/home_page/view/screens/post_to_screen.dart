@@ -46,8 +46,9 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
               controller: _communityText,
               style: const TextStyle(color: Colors.white, fontSize: 18),
               decoration: InputDecoration(
-                  prefixIcon:
-                      _communityText.text.isEmpty ? Icon(Icons.search) : null,
+                  prefixIcon: _communityText.text.isEmpty
+                      ? const Icon(Icons.search)
+                      : null,
                   border: InputBorder.none,
                   fillColor: const Color.fromARGB(255, 11, 7, 7),
                   labelText: 'Search for a community',
