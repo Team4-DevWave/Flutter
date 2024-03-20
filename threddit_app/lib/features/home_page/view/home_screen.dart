@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/features/home_page/model/left_drawer_data.dart';
-import 'package:threddit_app/features/home_page/model/user_data.dart';
 import 'package:threddit_app/features/home_page/view/search_screen.dart';
 import 'package:threddit_app/features/home_page/view/user_profile_screen.dart';
 import 'package:threddit_app/features/home_page/view/widgets/left_drawer_tiles.dart';
 import 'package:threddit_app/features/home_page/view/widgets/right_drawer.dart';
-//import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/photos.dart';
 import 'package:threddit_app/theme/text_styles.dart';
@@ -64,8 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
           width: MediaQuery.of(context).size.width,
           initialSelection: tabs[0],
           onSelected: (String? value) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('Changed to tab $value')));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Changed to tab $value'),
+              duration: Durations.short1,
+            ));
           },
         ),
       ),
@@ -86,8 +85,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
-              const LeftDrawerTiles(title: "Communities",tileType:  'community'),
-              const LeftDrawerTiles(title: "Following",tileType:  'follow'),
+              const LeftDrawerTiles(
+                  title: "Communities", tileType: 'community'),
+              const LeftDrawerTiles(title: "Following", tileType: 'follow'),
             ],
           ),
         ),

@@ -1,17 +1,9 @@
-//import 'dart:io';
-
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-//import 'package:image_picker/image_picker.dart';
 import 'package:threddit_app/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_app/features/home_page/view/widgets/next_button.dart';
-//import 'package:threddit_app/features/home_page/view/home_screen.dart';
-//import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
 
 class AddPostScreen extends ConsumerStatefulWidget {
@@ -126,37 +118,42 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                   padding: const EdgeInsets.all(8),
                   child: content,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 5),
-                  child: SizedBox(
-                    height: 20,
-                    child: TextFormField(
-                        onTapOutside: (event) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        keyboardType: TextInputType.text,
-                        maxLines: null,
-                        expands: true,
-                        controller: _bodytextController,
-                        style: const TextStyle(
-                            fontSize: 16, color: AppColors.realWhiteColor),
-                        cursorColor: AppColors.redditOrangeColor,
-                        cursorWidth: 1.5,
-                        decoration: const InputDecoration(
-                            labelText: 'body text (optional)',
-                            focusColor: null,
-                            floatingLabelBehavior:
-                                FloatingLabelBehavior.never,
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            labelStyle: TextStyle(
-                                color: AppColors.whiteColor, fontSize: 16)),
-                        onChanged: (value) => {
-                              setState(() {
-                                postBody = value;
-                              })
-                            }),
+                Container(
+                  height: MediaQuery.of(context).size.height - 300,
+                  alignment: Alignment.topCenter,
+                  child: Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      child: TextFormField(
+                          onTapOutside: (event) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
+                          keyboardType: TextInputType.text,
+                          maxLines: null,
+                          expands: true,
+                          controller: _bodytextController,
+                          style: const TextStyle(
+                              fontSize: 16, color: AppColors.realWhiteColor),
+                          cursorColor: AppColors.redditOrangeColor,
+                          cursorWidth: 1.5,
+                          decoration: const InputDecoration(
+                              labelText: 'body text (optional)',
+                              floatingLabelAlignment:
+                                  FloatingLabelAlignment.start,
+                              focusColor: null,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              labelStyle: TextStyle(
+                                  color: AppColors.whiteColor, fontSize: 16)),
+                          onChanged: (value) => {
+                                setState(() {
+                                  postBody = value;
+                                })
+                              }),
+                    ),
                   ),
                 ),
               ]);

@@ -1,33 +1,34 @@
 // import 'package:flutter/material.dart';
-// import 'dart:async';
 // import 'dart:io';
-
-// //import 'package:flutter/foundation.dart';
 // import 'package:image_picker/image_picker.dart';
-// //import 'package:mime/mime.dart';
-// import 'package:threddit_app/theme/colors.dart';
 
-// class PickImage extends StatefulWidget {
-//   const PickImage({super.key});
-//   @override
-//   State<PickImage> createState() => _PickImageState();
-// }
-
-// class _PickImageState extends State<PickImage> {
-
-  
-
-//   Future<void> _pickImage() async {
-//     final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-//     if(pickedImage == null) return;
-//     setState(() {
-//       image = File(pickedImage.path);
-//     });
-//   }
-
+// class PickImage extends StatelessWidget {
+//   PickImage({super.key, required this.imagesList});
+//   List<XFile>?imagesList;
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return 
+//     Widget content = SizedBox(
+//       child:  const Text("no image selected"),
+//     );
+//     if(imagesList!.isNotEmpty){
+//     content = SizedBox(
+//       height: 250,
+//       width: double.maxFinite,
+//       child: ListView.builder(
+//           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+//           scrollDirection: Axis.horizontal,
+//           itemCount: imagesList!.length,
+//           itemBuilder: (context, index) {
+//             return Image.file(
+//               File(imagesList![index].path),
+//               width: MediaQuery.of(context).size.width - 8,
+//               fit: BoxFit.contain,
+//             );
+//           }),
+//     );
+//     }
+
+//     return content;
 //   }
 // }

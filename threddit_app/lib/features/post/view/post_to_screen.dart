@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_app/features/home_page/view/widgets/communities_list.dart';
+import 'package:threddit_app/features/home_page/view/widgets/left_drawer_tiles.dart';
 //import 'package:threddit_app/features/home_page/home_page_provider.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
@@ -47,19 +49,22 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
             SearchBar(
               hintText: "Search for a community",
               constraints: const BoxConstraints(minHeight: 40, maxHeight: 200),
-              side: MaterialStatePropertyAll(BorderSide(style: BorderStyle.none, color: Colors.transparent)),
+              side: const MaterialStatePropertyAll(BorderSide(
+                  style: BorderStyle.none, color: Colors.transparent)),
               backgroundColor: const MaterialStatePropertyAll(
                   Color.fromARGB(255, 30, 30, 30)),
-              leading: const Icon(Icons.search, color: AppColors.realWhiteColor,),
+              leading: const Icon(
+                Icons.search,
+                color: AppColors.realWhiteColor,
+              ),
               shadowColor: null,
-              textStyle: MaterialStatePropertyAll(AppTextStyles.primaryTextStyle),
-              onChanged: (text){
+              textStyle:
+                  MaterialStatePropertyAll(AppTextStyles.primaryTextStyle),
+              onChanged: (text) {
                 //update provider
               },
             ),
-            Container(
-                //child: get communities from database
-                )
+            const CommunityList(),
           ],
         ),
       ),
