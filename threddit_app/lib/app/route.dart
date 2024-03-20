@@ -23,7 +23,7 @@ class RouteClass {
   static const String loginScreen = "/login";
   static const String signUpScreen = "/signup";
   static const String registerScreen = "/register";
-  static const String homeScreen = "/home";
+  static const String mainLayoutScreen = "/main";
   static const String mainScreen = "/main";
   static const String appPostScreen = "/app_post_screen";
   static const String chatScreen = "/chat";
@@ -81,6 +81,8 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const ChangePasswordScreen());
       case updateEmailScreen:
         return MaterialPageRoute(builder: (_) => const UpdateEmailScreen());
+      case mainLayoutScreen:
+        return MaterialPageRoute(builder: (_) => const MainScreenLayout());
       case postScreen:
         var data = settings.arguments as Post;
         return MaterialPageRoute(

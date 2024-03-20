@@ -108,7 +108,7 @@ class LogInScreen extends StatelessWidget {
                       onPressed: () {
                         //must changed
                         Navigator.popAndPushNamed(
-                            context, RouteClass.initRoute);
+                            context, RouteClass.mainScreen);
                       },
                       style: AppButtons.registerButtons,
                       child: Text('Continue',

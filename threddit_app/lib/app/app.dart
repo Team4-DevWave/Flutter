@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/app/route.dart';
-import 'package:threddit_app/features/community/view/community_screen.dart';
-import 'package:threddit_app/features/posting/data/data.dart';
+
 import 'package:threddit_app/theme/theme.dart';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,7 +44,7 @@ class _AppState extends State<App> {
       try {
         if (notificationResponse.payload != null &&
             notificationResponse.payload!.isNotEmpty) {}
-        // ignore: empty_catches
+        // ignore: empty_catches, avoid_catches_without_on_clauses
       } catch (e) {}
     });
 
@@ -56,11 +55,13 @@ class _AppState extends State<App> {
           contentTitle: message.notification!.title.toString(),
           htmlFormatContentTitle: true);
       AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails('Ahmed', 'channelName',
-              importance: Importance.high,
-              styleInformation: bigTextStyleInformation,
-              priority: Priority.high,
-              playSound: true);
+          AndroidNotificationDetails(
+        'Ahmed',
+        'channelName',
+        importance: Importance.high,
+        styleInformation: bigTextStyleInformation,
+        priority: Priority.high,
+      );
       NotificationDetails platformChannelSpecifics =
           NotificationDetails(android: androidPlatformChannelSpecifics);
       await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
@@ -73,7 +74,6 @@ class _AppState extends State<App> {
     await FirebaseMessaging.instance.getToken().then((value) {
       setState(() {
         mtoken = value;
-        print("My token is $mtoken");
       });
       saveToken(value!);
     });
@@ -91,6 +91,7 @@ class _AppState extends State<App> {
           headers: <String, String>{
             'content-type': 'application/json',
             'Authorization':
+                // ignore: lines_longer_than_80_chars
                 'key=AAAAcq4OPFk:APA91bH5-K3x3Z9iCA1JAbGiJ6GMcYUiKEZAwT4Bz26W7bIJIHHNqMs3QsARuZDjOnlchh02Urm8EpYjygA-89qAzElIWzhhL5Y3cLI7HqSdEpP3vSpzbLWT0oQoJKQKdlMr6O1S3xD1'
           },
           body: jsonEncode(<String, dynamic>{
@@ -127,7 +128,7 @@ class _AppState extends State<App> {
             onGenerateRoute: RouteClass.generateRoute,
             debugShowCheckedModeBanner: false,
             theme: redditTheme,
-            home: CommunityScreen(name: 'Flutter Community',community:communities[0]),
+            //home: CommunityScreen(name: 'Flutter Community',community:communities[0]),
           );
         });
   }
