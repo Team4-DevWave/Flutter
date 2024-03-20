@@ -47,7 +47,9 @@ class UpdateEmailScreen extends StatelessWidget {
                 alignment: Alignment.topRight,
               ),
               Spacer(),
-              SaveChanges(),
+              SaveChanges(saveChanges: (){
+
+              },),
             ],
           ),
         ));

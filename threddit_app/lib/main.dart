@@ -59,11 +59,11 @@ class App extends StatelessWidget {
          minTextAdapt: true,
         splitScreenMode: true,
          builder: (context, child) {
-           return MaterialApp(
+           return ProviderScope(child: MaterialApp(
              debugShowCheckedModeBanner: false,
              theme: redditTheme,
              home: AccountSettingsScreen(),
-           );
+           ),);
          });
    }
  }
