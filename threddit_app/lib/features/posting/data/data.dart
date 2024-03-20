@@ -1,15 +1,15 @@
 import 'package:threddit_app/features/commenting/model/comment.dart';
+import 'package:threddit_app/features/commenting/model/community.dart';
 import 'package:threddit_app/features/commenting/model/post.dart';
-
+import 'package:threddit_app/features/commenting/model/community.dart';
 final List<Post> posts = [
   Post(
     id: '1',
     title:
         "I've calling my sister by her full given name when she deadnames my niece ",
     link: 'https://example.com',
-    description:
-        "nwnedoiwnoqlksndwenfoiewfnoweinfonwkndkwnod neondoiewndfoewnjndneqwondoiewndoiwenfnwenoewnwncnwondoewnewocnownocwneoicwoencowencowencowneodskmcolnwdoenladnciwenkd  owndowneoi",
-    communityName: 'Sample Community',
+    description: "nwnedoiwnoqlksndwenfoiewfnoweinfonwkndkwnod neondoiewndfoewnjndneqwondoiewndoiwenfnwenoewnwncnwondoewnewocnownocwneoicwoencowencowencowneodskmcolnwdoenladnciwenkd  owndowneoi",
+    communityName: 'Flutter Community',
     communityProfilePic: 'sample_community_profile_pic_url',
     upvotes: ['user1', 'user2'],
     downvotes: ['user3', 'user4'],
@@ -25,7 +25,7 @@ final List<Post> posts = [
     title: 'Sample Post 2',
     link: 'https://example.com',
     description: 'This is another sample post description.',
-    communityName: 'Another Community',
+    communityName: 'Flutter Community',
     communityProfilePic: 'another_community_profile_pic_url',
     upvotes: ['user1', 'user3'],
     downvotes: ['user2'],
@@ -68,3 +68,31 @@ final List<Comment> comments = [
   ),
   // Add more dummy comments as needed
 ];
+
+final List<Community> communities= [
+    Community(
+      id: '1',
+      name: 'Flutter Community',
+      avatar: 'https://static-00.iconduck.com/assets.00/flutter-icon-2048x2048-ufx4idi8.png',
+      members: ['user1', 'user2', 'user3'],
+      mods: ['mod1', 'mod2'],
+      description: 'This is a community for Flutter enthusiasts.',
+    ),
+    Community(
+      id: '2',
+      name: 'Android Community',
+      avatar: 'android_avatar.png',
+      members: ['user4', 'user5'],
+      mods: ['mod3'],
+      description: 'This community is for Android developers.',
+    ),
+    Community(
+      id: '3',
+      name: 'iOS Community',
+      avatar: 'ios_avatar.png',
+      members: ['user6', 'user7', 'user8'],
+      mods: ['mod4', 'mod5'],
+      description: 'A community dedicated to iOS app development.',
+    ),
+  ];
+
