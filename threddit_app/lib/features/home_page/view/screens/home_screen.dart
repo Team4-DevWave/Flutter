@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/features/home_page/view/search_screen.dart';
-import 'package:threddit_app/features/home_page/view/user_profile_screen.dart';
+import 'package:threddit_app/app/route.dart';
+import 'package:threddit_app/features/commenting/model/post.dart';
 import 'package:threddit_app/features/home_page/view/widgets/left_drawer_tiles.dart';
 import 'package:threddit_app/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_app/theme/colors.dart';
@@ -29,14 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
+        //automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SearchScreen()));
+              Navigator.pushNamed(context, RouteClass.searchScreen);
             },
             icon: const Icon(Icons.search),
           ),
@@ -97,23 +95,20 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 450,
+              height: 150.h,
               child: DrawerHeader(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const UserProfile();
-                        }));
+                        Navigator.pushNamed(
+                            context, RouteClass.userProfileScreen);
                       },
                       child: Image.asset(
                         Photos.snoLogo,
-                        width: 100.w,
-                        height: 100.h,
+                        width: 50.w,
+                        height: 50.h,
                       ),
                     ),
                     Text(
@@ -131,9 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 title: "My profile",
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return const UserProfile();
-                  }));
+                  Navigator.pushNamed(context, RouteClass.userProfileScreen);
                 }),
             RightDrawerButtons(
                 icon: const Icon(
@@ -141,7 +134,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: AppColors.whiteColor,
                 ),
                 title: "Create a community",
-                onTap: () {}),
+                onTap: () {
+                  Navigator.pushNamed(
+                      context, RouteClass.createCommunityScreen);
+                }),
             RightDrawerButtons(
                 icon: const Icon(
                   Icons.bookmarks_outlined,
@@ -156,16 +152,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 title: "History",
                 onTap: () {}),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.17),
             RightDrawerButtons(
                 icon: const Icon(
                   Icons.settings_outlined,
                   color: AppColors.whiteColor,
                 ),
                 title: "Settings",
-                onTap: () {}),
+                onTap: () {
+                  Navigator.pushNamed(context, RouteClass.accountSettingScreen);
+                }),
           ],
         ),
+      ),
+      body: Column(
+        children: [
+          InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, RouteClass.postScreen,
+                    arguments: new Post(
+                        id: "1",
+                        title: "title",
+                        upvotes: [],
+                        downvotes: [],
+                        commentCount: 5,
+                        username: "username",
+                        uid: "1",
+                        type: "type",
+                        createdAt: DateTime.now(),
+                        awards: []));
+              },
+              child: const Text(
+                "Simple Post",
+                style: TextStyle(color: AppColors.whiteColor),
+              ))
+        ],
       ),
     );
   }

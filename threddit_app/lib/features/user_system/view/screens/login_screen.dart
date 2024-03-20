@@ -16,6 +16,7 @@ class LogInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Center(
           child: Image.asset(
             Photos.snoLogo,

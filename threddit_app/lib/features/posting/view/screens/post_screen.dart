@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_app/app/route.dart';
 import 'package:threddit_app/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_app/features/commenting/model/comment.dart';
 import 'package:threddit_app/features/commenting/view/widgets/add_comment.dart';
@@ -39,75 +38,75 @@ class _PostScreenState extends ConsumerState<PostScreen> {
     List<Comment> postComments = comments
         .where((comment) => comment.postId == widget.currentPost.id)
         .toList();
-    return MaterialApp(
-      home: SafeArea(
-        child: Scaffold(
-          backgroundColor: const Color.fromARGB(199, 10, 10, 10),
-          appBar: AppBar(
-            iconTheme: const IconThemeData(color: Colors.white),
-            backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
-            leading: IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.arrow_back),
-            ),
-            actions: [
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search),
-                  ),
-                  IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
-                  IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.more_horiz)),
-                  Builder(
-                    // Use Builder to obtain a Scaffold's context
-                    builder: (context) => IconButton(
-                      icon: const Icon(Icons.face_2_rounded),
-                      onPressed: () => Scaffold.of(context).openEndDrawer(),
-                    ),
-                  ),
-                  const SizedBox(width: 5)
-                ],
-              ),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: const Color.fromARGB(199, 10, 10, 10),
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back),
           ),
-          endDrawer: Drawer(
-            backgroundColor: AppColors.backgroundColor,
-            width: 330,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                //TODO: add drawer items
+          actions: [
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.search),
+                ),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
+                IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.more_horiz)),
+                Builder(
+                  // Use Builder to obtain a Scaffold's context
+                  builder: (context) => IconButton(
+                    icon: const Icon(Icons.face_2_rounded),
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  ),
+                ),
+                const SizedBox(width: 5)
               ],
             ),
-          ),
-          body: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  children: [
-                    PostCard(
-                      post: widget.currentPost,
-                      uid: 'user1',
-                      onCommentPressed: _openAddCommentOverlay,
-                    ),
-                    const Padding(padding: EdgeInsets.only(bottom: 8)),
-                    ...postComments
-                        .map((comment) => CommentItem(
-                              comment: comment,
-                              uid: 'user1',
-                            ))
-                        .toList(),
-                  ],
-                ),
-              ),
-              AddComment(
-                postID: widget.currentPost.id,
-                uid: 'user1',
-              )
+          ],
+        ),
+        endDrawer: Drawer(
+          backgroundColor: AppColors.backgroundColor,
+          width: 330,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              //TODO: add drawer items
             ],
           ),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  PostCard(
+                    post: widget.currentPost,
+                    uid: 'user1',
+                    onCommentPressed: _openAddCommentOverlay,
+                  ),
+                  const Padding(padding: EdgeInsets.only(bottom: 8)),
+                  ...postComments
+                      .map((comment) => CommentItem(
+                            comment: comment,
+                            uid: 'user1',
+                          ))
+                      .toList(),
+                ],
+              ),
+            ),
+            AddComment(
+              postID: widget.currentPost.id,
+              uid: 'user1',
+            )
+          ],
         ),
       ),
     );

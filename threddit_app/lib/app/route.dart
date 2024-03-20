@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/commenting/model/post.dart';
+import 'package:threddit_app/features/community/view/create_community.dart';
 import 'package:threddit_app/features/home_page/view/screens/add_post_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/chat_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/community_screen.dart';
@@ -7,6 +8,8 @@ import 'package:threddit_app/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_app/features/home_page/view/screens/notifications_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/post_to_screen.dart';
+import 'package:threddit_app/features/home_page/view/screens/search_screen.dart';
+import 'package:threddit_app/features/home_page/view/screens/user_profile_screen.dart';
 import 'package:threddit_app/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/account_settings_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/blocked_screen.dart';
@@ -36,6 +39,10 @@ class RouteClass {
   static const String blockedScreen = '/block_screen';
   static const String changePasswordScreen = '/change_password';
   static const String updateEmailScreen = '/update_mail';
+  static const String userProfileScreen = '/my_profile';
+  static const String searchScreen = '/search';
+  static const String createCommunityScreen = '/create_community';
+  static const String accountSettingScreen = '/account_Settings';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -51,7 +58,15 @@ class RouteClass {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case initRoute:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(builder: (_) => const LogInScreen());
+      case userProfileScreen:
+        return MaterialPageRoute(builder: (_) => const UserProfile());
+      case accountSettingScreen:
+        return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
+      case createCommunityScreen:
+        return MaterialPageRoute(builder: (_) => const CreateCommunity());
+      case searchScreen:
+        return MaterialPageRoute(builder: (_) => const SearchScreen());
       case loginScreen:
         return MaterialPageRoute(builder: (_) => const LogInScreen());
       case signUpScreen:

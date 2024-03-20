@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:threddit_app/app/app.dart';
 import 'package:threddit_app/firebase_options.dart';
+import 'package:threddit_app/theme/colors.dart';
 import 'package:window_manager/window_manager.dart';
 
 final redditTheme = ThemeData().copyWith(

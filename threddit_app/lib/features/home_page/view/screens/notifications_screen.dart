@@ -10,7 +10,8 @@ class _NotificationsScreen extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifications')),
+      appBar: AppBar(
+          automaticallyImplyLeading: false, title: const Text('Notifications')),
     );
   }
 }

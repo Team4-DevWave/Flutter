@@ -80,7 +80,6 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
           ),
         ],
         currentIndex: selectedIndex,
-        
         onTap: onItemTapped,
       ),
     );

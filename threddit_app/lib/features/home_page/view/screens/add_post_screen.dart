@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:threddit_app/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_app/features/home_page/view/widgets/next_button.dart';
@@ -52,7 +53,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
     if (_imagesList != null) {
       content = SizedBox(
-        height: 250,
+        height: 125.h,
         width: double.maxFinite,
         child: ListView.builder(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -69,6 +70,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     }
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
               ref.read(currentScreenProvider.notifier).returnToPrevious();
@@ -82,7 +84,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         itemCount: 1,
         itemBuilder: (context, index) {
           return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
@@ -99,7 +100,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                     cursorWidth: 1.5,
                     decoration: const InputDecoration(
                         labelText: 'Title',
-                        focusColor: null,
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -119,12 +119,12 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                   child: content,
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height - 300,
+                  height: 125.h,
                   alignment: Alignment.topCenter,
                   child: Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
+                          vertical: 5, horizontal: 10),
                       child: TextFormField(
                           onTapOutside: (event) {
                             FocusManager.instance.primaryFocus?.unfocus();
@@ -141,7 +141,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                               labelText: 'body text (optional)',
                               floatingLabelAlignment:
                                   FloatingLabelAlignment.start,
-                              focusColor: null,
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.never,
                               border: InputBorder.none,
@@ -161,7 +160,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       ),
       bottomSheet: Container(
         color: AppColors.backgroundColor,
-        height: 50,
+        height: 50.h,
         child: Row(
           children: [
             IconButton(

@@ -36,12 +36,13 @@ class _CommunityListState extends State<CommunityList> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   return InkWell(
-                    onTap: (){},
+                      onTap: () {},
                       splashColor: AppColors.whiteColor,
                       child: Container(
                         alignment: Alignment.centerLeft,
                         height: 50,
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 16),
                         child: Text(dataList[index],
                             style: AppTextStyles.secondaryTextStyle
                                 .copyWith(fontSize: 14)),

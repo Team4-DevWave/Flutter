@@ -45,7 +45,6 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
             TextField(
               controller: _communityText,
               style: const TextStyle(color: Colors.white, fontSize: 18),
-              maxLines: 1,
               decoration: InputDecoration(
                   prefixIcon:
                       _communityText.text.isEmpty ? Icon(Icons.search) : null,

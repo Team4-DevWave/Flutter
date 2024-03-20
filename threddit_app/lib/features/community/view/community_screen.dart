@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_app/features/commenting/model/community.dart';
-import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/photos.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
@@ -45,10 +44,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   [
                     Row(
                       children: [
-                         Align(
+                        Align(
                           alignment: Alignment.topLeft,
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage(widget.community.avatar),
+                            backgroundImage:
+                                NetworkImage(widget.community.avatar),
                             radius: 30,
                           ),
                         ),
@@ -82,7 +82,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                             height: 33,
                             child: FilledButton(
                               onPressed: () {},
-                              style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Color.fromARGB(255, 8, 46, 77))),
+                              style: const ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStatePropertyAll<Color>(
+                                          Color.fromARGB(255, 8, 46, 77))),
                               child: const Text(
                                 'Join',
                                 style: TextStyle(fontSize: 13),
@@ -92,8 +95,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10,),
-                    Text('${widget.community.description}',style: const TextStyle(color: Colors.white),)
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      '${widget.community.description}',
+                      style: const TextStyle(color: Colors.white),
+                    )
                   ],
                 ),
               ),
@@ -110,7 +118,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 child: Row(
                   children: [
                     const SizedBox(width: 16), // Add some spacing
-                    
+
                     const SizedBox(width: 8), // Add some spacing
                     DropdownButton<String>(
                       value: _selectedItem,
@@ -120,14 +128,22 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         });
                       },
                       underline: Container(), // Hide the default underline
-                      dropdownColor: Color.fromARGB(206, 0, 0, 0), // Set dropdown background color
-                      items: <String>['Hot Posts', 'New Posts', 'Top Posts', 'Controversial Posts', 'Rising Posts']
-                          .map<DropdownMenuItem<String>>((String value) {
+                      dropdownColor: Color.fromARGB(
+                          206, 0, 0, 0), // Set dropdown background color
+                      items: <String>[
+                        'Hot Posts',
+                        'New Posts',
+                        'Top Posts',
+                        'Controversial Posts',
+                        'Rising Posts'
+                      ].map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Row(
                             children: [
-                              Icon(_getIcon(value), color: Colors.white), // Get corresponding icon
+                              Icon(_getIcon(value),
+                                  color:
+                                      Colors.white), // Get corresponding icon
                               const SizedBox(width: 8), // Add some spacing
                               Text(
                                 value,
