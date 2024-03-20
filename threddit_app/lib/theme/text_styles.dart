@@ -34,6 +34,11 @@ class AppTextStyles {
     fontSize: 17.spMin,
   );
 
+  static TextStyle buttonTextStyle = GoogleFonts.roboto(
+    color: const Color.fromARGB(200, 255, 255, 255),
+    fontSize: 17.spMin,
+  );
+
   static TextStyle secondaryTextStyle = GoogleFonts.notoSans(
     color: const Color.fromARGB(200, 255, 255, 255),
   );
