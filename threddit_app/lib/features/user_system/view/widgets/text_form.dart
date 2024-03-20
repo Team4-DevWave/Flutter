@@ -1,4 +1,3 @@
-// text_form.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,23 +23,26 @@ class TextForm extends ConsumerWidget {
       ref.read(continueSignupProvider.notifier).updateFormValidity(isValid);
     }
 
-    return Form(
-      key: formKey,
-      onChanged: updateFormValidity,
-      child: Column(
-        children: [
-          EmailTextFromField(
-            controller: emailController,
-            identifier: identifier,
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
-          PasswordTextFormField(
-            controller: passwordController,
-            identifier: identifier,
-          ),
-        ],
+    return PopScope(
+      onPopInvoked: (context) => formKey.currentState?.reset(),
+      child: Form(
+        key: formKey,
+        onChanged: updateFormValidity,
+        child: Column(
+          children: [
+            EmailTextFromField(
+              controller: emailController,
+              identifier: identifier,
+            ),
+            SizedBox(
+              height: 8.h,
+            ),
+            PasswordTextFormField(
+              controller: passwordController,
+              identifier: identifier,
+            ),
+          ],
+        ),
       ),
     );
   }

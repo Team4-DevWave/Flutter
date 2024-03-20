@@ -6,7 +6,7 @@ import 'package:threddit_app/theme/theme.dart';
 import 'package:http/http.dart' as http;
 
 class App extends StatelessWidget {
-  const App({super.key});
+  const App({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +23,26 @@ class App extends StatelessWidget {
       ),
     );
 
-    //Using screen responsive and adaptability package "ScreenUtil"
     return ScreenUtilInit(
-        designSize: const Size(360, 690), //default size
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (context, child) {
-          //App render start point
-          return MaterialApp(
+      designSize: const Size(360, 690), //default size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return GestureDetector(
+          onTap: () {
+            // Ensure that you're unfocusing the correct FocusScope
+            final currentFocus = FocusManager.instance.primaryFocus;
+            if (currentFocus != null) {
+              currentFocus.unfocus();
+            }
+          },
+          child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: redditTheme,
             home: const RegisterScreen(),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

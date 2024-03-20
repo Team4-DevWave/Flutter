@@ -1,7 +1,6 @@
-// continue_button.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_app/features/user_system/view/screens/gender_type_screen.dart';
+import 'package:threddit_app/features/home_page/view/home_screen.dart';
 import 'package:threddit_app/features/user_system/view_model/continue_signup_controller.dart';
 import 'package:threddit_app/theme/button_styles.dart';
 import 'package:threddit_app/theme/text_styles.dart';
@@ -19,7 +18,7 @@ class ContinueButton extends ConsumerWidget {
           ? () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (ctx) => const GenderType(),
+                  builder: (ctx) => const HomeScreen(),
                 ),
               );
             }

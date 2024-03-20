@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/features/user_system/view/widgets/continue_button.dart';
 import 'package:threddit_app/features/user_system/view/widgets/register_appbar.dart';
-import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
 class UserName extends StatelessWidget {
@@ -48,12 +46,6 @@ class UserName extends StatelessWidget {
                   },
                 ),
               ),
-              Container(
-                  padding: EdgeInsets.only(top: 10.h),
-                  width: MediaQuery.of(context).size.width,
-                  decoration:
-                      const BoxDecoration(color: AppColors.backgroundColor),
-                  child: const ContinueButton(identifier: 'signup')),
             ],
           ),
         ));

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/features/user_system/view/screens/username_screen.dart';
-import 'package:threddit_app/features/user_system/view/widgets/continue_button.dart';
 import 'package:threddit_app/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
-class GenderType extends StatelessWidget {
-  const GenderType({super.key});
+class AboutYou extends StatelessWidget {
+  const AboutYou({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +15,7 @@ class GenderType extends StatelessWidget {
           action: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (ctx) => UserName(),
+                builder: (ctx) => const UserName(),
               ),
             );
           },
@@ -74,12 +73,6 @@ Tell us about yourself to improve your recommendations and ads""",
                 },
               ),
             ),
-            Container(
-                padding: EdgeInsets.only(top: 10.h),
-                width: MediaQuery.of(context).size.width,
-                decoration:
-                    const BoxDecoration(color: AppColors.backgroundColor),
-                child: const ContinueButton(identifier: 'signup')),
           ],
         ),
       ),
