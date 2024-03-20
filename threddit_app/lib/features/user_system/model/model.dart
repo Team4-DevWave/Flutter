@@ -1,4 +1,0 @@
-final genders = [
-  'Woman',
-  'Man',
-];
