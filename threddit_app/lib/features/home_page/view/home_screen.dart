@@ -74,8 +74,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Drawer(
           elevation: double.maxFinite,
           backgroundColor: AppColors.mainColor,
-          shadowColor: null,
-          surfaceTintColor: null,
+          shadowColor: AppColors.mainColor,
+          surfaceTintColor: AppColors.mainColor,
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
@@ -86,8 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
-              LeftDrawerTiles(title: "Communities", data: communitiesTiles),
-              LeftDrawerTiles(title: "Following", data: follwoingTile),
+              const LeftDrawerTiles(title: "Communities",tileType:  'community'),
+              const LeftDrawerTiles(title: "Following",tileType:  'follow'),
             ],
           ),
         ),

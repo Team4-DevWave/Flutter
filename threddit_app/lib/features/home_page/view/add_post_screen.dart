@@ -2,7 +2,9 @@
 
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 //import 'package:image_picker/image_picker.dart';
@@ -61,15 +63,15 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         height: 250,
         width: double.maxFinite,
         child: ListView.builder(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             scrollDirection: Axis.horizontal,
             itemCount: _imagesList!.length,
             itemBuilder: (context, index) {
-                return Image.file(
-                  File(_imagesList![index].path),
-                  width: MediaQuery.of(context).size.width - 8,
-                  fit: BoxFit.contain,
-                );
+              return Image.file(
+                File(_imagesList![index].path),
+                width: MediaQuery.of(context).size.width - 8,
+                fit: BoxFit.contain,
+              );
             }),
       );
     }
@@ -84,87 +86,100 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
           NextButton(titleController: _titleController),
         ],
       ),
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              child: TextField(
-                onTapOutside: (event) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                controller: _titleController,
-                style: const TextStyle(
-                    fontSize: 24, color: AppColors.realWhiteColor),
-                cursorColor: AppColors.redditOrangeColor,
-                cursorWidth: 1.5,
-                decoration: const InputDecoration(
-                    labelText: 'Title',
-                    focusColor: null,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    labelStyle: TextStyle(
-                        color: AppColors.whiteColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24)),
-                onChanged: (value) => {
-                  setState(() {
-                    postTitle = value;
-                  })
-                },
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: content,
-            ),
-            Expanded(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: TextFormField(
-                  onTapOutside: (event) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                    keyboardType: TextInputType.text,
-                    maxLines: null,
-                    controller: _bodytextController,
+      body: ListView.builder(
+        itemCount: 1,
+        itemBuilder: (context, index) {
+          return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  child: TextField(
+                    onTapOutside: (event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                    controller: _titleController,
                     style: const TextStyle(
-                        fontSize: 16, color: AppColors.realWhiteColor),
+                        fontSize: 24, color: AppColors.realWhiteColor),
                     cursorColor: AppColors.redditOrangeColor,
                     cursorWidth: 1.5,
                     decoration: const InputDecoration(
-                        labelText: 'body text (optional)',
+                        labelText: 'Title',
                         focusColor: null,
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         labelStyle: TextStyle(
-                            color: AppColors.whiteColor, fontSize: 16)),
+                            color: AppColors.whiteColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24)),
                     onChanged: (value) => {
-                          setState(() {
-                            postBody = value;
-                          })
-                        }),
-              ),
-            ),
-            Row(                
-              children: [
-                IconButton(
-                  onPressed: _pickMulti,
-                  icon: const Icon(Icons.image),
-                  color: AppColors.realWhiteColor,
+                      setState(() {
+                        postTitle = value;
+                      })
+                    },
+                  ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.link),
-                  color: AppColors.realWhiteColor,
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  child: content,
                 ),
-              ],
-            )
-          ]),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 5),
+                  child: SizedBox(
+                    height: 20,
+                    child: TextFormField(
+                        onTapOutside: (event) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        keyboardType: TextInputType.text,
+                        maxLines: null,
+                        expands: true,
+                        controller: _bodytextController,
+                        style: const TextStyle(
+                            fontSize: 16, color: AppColors.realWhiteColor),
+                        cursorColor: AppColors.redditOrangeColor,
+                        cursorWidth: 1.5,
+                        decoration: const InputDecoration(
+                            labelText: 'body text (optional)',
+                            focusColor: null,
+                            floatingLabelBehavior:
+                                FloatingLabelBehavior.never,
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            labelStyle: TextStyle(
+                                color: AppColors.whiteColor, fontSize: 16)),
+                        onChanged: (value) => {
+                              setState(() {
+                                postBody = value;
+                              })
+                            }),
+                  ),
+                ),
+              ]);
+        },
+      ),
+      bottomSheet: Container(
+        color: AppColors.backgroundColor,
+        height: 50,
+        child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: _pickMulti,
+                        icon: const Icon(Icons.image),
+                        color: AppColors.realWhiteColor,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.link),
+                        color: AppColors.realWhiteColor,
+                      ),
+                    ],
+                  ),
+      ),
     );
   }
 }
