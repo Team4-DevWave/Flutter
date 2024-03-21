@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SafeArea(
-        top: true,
+        //top: true,
         child: Scaffold(
           backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
           appBar: AppBar(

@@ -47,6 +47,10 @@ dependencies:
   window_manager: ^0.3.8
   url_launcher: ^6.2.5
   email_validator: ^2.1.17
+  http: ^1.2.1
+  firebase_auth: ^4.17.9
+  google_sign_in: ^6.2.1
+  firebase_core: ^2.27.1
 
 
 dev_dependencies:

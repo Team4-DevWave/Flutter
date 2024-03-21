@@ -1,30 +1,15 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/features/user_system/view/screens/register_screen.dart';
 import 'package:threddit_app/theme/theme.dart';
-import 'package:http/http.dart' as http;
 
 class App extends StatelessWidget {
-  const App({Key? key});
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final url = Uri.https(
-        'flutter-prep-c61f6-default-rtdb.firebaseio.com', 'test.json');
-
-    http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode(
-        {'name': 'Mario', 'age': '23', 'hobby': 'Music'},
-      ),
-    );
-
     return ScreenUtilInit(
-      designSize: const Size(360, 690), //default size
+      // designSize: const Size(360, 690),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
