@@ -133,7 +133,7 @@ class _AppState extends State<App> {
               }
             },
             child: MaterialApp(
-              initialRoute: RouteClass.loginScreen,
+              initialRoute: RouteClass.initRoute,
               onGenerateRoute: RouteClass.generateRoute,
               debugShowCheckedModeBanner: false,
               theme: redditTheme,

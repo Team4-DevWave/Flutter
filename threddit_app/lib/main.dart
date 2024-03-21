@@ -9,12 +9,6 @@ import 'package:threddit_app/firebase_options.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:window_manager/window_manager.dart';
 
-final redditTheme = ThemeData().copyWith(
-    scaffoldBackgroundColor: AppColors.backgroundColor,
-    appBarTheme: const AppBarTheme().copyWith(
-        backgroundColor: AppColors.backgroundColor,
-        foregroundColor: Colors.white.withOpacity(0.5)),
-    splashFactory: InkRipple.splashFactory);
 Future<void> _firebaseMessageingBackgroundHandler(RemoteMessage message) async {
   print("handling a background message ${message.messageId}");
 }
