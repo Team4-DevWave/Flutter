@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_app/features/user_system/model/user_list.dart';
 import 'package:threddit_app/features/user_system/view/widgets/password_form.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 import 'package:threddit_app/features/user_system/view/widgets/save_changes.dart';
 import 'package:threddit_app/features/user_system/view_model/change_password.dart';
 
-class ChangePasswordScreen extends ConsumerWidget {
+class ChangePasswordScreen extends StatelessWidget {
   const ChangePasswordScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     // TODO: implement build
     final PasswordForm currentPasswordForm = PasswordForm("Current password");
     final PasswordForm newPasswordForm = PasswordForm("New password");
@@ -51,9 +50,11 @@ class ChangePasswordScreen extends ConsumerWidget {
                   final String newPassword = newPasswordForm.enteredPassword;
                   final String currentPassword =
                       currentPasswordForm.enteredPassword;
-                  changePasswordFunction(
+                  final statusCode = changePasswordFunction(
                       currentPassword: currentPassword,
-                      newPassword: newPassword);
+                      newPassword: newPassword,
+                      confirmedPassword: confirmedPassword);
+                  checkResponse(context: context, statusCodeFuture: statusCode);
                 },
               ),
             ],

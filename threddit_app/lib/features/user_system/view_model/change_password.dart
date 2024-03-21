@@ -1,11 +1,21 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:threddit_app/features/user_system/view/widgets/alert.dart';
+import 'package:threddit_app/theme/colors.dart';
+import 'package:threddit_app/theme/text_styles.dart';
 
-void changePasswordFunction(
-    {required String currentPassword, required String newPassword}) async {
-  Map<String, String> body = {
+Future<int> changePasswordFunction(
+    {required String currentPassword,
+    required String newPassword,
+    required String confirmedPassword}) async {
+  Map<String, dynamic> body = {
+    'user_id': 1,
     'current_password': currentPassword,
     'new_password': newPassword,
+    'confirmed_password': confirmedPassword,
   };
 
   String bodyEncoded = jsonEncode(body);
@@ -19,10 +29,16 @@ void changePasswordFunction(
   );
 
   final responseDecoded = jsonDecode(response.body);
-  if(response.statusCode == 200){
-    print(responseDecoded['message']);
-  }
-  else{
-    print(responseDecoded['error']);
+  return response.statusCode;
+}
+
+void checkResponse(
+    {required BuildContext context,
+    required Future<int> statusCodeFuture}) async {
+  int statusCode = await statusCodeFuture;
+  if (statusCode == 200) {
+    showAlert("Password was changed correctly!", context);
+  } else {
+    showAlert("Password wasn't changed.", context);
   }
 }
