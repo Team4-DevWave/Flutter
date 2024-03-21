@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_app/app/route.dart';
 import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
 import 'package:threddit_app/features/user_system/view/widgets/continue_with_google.dart';
 import 'package:threddit_app/features/user_system/view/widgets/register_appbar.dart';
@@ -90,7 +91,9 @@ class LogInScreen extends ConsumerWidget {
                     const AppAgreement(),
                     SizedBox(height: 24.h),
                     ElevatedButton(
-                      onPressed: null,
+                      onPressed: () {
+                        Navigator.pushNamed(context, RouteClass.aboutMeScreen);
+                      },
                       style: AppButtons.choiceButtonTheme,
                       child: Text(
                         'Continue',

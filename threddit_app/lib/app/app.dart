@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/app/route.dart';
+import 'package:threddit_app/features/user_system/view/screens/username_screen.dart';
 
 import 'package:threddit_app/theme/theme.dart';
 import 'dart:convert';
@@ -123,12 +124,20 @@ class _AppState extends State<App> {
         splitScreenMode: true,
         builder: (context, child) {
           //App render start point
-          return MaterialApp(
-            initialRoute: RouteClass.loginScreen,
-            onGenerateRoute: RouteClass.generateRoute,
-            debugShowCheckedModeBanner: false,
-            theme: redditTheme,
-            //home: CommunityScreen(name: 'Flutter Community',community:communities[0]),
+          return GestureDetector(
+            onTap: () {
+              // Ensure that you're unfocusing the correct FocusScope
+              final currentFocus = FocusManager.instance.primaryFocus;
+              if (currentFocus != null) {
+                currentFocus.unfocus();
+              }
+            },
+            child: MaterialApp(
+              initialRoute: RouteClass.loginScreen,
+              onGenerateRoute: RouteClass.generateRoute,
+              debugShowCheckedModeBanner: false,
+              theme: redditTheme,
+            ),
           );
         });
   }

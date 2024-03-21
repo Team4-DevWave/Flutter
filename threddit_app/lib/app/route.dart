@@ -11,6 +11,7 @@ import 'package:threddit_app/features/home_page/view/screens/post_to_screen.dart
 import 'package:threddit_app/features/home_page/view/screens/search_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/user_profile_screen.dart';
 import 'package:threddit_app/features/posting/view/screens/post_screen.dart';
+import 'package:threddit_app/features/user_system/view/screens/about_you_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/account_settings_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/blocked_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/change_password_screen.dart';
@@ -18,6 +19,7 @@ import 'package:threddit_app/features/user_system/view/screens/notifications_set
 import 'package:threddit_app/features/user_system/view/screens/register_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/signup_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/update_email_screen.dart';
+import 'package:threddit_app/features/user_system/view/screens/username_screen.dart';
 
 import '../features/user_system/view/screens/login_screen.dart';
 
@@ -27,7 +29,7 @@ class RouteClass {
   static const String signUpScreen = "/signup";
   static const String registerScreen = "/register";
   static const String mainLayoutScreen = "/main";
-  static const String mainScreen = "/main";
+  static const String homeScreen = "/home";
   static const String appPostScreen = "/app_post_screen";
   static const String chatScreen = "/chat";
   static const String communityScreen = "/community";
@@ -43,6 +45,8 @@ class RouteClass {
   static const String searchScreen = '/search';
   static const String createCommunityScreen = '/create_community';
   static const String accountSettingScreen = '/account_Settings';
+  static const String userNameScreen = '/loading';
+  static const String aboutMeScreen = '/aboutme';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -73,8 +77,8 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case registerScreen:
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
-      case mainScreen:
-        return MaterialPageRoute(builder: (_) => const MainScreenLayout());
+      case homeScreen:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
       case appPostScreen:
         return MaterialPageRoute(builder: (_) => const AddPostScreen());
       case chatScreen:
@@ -94,8 +98,12 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const BlockedScreen());
       case changePasswordScreen:
         return MaterialPageRoute(builder: (_) => const ChangePasswordScreen());
+      case userNameScreen:
+        return MaterialPageRoute(builder: (_) => const UserName());
       case updateEmailScreen:
         return MaterialPageRoute(builder: (_) => const UpdateEmailScreen());
+      case aboutMeScreen:
+        return MaterialPageRoute(builder: (_) => const AboutYou());
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
       case postScreen:
