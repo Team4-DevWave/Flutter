@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
-void showAlert(final String alertName) {
+void showAlert(final String alertName, BuildContext context) {
   bool isOpen = true;
   showDialog(
       context: context,
