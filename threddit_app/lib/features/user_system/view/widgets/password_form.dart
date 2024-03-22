@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PasswordForm extends StatefulWidget {
   final String formName;
@@ -14,7 +13,7 @@ class _PasswordFormState extends State<PasswordForm> {
   bool showText = false;
   
 
-  void changePassword(String value){
+  void getPassword(String value){
         setState(() {
           widget.enteredPassword = value;
         });
@@ -23,7 +22,7 @@ class _PasswordFormState extends State<PasswordForm> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      onChanged: changePassword,
+      onChanged: getPassword,
       decoration: InputDecoration(
         labelText: widget.formName,
         suffixIcon: IconButton(

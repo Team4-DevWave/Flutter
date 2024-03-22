@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_app/features/user_system/view/widgets/password_form.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 import 'package:threddit_app/features/user_system/view/widgets/save_changes.dart';
-import 'package:threddit_app/features/user_system/view_model/change_password.dart';
+import 'package:threddit_app/features/user_system/view_model/settings_functions.dart';
 
-class ChangePasswordScreen extends StatelessWidget {
-  const ChangePasswordScreen({super.key});
+class ChangePasswordScreen extends StatefulWidget {
+  ChangePasswordScreen({super.key});
+  @override
+  _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
+}
 
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+  final PasswordForm currentPasswordForm = PasswordForm("Current password");
+  final PasswordForm newPasswordForm = PasswordForm("New password");
+  final PasswordForm confirmPasswordForm = PasswordForm("Confirm new password");
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    final PasswordForm currentPasswordForm = PasswordForm("Current password");
-    final PasswordForm newPasswordForm = PasswordForm("New password");
-    final PasswordForm confirmPasswordForm =
-        PasswordForm("Confirm new password");
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Change password"),
@@ -54,7 +57,7 @@ class ChangePasswordScreen extends StatelessWidget {
                       currentPassword: currentPassword,
                       newPassword: newPassword,
                       confirmedPassword: confirmedPassword);
-                  checkResponse(context: context, statusCodeFuture: statusCode);
+                  checkPasswordChangeResponse(context: context, statusCodeFuture: statusCode);
                 },
               ),
             ],
