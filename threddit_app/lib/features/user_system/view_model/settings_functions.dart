@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/user_system/view/widgets/alert.dart';
-
+import 'package:threddit_app/features/user_system/model/user_mock.dart';
 Future<int> changePasswordFunction(
     {required String currentPassword,
     required String newPassword,
@@ -67,4 +68,16 @@ void checkPasswordChangeResponse(
   } else {
     showAlert("Password wasn't changed.", context);
   }
+}
+
+
+Future<UserMock> getUserInfo() async {
+
+
+  http.Response response = await http.get(
+    Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
+  );
+  return UserMock.fromJson(jsonDecode(response.body));
+ 
+  
 }

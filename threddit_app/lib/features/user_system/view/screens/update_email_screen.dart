@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/user_system/view/widgets/email_form.dart';
+import 'package:threddit_app/features/user_system/model/user_mock.dart';
 import 'package:threddit_app/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
@@ -15,6 +16,9 @@ class UpdateEmailScreen extends StatefulWidget {
 class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Reddit password");
   final EmailForm newEmailForm = EmailForm("New email address");
+  Future<UserMock> fetchUser() async {
+    return getUserInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,28 +31,43 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.person,
-                  color: AppColors.redditOrangeColor,
-                ),
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+            FutureBuilder(
+              future: fetchUser(),
+              builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+                while (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                  return Text("ERROR LOADING USER DATA");
+                } else {
+                  final UserMock user = snapshot.data!;
+                  return Row(
                     children: [
-                      Text("u/xxxxx", style: AppTextStyles.primaryTextStyle),
-                      Text(
-                        "xxxxxxxx@gmail.com",
-                        style: AppTextStyles.primaryTextStyle,
+                      const Icon(
+                        Icons.person,
+                        color: AppColors.redditOrangeColor,
                       ),
-                    ])
-              ],
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("u/${user.getUsername}",
+                                style: AppTextStyles.primaryTextStyle),
+                            Text(
+                              "${user.getEmail}",
+                              style: AppTextStyles.primaryTextStyle,
+                            ),
+                          ])
+                    ],
+                  );
+                }
+              },
             ),
             newEmailForm,
             currentPasswordForm,
             Container(
-              child: TextButton(
-                  onPressed: () {}, child: Text("Forgot password?")),
+              child:
+                  TextButton(onPressed: () {}, child: Text("Forgot password?")),
               alignment: Alignment.topRight,
             ),
             Spacer(),
@@ -59,7 +78,8 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                     currentPasswordForm.enteredPassword;
                 final statusCode = changeEmailFunction(
                     currentPassword: currentPassword, newEmail: newEmail);
-                checkEmailUpdateResponse(context: context, statusCodeFuture: statusCode);
+                checkEmailUpdateResponse(
+                    context: context, statusCodeFuture: statusCode);
               },
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_app/features/user_system/model/user_mock.dart';
 import 'package:threddit_app/features/user_system/view/widgets/password_form.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
@@ -15,10 +16,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Current password");
   final PasswordForm newPasswordForm = PasswordForm("New password");
   final PasswordForm confirmPasswordForm = PasswordForm("Confirm new password");
+  
+  Future<UserMock> fetchUser() async {
+    return getUserInfo();
+  }
+  
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Change password"),
@@ -28,14 +33,28 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const Icon(
-                    Icons.person,
-                    color: AppColors.redditOrangeColor,
-                  ),
-                  Text("u/xxxxx", style: AppTextStyles.primaryTextStyle),
-                ],
+              FutureBuilder(
+                future: fetchUser(),
+                builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+                  while (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } if(snapshot.hasError) {
+                    print(snapshot.error);
+                    return Text("ERROR LOADING USER DATA");
+                  } else {
+                    final UserMock user = snapshot.data!;
+                    return Row(
+                      children: [
+                        const Icon(
+                          Icons.person,
+                          color: AppColors.redditOrangeColor,
+                        ),
+                        Text("u/${user.getUsername}",
+                            style: AppTextStyles.primaryTextStyle),
+                      ],
+                    );
+                  }
+                },
               ),
               currentPasswordForm,
               newPasswordForm,
@@ -57,7 +76,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       currentPassword: currentPassword,
                       newPassword: newPassword,
                       confirmedPassword: confirmedPassword);
-                  checkPasswordChangeResponse(context: context, statusCodeFuture: statusCode);
+                  checkPasswordChangeResponse(
+                      context: context, statusCodeFuture: statusCode);
                 },
               ),
             ],
