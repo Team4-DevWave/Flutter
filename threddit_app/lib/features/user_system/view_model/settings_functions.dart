@@ -16,7 +16,6 @@ Future<int> changePasswordFunction(
     'new_password': newPassword,
     'confirmed_password': confirmedPassword,
   };
-
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await http.post(

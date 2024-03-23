@@ -119,8 +119,8 @@ app.get('/api/user-info', (req, res) => {
         }
         const username = userToGet.username;
         const email = userToGet.email;
-
-        res.json({ username, email, user_id });
+        const gender = userToGet.gender;
+        res.json({ username, email, user_id, gender });
     });
 });
 app.listen(PORT, () => {

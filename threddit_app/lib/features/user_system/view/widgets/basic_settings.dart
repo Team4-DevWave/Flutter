@@ -1,5 +1,3 @@
-
-
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/user_system/view/screens/change_password_screen.dart';
@@ -8,6 +6,7 @@ import 'package:threddit_app/theme/text_styles.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_app/features/user_system/view/screens/update_email_screen.dart';
+import 'package:threddit_app/features/user_system/model/user_mock.dart';
 
 const List<String> genders = <String>['Man', 'Woman'];
 
@@ -29,10 +28,13 @@ class _BasicSettingsState extends State<BasicSettings> {
     }
   }
 
+  Future<UserMock> fetchUser() async {
+    return getUserInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
+    // TODO: implement builds
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -59,12 +61,11 @@ class _BasicSettingsState extends State<BasicSettings> {
         ListTile(
           leading: const Icon(Icons.location_pin),
           title: const Text("Country"),
-          subtitle: Text(
-              selectedCountry.displayName),
+          subtitle: Text(selectedCountry.displayName),
           titleTextStyle: AppTextStyles.primaryTextStyle,
           trailing: const Icon(Icons.navigate_next),
           onTap: () {
-            showCountryPicker(                
+            showCountryPicker(
                 context: context,
                 onSelect: (Country country) {
                   setState(() {
@@ -76,26 +77,42 @@ class _BasicSettingsState extends State<BasicSettings> {
                     textStyle: AppTextStyles.primaryTextStyle));
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.person),
-          title: const Text("Gender"),
-          titleTextStyle: AppTextStyles.primaryTextStyle,
-          trailing: DropdownButton(
-            icon: const Icon(Icons.arrow_downward),
-            onChanged: (String? value) {
-              setState(() {
-                pickedGender = value!;
-                changeGenderFunction(gender: pickedGender);
-              });
-            },
-            value: pickedGender,
-            items: genders.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                child: Text(value),
-                value: value,
+        FutureBuilder(
+          future: fetchUser(),
+          builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+            while (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            }
+            if (snapshot.hasError) {
+              print(snapshot.error);
+              return Text("ERROR LOADING USER DATA");
+            } else {
+              final UserMock user = snapshot.data!;
+              pickedGender = user.getGender;
+              return ListTile(
+                
+                leading: const Icon(Icons.person),
+                title: const Text("Gender"),
+                titleTextStyle: AppTextStyles.primaryTextStyle,
+                trailing: DropdownButton(
+                  icon: const Icon(Icons.arrow_downward),
+                  onChanged: (String? value) {
+                    setState(() {
+                      pickedGender = value!;
+                      changeGenderFunction(gender: pickedGender);
+                    });
+                  },
+                  value: pickedGender,
+                  items: genders.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      child: Text(value),
+                      value: value,
+                    );
+                  }).toList(),
+                ),
               );
-            }).toList(),
-          ),
+            }
+          },
         ),
       ],
     );
