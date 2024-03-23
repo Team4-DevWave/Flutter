@@ -39,16 +39,29 @@ class _BasicSettingsState extends State<BasicSettings> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SettingsTitle(title: "BASIC SETTINGS"),
-        ListTile(
-          leading: const Icon(Icons.settings),
-          title: const Text("Update email address"),
-          titleTextStyle: AppTextStyles.primaryTextStyle,
-          subtitle: const Text("xxxxxx@gmail.com"),
-          trailing: const Icon(Icons.navigate_next),
-          onTap: () {
-            _selectBasicSetting(context, "email");
-          },
-        ),
+        FutureBuilder(
+            future: fetchUser(),
+            builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+              while (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              }
+              if (snapshot.hasError) {
+                print(snapshot.error);
+                return Text("ERROR LOADING USER DATA");
+              } else {
+                final UserMock user = snapshot.data!;
+                return ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text("Update email address"),
+                  titleTextStyle: AppTextStyles.primaryTextStyle,
+                  subtitle: Text(user.getEmail),
+                  trailing: const Icon(Icons.navigate_next),
+                  onTap: () {
+                    _selectBasicSetting(context, "email");
+                  },
+                );
+              }
+            }),
         ListTile(
           leading: const Icon(Icons.settings),
           title: const Text("Change password"),
@@ -90,7 +103,6 @@ class _BasicSettingsState extends State<BasicSettings> {
               final UserMock user = snapshot.data!;
               pickedGender = user.getGender;
               return ListTile(
-                
                 leading: const Icon(Icons.person),
                 title: const Text("Gender"),
                 titleTextStyle: AppTextStyles.primaryTextStyle,
