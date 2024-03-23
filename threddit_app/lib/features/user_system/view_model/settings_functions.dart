@@ -49,6 +49,24 @@ Future<int> changeEmailFunction(
   );
   return response.statusCode;
 }
+Future<int> changeGenderFunction(
+    {required String gender}) async {
+  Map<String, dynamic> body = {
+    'user_id': 1,
+    'gender': gender,
+  };
+
+  String bodyEncoded = jsonEncode(body);
+
+  http.Response response = await http.post(
+    Uri.parse("http://10.0.2.2:3001/api/change-gender"),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: bodyEncoded,
+  );
+  return response.statusCode;
+}
 void checkEmailUpdateResponse(
     {required BuildContext context,
     required Future<int> statusCodeFuture}) async {

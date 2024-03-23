@@ -3,6 +3,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/user_system/view/screens/change_password_screen.dart';
+import 'package:threddit_app/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/features/user_system/view/widgets/settings_title.dart';
@@ -84,6 +85,7 @@ class _BasicSettingsState extends State<BasicSettings> {
             onChanged: (String? value) {
               setState(() {
                 pickedGender = value!;
+                changeGenderFunction(gender: pickedGender);
               });
             },
             value: pickedGender,
