@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/features/user_system/view/screens/register_screen.dart';
-import 'package:threddit_app/theme/theme.dart';
+import 'package:threddit_clone/features/user_system/view/screens/register_screen.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

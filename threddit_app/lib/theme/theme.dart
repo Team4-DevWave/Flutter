@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_app/theme/colors.dart';
+import 'package:threddit_clone/theme/colors.dart';
 
 //Overriding some prefered themes
 final redditTheme = ThemeData().copyWith(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/features/user_system/view/widgets/register_appbar.dart';
-import 'package:threddit_app/theme/text_styles.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 
 class UserName extends StatelessWidget {
   const UserName({super.key});
