@@ -1,46 +1,21 @@
 {
   "project_info": {
-
-    "project_number": "492546440281",
-    "project_id": "threadit-c20a3",
-    "storage_bucket": "threadit-c20a3.appspot.com"
-
+    "project_number": "300534889914",
+    "project_id": "threddit-clone-app",
+    "storage_bucket": "threddit-clone-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-
-        "mobilesdk_app_id": "1:492546440281:android:0266d54641ba561c7dc548",
+        "mobilesdk_app_id": "1:300534889914:android:92e854a5c84f4c2ceef183",
         "android_client_info": {
-          "package_name": "com.PushNotification.Testing"
+          "package_name": "com.example.threddit_clone"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAENbXgE0gfxXWXqoaRBoIqJdMjO6WkD1M"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:492546440281:android:ad10abdb97bc59b17dc548",
-
-        "android_client_info": {
-          "package_name": "com.example.threddit_app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-
-          "current_key": "AIzaSyAENbXgE0gfxXWXqoaRBoIqJdMjO6WkD1M"
-
+          "current_key": "AIzaSyDAxesg2PiZ1v3xq1wmpAXbyN6Pr8wCUcA"
         }
       ],
       "services": {
