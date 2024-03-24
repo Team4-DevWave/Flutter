@@ -1,4 +1,5 @@
 import 'dart:io';
+<<<<<<< Updated upstream
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,21 @@ Future<void> _firebaseMessageingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
+=======
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app.dart';
+import 'package:window_manager/window_manager.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+>>>>>>> Stashed changes
   if (Platform.isWindows) {
     WidgetsFlutterBinding.ensureInitialized();
     await windowManager.ensureInitialized();

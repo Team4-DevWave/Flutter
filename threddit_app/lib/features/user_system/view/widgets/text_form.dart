@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/features/user_system/view/widgets/email_textformfield.dart';
-import 'package:threddit_app/features/user_system/view/widgets/password_textformfield.dart';
-import 'package:threddit_app/features/user_system/view_model/continue_signup_controller.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/email_textformfield.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/password_textformfield.dart';
+import 'package:threddit_clone/features/user_system/view_model/continue_signup_controller.dart';
 
 class TextForm extends ConsumerWidget {
   const TextForm({super.key, required this.identifier});

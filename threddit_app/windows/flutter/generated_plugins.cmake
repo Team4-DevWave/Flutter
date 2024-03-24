@@ -4,7 +4,10 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   cloud_firestore
+<<<<<<< Updated upstream
   file_selector_windows
+=======
+>>>>>>> Stashed changes
   firebase_auth
   firebase_core
   firebase_storage

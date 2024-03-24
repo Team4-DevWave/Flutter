@@ -23,9 +23,21 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
+<<<<<<< Updated upstream
         return ios;
       case TargetPlatform.macOS:
         return macos;
+=======
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.macOS:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+>>>>>>> Stashed changes
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -44,6 +56,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
+<<<<<<< Updated upstream
 
     apiKey: 'AIzaSyC44i_G-LlgGCuCm3hnkamhgDgLcQ59Uu4',
     appId: '1:492546440281:web:7c6a32e4bc6307877dc548',
@@ -81,5 +94,21 @@ class DefaultFirebaseOptions {
     storageBucket: 'threadit-c20a3.appspot.com',
 
     iosBundleId: 'com.example.thredditApp.RunnerTests',
+=======
+    apiKey: 'AIzaSyBARS84ojOSU7LKnWnLixIeJT9Vdpl14TI',
+    appId: '1:300534889914:web:f973ae37e3d6f220eef183',
+    messagingSenderId: '300534889914',
+    projectId: 'threddit-clone-app',
+    authDomain: 'threddit-clone-app.firebaseapp.com',
+    storageBucket: 'threddit-clone-app.appspot.com',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyDAxesg2PiZ1v3xq1wmpAXbyN6Pr8wCUcA',
+    appId: '1:300534889914:android:92e854a5c84f4c2ceef183',
+    messagingSenderId: '300534889914',
+    projectId: 'threddit-clone-app',
+    storageBucket: 'threddit-clone-app.appspot.com',
+>>>>>>> Stashed changes
   );
 }
