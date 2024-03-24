@@ -1,4 +1,4 @@
-# threddit_app
+# threddit_clone
 
 A new Flutter project.
 
