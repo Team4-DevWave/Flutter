@@ -1,6 +1,6 @@
 {
-    "name": "threddit_clone",
-    "short_name": "threddit_clone",
+    "name": "threddit_app",
+    "short_name": "threddit_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-<<<<<<< Updated upstream
 import 'package:threddit_app/app/route.dart';
 import 'package:threddit_app/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
-=======
-import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
-import 'package:threddit_clone/theme/colors.dart';
-import 'package:threddit_clone/theme/text_styles.dart';
->>>>>>> Stashed changes
 
 class AboutYou extends StatelessWidget {
   const AboutYou({super.key});

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-<<<<<<< Updated upstream
 import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
 import 'package:threddit_app/features/user_system/view/widgets/continue_button.dart';
 import 'package:threddit_app/features/user_system/view/widgets/continue_with_google.dart';
@@ -12,16 +11,6 @@ import 'package:threddit_app/features/user_system/view_model/navigate_login.dart
 
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
-=======
-import 'package:threddit_clone/features/user_system/view/widgets/app_agreement.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/continue_button.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/continue_with_google.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/text_form.dart';
-import 'package:threddit_clone/features/user_system/view_model/navigate_login.dart';
-import 'package:threddit_clone/theme/colors.dart';
-import 'package:threddit_clone/theme/text_styles.dart';
->>>>>>> Stashed changes
 
 class SignUpScreen extends ConsumerWidget {
   const SignUpScreen({super.key});

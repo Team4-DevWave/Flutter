@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-<<<<<<< Updated upstream
 import 'package:threddit_app/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
 import 'package:threddit_app/features/user_system/view/widgets/register_buttons.dart';
@@ -8,14 +7,6 @@ import 'package:threddit_app/features/user_system/view_model/navigate_register_l
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/photos.dart';
 import 'package:threddit_app/theme/text_styles.dart';
-=======
-import 'package:threddit_clone/features/user_system/view/widgets/app_agreement.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/register_buttons.dart';
-import 'package:threddit_clone/features/user_system/view_model/navigate_register_login.dart';
-import 'package:threddit_clone/theme/colors.dart';
-import 'package:threddit_clone/theme/photos.dart';
-import 'package:threddit_clone/theme/text_styles.dart';
->>>>>>> Stashed changes
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RegisterScreen extends ConsumerWidget {

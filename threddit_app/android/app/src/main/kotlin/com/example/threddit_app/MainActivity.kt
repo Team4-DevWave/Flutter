@@ -1,4 +1,4 @@
-package com.example.threddit_clone
+package com.example.threddit_app
 
 import io.flutter.embedding.android.FlutterActivity
 
