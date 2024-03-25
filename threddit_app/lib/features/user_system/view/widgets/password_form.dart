@@ -11,12 +11,11 @@ class PasswordForm extends StatefulWidget {
 
 class _PasswordFormState extends State<PasswordForm> {
   bool showText = false;
-  
 
-  void getPassword(String value){
-        setState(() {
-          widget.enteredPassword = value;
-        });
+  void getPassword(String value) {
+    setState(() {
+      widget.enteredPassword = value;
+    });
   }
 
   @override

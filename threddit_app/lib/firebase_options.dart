@@ -23,9 +23,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -44,37 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDM_39s59IOINF7zrI1TnVaNVPqeEwThcw',
-    appId: '1:1050902103954:web:814abddab4f0d73a80e34b',
-    messagingSenderId: '1050902103954',
-    projectId: 'threddit-app',
-    authDomain: 'threddit-app.firebaseapp.com',
-    storageBucket: 'threddit-app.appspot.com',
+    apiKey: 'AIzaSyBARS84ojOSU7LKnWnLixIeJT9Vdpl14TI',
+    appId: '1:300534889914:web:f973ae37e3d6f220eef183',
+    messagingSenderId: '300534889914',
+    projectId: 'threddit-clone-app',
+    authDomain: 'threddit-clone-app.firebaseapp.com',
+    storageBucket: 'threddit-clone-app.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCjG0k8MbVS_BJj2-0n8MXMgdits9pzqY0',
-    appId: '1:1050902103954:android:768d7e1ce7eb186380e34b',
-    messagingSenderId: '1050902103954',
-    projectId: 'threddit-app',
-    storageBucket: 'threddit-app.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBWPqAXlaFWIOxPYEwndQQl5b4InJsKYTo',
-    appId: '1:1050902103954:ios:9fce3bbf561f44c180e34b',
-    messagingSenderId: '1050902103954',
-    projectId: 'threddit-app',
-    storageBucket: 'threddit-app.appspot.com',
-    iosBundleId: 'com.example.thredditApp',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBWPqAXlaFWIOxPYEwndQQl5b4InJsKYTo',
-    appId: '1:1050902103954:ios:9232d721c52206d380e34b',
-    messagingSenderId: '1050902103954',
-    projectId: 'threddit-app',
-    storageBucket: 'threddit-app.appspot.com',
-    iosBundleId: 'com.example.thredditApp.RunnerTests',
+    apiKey: 'AIzaSyDAxesg2PiZ1v3xq1wmpAXbyN6Pr8wCUcA',
+    appId: '1:300534889914:android:92e854a5c84f4c2ceef183',
+    messagingSenderId: '300534889914',
+    projectId: 'threddit-clone-app',
+    storageBucket: 'threddit-clone-app.appspot.com',
   );
 }

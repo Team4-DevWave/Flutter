@@ -8,6 +8,7 @@ import 'package:threddit_app/features/user_system/view/widgets/settings_title.da
 import 'package:threddit_app/features/user_system/view/screens/update_email_screen.dart';
 import 'package:threddit_app/features/user_system/model/user_mock.dart';
 import 'package:http/http.dart' as http;
+
 const List<String> genders = <String>['Man', 'Woman'];
 
 class BasicSettings extends StatefulWidget {

@@ -1,43 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_app/app/route.dart';
-import 'package:threddit_app/features/user_system/view/screens/login_screen.dart';
-import 'package:threddit_app/features/user_system/view/widgets/app_agreement.dart';
-import 'package:threddit_app/features/user_system/view/widgets/register_buttons.dart';
-import 'package:threddit_app/theme/colors.dart';
-import 'package:threddit_app/theme/photos.dart';
-import 'package:threddit_app/theme/text_styles.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/app_agreement.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/register_buttons.dart';
+import 'package:threddit_clone/features/user_system/view_model/navigate_register_login.dart';
+import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/photos.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends State<RegisterScreen> {
-  var screenHeight = ScreenUtil().screenHeight;
-
-  void _login(BuildContext context) {
-    Navigator.pushNamed(context, RouteClass.loginScreen);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    setState(() {
-      screenHeight = ScreenUtil().screenHeight;
-    });
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: SizedBox(
-        height: screenHeight,
+      body: Container(
+        margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.h),
+        height: MediaQuery.of(context).size.height.h,
+        width: MediaQuery.of(context).size.width.w,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(height: ScreenUtil().statusBarHeight),
+              SizedBox(height: ScreenUtil().statusBarHeight.h),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset(
                     Photos.snoLogo,
@@ -55,42 +42,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ],
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 10.h, left: 13.w, right: 13.w),
-                child: Column(
-                  children: [
-                    const RegisterButtons(),
-                    SizedBox(height: 16.h),
-                    const AppAgreement(),
-                    SizedBox(height: 15.h),
-                    TextButton(
-                      onPressed: () {
-                        _login(context);
-                      },
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Already a redditor? ',
-                              style: AppTextStyles.primaryTextStyle.copyWith(
+              Column(
+                children: [
+                  const RegisterButtons(),
+                  SizedBox(height: 16.h),
+                  const AppAgreement(),
+                  SizedBox(height: 15.h),
+                  TextButton(
+                    onPressed: () => ref.read(navgationRegisterLogin)(context),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'Already a redditor? ',
+                            style: AppTextStyles.primaryTextStyle.copyWith(
+                              fontSize: 14.spMin,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'Log in',
+                            style: AppTextStyles.primaryTextStyle.copyWith(
                                 fontSize: 14.spMin,
                                 fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Log in',
-                              style: AppTextStyles.primaryTextStyle.copyWith(
-                                  fontSize: 14.spMin,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.redditOrangeColor),
-                            ),
-                          ],
-                        ),
+                                color: AppColors.redditOrangeColor),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
