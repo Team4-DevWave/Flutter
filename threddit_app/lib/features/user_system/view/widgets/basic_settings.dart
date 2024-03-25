@@ -7,7 +7,7 @@ import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_app/features/user_system/view/screens/update_email_screen.dart';
 import 'package:threddit_app/features/user_system/model/user_mock.dart';
-
+import 'package:http/http.dart' as http;
 const List<String> genders = <String>['Man', 'Woman'];
 
 class BasicSettings extends StatefulWidget {
@@ -16,6 +16,7 @@ class BasicSettings extends StatefulWidget {
 }
 
 class _BasicSettingsState extends State<BasicSettings> {
+  final client = http.Client();
   String pickedGender = genders.first;
   Country selectedCountry = Country.worldWide;
   void _selectBasicSetting(BuildContext context, String settingName) {
@@ -29,7 +30,7 @@ class _BasicSettingsState extends State<BasicSettings> {
   }
 
   Future<UserMock> fetchUser() async {
-    return getUserInfo();
+    return getUserInfo(client);
   }
 
   @override

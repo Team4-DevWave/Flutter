@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:threddit_app/features/user_system/model/user_mock.dart';
 import 'package:threddit_app/features/user_system/view/widgets/password_form.dart';
 import 'package:threddit_app/theme/colors.dart';
@@ -16,9 +17,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Current password");
   final PasswordForm newPasswordForm = PasswordForm("New password");
   final PasswordForm confirmPasswordForm = PasswordForm("Confirm new password");
-  
+  final client = http.Client();
   Future<UserMock> fetchUser() async {
-    return getUserInfo();
+    return getUserInfo(client);
   }
   
   @override

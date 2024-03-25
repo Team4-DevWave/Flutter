@@ -88,10 +88,10 @@ void checkPasswordChangeResponse(
 }
 
 
-Future<UserMock> getUserInfo() async {
+Future<UserMock> getUserInfo(http.Client client) async {
 
 
-  http.Response response = await http.get(
+  http.Response response = await client.get(
     Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
   );
   return UserMock.fromJson(jsonDecode(response.body));

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:threddit_app/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_app/features/user_system/model/user_mock.dart';
 import 'package:threddit_app/features/user_system/view_model/settings_functions.dart';
@@ -16,8 +17,9 @@ class UpdateEmailScreen extends StatefulWidget {
 class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Reddit password");
   final EmailForm newEmailForm = EmailForm("New email address");
+  final client = http.Client();
   Future<UserMock> fetchUser() async {
-    return getUserInfo();
+    return getUserInfo(client);
   }
 
   @override
