@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/features/user_system/view/widgets/enable_setting.dart';
 import 'package:threddit_app/features/user_system/view/widgets/settings_title.dart';
-
+/// Notification screen has the options renders the options that the user
+/// can use to turn on/off the notifcations he wants/doesn't want.
 class NotificationsSettingsScreen extends StatelessWidget {
   const NotificationsSettingsScreen({super.key});
   @override
