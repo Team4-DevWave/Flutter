@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/app/route.dart';
 import 'package:threddit_app/features/commenting/model/post.dart';
+import 'package:threddit_app/features/home_page/view/widgets/feed_widget.dart';
 import 'package:threddit_app/features/home_page/view/widgets/left_drawer_tiles.dart';
 import 'package:threddit_app/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_app/theme/colors.dart';
@@ -164,29 +165,30 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, RouteClass.postScreen,
-                    arguments: new Post(
-                        id: "1",
-                        title: "title",
-                        upvotes: [],
-                        downvotes: [],
-                        commentCount: 5,
-                        username: "username",
-                        uid: "1",
-                        type: "type",
-                        createdAt: DateTime.now(),
-                        awards: []));
-              },
-              child: const Text(
-                "Simple Post",
-                style: TextStyle(color: AppColors.whiteColor),
-              ))
-        ],
-      ),
+      body: FeedWidget(),
+      // Column(
+      //   children: [
+      //     InkWell(
+      //         onTap: () {
+      //           Navigator.pushNamed(context, RouteClass.postScreen,
+      //               arguments: new Post(
+      //                   id: "1",
+      //                   title: "title",
+      //                   upvotes: [],
+      //                   downvotes: [],
+      //                   commentCount: 5,
+      //                   username: "username",
+      //                   uid: "1",
+      //                   type: "type",
+      //                   createdAt: DateTime.now(),
+      //                   awards: []));
+      //         },
+      //         child: const Text(
+      //           "Simple Post",
+      //           style: TextStyle(color: AppColors.whiteColor),
+      //         ))
+      //   ],
+      // ),
     );
   }
 }

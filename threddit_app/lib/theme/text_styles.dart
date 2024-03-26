@@ -37,4 +37,10 @@ class AppTextStyles {
   static TextStyle secondaryTextStyle = GoogleFonts.notoSans(
     color: const Color.fromARGB(200, 255, 255, 255),
   );
+
+  static TextStyle boldTextStyle = GoogleFonts.notoSans(
+    fontSize: 17.sp,
+    fontWeight: FontWeight.bold,
+    color: Color.fromARGB(255, 255, 255, 255),
+  );
 }
