@@ -10,10 +10,18 @@ import 'package:threddit_clone/theme/text_styles.dart';
 class ContinueWithGoogle extends ConsumerWidget {
   const ContinueWithGoogle({super.key});
 
+  // void signInWithGoogle(WidgetRef ref) {
+  //   ref.read(authControllerProvider).signInWithGoogle();
+  // }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
-      onPressed: () => ref.read(authControllerProvider).signInWithGoogle(),
+      onPressed: () {},
+      /* => signInWithGoogle(ref),*/
+
+      // onPressed: () => signInWithGoogle(ref),
+
       style: AppButtons.registerButtons,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 15.h),
