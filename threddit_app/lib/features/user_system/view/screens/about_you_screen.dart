@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_app/app/route.dart';
-import 'package:threddit_app/features/user_system/view/widgets/register_appbar.dart';
-import 'package:threddit_app/theme/colors.dart';
-import 'package:threddit_app/theme/text_styles.dart';
+import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
+import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 
 class AboutYou extends StatelessWidget {
   const AboutYou({super.key});
@@ -13,7 +13,11 @@ class AboutYou extends StatelessWidget {
     return Scaffold(
       appBar: RegisterAppBar(
           action: () {
-            Navigator.pushNamed(context, RouteClass.userNameScreen);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => const UserName(),
+              ),
+            );
           },
           title: 'Skip'),
       body: Container(
@@ -42,7 +46,8 @@ class AboutYou extends StatelessWidget {
                         ),
                         SizedBox(height: 15.h),
                         Text(
-                          """Tell us about yourself to improve your recommendations and ads""",
+                          """
+Tell us about yourself to improve your recommendations and ads""",
                           style: AppTextStyles.primaryTextStyle.copyWith(
                             fontSize: 20.spMin,
                             color: AppColors.whiteHideColor,

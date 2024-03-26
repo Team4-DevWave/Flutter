@@ -1,31 +1,40 @@
 import 'dart:io';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app.dart';
 
+
+import 'package:threddit_app/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_app/app/app.dart';
-import 'package:threddit_app/firebase_options.dart';
-import 'package:threddit_app/theme/colors.dart';
+import 'package:threddit_app/theme/theme.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app.dart';
+
+
 import 'package:window_manager/window_manager.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-Future<void> _firebaseMessageingBackgroundHandler(RemoteMessage message) async {
-  print("handling a background message ${message.messageId}");
-}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   if (Platform.isWindows) {
-    WidgetsFlutterBinding.ensureInitialized();
     await windowManager.ensureInitialized();
     WindowManager.instance.setMinimumSize(const Size(690, 500));
-  } else {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    await await FirebaseMessaging.instance.getInitialMessage();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessageingBackgroundHandler);
   }
 
-  runApp(const ProviderScope(child: App()));
+  //Locking mobile to portraitUp
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]).then((fn) {
+    //Call app class to start the app
+    runApp(const ProviderScope(
+      child: App(),
+    ));
+  });
 }
