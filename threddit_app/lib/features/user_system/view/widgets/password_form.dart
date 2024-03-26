@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
-
+/// Creates a password text form, takes the form name as a parameter.
 class PasswordForm extends StatefulWidget {
   final String formName;
-  const PasswordForm(this.formName, {super.key});
+  String enteredPassword = "";
+  PasswordForm(this.formName);
+
   @override
   State<PasswordForm> createState() => _PasswordFormState();
 }
 
 class _PasswordFormState extends State<PasswordForm> {
   bool showText = false;
+  
+
+  void getPassword(String value){
+        setState(() {
+          widget.enteredPassword = value;
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: getPassword,
       decoration: InputDecoration(
         labelText: widget.formName,
         suffixIcon: IconButton(
@@ -19,7 +30,6 @@ class _PasswordFormState extends State<PasswordForm> {
               setState(() {
                 showText = !showText;
               });
-              // ignore: lines_longer_than_80_chars
             },
             icon: showText
                 ? const Icon(Icons.visibility_off)

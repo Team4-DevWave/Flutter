@@ -3,8 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
-import 'package:threddit_app/theme/widget_container_with_radius.dart';
-
+import 'package:threddit_app/features/listing/view/widgets/widget_container_with_radius.dart';
 class FeedUnit extends StatefulWidget {
   const FeedUnit({super.key});
 

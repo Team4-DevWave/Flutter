@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/theme/text_styles.dart';
-
+/// Class responsible for making the enable setting for the notifcations
+/// Which takes as parameters: 
+/// 
+/// An option name, and a setting Icon.
 class EnableSetting extends StatefulWidget {
   final String optionName;
   final IconData? settingIcon;

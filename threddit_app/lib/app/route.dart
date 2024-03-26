@@ -97,11 +97,11 @@ class RouteClass {
       case blockedScreen:
         return MaterialPageRoute(builder: (_) => const BlockedScreen());
       case changePasswordScreen:
-        return MaterialPageRoute(builder: (_) => const ChangePasswordScreen());
+        return MaterialPageRoute(builder: (_) => ChangePasswordScreen());
       case userNameScreen:
         return MaterialPageRoute(builder: (_) => const UserName());
       case updateEmailScreen:
-        return MaterialPageRoute(builder: (_) => const UpdateEmailScreen());
+        return MaterialPageRoute(builder: (_) => UpdateEmailScreen());
       case aboutMeScreen:
         return MaterialPageRoute(builder: (_) => const AboutYou());
       case mainLayoutScreen:
