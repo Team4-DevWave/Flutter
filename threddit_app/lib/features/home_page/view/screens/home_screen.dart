@@ -7,7 +7,6 @@ import 'package:threddit_app/features/home_page/view/widgets/communities_tiles.d
 import 'package:threddit_app/features/home_page/view/widgets/following_tiles.dart';
 
 import 'package:threddit_app/features/listing/view/widgets/feed_widget.dart';
-import 'package:threddit_app/features/home_page/view/widgets/left_drawer_tiles.dart';
 
 import 'package:threddit_app/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_app/features/listing/view/widgets/feed_widget.dart';
