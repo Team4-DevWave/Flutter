@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 Future<PostApi> fetchdata(String id) async {
   final response = await http.get(Uri.parse(
-      'https://apiv2.allsportsapi.com/football/?&met=Teams&APIkey=249335fc92ffe51aadfbfb9272ed465c1f6257cf4846092559c49fda01ba040b&leagueId=${id}'));
+      'https://d1884b69-05d1-43d1-acf8-86c6ac9d7b85.mock.pstmn.io/getbestpost'));
 
   if (response.statusCode == 200) {
     return PostApi.fromJson(jsonDecode(response.body));
@@ -20,6 +20,6 @@ class PostApi {
 
   factory PostApi.fromJson(Map<String, dynamic> json) {
     return PostApi(
-        success: json['success'], result: List<dynamic>.from(json['result']));
+        success: json['status'], result: List<dynamic>.from(json['data']));
   }
 }

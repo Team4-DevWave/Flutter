@@ -68,7 +68,11 @@ dependencies:
   firebase_auth: ^4.17.9
   intl: ^0.19.0
   uuid: ^4.3.3
+
   mockito: ^5.4.4
+
+
+  lottie: ^3.1.0
 
 
 
@@ -107,6 +111,7 @@ flutter:
     - assets/images/Default_Avatar.png
     - assets/icons/arrow_down.png
     - assets/icons/arrow_up.png
+    - assets/animation/loading.json
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

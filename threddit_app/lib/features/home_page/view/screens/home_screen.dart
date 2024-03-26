@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/app/route.dart';
 import 'package:threddit_app/features/commenting/model/post.dart';
+
 import 'package:threddit_app/features/home_page/view/widgets/communities_tiles.dart';
 import 'package:threddit_app/features/home_page/view/widgets/following_tiles.dart';
+
+import 'package:threddit_app/features/listing/view/widgets/feed_widget.dart';
+import 'package:threddit_app/features/home_page/view/widgets/left_drawer_tiles.dart';
+
 import 'package:threddit_app/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_app/features/listing/view/widgets/feed_widget.dart';
 import 'package:threddit_app/theme/colors.dart';
@@ -85,8 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
-              const CommunitiesTiles(
-                  title: "Communities"),
+              const CommunitiesTiles(title: "Communities"),
               const FollowingTiles(title: "Following"),
             ],
           ),

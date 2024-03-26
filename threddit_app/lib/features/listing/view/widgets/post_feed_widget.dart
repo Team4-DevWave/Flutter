@@ -4,14 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 import 'package:threddit_app/features/listing/view/widgets/widget_container_with_radius.dart';
-class FeedUnit extends StatefulWidget {
-  const FeedUnit({super.key});
 
-  @override
-  State<FeedUnit> createState() => _FeedUnitState();
-}
+class FeedUnit extends StatelessWidget {
+  final Map<String, dynamic> dataOfPost;
+  // ignore: lines_longer_than_80_chars
+  const FeedUnit(this.dataOfPost);
 
-class _FeedUnitState extends State<FeedUnit> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,15 +23,15 @@ class _FeedUnitState extends State<FeedUnit> {
               Container(
                   child: Row(
                 children: [
-                  const Text(
-                    "r/Name",
+                  Text(
+                    'r/${dataOfPost['username']}',
                     style: TextStyle(color: Colors.white),
                   ),
                   SizedBox(
                     width: 7.w,
                   ),
-                  const Text(
-                    "1d",
+                  Text(
+                    dataOfPost['time'],
                     style: TextStyle(color: AppColors.whiteHideColor),
                   ),
                 ],
@@ -48,11 +46,11 @@ class _FeedUnitState extends State<FeedUnit> {
             ],
           ),
           Text(
-            "Header",
+            dataOfPost['header'],
             style: AppTextStyles.boldTextStyle,
           ),
           Text(
-            "Test Test Test Test Test Test Test Test",
+            dataOfPost['container'],
             style: AppTextStyles.secondaryTextStyle,
           ),
           Center(
@@ -65,8 +63,9 @@ class _FeedUnitState extends State<FeedUnit> {
                   ),
               child: Image(
                 fit: BoxFit.cover,
-                image: NetworkImage(
-                    'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+                image: NetworkImage(dataOfPost['imageLink']
+                    //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                    ),
               ),
             ),
           ),
@@ -85,7 +84,7 @@ class _FeedUnitState extends State<FeedUnit> {
                               color: AppColors.whiteColor,
                             )),
                         Text(
-                          "123",
+                          dataOfPost['votes'].toString(),
                           style: AppTextStyles.secondaryTextStyle,
                         ),
                         const VerticalDivider(
@@ -108,7 +107,7 @@ class _FeedUnitState extends State<FeedUnit> {
                           color: AppColors.whiteColor,
                         ),
                         Text(
-                          " 74 Comment",
+                          dataOfPost['numberOfComments'].toString(),
                           style: TextStyle(color: AppColors.whiteColor),
                         ),
                       ],
