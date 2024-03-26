@@ -59,6 +59,7 @@ dependencies:
 
   persistent_bottom_nav_bar: ^5.0.2
   image_picker: ^1.0.7
+  mockito: ^5.4.4
 
 
   google_sign_in: ^6.2.1

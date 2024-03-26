@@ -7,9 +7,9 @@ import 'package:threddit_app/features/home_page/view/screens/community_screen.da
 import 'package:threddit_app/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_app/features/home_page/view/screens/notifications_screen.dart';
-import 'package:threddit_app/features/home_page/view/screens/post_to_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/search_screen.dart';
 import 'package:threddit_app/features/home_page/view/screens/user_profile_screen.dart';
+import 'package:threddit_app/features/post/view/post_to_screen.dart';
 import 'package:threddit_app/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/about_you_screen.dart';
 import 'package:threddit_app/features/user_system/view/screens/account_settings_screen.dart';

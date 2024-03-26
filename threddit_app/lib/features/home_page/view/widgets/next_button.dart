@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_app/app/route.dart';
-import 'package:threddit_app/features/post/view/post_to_screen.dart';
-import 'package:threddit_app/features/home_page/view/screens/post_to_screen.dart';
 import 'package:threddit_app/theme/colors.dart';
 
 class NextButton extends StatelessWidget {

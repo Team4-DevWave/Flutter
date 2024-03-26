@@ -51,6 +51,8 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
                   style: BorderStyle.none, color: Colors.transparent)),
               backgroundColor: const MaterialStatePropertyAll(
                   Color.fromARGB(255, 30, 30, 30)),
+                  surfaceTintColor:  const MaterialStatePropertyAll(
+                  Color.fromARGB(255, 30, 30, 30)),
               leading: const Icon(
                 Icons.search,
                 color: AppColors.realWhiteColor,
