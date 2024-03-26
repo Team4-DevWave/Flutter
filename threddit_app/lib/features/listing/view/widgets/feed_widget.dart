@@ -5,7 +5,8 @@ import 'package:lottie/lottie.dart';
 import 'package:threddit_app/theme/colors.dart';
 
 class FeedWidget extends StatefulWidget {
-  const FeedWidget({super.key});
+  final String feedID;
+  const FeedWidget({super.key, required this.feedID});
 
   @override
   State<FeedWidget> createState() => _FeedWidgetState();
@@ -17,11 +18,13 @@ class _FeedWidgetState extends State<FeedWidget> {
   @override
   void initState() {
     super.initState();
-    futuredata = fetchdata("Hot");
+
+    futuredata = fetchdata(widget.feedID);
   }
 
   @override
   Widget build(BuildContext context) {
+    futuredata = fetchdata(widget.feedID);
     return Container(
         color: AppColors.backgroundColor,
         child: FutureBuilder<PostApi>(
@@ -45,7 +48,7 @@ class _FeedWidgetState extends State<FeedWidget> {
                 },
               );
             } else {
-              return Text('No data available.');
+              return const Text('No data available.');
             }
           },
         ));

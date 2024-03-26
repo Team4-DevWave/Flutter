@@ -4,11 +4,15 @@ import 'package:threddit_app/theme/colors.dart';
 
 class SearchBarWidget extends ConsumerStatefulWidget {
   const SearchBarWidget(
-      {super.key, required this.hintText, required this.onTextChange, this.textController});
+      // ignore: lines_longer_than_80_chars
+      {super.key,
+      required this.hintText,
+      required this.onTextChange,
+      this.textController});
 
   final String hintText;
   //the text editing controller will probably be removed and replaced by providers
-  final TextEditingController?textController;
+  final TextEditingController? textController;
   final void Function(String) onTextChange;
   @override
   ConsumerState<SearchBarWidget> createState() => _SearchBarState();
@@ -26,7 +30,7 @@ class _SearchBarState extends ConsumerState<SearchBarWidget> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
-         const Icon(
+          const Icon(
             Icons.search,
             color: AppColors.whiteColor,
             size: 22,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
@@ -8,7 +8,7 @@ import 'package:threddit_app/features/listing/view/widgets/widget_container_with
 class FeedUnit extends StatelessWidget {
   final Map<String, dynamic> dataOfPost;
   // ignore: lines_longer_than_80_chars
-  const FeedUnit(this.dataOfPost);
+  const FeedUnit(this.dataOfPost, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class FeedUnit extends StatelessWidget {
                 children: [
                   Text(
                     'r/${dataOfPost['username']}',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                   SizedBox(
                     width: 7.w,

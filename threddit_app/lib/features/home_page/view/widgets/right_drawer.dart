@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
-class RightDrawerButtons extends StatelessWidget{
-  const RightDrawerButtons({super.key, required this.icon, required this.title, required this.onTap});
+class RightDrawerButtons extends StatelessWidget {
+  // ignore: lines_longer_than_80_chars
+  const RightDrawerButtons(
+      {super.key,
+      required this.icon,
+      required this.title,
+      required this.onTap});
 
   final Icon icon;
-  final  String title;
+  final String title;
   final void Function() onTap;
 
   @override
@@ -16,15 +21,15 @@ class RightDrawerButtons extends StatelessWidget{
       child: InkWell(
         splashColor: AppColors.whiteColor,
         onTap: onTap,
-        child: Row(
-          children: [
-            icon,
-            const SizedBox(width: 20),
-            Text(title, style: AppTextStyles.secondaryTextStyle,),
-          ]
-        ),
+        child: Row(children: [
+          icon,
+          const SizedBox(width: 20),
+          Text(
+            title,
+            style: AppTextStyles.secondaryTextStyle,
+          ),
+        ]),
       ),
     );
   }
-
 }
