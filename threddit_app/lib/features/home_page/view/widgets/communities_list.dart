@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_app/features/home_page/view_model/left_drawer_api.dart';
+import 'package:threddit_app/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_app/theme/colors.dart';
 import 'package:threddit_app/theme/text_styles.dart';
 
@@ -11,26 +11,26 @@ class CommunityList extends StatefulWidget {
 }
 
 class _CommunityListState extends State<CommunityList> {
-  late Future<Map<String, List<String>>> _drawerData;
+  late Future<List<String>> _communityData;
 
   @override
   void initState() {
     ///fetches the data when the widget is intialized
-    _drawerData = LeftDrawerAPI().getDrawerData();
+    _communityData = UserCommunitiesAPI().getUserCommunities();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, List<String>>>(
-        future: _drawerData,
+    return FutureBuilder<List<String>>(
+        future: _communityData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); //Placeholder while loading
           } else if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
-            List<String> dataList = snapshot.data!['communities']!;
+            List<String> dataList = snapshot.data??[];
             return ListView.builder(
                 itemCount: dataList.length,
                 shrinkWrap: true,

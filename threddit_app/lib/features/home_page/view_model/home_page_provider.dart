@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+///this provider class is responsible for storing the index
+///of the current screen which we move between 
+///from the bottom navigation bar in the main layout screen
 class CurrentScreenNotifier extends StateNotifier<int> 
 {
   CurrentScreenNotifier() : super(0);
@@ -9,6 +12,8 @@ class CurrentScreenNotifier extends StateNotifier<int>
     _previousScreen = state;
     state  = screen;
   }
+  ///this is useful for the add post screen where we want
+  ///to go back to the latest screen after returning from it
   void returnToPrevious()
   {
     state = _previousScreen;
