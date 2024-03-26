@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-const uuid = Uuid();
+
 
 class Comment {
   final String id;
@@ -13,6 +13,7 @@ class Comment {
   final List<String> downvotes;
 
   Comment({
+    required this.id,
     required this.text,
     required this.createdAt,
     required this.postId,
@@ -20,7 +21,7 @@ class Comment {
     this.profilePic,
     required this.upvotes,
     required this.downvotes,
-  }) : id = uuid.v4();
+  });
 
   Comment copyWith({
     String? id,
@@ -33,6 +34,7 @@ class Comment {
     List<String>? downvotes,
   }) {
     return Comment(
+      id: id ?? this.id,
       text: text ?? this.text,
       createdAt: createdAt ?? this.createdAt,
       postId: postId ?? this.postId,
@@ -58,6 +60,7 @@ class Comment {
 
   factory Comment.fromMap(Map<String, dynamic> map) {
     return Comment(
+      id: map['id'] ?? '',
       text: map['text'] ?? '',
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
       postId: map['postId'] ?? '',
@@ -97,4 +100,32 @@ class Comment {
         username.hashCode ^
         profilePic.hashCode;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'text': text,
+      'createdAt': createdAt.toIso8601String(),
+      'postId': postId,
+      'username': username,
+      'profilePic': profilePic,
+      'upvotes': upvotes,
+      'downvotes': downvotes,
+    };
+  }
+
+  // Factory method to create a Comment object from a JSON map
+  factory Comment.fromJson(Map<String, dynamic> json) {
+    return Comment(
+      id: json['id'],
+      text: json['text'],
+      createdAt: DateTime.parse(json['createdAt']),
+      postId: json['postId'],
+      username: json['username'],
+      profilePic: json['profilePic'],
+      upvotes: List<String>.from(json['upvotes']),
+      downvotes: List<String>.from(json['downvotes']),
+    );
+  }
 }
+

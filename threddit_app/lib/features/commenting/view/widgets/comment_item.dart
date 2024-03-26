@@ -17,15 +17,20 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   @override
   Widget build(BuildContext context) {
     void upVotePost(WidgetRef ref) async {
-      final upvoteFunction = ref.read(commentUpvoteProvider(widget.comment));
+      final upvoteFunction = ref.watch(commentUpvoteProvider(widget.comment));
       upvoteFunction(widget.uid);
+      print(widget.comment.upvotes);
+      print(widget.comment.downvotes);
+
       setState(() {});
     }
 
     void downVotePost(WidgetRef ref) async {
       final downvoteFunction =
-          ref.read(commentDownvoteProvider(widget.comment));
+          ref.watch(commentDownvoteProvider(widget.comment));
       downvoteFunction(widget.uid);
+      print(widget.comment.upvotes);
+      print(widget.comment.downvotes);
       setState(() {});
     }
 

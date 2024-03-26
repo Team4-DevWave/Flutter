@@ -1,18 +1,60 @@
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
+import "package:threddit_app/features/commenting/model/community.dart";
+import "package:threddit_app/features/community/view%20model/community_provider.dart";
 import "package:threddit_app/theme/colors.dart";
 
 class CreateCommunity extends ConsumerStatefulWidget {
-  const CreateCommunity({super.key});
+  const CreateCommunity({super.key, required this.uid});
+  final String uid;
 
   @override
   _CreateCommunityState createState() => _CreateCommunityState();
 }
 
 class _CreateCommunityState extends ConsumerState<CreateCommunity> {
-  bool light = false;
+  final TextEditingController _communityNameController =
+      TextEditingController();
   String communityType = 'Public';
+  CommunityType _type = CommunityType.Public;
+  bool is18plus = false;
+
+  @override
+  void dispose() {
+    _communityNameController.dispose();
+    super.dispose();
+  }
+
+  void createCommunity() async {
+    if(_communityNameController.text=='')
+    {
+      showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text('Please enter a community name.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+    return;
+    }
+    final createCommunityFuture = ref.watch(createCommunityProvider(
+        CreateCommunityParams(
+            name: _communityNameController.text,
+            is18plus: is18plus,
+            type: _type,
+            uid: widget.uid)));
+    await createCommunityFuture;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +87,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
             centerTitle: true,
           ),
           body: Padding(
-            padding: EdgeInsets.only(top: 30.0, left: 15, right: 15),
+            padding: const EdgeInsets.only(top: 30.0, left: 15, right: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -54,15 +96,18 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                   style: TextStyle(color: Colors.white),
                 ),
                 const SizedBox(height: 5),
-                const SizedBox(
+                SizedBox(
                   height: 65,
                   child: TextField(
-                    style: TextStyle(color: Color.fromARGB(171, 255, 255, 255)),
-                    decoration: InputDecoration(
+                    controller: _communityNameController,
+                    style: const TextStyle(
+                        color: Color.fromARGB(171, 255, 255, 255)),
+                    decoration: const InputDecoration(
                       filled: true,
                       prefixText: 'r/',
                       hintText: 'Community_name',
-                      hintStyle: TextStyle(color: Color.fromARGB(104, 255, 255, 255)),
+                      hintStyle:
+                          TextStyle(color: Color.fromARGB(104, 255, 255, 255)),
                       fillColor: Color.fromARGB(210, 36, 36, 36),
                     ),
                     maxLength: 21,
@@ -78,25 +123,52 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                 DropdownButton<String>(
                   value: communityType,
                   dropdownColor: AppColors.backgroundColor,
-                  onChanged: (value) {communityType=value.toString();
-                  setState(() {
-                    
-                  }); },
-                   style: const TextStyle(color: Colors.white),
+                  onChanged: (value) {
+                    setState(() {
+                      communityType = value!;
+                      if (value == 'Public') {
+                        _type = CommunityType.Public;
+                      } else if (value == 'Private') {
+                        _type = CommunityType.Private;
+                      } else {
+                        _type = CommunityType.Restricted;
+                      }
+                    });
+                  },
+                  style: const TextStyle(color: Colors.white),
                   items: <String>['Public', 'Private', 'Restricted']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value,style: const TextStyle(color:Colors.white,fontSize: 17),),
+                      child: Text(
+                        value,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 17),
+                      ),
                     );
                   }).toList(),
                 ),
                 if (communityType == 'Public')
-                  const Text('Anyone can view,post, and comment to this community',style: TextStyle(color: Color.fromARGB(122, 255, 255, 255),fontSize: 13),),
+                  const Text(
+                    'Anyone can view, post, and comment to this community',
+                    style: TextStyle(
+                        color: Color.fromARGB(122, 255, 255, 255),
+                        fontSize: 13),
+                  ),
                 if (communityType == 'Private')
-                  const Text('Only approved users can view and submit to this community',style: TextStyle(color: Color.fromARGB(122, 255, 255, 255),fontSize: 13),),
+                  const Text(
+                    'Only approved users can view and submit to this community',
+                    style: TextStyle(
+                        color: Color.fromARGB(122, 255, 255, 255),
+                        fontSize: 13),
+                  ),
                 if (communityType == 'Restricted')
-                  const Text('Anyone can view this community, but only approved users can post',style: TextStyle(color: Color.fromARGB(122, 255, 255, 255),fontSize: 13),),
+                  const Text(
+                    'Anyone can view this community, but only approved users can post',
+                    style: TextStyle(
+                        color: Color.fromARGB(122, 255, 255, 255),
+                        fontSize: 13),
+                  ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15.0),
                   child: Row(
@@ -110,13 +182,16 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Switch(
-                              value: light,
-                              activeColor: Color.fromARGB(255, 39, 78, 137),
-                              thumbColor: const MaterialStatePropertyAll<Color>(Colors.white),
-                              inactiveTrackColor: const Color.fromARGB(255, 57, 57, 57),
+                              value: is18plus,
+                              activeColor:
+                                  const Color.fromARGB(255, 39, 78, 137),
+                              thumbColor: const MaterialStatePropertyAll<Color>(
+                                  Colors.white),
+                              inactiveTrackColor:
+                                  const Color.fromARGB(255, 57, 57, 57),
                               onChanged: (bool value) {
                                 setState(() {
-                                  light = value;
+                                  is18plus = value;
                                 });
                               },
                             ),
@@ -133,8 +208,10 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: FilledButton(
-                          onPressed: () {},
-                          style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Colors.blue)),
+                          onPressed: createCommunity,
+                          style: const ButtonStyle(
+                              backgroundColor:
+                                  MaterialStatePropertyAll<Color>(Colors.blue)),
                           child: const Text(
                             'Create Community',
                             style: TextStyle(fontSize: 16),
