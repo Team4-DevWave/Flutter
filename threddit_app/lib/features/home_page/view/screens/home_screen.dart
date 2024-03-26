@@ -22,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  String feedID = 'Best';
   final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
 
   void _openEndDrawer() {
@@ -62,9 +62,12 @@ class _HomeScreenState extends State<HomeScreen> {
               tabs.map<DropdownMenuEntry<String>>((String string) {
             return DropdownMenuEntry(value: string, label: string);
           }).toList(),
-          width: MediaQuery.of(context).size.width,
+          width: 150,
           initialSelection: tabs[0],
           onSelected: (String? value) {
+            setState(() {
+              feedID = value!;
+            });
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Changed to tab $value'),
               duration: Durations.short1,

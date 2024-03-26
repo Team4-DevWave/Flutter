@@ -13,27 +13,25 @@ class FeedWidget extends StatefulWidget {
 
 class _FeedWidgetState extends State<FeedWidget> {
   late Future<PostApi> futuredata;
+
   @override
   void initState() {
     super.initState();
-    futuredata = fetchdata('1');
+    futuredata = fetchdata("Hot");
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.black,
+        color: AppColors.backgroundColor,
         child: FutureBuilder<PostApi>(
           future: futuredata,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: Container(
-                  color: const Color.fromARGB(255, 0, 0, 0),
-                  child: Lottie.asset(
-                    'assets/animation/loading.json',
-                    repeat: true,
-                  ),
+                child: Lottie.asset(
+                  'assets/animation/loading.json',
+                  repeat: true,
                 ),
               );
             } else if (snapshot.hasError) {
