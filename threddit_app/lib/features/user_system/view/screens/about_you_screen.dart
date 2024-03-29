@@ -63,15 +63,6 @@ Tell us about yourself to improve your recommendations and ads""",
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 13.h),
-                        ElevatedButton(
-                          onPressed: () => ref
-                              .read(authControllerProvider)
-                              .signOutWithGoogle(),
-                          child: const Text(
-                            'SignOut',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
                         SizedBox(
                           height: 10.h,
                         ),
