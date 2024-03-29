@@ -5,14 +5,12 @@ class UserData {
 
   final String username;
   final Image avatar;
-  final  List<Widget> posts;
-  
+  final List<Widget> posts;
 }
 
-final userData = <UserData>  [
+final userData = <UserData>[
   UserData(
-    avatar: Image.asset('assets/images/user1.jpg'),
-    username: "John Doe",
-    posts: []
-  )
+      avatar: Image.asset('assets/images/user1.jpg'),
+      username: "John Doe",
+      posts: [])
 ];
