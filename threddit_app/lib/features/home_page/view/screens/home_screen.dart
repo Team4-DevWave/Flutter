@@ -118,10 +118,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Navigator.pushNamed(
                             context, RouteClass.userProfileScreen);
                       },
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(user.profilePic),
-                        minRadius: 50.w,
-                        // height: 50.h,
+                      child: Image.asset(
+                        Photos.snoLogo,
+                        width: 50.w,
+                        height: 50.h,
                       ),
                     ),
                     Text(
