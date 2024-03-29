@@ -13,7 +13,8 @@ class ContinueWithGoogle extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
-      onPressed: () => ref.read(authControllerProvider).signInWithGoogle(),
+      onPressed: () =>
+          ref.read(authControllerProvider.notifier).signInWithGoogle(context),
       style: AppButtons.registerButtons,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 15.h),
