@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
@@ -10,18 +11,19 @@ import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.d
 
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
+import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String feedID = 'Best';
   final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
@@ -32,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userProvider)!;
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.backgroundColor,
@@ -122,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     Text(
-                      "u/UserName",
+                      "u/${user.name}",
                       style: AppTextStyles.primaryTextStyle,
                     ),
                   ],
@@ -162,6 +165,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 title: "History",
                 onTap: () {}),
+            RightDrawerButtons(
+              icon: const Icon(
+                Icons.logout_rounded,
+                color: AppColors.whiteColor,
+              ),
+              title: "Logout",
+              onTap: () => ref.watch(authControllerProvider.notifier).logout(),
+            ),
             RightDrawerButtons(
                 icon: const Icon(
                   Icons.settings_outlined,

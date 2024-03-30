@@ -19,7 +19,7 @@ class NextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     void onNext() {
       if (titleController.text.isNotEmpty) {
-        //Navigator.pushNamed(context, RouteClass.postToScreen);
+        Navigator.pushNamed(context, RouteClass.postToScreen);
       } else {
         null;
       }

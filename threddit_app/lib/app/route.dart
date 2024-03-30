@@ -63,7 +63,7 @@ class RouteClass {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case initRoute:
-        return MaterialPageRoute(builder: (_) => StartScreen());
+        return MaterialPageRoute(builder: (_) => const StartScreen());
       case userProfileScreen:
         return MaterialPageRoute(builder: (_) => const UserProfile());
       case accountSettingScreen:
