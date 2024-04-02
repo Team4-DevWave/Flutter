@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/app_agreement.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/register_buttons.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/continue_with_email.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/continue_with_google.dart';
 import 'package:threddit_clone/features/user_system/view_model/navigate_register_login.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -49,7 +50,9 @@ class RegisterScreen extends ConsumerWidget {
                     ),
                     Column(
                       children: [
-                        const RegisterButtons(),
+                        const ContinueWithGoogle(),
+                        SizedBox(height: 10.h),
+                        const ContinueWithEmail(),
                         SizedBox(height: 16.h),
                         const AppAgreement(),
                         SizedBox(height: 15.h),

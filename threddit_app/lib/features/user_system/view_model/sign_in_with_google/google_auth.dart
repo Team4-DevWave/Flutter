@@ -1,7 +1,7 @@
-import 'dart:io';
-
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,7 +9,7 @@ import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/firebase_providers.dart';
-import 'package:threddit_clone/theme/photos.dart';
+import 'package:http/http.dart' as http;
 
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
@@ -36,10 +36,10 @@ class AuthRepository {
 
   Stream<User?> get authStateChange => _auth.authStateChanges();
 
-  FutureEither<UserModel> signInWithGoogle() async {
+  FutureEither<http.Response> signInWithGoogle() async {
     try {
       UserCredential userCredential;
-      if (Platform.isWindows) {
+      if (kIsWeb) {
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
         googleProvider
             .addScope('https://www.googleapis.com/auth/contacts.readonly');
@@ -55,23 +55,24 @@ class AuthRepository {
         );
         userCredential = await _auth.signInWithCredential(credential);
       }
+      String? authToken = await userCredential.user!.getIdToken();
+      final url = Uri.https(
+          'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+          'token.json');
 
-      UserModel userModel;
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'token': authToken,
+          },
+        ),
+      );
 
-      if (userCredential.additionalUserInfo!.isNewUser) {
-        userModel = UserModel(
-          name: userCredential.user!.displayName ?? 'No Name',
-          profilePic: userCredential.user!.photoURL ?? Photos.snoLogo,
-          banner: Photos.snoLogo,
-          uid: userCredential.user!.uid,
-          isAuthenticated: true,
-          karma: 0,
-        );
-        await _users.doc(userCredential.user!.uid).set(userModel.toMap());
-      } else {
-        userModel = await getUserData(userCredential.user!.uid).first;
-      }
-      return right(userModel);
+      return right(response);
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {

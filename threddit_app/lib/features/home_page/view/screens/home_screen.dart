@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
-
 import 'package:threddit_clone/features/home_page/view/widgets/communities_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.dart';
-
-//import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
-
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
-
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -34,7 +28,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider)!;
+    //final user = ref.watch(userProvider)!;
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.backgroundColor,
@@ -125,7 +119,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                     Text(
-                      "u/${user.name}",
+                      "u/username",
+                      //"u/${user.name}",
                       style: AppTextStyles.primaryTextStyle,
                     ),
                   ],

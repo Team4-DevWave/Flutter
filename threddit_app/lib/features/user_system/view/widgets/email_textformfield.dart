@@ -10,7 +10,7 @@ class EmailTextFromField extends ConsumerWidget {
       {super.key, required this.controller, required this.identifier});
   final TextEditingController controller;
   final String identifier;
-
+  static final _key = GlobalKey();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final String displayedText =
@@ -20,6 +20,7 @@ class EmailTextFromField extends ConsumerWidget {
         ref.watch(Validation().emailSignupValidatorProvider);
 
     return TextFormField(
+      key: _key,
       keyboardType: TextInputType.emailAddress,
       style: AppTextStyles.primaryTextStyle,
       maxLength: 50,
