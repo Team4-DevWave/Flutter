@@ -8,15 +8,16 @@ import 'package:threddit_clone/theme/text_styles.dart';
 class PasswordTextFormField extends ConsumerWidget {
   const PasswordTextFormField(
       {super.key, required this.controller, required this.identifier});
-
-  final String identifier;
   final TextEditingController controller;
+  final String identifier;
+  static final passKey = GlobalKey();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final passwordSignupValidator =
         ref.watch(Validation().passwordSignupValidatorProvider);
 
     return TextFormField(
+      key: passKey,
       style: AppTextStyles.primaryTextStyle,
       maxLength: 50,
       cursorColor: AppColors.redditOrangeColor,

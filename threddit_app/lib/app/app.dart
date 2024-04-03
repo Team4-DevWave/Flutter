@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
-
+import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/theme/theme.dart';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:threddit_clone/features/notifications/view_model/methods.dart';
-import 'package:http/http.dart' as http;
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -154,6 +151,7 @@ class _AppState extends State<App> {
               }
             },
             child: MaterialApp(
+              navigatorKey: navigatorKey,
               initialRoute: RouteClass.initRoute,
               onGenerateRoute: RouteClass.generateRoute,
               debugShowCheckedModeBanner: false,
