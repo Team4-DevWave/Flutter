@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
@@ -143,22 +144,43 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                                         controller: passController,
                                         identifier: 'login',
                                       ),
-                                      Column(
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           TextButton(
-                                              onPressed: () {},
-                                              child: Text(
-                                                'Forget password?',
-                                                style: AppTextStyles
-                                                    .primaryTextStyle
-                                                    .copyWith(
-                                                  color: AppColors
-                                                      .redditOrangeColor,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              )),
+                                            onPressed: () {},
+                                            child: Text(
+                                              'Forget password?',
+                                              style: AppTextStyles
+                                                  .primaryTextStyle
+                                                  .copyWith(
+                                                color:
+                                                    AppColors.redditOrangeColor,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            'OR',
+                                            style:
+                                                AppTextStyles.primaryTextStyle,
+                                          ),
+                                          TextButton(
+                                            onPressed: () {},
+                                            child: Text(
+                                              'Forget username?',
+                                              style: AppTextStyles
+                                                  .primaryTextStyle
+                                                  .copyWith(
+                                                color:
+                                                    AppColors.redditOrangeColor,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ],

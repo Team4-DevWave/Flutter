@@ -36,7 +36,7 @@ class AuthController extends StateNotifier<bool> {
       (response) {
         ///If response upon login is 200 therfore user is found and we will login
         ///else we will continue signup
-        if (response.statusCode == 300) {
+        if (response.statusCode == 200) {
           saveToken(response.body.toString());
           Navigator.pushNamedAndRemoveUntil(
             navigatorKey.currentContext!,

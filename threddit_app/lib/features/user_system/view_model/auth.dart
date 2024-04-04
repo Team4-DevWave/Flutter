@@ -13,6 +13,7 @@ class Auth extends StateNotifier<bool> {
   Auth(this.ref) : super(false);
 
   ///This function is responsible for checking if user trying to sign up is new or not
+  ///by using the check mail availabity in the BE
   Future<void> saveEmail(String? email) async {
     state = true;
     final url = Uri.https(
@@ -37,6 +38,7 @@ class Auth extends StateNotifier<bool> {
     }
   }
 
+  ///this function saves the user password to the user model
   void savePassword(String password) {
     state = true;
     UserModel? currentUser = ref.read(userProvider)!;
@@ -50,6 +52,19 @@ class Auth extends StateNotifier<bool> {
     state = false;
   }
 
+  void saveUserName(String userName) {
+    state = true;
+    UserModel? currentUser = ref.read(userProvider)!;
+
+    /// Create a new user with the updated username
+    UserModel updatedUser = currentUser.copyWith(username: userName);
+
+    /// Update the userProvider state with the new user
+    ref.read(userProvider.notifier).state = updatedUser;
+    state = false;
+  }
+
+  ///this function save the username or email to the usermodel
   void saveLoginEmail(String value) async {
     state = true;
     UserModel updatedUser;
@@ -62,18 +77,21 @@ class Auth extends StateNotifier<bool> {
     ///else will update the user model with the entered username
     if (isMail) {
       /// Create a new user with the updated email
-      updatedUser = currentUser.copyWith(email: value, isGoogle: false);
+      updatedUser =
+          currentUser.copyWith(username: "", email: value, isGoogle: false);
 
       ref.read(enteredValue.notifier).update((state) => 'email');
     } else {
       /// Create a new user with the updated username
-      updatedUser = currentUser.copyWith(username: value, isGoogle: false);
+      updatedUser =
+          currentUser.copyWith(username: value, isGoogle: false, email: "");
       ref.read(enteredValue.notifier).update((state) => 'username');
     }
     ref.read(userProvider.notifier).state = updatedUser;
     state = false;
   }
 
+  ///this function login the user and saves the token to the cache to create session
   Future<void> login() async {
     state = true;
     final user = ref.watch(userProvider)!;
@@ -100,5 +118,21 @@ class Auth extends StateNotifier<bool> {
       ref.read(succeeded.notifier).update((state) => false);
     }
     state = false;
+  }
+
+  Future<bool> checkAvailability(String username) async {
+    final url = Uri.https(
+        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+        'token.json');
+    final response = await http.get(url);
+
+    //this should be 200 but will make it 400 to stop checking
+    if (response.statusCode == 400) {
+      ref.read(isUserNameUsedProvider.notifier).update((state) => true);
+      return true;
+    } else {
+      ref.read(isUserNameUsedProvider.notifier).update((state) => false);
+      return false;
+    }
   }
 }

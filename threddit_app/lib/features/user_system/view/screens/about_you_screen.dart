@@ -68,6 +68,10 @@ Tell us about yourself to improve your recommendations and ads""",
                           style: const TextStyle(color: Colors.white),
                         ),
                         Text(
+                          user.username,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
                           user.password,
                           style: const TextStyle(color: Colors.white),
                         ),
