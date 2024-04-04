@@ -21,6 +21,7 @@ import 'package:threddit_clone/features/user_system/view/screens/signup_screen.d
 import 'package:threddit_clone/features/user_system/view/screens/update_email_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
 
 import '../features/user_system/view/screens/login_screen.dart';
 
@@ -48,6 +49,7 @@ class RouteClass {
   static const String accountSettingScreen = '/account_Settings';
   static const String userNameScreen = '/loading';
   static const String aboutMeScreen = '/aboutme';
+  static const String interestsScreen = '/interests';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -105,6 +107,8 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => UpdateEmailScreen());
       case aboutMeScreen:
         return MaterialPageRoute(builder: (_) => const AboutYou());
+      case interestsScreen:
+        return MaterialPageRoute(builder: (_) => const Interests());
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
       case postScreen:
