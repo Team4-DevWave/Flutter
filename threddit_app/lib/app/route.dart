@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/commenting/model/post.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
-import 'package:threddit_clone/features/home_page/view/screens/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/community_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
@@ -9,6 +8,8 @@ import 'package:threddit_clone/features/home_page/view/screens/main_screen_layou
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/user_profile_screen.dart';
+import 'package:threddit_clone/features/post/view/add_post_screen.dart';
+import 'package:threddit_clone/features/post/view/confirm_post.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/about_you_screen.dart';
@@ -48,6 +49,7 @@ class RouteClass {
   static const String accountSettingScreen = '/account_Settings';
   static const String userNameScreen = '/loading';
   static const String aboutMeScreen = '/aboutme';
+  static const String confirmPostScreen = '/confirmpost';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -107,6 +109,8 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const AboutYou());
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
+      case confirmPostScreen:
+        return MaterialPageRoute(builder: (_) => const ConfirmPost());
       case postScreen:
         var data = settings.arguments as Post;
         return MaterialPageRoute(

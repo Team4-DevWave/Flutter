@@ -61,7 +61,7 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
               textStyle:
                   MaterialStatePropertyAll(AppTextStyles.primaryTextStyle),
               onChanged: (text) {
-                //update provider
+                //search for the new text
               },
             ),
             const CommunityList(),
