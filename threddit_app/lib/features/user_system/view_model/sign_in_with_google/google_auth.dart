@@ -10,9 +10,11 @@ import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/firebase_providers.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
+    ref,
     firestore: ref.read(firestoreProvider),
     auth: ref.read(authProvider),
     googleSignIn: ref.read(googleSignInProvider),
@@ -20,11 +22,13 @@ final authRepositoryProvider = Provider(
 );
 
 class AuthRepository {
+  final Ref ref;
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
 
-  AuthRepository({
+  AuthRepository(
+    this.ref, {
     required FirebaseFirestore firestore,
     required FirebaseAuth auth,
     required GoogleSignIn googleSignIn,
@@ -56,6 +60,15 @@ class AuthRepository {
         userCredential = await _auth.signInWithCredential(credential);
       }
       String? authToken = await userCredential.user!.getIdToken();
+
+      UserModel? currentUser = ref.read(userProvider)!;
+
+      /// Create a new user with the updated email
+      UserModel updatedUser =
+          currentUser.copyWith(token: authToken, isGoogle: true);
+
+      /// Update the userProvider state with the new user
+      ref.read(userProvider.notifier).state = updatedUser;
       final url = Uri.https(
           'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
           'token.json');

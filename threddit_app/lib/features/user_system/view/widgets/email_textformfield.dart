@@ -10,7 +10,6 @@ class EmailTextFromField extends ConsumerWidget {
       {super.key, required this.controller, required this.identifier});
   final TextEditingController controller;
   final String identifier;
-  static final _key = GlobalKey();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final String displayedText =
@@ -19,8 +18,10 @@ class EmailTextFromField extends ConsumerWidget {
     final emailSignupValidator =
         ref.watch(Validation().emailSignupValidatorProvider);
 
+    final emailLoginValidator =
+        ref.watch(Validation().emailLoginValidatorProvider);
     return TextFormField(
-      key: _key,
+      controller: controller,
       keyboardType: TextInputType.emailAddress,
       style: AppTextStyles.primaryTextStyle,
       maxLength: 50,
@@ -50,8 +51,9 @@ class EmailTextFromField extends ConsumerWidget {
             EdgeInsets.symmetric(vertical: 18.0.h, horizontal: 20.0.w),
         counter: const SizedBox.shrink(),
       ),
-      validator: emailSignupValidator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator:
+          identifier == 'signup' ? emailSignupValidator : emailLoginValidator,
     );
   }
 }

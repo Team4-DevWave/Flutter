@@ -58,6 +58,7 @@ dependencies:
   dartz: ^0.10.1
   shared_preferences: ^2.2.2
   flutter_secure_storage: ^4.2.1
+  email_validator: ^2.1.17
 dev_dependencies:
   flutter_test:
     sdk: flutter

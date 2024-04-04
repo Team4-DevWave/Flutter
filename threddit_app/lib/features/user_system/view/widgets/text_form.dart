@@ -12,17 +12,16 @@ class TextForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final passwordController = TextEditingController();
-    final emailController = TextEditingController();
-
     final formKey = GlobalKey<FormState>();
-
+    final emailController = TextEditingController();
+    final passController = TextEditingController();
     void updateFormValidity() {
       final isValid =
           formKey.currentState != null && formKey.currentState!.validate();
       ref.read(continueSignupProvider.notifier).updateFormValidity(isValid);
     }
 
+    final key = GlobalKey();
     return PopScope(
       onPopInvoked: (context) => formKey.currentState?.reset(),
       child: Form(
@@ -38,7 +37,7 @@ class TextForm extends ConsumerWidget {
               height: 8.h,
             ),
             PasswordTextFormField(
-              controller: passwordController,
+              controller: passController,
               identifier: identifier,
             ),
           ],

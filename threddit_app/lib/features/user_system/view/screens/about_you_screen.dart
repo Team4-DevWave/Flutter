@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
+import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -11,6 +12,7 @@ class AboutYou extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userProvider)!;
     return Scaffold(
       appBar: RegisterAppBar(
           action: () {
@@ -61,6 +63,26 @@ Tell us about yourself to improve your recommendations and ads""",
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 13.h),
+                        Text(
+                          user.email,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          user.password,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          user.token,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          user.isGoogle.toString(),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          user.country,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                         SizedBox(
                           height: 10.h,
                         ),
