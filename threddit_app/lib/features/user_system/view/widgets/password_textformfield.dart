@@ -10,14 +10,16 @@ class PasswordTextFormField extends ConsumerWidget {
       {super.key, required this.controller, required this.identifier});
   final TextEditingController controller;
   final String identifier;
-  static final passKey = GlobalKey();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final passwordSignupValidator =
         ref.watch(Validation().passwordSignupValidatorProvider);
 
+    final passwordLoginValidator =
+        ref.watch(Validation().passwordLoginValidatorProvider);
+
     return TextFormField(
-      key: passKey,
+      controller: controller,
       style: AppTextStyles.primaryTextStyle,
       maxLength: 50,
       cursorColor: AppColors.redditOrangeColor,
@@ -47,8 +49,10 @@ class PasswordTextFormField extends ConsumerWidget {
             EdgeInsets.symmetric(vertical: 18.0.h, horizontal: 20.0.w),
         counter: const SizedBox.shrink(),
       ),
-      validator: passwordSignupValidator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: identifier == 'signup'
+          ? passwordSignupValidator
+          : passwordLoginValidator,
     );
   }
 }

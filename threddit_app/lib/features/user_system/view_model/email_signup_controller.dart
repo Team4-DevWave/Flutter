@@ -13,7 +13,7 @@ class Validation {
           r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
       final regex = RegExp(pattern);
 
-      return (value == null || !regex.hasMatch(value))
+      return (value == null || value.isEmpty || !regex.hasMatch(value))
           ? 'Not a valid email address'
           : null;
     }
@@ -24,9 +24,26 @@ class Validation {
   final Provider<String? Function(String?)> passwordSignupValidatorProvider =
       Provider(
     (ref) {
-      return (value) => (value == null || value.length < 8)
+      return (value) => (value == null || value.isEmpty || value.length < 8)
           ? "Password must be at least 8 characters"
           : null;
+    },
+  );
+
+  final Provider<String? Function(String?)> emailLoginValidatorProvider =
+      Provider((ref) {
+    String? validateEmail(String? value) {
+      return (value == null || value.isEmpty) ? 'Value cannot be empty' : null;
+    }
+
+    return validateEmail;
+  });
+
+  final Provider<String? Function(String?)> passwordLoginValidatorProvider =
+      Provider(
+    (ref) {
+      return (value) =>
+          (value == null || value.isEmpty) ? "Value cannot be empty" : null;
     },
   );
 }
