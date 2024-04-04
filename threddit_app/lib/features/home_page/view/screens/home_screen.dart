@@ -28,7 +28,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //final user = ref.watch(userProvider)!;
+    ////final user = ref.watch(userProvider)!;
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.backgroundColor,
@@ -119,8 +119,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                     Text(
-                      "u/username",
-                      //"u/${user.name}",
+                      'u/UserName',
                       style: AppTextStyles.primaryTextStyle,
                     ),
                   ],
