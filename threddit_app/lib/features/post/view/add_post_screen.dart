@@ -7,7 +7,7 @@ import 'package:threddit_clone/features/post/model/post_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
-import 'package:threddit_clone/features/home_page/view/widgets/next_button.dart';
+import 'package:threddit_clone/features/post/view/widgets/next_button.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
@@ -78,7 +78,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   Widget build(BuildContext context) {
 
     final ref = this.ref;
-    PostData? post = ref.read(postDataProvider);
+    PostData? post = ref.watch(postDataProvider);
 
     Widget buildImageContent() {
       if (_imagesList == null || isLink) {

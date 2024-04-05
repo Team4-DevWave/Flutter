@@ -17,7 +17,8 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
 
   @override
   void initState() {
-    _linkController = TextEditingController();
+    final intialData = ref.read(postDataProvider);
+    _linkController = TextEditingController(text: intialData?.link  ?? "");
     super.initState();
   }
 
