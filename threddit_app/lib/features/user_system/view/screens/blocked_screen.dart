@@ -12,7 +12,8 @@ class BlockedScreen extends StatelessWidget {
         body: Column(
           children: [
             TextField(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
                 labelText: 'Search',
                 suffixIcon: Icon(Icons.search),
               ),

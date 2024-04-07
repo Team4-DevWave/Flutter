@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/add_post_screen.dart';
@@ -56,6 +57,7 @@ class RouteClass {
   static const String forgetPasswordScreen = '/forget_password';
   static const String forgetUsernameScreen = '/forget_username';
   static const String forgetRdirectScreen = '/forget_redirect';
+  static const String confirmPasswordScreen = "/confirm-password";
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -121,6 +123,8 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const ForgetSentMail());
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
+        case confirmPasswordScreen:
+        return MaterialPageRoute(builder: (_) => const ConfirmPasswordScreen());
       case postScreen:
         //var data = settings.arguments as Post;
         var data=posts[0];

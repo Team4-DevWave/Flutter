@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
@@ -33,6 +34,25 @@ Future<int> changePasswordFunction(
   return response.statusCode;
 }
 
+Future<int> confirmPasswordFunction(
+    {required http.Client client,
+    required String confirmedPassword}) async {
+  Map<String, dynamic> body = {
+    'user_id': 1,
+    'confirmed_password': confirmedPassword,
+  };
+  String bodyEncoded = jsonEncode(body);
+
+  http.Response response = await client.post(
+    Uri.parse("http://10.0.2.2:3001/api/confirm-password"),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: bodyEncoded,
+  );
+
+  return response.statusCode;
+}
 /// API call for changing email address:
 /// Recieves the client, current password, the new email as parameters,
 /// Currently defaults to user_id 1 should be changed to token later.
@@ -105,23 +125,40 @@ void checkPasswordChangeResponse(
   if (statusCode == 200) {
     showAlert("Password was changed correctly!", context);
   } else {
-    showAlert("Password wasn't changed.", context);
+    showAlert("Password was incorrect.", context);
   }
 }
-
-/// API Call to fetch the User data
-Future<UserMock> getUserInfo(http.Client client) async {
-  http.Response response = await client.get(
-    Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
-  );
-  return UserMock.fromJson(jsonDecode(response.body));
+void checkPasswordConfirmResponse(
+    {required BuildContext context,
+    required Future<int> statusCodeFuture}) async {
+  int statusCode = await statusCodeFuture;
+  if (statusCode == 200) {
+    showAlert("Invalid Credintals", context);
+  } else {
+    showAlert("Correct password", context);
+  }
 }
+final settingsFetchProvider = StateNotifierProvider<SettingsFetch, bool>((ref) => SettingsFetch(ref));
 
-Future<List<String>> getBlockedUsers(http.Client client, String query) async {
-  http.Response response = await client.get(
-    Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
-  );
-  List<String> searchResults = jsonDecode(response.body);
-  print(searchResults);
-  return searchResults;
+class SettingsFetch extends StateNotifier<bool>{
+
+
+  final Ref ref;
+  SettingsFetch(this.ref) : super(false);
+  /// API Call to fetch the User data
+  Future<UserMock> getUserInfo(http.Client client) async {
+    http.Response response = await client.get(
+      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
+    );
+    return UserMock.fromJson(jsonDecode(response.body));
+  }
+
+  Future<List<String>> searchUsers(http.Client client, String query) async {
+    http.Response response = await client.get(
+      Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
+    );
+    List<String> searchResults = jsonDecode(response.body);
+    print(searchResults);
+    return searchResults;
+  }
 }

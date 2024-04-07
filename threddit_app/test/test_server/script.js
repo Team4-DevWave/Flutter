@@ -44,6 +44,27 @@ app.post('/api/change-password', (req, res) => {
 
     });
 });
+app.post('/api/confirm-password', (req, res) => {
+    const { user_id, confirmed_password } = req.body;
+
+    fs.readFile(dbFile, 'utf-8', (err, data) => {
+        if (err) {
+            console.error('Error reading file:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        const dataObject = JSON.parse(data);
+        const users = dataObject.users
+        const userToUpdate = users.find(user => user.user_id === user_id);
+        if (userToUpdate.password == confirmed_password){
+            return res.status(200).json({message : 'Correct password'});
+
+        }else{
+            return res.status(400).json({error: 'Inncorect Password'});
+        }
+
+
+    });
+});
 app.post('/api/change-email', (req, res) => {
     const { user_id, current_password, new_email } = req.body;
 

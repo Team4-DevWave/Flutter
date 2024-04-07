@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
@@ -16,18 +17,23 @@ import 'package:threddit_clone/features/user_system/view/widgets/save_changes.da
 /// Two buttons: One to cancel and another to submit.
 /// The submit button calls the save changes function which calls the change email function.
 /// Then the check response.
-class UpdateEmailScreen extends StatefulWidget {
+class UpdateEmailScreen extends ConsumerStatefulWidget {
   const UpdateEmailScreen({super.key});
   @override
-  _UpdateEmailScreenState createState() => _UpdateEmailScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _UpdateEmailScreenState();
 }
 
-class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
+class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Reddit password");
   final EmailForm newEmailForm = EmailForm("New email address");
   final client = http.Client();
+  
   Future<UserMock> fetchUser() async {
-    return getUserInfo(client);
+    setState(() {
+      ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+    });
+    return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+    
   }
 
   @override
@@ -92,6 +98,9 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                     newEmail: newEmail);
                 checkEmailUpdateResponse(
                     context: context, statusCodeFuture: statusCode);
+                setState(() {
+                  ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+                });
               },
             ),
           ],

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
@@ -15,19 +18,22 @@ import 'package:threddit_clone/features/user_system/view_model/settings_function
 ///
 /// Two buttons: One to cancel and another to submit.
 /// The submit button calls the save changes function which calls the change Password function.
-class ChangePasswordScreen extends StatefulWidget {
+class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
   @override
-  _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ChangePasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Current password");
   final PasswordForm newPasswordForm = PasswordForm("New password");
   final PasswordForm confirmPasswordForm = PasswordForm("Confirm new password");
   final client = http.Client();
+  void _forgetPassword(){
+    Navigator.pushNamed(navigatorKey.currentContext!, RouteClass.forgetPasswordScreen);
+  }
   Future<UserMock> fetchUser() async {
-    return getUserInfo(client);
+    return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
   }
 
   @override
@@ -70,7 +76,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               Container(
                 alignment: Alignment.topRight,
                 child: TextButton(
-                    onPressed: () {}, child: const Text("Forgot password?")),
+                    onPressed: () {
+                      print("I am pressed");
+                      return _forgetPassword();
+                    }, child: const Text("Forgot password?")),
               ),
               confirmPasswordForm,
               const Spacer(),
