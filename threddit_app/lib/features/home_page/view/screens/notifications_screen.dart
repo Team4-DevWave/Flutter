@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/notifications/view/widgets/notification_feed_unit.dart';
+import 'package:threddit_clone/features/notifications/view/widgets/nottification_feed.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -10,8 +12,10 @@ class _NotificationsScreen extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          automaticallyImplyLeading: false, title: const Text('Notifications')),
+      appBar: AppBar(),
+      body: NotificationFeed(
+        userID: "hello world",
+      ),
     );
   }
 }

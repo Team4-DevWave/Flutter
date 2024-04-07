@@ -6,10 +6,25 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
 
-class FeedUnit extends StatelessWidget {
+class FeedUnit extends StatefulWidget {
   final Map<String, dynamic> dataOfPost;
   // ignore: lines_longer_than_80_chars
   const FeedUnit(this.dataOfPost, {super.key});
+
+  @override
+  State<FeedUnit> createState() => _FeedUnitState();
+}
+
+class _FeedUnitState extends State<FeedUnit> {
+  late int numbberOfvotes;
+  int choiceBottum = -1; // 1 upvote 2 downvote
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    numbberOfvotes = int.parse(widget.dataOfPost['votes'].toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +42,10 @@ class FeedUnit extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, RouteClass.communityScreen,
-                          arguments: {
-                            {context, "Hello", "World"}
-                          });
+                          arguments: ["1", "mod2"]);
                     },
                     child: Text(
-                      'r/${dataOfPost['username']}',
+                      'r/${widget.dataOfPost['username']}',
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
@@ -40,7 +53,7 @@ class FeedUnit extends StatelessWidget {
                     width: 7.w,
                   ),
                   Text(
-                    dataOfPost['time'],
+                    widget.dataOfPost['time'],
                     style: const TextStyle(color: AppColors.whiteHideColor),
                   ),
                 ],
@@ -60,11 +73,11 @@ class FeedUnit extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  dataOfPost['header'],
+                  widget.dataOfPost['header'],
                   style: AppTextStyles.boldTextStyle,
                 ),
                 Text(
-                  dataOfPost['container'],
+                  widget.dataOfPost['container'],
                   style: AppTextStyles.secondaryTextStyle,
                 ),
               ],
@@ -78,14 +91,16 @@ class FeedUnit extends StatelessWidget {
                   borderRadius:
                       BorderRadius.circular(35) // Adjust the radius as needed
                   ),
-              child: Image(
-                height: 250.h,
-                width: 360.w,
-                fit: BoxFit.fitWidth,
-                image: NetworkImage(dataOfPost['imageLink']
-                    //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                    ),
-              ),
+              child: (widget.dataOfPost['imageLink'] != null)
+                  ? Image(
+                      height: 250.h,
+                      width: 360.w,
+                      fit: BoxFit.fitWidth,
+                      image: NetworkImage(widget.dataOfPost['imageLink']
+                          //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                          ),
+                    )
+                  : const SizedBox(),
             ),
           ),
           Row(
@@ -97,23 +112,55 @@ class FeedUnit extends StatelessWidget {
                     childWidget: Row(
                       children: [
                         IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
+                            onPressed: () {
+                              if (choiceBottum == -1 || choiceBottum == 2) {
+                                setState(() {
+                                  if (numbberOfvotes ==
+                                      int.parse(widget.dataOfPost['votes']
+                                              .toString()) -
+                                          1) {
+                                    numbberOfvotes += 2;
+                                  } else {
+                                    numbberOfvotes++;
+                                  }
+                                  choiceBottum = 1;
+                                });
+                              }
+                            },
+                            icon: Icon(
                               Icons.arrow_upward,
-                              color: AppColors.whiteColor,
+                              color: (choiceBottum == 1)
+                                  ? AppColors.redditOrangeColor
+                                  : AppColors.whiteColor,
                             )),
                         Text(
-                          dataOfPost['votes'].toString(),
+                          numbberOfvotes.toString(),
                           style: AppTextStyles.secondaryTextStyle,
                         ),
                         const VerticalDivider(
                           thickness: 1,
                         ),
                         IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
+                            onPressed: () {
+                              if (choiceBottum == -1 || choiceBottum == 1) {
+                                setState(() {
+                                  if (numbberOfvotes ==
+                                      int.parse(widget.dataOfPost['votes']
+                                              .toString()) +
+                                          1) {
+                                    numbberOfvotes -= 2;
+                                  } else {
+                                    numbberOfvotes--;
+                                  }
+                                  choiceBottum = 2;
+                                });
+                              }
+                            },
+                            icon: Icon(
                               Icons.arrow_downward,
-                              color: AppColors.whiteColor,
+                              color: (choiceBottum == 2)
+                                  ? AppColors.redditOrangeColor
+                                  : AppColors.whiteColor,
                             )),
                       ],
                     ),
@@ -125,8 +172,11 @@ class FeedUnit extends StatelessWidget {
                           Icons.comment,
                           color: AppColors.whiteColor,
                         ),
+                        SizedBox(
+                          width: 5.w,
+                        ),
                         Text(
-                          dataOfPost['numberOfComments'].toString(),
+                          widget.dataOfPost['numberOfComments'].toString(),
                           style: const TextStyle(color: AppColors.whiteColor),
                         ),
                       ],

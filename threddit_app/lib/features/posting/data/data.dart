@@ -33,7 +33,7 @@ final List<Post> posts = [
     username: 'user2',
     uid: 'user2_uid',
     type: 'type2',
-    createdAt: DateTime.now().subtract(Duration(days: 1)),
+    createdAt: DateTime.now().subtract(const Duration(days: 1)),
     awards: [],
   ),
 ];

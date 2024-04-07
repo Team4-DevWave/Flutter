@@ -42,7 +42,7 @@ class Community {
     id: id ?? this.id,
     name: name ?? this.name,
     avatar: avatar ?? this.avatar,
-    banner: banner ?? this.banner,
+    banner: banner ?? banner,
     members: members ?? this.members,
     mods: mods ?? this.mods,
     description: description ?? this.description,
