@@ -64,14 +64,14 @@ class _ConfirmPasswordScreenState extends ConsumerState<ConfirmPasswordScreen> {
             SaveChanges(
               saveChanges: () {
                 final String confirmPassword = confirmPasswordForm.enteredPassword;
-                if (confirmPassword.length < 8) {
-                    showAlert(
-                        "Password length must be greater than 8", context);
-                  } else {
+                //if (confirmPassword.length < 8) {
+                   // showAlert(
+                       // "Password length must be greater than 8", context);
+                  //} else {
                     final statusCode = confirmPasswordFunction(client: client, confirmedPassword: confirmPassword);
                     checkPasswordConfirmResponse(context: context, statusCodeFuture: statusCode);
                     
-                  }
+                  //}
               },
             )
       ],

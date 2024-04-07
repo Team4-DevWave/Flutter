@@ -160,7 +160,7 @@ app.get('/api/search-user', (req, res) => {
         const dataObject = JSON.parse(data);
         const users = dataObject.users;
         const matchedUsers = users.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
-
+        const usernames = matchedUsers.map(user => user.username);
         res.json(matchedUsers);
     });
 });

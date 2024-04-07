@@ -62,11 +62,12 @@ class AuthController extends StateNotifier<bool> {
       },
       (response) {
         if(response.statusCode == 200){
+          Navigator.pushNamed(context, RouteClass.confirmPasswordScreen);
           saveToken(response.body);
           UserModel? currentUser = _ref.read(userProvider)!;
           UserModel updatedUser = currentUser.copyWith(isGoogle: true);
           _ref.read(userProvider.notifier).state = updatedUser;
-          Navigator.pushNamed(context, RouteClass.confirmPasswordScreen);
+          
         }
       }
     );

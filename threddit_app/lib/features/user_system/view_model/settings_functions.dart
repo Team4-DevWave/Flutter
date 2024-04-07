@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
@@ -35,8 +36,7 @@ Future<int> changePasswordFunction(
 }
 
 Future<int> confirmPasswordFunction(
-    {required http.Client client,
-    required String confirmedPassword}) async {
+    {required http.Client client, required String confirmedPassword}) async {
   Map<String, dynamic> body = {
     'user_id': 1,
     'confirmed_password': confirmedPassword,
@@ -53,6 +53,7 @@ Future<int> confirmPasswordFunction(
 
   return response.statusCode;
 }
+
 /// API call for changing email address:
 /// Recieves the client, current password, the new email as parameters,
 /// Currently defaults to user_id 1 should be changed to token later.
@@ -128,23 +129,25 @@ void checkPasswordChangeResponse(
     showAlert("Password was incorrect.", context);
   }
 }
+
 void checkPasswordConfirmResponse(
     {required BuildContext context,
     required Future<int> statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
-    showAlert("Invalid Credintals", context);
+    Navigator.pop(context);
   } else {
-    showAlert("Correct password", context);
+    showAlert("Invalid Credintals", context);
   }
 }
-final settingsFetchProvider = StateNotifierProvider<SettingsFetch, bool>((ref) => SettingsFetch(ref));
 
-class SettingsFetch extends StateNotifier<bool>{
+final settingsFetchProvider =
+    StateNotifierProvider<SettingsFetch, bool>((ref) => SettingsFetch(ref));
 
-
+class SettingsFetch extends StateNotifier<bool> {
   final Ref ref;
   SettingsFetch(this.ref) : super(false);
+
   /// API Call to fetch the User data
   Future<UserMock> getUserInfo(http.Client client) async {
     http.Response response = await client.get(
@@ -157,7 +160,9 @@ class SettingsFetch extends StateNotifier<bool>{
     http.Response response = await client.get(
       Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
     );
-    List<String> searchResults = jsonDecode(response.body);
+    List<dynamic> data = jsonDecode(response.body);
+    print(data);
+    final List<String> searchResults = data.map((user) => user['username'] as String).toList();
     print(searchResults);
     return searchResults;
   }
