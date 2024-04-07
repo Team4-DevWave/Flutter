@@ -13,28 +13,76 @@ class Auth extends StateNotifier<bool> {
   Auth(this.ref) : super(false);
 
   ///This function is responsible for checking if user trying to sign up is new or not
-  ///by using the check mail availabity in the BE
-  Future<void> saveEmail(String? email) async {
+  // ///by using the check mail availabity in the BE
+  // Future<void> saveCheckedAvailabilityEmail(String? email) async {
+  //   state = true;
+  //   final url = Uri.https(
+  //       'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+  //       'token.json');
+  //   final response = await http.get(url);
+
+  //   ///404 means that user mail was not found therfore this user in a new user
+  //   if (response.statusCode == 200) {
+  //     UserModel? currentUser = ref.read(userProvider)!;
+
+  //     /// Create a new user with the updated email
+  //     UserModel updatedUser =
+  //         currentUser.copyWith(email: email, country: 'Egypt', isGoogle: false);
+
+  //     /// Update the userProvider state with the new user
+  //     ref.read(userProvider.notifier).state = updatedUser;
+  //     ref.read(isNewProvider.notifier).update((state) => true);
+  //     state = false;
+  //   } else {
+  //     ref.read(isNewProvider.notifier).update((state) => false);
+  //   }
+  // }
+
+  void saveEmail(String email) {
+    UserModel? currentUser = ref.read(userProvider)!;
+
+    /// Create a new user with the updated email
+    UserModel updatedUser =
+        currentUser.copyWith(email: email, country: 'Egypt', isGoogle: false);
+
+    /// Update the userProvider state with the new user
+    ref.read(userProvider.notifier).state = updatedUser;
+  }
+
+  Future<bool> checkEmailAvailability(String email) async {
     state = true;
     final url = Uri.https(
         'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
         'token.json');
     final response = await http.get(url);
-
-    ///404 means that user mail was not found therfore this user in a new user
+    state = false;
+    //this should be 200 but will make it 400 to stop checking
+    //200 -> used
+    //400 -> notuser
     if (response.statusCode == 200) {
-      UserModel? currentUser = ref.read(userProvider)!;
-
-      /// Create a new user with the updated email
-      UserModel updatedUser =
-          currentUser.copyWith(email: email, country: 'Egypt', isGoogle: false);
-
-      /// Update the userProvider state with the new user
-      ref.read(userProvider.notifier).state = updatedUser;
-      ref.read(isNewProvider.notifier).update((state) => true);
-      state = false;
+      ref.read(isEmailUsedProvider.notifier).update((state) => true);
+      return true;
     } else {
-      ref.read(isNewProvider.notifier).update((state) => false);
+      ref.read(isEmailUsedProvider.notifier).update((state) => false);
+      return false;
+    }
+  }
+
+  Future<bool> checkUsernameAvailability(String username) async {
+    final url = Uri.https(
+        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+        'token.json');
+    final response = await http.get(url);
+
+    //this should be 200 but will make it 400 to stop checking
+    //200 -> used
+    //400 -> notuser
+    if (response.statusCode == 400) {
+      ref.read(isUserNameUsedProvider.notifier).update((state) => true);
+      return true;
+    } else {
+      ref.read(isUserNameUsedProvider.notifier).update((state) => false);
+      return false;
     }
   }
 
@@ -64,6 +112,26 @@ class Auth extends StateNotifier<bool> {
     state = false;
   }
 
+  void saveGender(String genderType) {
+    UserModel? currentUser = ref.read(userProvider)!;
+
+    /// Create a new user with the updated gender
+    UserModel updatedUser = currentUser.copyWith(gender: genderType);
+
+    /// Update the userProvider state with the new user
+    ref.read(userProvider.notifier).state = updatedUser;
+  }
+
+  void saveUserInterests(List<String> interests) {
+    UserModel? currentUser = ref.read(userProvider)!;
+
+    /// Create a new user with the updated interests list
+    UserModel updatedUser = currentUser.copyWith(interests: interests);
+
+    /// Update the userProvider state with the new user
+    ref.read(userProvider.notifier).state = updatedUser;
+  }
+
   ///this function save the username or email to the usermodel
   void saveLoginEmail(String value) async {
     state = true;
@@ -91,13 +159,39 @@ class Auth extends StateNotifier<bool> {
     state = false;
   }
 
+  Future<void> forgetPassword() async {
+    state = true;
+    final UserModel? user = ref.watch(userProvider);
+    final url = Uri.https(
+        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+        'forgetPassword.json');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(
+        {
+          'username': user!.username,
+          'email': user.email,
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      ref.read(loginSucceeded.notifier).update((state) => true);
+    } else {
+      ref.read(loginSucceeded.notifier).update((state) => false);
+    }
+    state = false;
+  }
+
   ///this function login the user and saves the token to the cache to create session
   Future<void> login() async {
     state = true;
     final user = ref.watch(userProvider)!;
     final url = Uri.https(
         'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'user.json');
+        'login.json');
     final response = await http.post(
       url,
       headers: {
@@ -113,26 +207,43 @@ class Auth extends StateNotifier<bool> {
     );
     if (response.statusCode == 200) {
       saveToken(response.body.toString());
-      ref.read(succeeded.notifier).update((state) => true);
+
+      ref.read(loginSucceeded.notifier).update((state) => true);
     } else {
-      ref.read(succeeded.notifier).update((state) => false);
+      ref.read(loginSucceeded.notifier).update((state) => false);
     }
     state = false;
   }
 
-  Future<bool> checkAvailability(String username) async {
+  Future<void> signUp() async {
+    state = true;
+    final UserModel user = ref.watch(userProvider)!;
     final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'token.json');
-    final response = await http.get(url);
-
-    //this should be 200 but will make it 400 to stop checking
-    if (response.statusCode == 400) {
-      ref.read(isUserNameUsedProvider.notifier).update((state) => true);
-      return true;
+      'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+      'signup.json',
+    );
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(
+        {
+          'username': user.username,
+          'email': user.email,
+          'password': user.password,
+          'passwordConfirm': user.passwordConfirm,
+          'country': user.country,
+          'gender': user.gender,
+          'interests': user.interests,
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      ref.watch(signUpSuccess.notifier).update((state) => true);
     } else {
-      ref.read(isUserNameUsedProvider.notifier).update((state) => false);
-      return false;
+      ref.watch(signUpSuccess.notifier).update((state) => false);
     }
+    state = false;
   }
 }

@@ -15,7 +15,10 @@ final userProvider = StateProvider<UserModel?>(
   ),
 );
 
-final isNewProvider = StateProvider<bool>((ref) => false);
-final succeeded = StateProvider<bool>((ref) => false);
+// final isNewProvider = StateProvider<bool>((ref) => false);
+final isEmailUsedProvider = StateProvider<bool>((ref) => false);
+final loginSucceeded = StateProvider<bool>((ref) => false);
 final enteredValue = StateProvider<String?>((ref) => null);
 final isUserNameUsedProvider = StateProvider<bool>(((ref) => false));
+final signUpSuccess = StateProvider<bool>((ref) => false);
+final enteredAccoutValue = StateProvider<String?>(((ref) => ''));

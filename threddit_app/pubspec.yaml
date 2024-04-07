@@ -89,6 +89,7 @@ flutter:
     - assets/icons/arrow_down.png
     - assets/icons/arrow_up.png
     - assets/animation/loading.json
+    - assets/images/avatar.png
 
 
   fonts:

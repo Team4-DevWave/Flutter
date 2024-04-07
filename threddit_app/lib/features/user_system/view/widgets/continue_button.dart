@@ -6,12 +6,12 @@ import 'package:threddit_clone/theme/text_styles.dart';
 class ContinueButton extends ConsumerWidget {
   const ContinueButton(
       {super.key,
-      required this.identifier,
       required this.onPressed,
-      required this.isOn});
+      required this.isOn,
+      required this.identifier});
   final Function()? onPressed;
-  final String identifier;
   final bool isOn;
+  final String identifier;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +19,7 @@ class ContinueButton extends ConsumerWidget {
       onPressed: onPressed,
       style: AppButtons.choiceButtonTheme,
       child: Text(
-        'Continue',
+        identifier,
         style: isOn
             ? AppTextStyles.primaryButtonGlowTextStyle
             : AppTextStyles.primaryButtonHideTextStyle,

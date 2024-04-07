@@ -15,6 +15,8 @@ import 'package:threddit_clone/features/user_system/view/screens/about_you_scree
 import 'package:threddit_clone/features/user_system/view/screens/account_settings_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/blocked_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/change_password_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/forget_send_mail.dart';
+import 'package:threddit_clone/features/user_system/view/screens/forget_username.dart';
 import 'package:threddit_clone/features/user_system/view/screens/notifications_settings_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/register_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/signup_screen.dart';
@@ -22,7 +24,7 @@ import 'package:threddit_clone/features/user_system/view/screens/update_email_sc
 import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
-
+import 'package:threddit_clone/features/user_system/view/screens/forget_password.dart';
 import '../features/user_system/view/screens/login_screen.dart';
 
 class RouteClass {
@@ -50,6 +52,9 @@ class RouteClass {
   static const String userNameScreen = '/loading';
   static const String aboutMeScreen = '/aboutme';
   static const String interestsScreen = '/interests';
+  static const String forgetPasswordScreen = '/forget_password';
+  static const String forgetUsernameScreen = '/forget_username';
+  static const String forgetRdirectScreen = '/forget_redirect';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -109,6 +114,12 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const AboutYou());
       case interestsScreen:
         return MaterialPageRoute(builder: (_) => const Interests());
+      case forgetPasswordScreen:
+        return MaterialPageRoute(builder: (_) => const ForgetPassword());
+      case forgetUsernameScreen:
+        return MaterialPageRoute(builder: (_) => const ForgetUsername());
+      case forgetRdirectScreen:
+        return MaterialPageRoute(builder: (_) => const ForgetSentMail());
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
       case postScreen:

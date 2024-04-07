@@ -11,7 +11,6 @@ import 'package:threddit_clone/features/user_system/view/widgets/password_textfo
 import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/navigate_login.dart';
-import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/features/user_system/view_model/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -27,36 +26,37 @@ class SignUpScreen extends ConsumerStatefulWidget {
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final emailController = TextEditingController();
   final passController = TextEditingController();
-  bool isValid = false;
-  bool isLoading = false;
+  bool _isValid = false;
+  bool _isLoading = false;
   void updateFormValidity() {
     setState(() {
-      isValid = formSignUpKey.currentState != null &&
+      _isValid = formSignUpKey.currentState != null &&
           formSignUpKey.currentState!.validate();
     });
   }
 
   Future<void> onContinue() async {
-    isLoading = true;
+    _isLoading = true;
     ref.read(authProvider.notifier).savePassword(passController.text);
-    await ref.read(authProvider.notifier).saveEmail(emailController.text);
-    final isNew = ref.watch(isNewProvider);
-    isLoading = false;
-
-    if (isNew) {
+    final isUsed = await ref
+        .read(authProvider.notifier)
+        .checkEmailAvailability(emailController.text);
+    if (isUsed) {
+      showSnackBar(navigatorKey.currentContext!, 'email is already found');
+    } else {
+      ref.read(authProvider.notifier).saveEmail(passController.text);
       Navigator.pushNamed(
           navigatorKey.currentContext!, RouteClass.aboutMeScreen);
-    } else {
-      showSnackBar(navigatorKey.currentContext!, 'email is already found');
     }
+    _isLoading = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    isLoading = ref.watch(authProvider);
+    _isLoading = ref.watch(authProvider);
     return PopScope(
       onPopInvoked: (context) => formSignUpKey.currentState?.reset(),
-      child: isLoading
+      child: _isLoading
           ? const Loading()
           : Scaffold(
               appBar: RegisterAppBar(
@@ -120,6 +120,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 ),
                                 SizedBox(height: 13.h),
                                 Form(
+                                  onPopInvoked: (_) => FocusManager
+                                      .instance.primaryFocus
+                                      ?.unfocus(),
                                   key: formSignUpKey,
                                   onChanged: updateFormValidity,
                                   child: Column(
@@ -154,9 +157,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         decoration: const BoxDecoration(
                             color: AppColors.backgroundColor),
                         child: ContinueButton(
-                          identifier: 'signup',
-                          isOn: isValid,
-                          onPressed: isValid ? onContinue : null,
+                          isOn: _isValid,
+                          onPressed: _isValid ? onContinue : null,
+                          identifier: 'Continue',
                         )),
                   ],
                 ),
