@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_clone/features/commenting/model/community.dart';
+import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
+import 'package:threddit_clone/models/community.dart';
 import 'package:threddit_clone/theme/photos.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
-  final String name;
-  final Community community;
-  const CommunityScreen({super.key, required this.name, required this.community});
+  final String id;
+  final String uid;
+  const CommunityScreen({Key? key, required this.id, required this.uid})
+      : super(key: key);
 
   @override
   _CommunityScreenState createState() => _CommunityScreenState();
@@ -14,9 +17,25 @@ class CommunityScreen extends ConsumerStatefulWidget {
 
 class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   String _selectedItem = 'Hot Posts'; // Initial selected item
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
+    return Scaffold(
+      body: communityAsyncValue.when(
+        data: (community) => buildCommunityScreen(community),
+        loading: () => CircularProgressIndicator(),
+        error: (error, stack) => Text('Error: $error'),
+      ),
+    );
+  }
+
+  Widget buildCommunityScreen(Community community) {
+    bool isCurrentUserModerator = community.mods.contains(widget.uid);
     return NestedScrollView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
@@ -27,9 +46,54 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
             flexibleSpace: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.asset(
-                    Photos.snoLogo,
+                  child: Image.network(
+                    community.banner,
                     fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 50,
+                  left: 15,
+                  right: 15,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      IconButton.filled(
+                        onPressed: () { },
+                        icon: const Icon(Icons.arrow_back),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(223, 49, 49, 49)),
+                        ),
+                      ),
+                      const SizedBox(width:187),
+                      Row(mainAxisAlignment: MainAxisAlignment.end,children: [
+                        IconButton.filled(
+                        onPressed: () {},
+                        icon: const Icon(Icons.search),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(223, 49, 49, 49)),
+                        ),
+                      ),
+                      IconButton.filled(
+                        onPressed: () {},
+                        icon: const Icon(Icons.share_rounded),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(223, 49, 49, 49)),
+                        ),
+                      ),
+                      IconButton.filled(
+                        onPressed: () {},
+                        icon: const Icon(Icons.more_horiz),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(223, 49, 49, 49)),
+                        ),
+                      ),
+                      ],)
+                    ],
                   ),
                 )
               ],
@@ -45,8 +109,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(widget.community.avatar),
+                          backgroundImage: NetworkImage(community.avatar),
                           radius: 30,
                         ),
                       ),
@@ -58,14 +121,14 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'r/${widget.community.name}',
+                              'r/${community.name}',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 19,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '${widget.community.members.length} members',
+                              '${community.members.length} members',
                               style: const TextStyle(
                                 color: Color.fromARGB(108, 255, 255, 255),
                               ),
@@ -76,7 +139,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: SizedBox(
-                          width: 75,
+                          width: 110,
                           height: 33,
                           child: FilledButton(
                             onPressed: () {},
@@ -84,8 +147,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                 backgroundColor:
                                     MaterialStatePropertyAll<Color>(
                                         Color.fromARGB(255, 8, 46, 77))),
-                            child: const Text(
-                              'Join',
+                            child: Text(
+                              isCurrentUserModerator ? 'Mod Tools' : 'Join',
                               style: TextStyle(fontSize: 13),
                             ),
                           ),
@@ -97,9 +160,27 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     height: 10,
                   ),
                   Text(
-                    '${widget.community.description}',
+                    '${community.description}',
                     style: const TextStyle(color: Colors.white),
-                  )
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          minimumSize: MaterialStateProperty.all(
+                              Size.zero), // Ensure minimum size is zero
+                          padding: MaterialStateProperty.all(
+                              EdgeInsets.zero), // Remove padding
+                        ),
+                        child: const Text(
+                          'See community info',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -126,7 +207,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       });
                     },
                     underline: Container(), // Hide the default underline
-                    dropdownColor: const Color.fromARGB(
+                    dropdownColor: Color.fromARGB(
                         206, 0, 0, 0), // Set dropdown background color
                     items: <String>[
                       'Hot Posts',
