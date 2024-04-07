@@ -18,148 +18,145 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              expandedHeight: 60,
-              floating: true,
-              snap: true,
-              flexibleSpace: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Image.asset(
-                      Photos.snoLogo,
-                      fit: BoxFit.cover,
-                    ),
+    return NestedScrollView(
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          SliverAppBar(
+            expandedHeight: 60,
+            floating: true,
+            snap: true,
+            flexibleSpace: Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.asset(
+                    Photos.snoLogo,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              ],
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Row(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(widget.community.avatar),
+                          radius: 30,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'r/${widget.community.name}',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '${widget.community.members.length} members',
+                              style: const TextStyle(
+                                color: Color.fromARGB(108, 255, 255, 255),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: SizedBox(
+                          width: 75,
+                          height: 33,
+                          child: FilledButton(
+                            onPressed: () {},
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll<Color>(
+                                        Color.fromARGB(255, 8, 46, 77))),
+                            child: const Text(
+                              'Join',
+                              style: TextStyle(fontSize: 13),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '${widget.community.description}',
+                    style: const TextStyle(color: Colors.white),
                   )
                 ],
               ),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Row(
-                      children: [
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: CircleAvatar(
-                            backgroundImage:
-                                NetworkImage(widget.community.avatar),
-                            radius: 30,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'r/${widget.community.name}',
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                '${widget.community.members.length} members',
-                                style: const TextStyle(
-                                  color: Color.fromARGB(108, 255, 255, 255),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: SizedBox(
-                            width: 75,
-                            height: 33,
-                            child: FilledButton(
-                              onPressed: () {},
-                              style: const ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStatePropertyAll<Color>(
-                                          Color.fromARGB(255, 8, 46, 77))),
-                              child: const Text(
-                                'Join',
-                                style: TextStyle(fontSize: 13),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      '${widget.community.description}',
-                      style: const TextStyle(color: Colors.white),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ];
-        },
-        body: Column(
-          children: [
-            SizedBox(
-              child: Container(
-                color: const Color.fromARGB(130, 12, 12, 12),
-                height: 40,
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    const SizedBox(width: 16), // Add some spacing
+          ),
+        ];
+      },
+      body: Column(
+        children: [
+          SizedBox(
+            child: Container(
+              color: const Color.fromARGB(130, 12, 12, 12),
+              height: 40,
+              width: double.infinity,
+              child: Row(
+                children: [
+                  const SizedBox(width: 16), // Add some spacing
 
-                    const SizedBox(width: 8), // Add some spacing
-                    DropdownButton<String>(
-                      value: _selectedItem,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedItem = value!;
-                        });
-                      },
-                      underline: Container(), // Hide the default underline
-                      dropdownColor: Color.fromARGB(
-                          206, 0, 0, 0), // Set dropdown background color
-                      items: <String>[
-                        'Hot Posts',
-                        'New Posts',
-                        'Top Posts',
-                        'Controversial Posts',
-                        'Rising Posts'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Row(
-                            children: [
-                              Icon(_getIcon(value),
-                                  color:
-                                      Colors.white), // Get corresponding icon
-                              const SizedBox(width: 8), // Add some spacing
-                              Text(
-                                value,
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
+                  const SizedBox(width: 8), // Add some spacing
+                  DropdownButton<String>(
+                    value: _selectedItem,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedItem = value!;
+                      });
+                    },
+                    underline: Container(), // Hide the default underline
+                    dropdownColor: Color.fromARGB(
+                        206, 0, 0, 0), // Set dropdown background color
+                    items: <String>[
+                      'Hot Posts',
+                      'New Posts',
+                      'Top Posts',
+                      'Controversial Posts',
+                      'Rising Posts'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Row(
+                          children: [
+                            Icon(_getIcon(value),
+                                color: Colors.white), // Get corresponding icon
+                            const SizedBox(width: 8), // Add some spacing
+                            Text(
+                              value,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
@@ -23,9 +24,17 @@ class FeedUnit extends StatelessWidget {
               Container(
                   child: Row(
                 children: [
-                  Text(
-                    'r/${dataOfPost['username']}',
-                    style: const TextStyle(color: Colors.white),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, RouteClass.communityScreen,
+                          arguments: {
+                            {context, "Hello", "World"}
+                          });
+                    },
+                    child: Text(
+                      'r/${dataOfPost['username']}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                   SizedBox(
                     width: 7.w,
@@ -45,13 +54,21 @@ class FeedUnit extends StatelessWidget {
               )
             ],
           ),
-          Text(
-            dataOfPost['header'],
-            style: AppTextStyles.boldTextStyle,
-          ),
-          Text(
-            dataOfPost['container'],
-            style: AppTextStyles.secondaryTextStyle,
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  dataOfPost['header'],
+                  style: AppTextStyles.boldTextStyle,
+                ),
+                Text(
+                  dataOfPost['container'],
+                  style: AppTextStyles.secondaryTextStyle,
+                ),
+              ],
+            ),
           ),
           Center(
             child: Container(
@@ -62,7 +79,9 @@ class FeedUnit extends StatelessWidget {
                       BorderRadius.circular(35) // Adjust the radius as needed
                   ),
               child: Image(
-                fit: BoxFit.cover,
+                height: 250.h,
+                width: 360.w,
+                fit: BoxFit.fitWidth,
                 image: NetworkImage(dataOfPost['imageLink']
                     //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                     ),
