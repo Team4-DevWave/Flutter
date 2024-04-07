@@ -6,6 +6,7 @@ import 'package:threddit_clone/theme/colors.dart';
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
+  @override
   ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 

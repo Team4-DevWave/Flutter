@@ -31,6 +31,6 @@ class UserMock {
   }
 
   void printUserInfo() {
-    print('User id is ${id}, Username is ${username}, User email is ${email}');
+    print('User id is $id, Username is $username, User email is $email');
   }
 }

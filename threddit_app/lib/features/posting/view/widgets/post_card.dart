@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
-import 'package:threddit_clone/features/commenting/model/post.dart';
+import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class PostCard extends ConsumerStatefulWidget {
   const PostCard(
-      {Key? key,
+      {super.key,
       required this.post,
       required this.uid,
       required this.onCommentPressed});
@@ -33,12 +33,11 @@ class _PostCardState extends ConsumerState<PostCard> {
       setState(() {});
     }
 
-    final isTypeImage = widget.post.type == 'image';
-    final isTypeText = widget.post.type == 'text';
-    final isTypeLink = widget.post.type == 'link';
+    // final isTypeImage = widget.post.type == 'image';
+    // final isTypeText = widget.post.type == 'text';
+    // final isTypeLink = widget.post.type == 'link';
 
     final now = DateTime.now();
-    final createdAt = widget.post.createdAt ?? now;
     final difference = now.difference(widget.post.createdAt);
     final hoursSincePost = difference.inHours;
 
@@ -58,6 +57,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: CircleAvatar(
                     radius: 16,
+                    backgroundImage: AssetImage('assets/images/Default_Avatar.png'),
                   ),
                 ),
                 //Image.asset(Photos.defaultavatar,width: 16,height: 16,),
@@ -143,7 +143,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                     size: 30,
                   ),
                   color: widget.post.downvotes.contains(widget.uid)
-                      ? Color.fromARGB(255, 97, 137, 212)
+                      ? const Color.fromARGB(255, 97, 137, 212)
                       : Colors.white,
                 ),
                 IconButton(
@@ -158,7 +158,8 @@ class _PostCardState extends ConsumerState<PostCard> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       if (widget.uid == widget.post.uid)
-                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                        IconButton(
+                            onPressed: () {}, icon: const Icon(Icons.delete)),
                       if (widget.uid != widget.post.uid)
                         IconButton(
                             onPressed: () {}, icon: const Icon(Icons.refresh))

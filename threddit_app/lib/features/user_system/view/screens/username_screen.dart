@@ -27,7 +27,9 @@ class _UserNameState extends ConsumerState<UserName> {
 
   void updateFormValidity(String? value) {
     setState(() {
-      isValid = (value == null || value.isEmpty) ? false : true;
+      isValid = (value == null || value.isEmpty || value.trim().isEmpty)
+          ? false
+          : true;
     });
   }
 
@@ -35,7 +37,7 @@ class _UserNameState extends ConsumerState<UserName> {
     isLoading = true;
     final isUsed = await ref
         .read(authProvider.notifier)
-        .checkAvailability(userNameController.text);
+        .checkUsernameAvailability(userNameController.text);
     isLoading = false;
     if (isUsed) {
       userNameFormKey.currentState!.validate();
@@ -45,6 +47,12 @@ class _UserNameState extends ConsumerState<UserName> {
       Navigator.pushNamed(
           navigatorKey.currentContext!, RouteClass.interestsScreen);
     }
+  }
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -118,6 +126,12 @@ class _UserNameState extends ConsumerState<UserName> {
                                         color: AppColors.whiteGlowColor,
                                       ),
                                     ),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: AppColors
+                                            .whiteHideColor, // Use the same color as default
+                                      ),
+                                    ),
                                   ),
                                   cursorColor: AppColors.redditOrangeColor,
                                   style: AppTextStyles
@@ -157,9 +171,9 @@ class _UserNameState extends ConsumerState<UserName> {
                     decoration:
                         const BoxDecoration(color: AppColors.backgroundColor),
                     child: ContinueButton(
-                      identifier: 'username',
                       isOn: isValid,
                       onPressed: isValid ? onContinue : null,
+                      identifier: 'Continue',
                     ),
                   ),
                 ],

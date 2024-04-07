@@ -16,7 +16,7 @@ import 'package:threddit_clone/features/user_system/view_model/settings_function
 /// Two buttons: One to cancel and another to submit.
 /// The submit button calls the save changes function which calls the change Password function.
 class ChangePasswordScreen extends StatefulWidget {
-  ChangePasswordScreen({super.key});
+  const ChangePasswordScreen({super.key});
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
 }
@@ -32,10 +32,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          title: Text("Change password"),
+          title: const Text("Change password"),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -46,11 +45,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 future: fetchUser(),
                 builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
                   while (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                   if (snapshot.hasError) {
                     print(snapshot.error);
-                    return Text("ERROR LOADING USER DATA");
+                    return const Text("ERROR LOADING USER DATA");
                   } else {
                     final UserMock user = snapshot.data!;
                     return Row(
@@ -69,12 +68,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               currentPasswordForm,
               newPasswordForm,
               Container(
-                child: TextButton(
-                    onPressed: () {}, child: Text("Forgot password?")),
                 alignment: Alignment.topRight,
+                child: TextButton(
+                    onPressed: () {}, child: const Text("Forgot password?")),
               ),
               confirmPasswordForm,
-              Spacer(),
+              const Spacer(),
               SaveChanges(
                 saveChanges: () {
                   final String confirmedPassword =

@@ -6,6 +6,8 @@ import 'package:threddit_clone/features/user_system/view/widgets/settings_title.
 /// Has connect google button
 /// Should call the oAuth later.
 class ConnectedAccounts extends StatefulWidget {
+  const ConnectedAccounts({super.key});
+
   @override
   State<ConnectedAccounts> createState() => _ConnectedAcccountsState();
 }
@@ -13,7 +15,6 @@ class ConnectedAccounts extends StatefulWidget {
 class _ConnectedAcccountsState extends State<ConnectedAccounts> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const SettingsTitle(title: "CONNECTED ACCOUNTS"),
       ListTile(

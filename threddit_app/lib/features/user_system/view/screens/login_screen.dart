@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
@@ -38,16 +37,12 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
     });
   }
 
-  //WILL BE CHANGED
-  //send data to backend
-  //if returned fail show a box representing error and do not navigate
-  //if returned success take the token store it to shared prefrences then update success then move to mainlayout screen
   Future<void> onContinue() async {
     isLoading = true;
     ref.read(authProvider.notifier).savePassword(passController.text);
     ref.read(authProvider.notifier).saveLoginEmail(emailController.text);
     await ref.read(authProvider.notifier).login();
-    final isSucceeded = ref.watch(succeeded);
+    final isSucceeded = ref.watch(loginSucceeded);
     final valueEntered = ref.watch(enteredValue);
     isLoading = false;
 
@@ -151,7 +146,11 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                                             CrossAxisAlignment.center,
                                         children: [
                                           TextButton(
-                                            onPressed: () {},
+                                            onPressed: () =>
+                                                Navigator.pushNamed(
+                                                    context,
+                                                    RouteClass
+                                                        .forgetPasswordScreen),
                                             child: Text(
                                               'Forget password?',
                                               style: AppTextStyles
@@ -169,7 +168,11 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                                                 AppTextStyles.primaryTextStyle,
                                           ),
                                           TextButton(
-                                            onPressed: () {},
+                                            onPressed: () =>
+                                                Navigator.pushNamed(
+                                                    context,
+                                                    RouteClass
+                                                        .forgetUsernameScreen),
                                             child: Text(
                                               'Forget username?',
                                               style: AppTextStyles
@@ -202,9 +205,9 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                       decoration:
                           const BoxDecoration(color: AppColors.backgroundColor),
                       child: ContinueButton(
-                        identifier: 'login',
                         isOn: isValid,
                         onPressed: isValid ? onContinue : null,
+                        identifier: 'Conitnue',
                       ),
                     ),
                   ],

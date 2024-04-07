@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/features/commenting/model/post.dart';
+import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
@@ -10,11 +10,14 @@ import 'package:threddit_clone/features/home_page/view/screens/notifications_scr
 import 'package:threddit_clone/features/home_page/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/user_profile_screen.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
+import 'package:threddit_clone/features/posting/data/data.dart';
 import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/about_you_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/account_settings_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/blocked_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/change_password_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/forget_send_mail.dart';
+import 'package:threddit_clone/features/user_system/view/screens/forget_username.dart';
 import 'package:threddit_clone/features/user_system/view/screens/notifications_settings_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/register_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/signup_screen.dart';
@@ -22,7 +25,7 @@ import 'package:threddit_clone/features/user_system/view/screens/update_email_sc
 import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
-
+import 'package:threddit_clone/features/user_system/view/screens/forget_password.dart';
 import '../features/user_system/view/screens/login_screen.dart';
 
 class RouteClass {
@@ -50,6 +53,9 @@ class RouteClass {
   static const String userNameScreen = '/loading';
   static const String aboutMeScreen = '/aboutme';
   static const String interestsScreen = '/interests';
+  static const String forgetPasswordScreen = '/forget_password';
+  static const String forgetUsernameScreen = '/forget_username';
+  static const String forgetRdirectScreen = '/forget_redirect';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -70,8 +76,6 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const UserProfile());
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
-      case createCommunityScreen:
-        return MaterialPageRoute(builder: (_) => const CreateCommunity());
       case searchScreen:
         return MaterialPageRoute(builder: (_) => const SearchScreen());
       case loginScreen:
@@ -100,22 +104,36 @@ class RouteClass {
       case blockedScreen:
         return MaterialPageRoute(builder: (_) => const BlockedScreen());
       case changePasswordScreen:
-        return MaterialPageRoute(builder: (_) => ChangePasswordScreen());
+        return MaterialPageRoute(builder: (_) => const ChangePasswordScreen());
       case userNameScreen:
         return MaterialPageRoute(builder: (_) => const UserName());
       case updateEmailScreen:
-        return MaterialPageRoute(builder: (_) => UpdateEmailScreen());
+        return MaterialPageRoute(builder: (_) => const UpdateEmailScreen());
       case aboutMeScreen:
         return MaterialPageRoute(builder: (_) => const AboutYou());
       case interestsScreen:
         return MaterialPageRoute(builder: (_) => const Interests());
+      case forgetPasswordScreen:
+        return MaterialPageRoute(builder: (_) => const ForgetPassword());
+      case forgetUsernameScreen:
+        return MaterialPageRoute(builder: (_) => const ForgetUsername());
+      case forgetRdirectScreen:
+        return MaterialPageRoute(builder: (_) => const ForgetSentMail());
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
       case postScreen:
-        var data = settings.arguments as Post;
+        //var data = settings.arguments as Post;
+        var data=posts[0];
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   currentPost: data,
+                ));
+      case createCommunityScreen:
+      //var data = settings.arguments as String;
+        var data ='User2';
+        return MaterialPageRoute(
+            builder: (_) => CreateCommunity(
+                  uid: data,
                 ));
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());

@@ -7,6 +7,8 @@ import 'package:threddit_clone/features/user_system/view/widgets/settings_title.
 /// Has the Manage blocked accounts tile.
 /// And the allow others to follow you tile.
 class Safety extends StatefulWidget {
+  const Safety({super.key});
+
   @override
   State<Safety> createState() => _SafetyState();
 }
@@ -16,12 +18,11 @@ class _SafetyState extends State<Safety> {
 
   void _blockedAccounts(BuildContext context) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => BlockedScreen()));
+        context, MaterialPageRoute(builder: (ctx) => const BlockedScreen()));
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const SettingsTitle(title: "SAFETY"),
       ListTile(

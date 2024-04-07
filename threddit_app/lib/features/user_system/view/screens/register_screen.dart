@@ -18,6 +18,7 @@ class RegisterScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = ref.watch(authControllerProvider);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: isLoading
           ? const Loading()
           : Container(

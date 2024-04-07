@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -11,6 +12,7 @@ class RegisterAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: AppColors.backgroundColor,
       title: Center(
         child: Photos.appBarLogo,
       ),
