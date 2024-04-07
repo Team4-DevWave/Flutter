@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/chatting/view/screens/main_chat_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/add_post_screen.dart';
-import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/community_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
@@ -21,7 +21,7 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
     const HomeScreen(),
     const CommunityScreen(),
     const AddPostScreen(),
-    const ChatScreen(),
+    const MainChatScreen(uid: 'user2'),
     const NotificationsScreen()
   ];
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
-import 'package:threddit_clone/features/commenting/model/post.dart';
+import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -33,12 +33,11 @@ class _PostCardState extends ConsumerState<PostCard> {
       setState(() {});
     }
 
-    final isTypeImage = widget.post.type == 'image';
-    final isTypeText = widget.post.type == 'text';
-    final isTypeLink = widget.post.type == 'link';
+    // final isTypeImage = widget.post.type == 'image';
+    // final isTypeText = widget.post.type == 'text';
+    // final isTypeLink = widget.post.type == 'link';
 
     final now = DateTime.now();
-    final createdAt = widget.post.createdAt ?? now;
     final difference = now.difference(widget.post.createdAt);
     final hoursSincePost = difference.inHours;
 
@@ -58,6 +57,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: CircleAvatar(
                     radius: 16,
+                    backgroundImage: AssetImage('assets/images/Default_Avatar.png'),
                   ),
                 ),
                 //Image.asset(Photos.defaultavatar,width: 16,height: 16,),

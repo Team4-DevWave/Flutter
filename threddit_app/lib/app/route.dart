@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/features/commenting/model/post.dart';
+import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
@@ -10,6 +10,7 @@ import 'package:threddit_clone/features/home_page/view/screens/notifications_scr
 import 'package:threddit_clone/features/home_page/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/user_profile_screen.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
+import 'package:threddit_clone/features/posting/data/data.dart';
 import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/about_you_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/account_settings_screen.dart';
@@ -68,8 +69,6 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const UserProfile());
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
-      case createCommunityScreen:
-        return MaterialPageRoute(builder: (_) => const CreateCommunity());
       case searchScreen:
         return MaterialPageRoute(builder: (_) => const SearchScreen());
       case loginScreen:
@@ -108,10 +107,18 @@ class RouteClass {
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
       case postScreen:
-        var data = settings.arguments as Post;
+        //var data = settings.arguments as Post;
+        var data=posts[0];
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   currentPost: data,
+                ));
+      case createCommunityScreen:
+      //var data = settings.arguments as String;
+        var data ='User2';
+        return MaterialPageRoute(
+            builder: (_) => CreateCommunity(
+                  uid: data,
                 ));
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
