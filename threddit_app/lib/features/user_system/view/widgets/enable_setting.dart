@@ -8,7 +8,7 @@ import 'package:threddit_clone/theme/text_styles.dart';
 class EnableSetting extends StatefulWidget {
   final String optionName;
   final IconData? settingIcon;
-  EnableSetting(this.optionName, this.settingIcon);
+  const EnableSetting(this.optionName, this.settingIcon, {super.key});
   @override
   State<EnableSetting> createState() => _EnableSettingState();
 }
@@ -18,7 +18,6 @@ class _EnableSettingState extends State<EnableSetting> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ListTile(
       leading: Icon(widget.settingIcon),
       title: Text(widget.optionName),

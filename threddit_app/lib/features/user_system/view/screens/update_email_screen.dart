@@ -17,7 +17,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/save_changes.da
 /// The submit button calls the save changes function which calls the change email function.
 /// Then the check response.
 class UpdateEmailScreen extends StatefulWidget {
-  UpdateEmailScreen({super.key});
+  const UpdateEmailScreen({super.key});
   @override
   _UpdateEmailScreenState createState() => _UpdateEmailScreenState();
 }
@@ -34,7 +34,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Update email address"),
+        title: const Text("Update email address"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -45,11 +45,11 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
               future: fetchUser(),
               builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
                 while (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
                 if (snapshot.hasError) {
                   print(snapshot.error);
-                  return Text("ERROR LOADING USER DATA");
+                  return const Text("ERROR LOADING USER DATA");
                 } else {
                   final UserMock user = snapshot.data!;
                   return Row(
@@ -64,7 +64,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                             Text("u/${user.getUsername}",
                                 style: AppTextStyles.primaryTextStyle),
                             Text(
-                              "${user.getEmail}",
+                              user.getEmail,
                               style: AppTextStyles.primaryTextStyle,
                             ),
                           ])
@@ -76,11 +76,11 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
             newEmailForm,
             currentPasswordForm,
             Container(
-              child:
-                  TextButton(onPressed: () {}, child: Text("Forgot password?")),
               alignment: Alignment.topRight,
+              child:
+                  TextButton(onPressed: () {}, child: const Text("Forgot password?")),
             ),
-            Spacer(),
+            const Spacer(),
             SaveChanges(
               saveChanges: () {
                 final String newEmail = newEmailForm.enteredEmail;

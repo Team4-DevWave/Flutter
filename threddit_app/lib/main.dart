@@ -8,7 +8,7 @@ import 'package:threddit_clone/firebase_options.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
+  //print("Handling a background message: ${message.messageId}");
 }
 
 void main() async {

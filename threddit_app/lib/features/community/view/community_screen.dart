@@ -6,8 +6,7 @@ import 'package:threddit_clone/theme/photos.dart';
 class CommunityScreen extends ConsumerStatefulWidget {
   final String name;
   final Community community;
-  const CommunityScreen({Key? key, required this.name, required this.community})
-      : super(key: key);
+  const CommunityScreen({super.key, required this.name, required this.community});
 
   @override
   _CommunityScreenState createState() => _CommunityScreenState();
@@ -127,7 +126,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       });
                     },
                     underline: Container(), // Hide the default underline
-                    dropdownColor: Color.fromARGB(
+                    dropdownColor: const Color.fromARGB(
                         206, 0, 0, 0), // Set dropdown background color
                     items: <String>[
                       'Hot Posts',

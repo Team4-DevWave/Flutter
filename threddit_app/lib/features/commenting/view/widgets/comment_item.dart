@@ -86,9 +86,9 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                      onPressed: () {}, icon: Icon(Icons.more_horiz_outlined)),
+                      onPressed: () {}, icon: const Icon(Icons.more_horiz_outlined)),
                   IconButton(
-                      onPressed: () {}, icon: Icon(Icons.reply_outlined)),
+                      onPressed: () {}, icon: const Icon(Icons.reply_outlined)),
                   IconButton(
                     onPressed: () {
                       upVotePost(ref);
@@ -115,7 +115,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                       size: 30,
                     ),
                     color: widget.comment.downvotes.contains(widget.uid)
-                        ? Color.fromARGB(255, 97, 137, 212)
+                        ? const Color.fromARGB(255, 97, 137, 212)
                         : Colors.white,
                   ),
                 ],

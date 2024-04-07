@@ -7,7 +7,7 @@ import 'package:threddit_clone/theme/text_styles.dart';
 
 class PostCard extends ConsumerStatefulWidget {
   const PostCard(
-      {Key? key,
+      {super.key,
       required this.post,
       required this.uid,
       required this.onCommentPressed});
@@ -143,7 +143,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                     size: 30,
                   ),
                   color: widget.post.downvotes.contains(widget.uid)
-                      ? Color.fromARGB(255, 97, 137, 212)
+                      ? const Color.fromARGB(255, 97, 137, 212)
                       : Colors.white,
                 ),
                 IconButton(
@@ -158,7 +158,8 @@ class _PostCardState extends ConsumerState<PostCard> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       if (widget.uid == widget.post.uid)
-                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                        IconButton(
+                            onPressed: () {}, icon: const Icon(Icons.delete)),
                       if (widget.uid != widget.post.uid)
                         IconButton(
                             onPressed: () {}, icon: const Icon(Icons.refresh))

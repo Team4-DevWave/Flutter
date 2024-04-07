@@ -19,7 +19,7 @@ class _AddComment extends ConsumerState<AddComment> {
   void addComment(WidgetRef ref) async {
     final addCommentFuture = ref.read(addCommentProvider(
         [_commentController.text, widget.postID, widget.uid]));
-    await addCommentFuture;
+    addCommentFuture;
     setState(() {});
     //Navigator.pop(context); // Close the bottom sheet after adding the comment
   }
@@ -30,6 +30,7 @@ class _AddComment extends ConsumerState<AddComment> {
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     return BottomSheet(
       onClosing: () {},
@@ -64,7 +65,7 @@ class _AddComment extends ConsumerState<AddComment> {
                         onPressed: () {
                           addComment(ref);
                         },
-                        icon: Icon(Icons.send),
+                        icon: const Icon(Icons.send),
                         color: Colors.white,
                       ),
                     ],

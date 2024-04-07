@@ -41,7 +41,7 @@ class FeedUnit extends StatelessWidget {
                   ),
                   Text(
                     dataOfPost['time'],
-                    style: TextStyle(color: AppColors.whiteHideColor),
+                    style: const TextStyle(color: AppColors.whiteHideColor),
                   ),
                 ],
               )),
@@ -121,20 +121,20 @@ class FeedUnit extends StatelessWidget {
                   Container(
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.comment,
                           color: AppColors.whiteColor,
                         ),
                         Text(
                           dataOfPost['numberOfComments'].toString(),
-                          style: TextStyle(color: AppColors.whiteColor),
+                          style: const TextStyle(color: AppColors.whiteColor),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              Icon(Icons.share, color: AppColors.whiteColor),
+              const Icon(Icons.share, color: AppColors.whiteColor),
             ],
           ),
           const Divider(color: AppColors.whiteHideColor),

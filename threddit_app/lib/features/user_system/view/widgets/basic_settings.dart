@@ -21,6 +21,8 @@ const List<String> genders = <String>['Man', 'Woman'];
 /// Also calls fetchUser to display the User Email under the Update Email Address
 /// tile.
 class BasicSettings extends StatefulWidget {
+  const BasicSettings({super.key});
+
   @override
   State<BasicSettings> createState() => _BasicSettingsState();
 }
@@ -31,11 +33,11 @@ class _BasicSettingsState extends State<BasicSettings> {
   Country selectedCountry = Country.worldWide;
   void _selectBasicSetting(BuildContext context, String settingName) {
     if (settingName == "email") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => UpdateEmailScreen()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (ctx) => const UpdateEmailScreen()));
     } else if (settingName == "password") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => ChangePasswordScreen()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (ctx) => const ChangePasswordScreen()));
     }
   }
 
@@ -45,7 +47,6 @@ class _BasicSettingsState extends State<BasicSettings> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement builds
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -54,11 +55,11 @@ class _BasicSettingsState extends State<BasicSettings> {
             future: fetchUser(),
             builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
-                return Text("ERROR LOADING USER DATA");
+                return const Text("ERROR LOADING USER DATA");
               } else {
                 final UserMock user = snapshot.data!;
                 return ListTile(
@@ -105,11 +106,11 @@ class _BasicSettingsState extends State<BasicSettings> {
           future: fetchUser(),
           builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
             while (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
             if (snapshot.hasError) {
               print(snapshot.error);
-              return Text("ERROR LOADING USER DATA");
+              return const Text("ERROR LOADING USER DATA");
             } else {
               final UserMock user = snapshot.data!;
               pickedGender = user.getGender;
@@ -129,8 +130,8 @@ class _BasicSettingsState extends State<BasicSettings> {
                   value: pickedGender,
                   items: genders.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
-                      child: Text(value),
                       value: value,
+                      child: Text(value),
                     );
                   }).toList(),
                 ),

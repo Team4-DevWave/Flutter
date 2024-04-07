@@ -4,7 +4,7 @@ import 'package:threddit_clone/features/posting/data/data.dart';
 class CommentRepository {
   Future<List<Comment>> fetchComments(String postId) async {
     // Simulate an asynchronous operation (e.g., fetching data from a backend)
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     List<Comment> postComments =
         comments.where((comment) => comment.postId == postId).toList();
     // Return the mock comments
@@ -13,7 +13,7 @@ class CommentRepository {
 
   Future<void> addComment(String commentText, String postID, String uid) async {
     // Simulate adding a comment to a backend
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     Comment newComment = Comment(
       upvotes: [],

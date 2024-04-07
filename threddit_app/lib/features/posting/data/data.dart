@@ -34,7 +34,7 @@ final List<Post> posts = [
     username: 'user2',
     uid: 'user2_uid',
     type: 'type2',
-    createdAt: DateTime.now().subtract(Duration(days: 1)),
+    createdAt: DateTime.now().subtract(const Duration(days: 1)),
     awards: [],
   ),
 ];
@@ -42,7 +42,7 @@ final List<Post> posts = [
 final List<Comment> comments = [
   Comment(
     text: 'This is the first comment.',
-    createdAt: DateTime.now().subtract(Duration(hours: 1)),
+    createdAt: DateTime.now().subtract(const Duration(hours: 1)),
     postId: '1', // Assuming postId
     username: 'User1',
     profilePic: 'profile_pic_url', // Assuming profile picture URL
@@ -51,7 +51,7 @@ final List<Comment> comments = [
   ),
   Comment(
     text: 'This is the second comment.',
-    createdAt: DateTime.now().subtract(Duration(hours: 2)),
+    createdAt: DateTime.now().subtract(const Duration(hours: 2)),
     postId: '1', // Assuming postId
     username: 'User2',
     profilePic: 'profile_pic_url', // Assuming profile picture URL
@@ -60,7 +60,7 @@ final List<Comment> comments = [
   ),
   Comment(
     text: 'This is the third comment.',
-    createdAt: DateTime.now().subtract(Duration(hours: 3)),
+    createdAt: DateTime.now().subtract(const Duration(hours: 3)),
     postId: '1', // Assuming postId
     username: 'User3',
     profilePic: 'profile_pic_url', // Assuming profile picture URL

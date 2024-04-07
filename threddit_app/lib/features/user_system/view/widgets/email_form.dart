@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class EmailForm extends StatefulWidget {
   final String formName;
   String enteredEmail = "";
-  EmailForm(this.formName);
+  EmailForm(this.formName, {super.key});
 
   @override
   State<EmailForm> createState() => _EmailFormState();

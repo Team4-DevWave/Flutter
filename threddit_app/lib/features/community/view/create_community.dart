@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:threddit_clone/theme/colors.dart";
 
@@ -45,7 +44,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: EdgeInsets.only(top: 30.0, left: 15, right: 15),
+        padding: const EdgeInsets.only(top: 30.0, left: 15, right: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -127,7 +126,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                       children: [
                         Switch(
                           value: light,
-                          activeColor: Color.fromARGB(255, 39, 78, 137),
+                          activeColor: const Color.fromARGB(255, 39, 78, 137),
                           thumbColor: const MaterialStatePropertyAll<Color>(
                               Colors.white),
                           inactiveTrackColor:

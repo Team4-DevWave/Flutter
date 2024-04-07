@@ -77,9 +77,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
           width: 330,
           child: ListView(
             padding: EdgeInsets.zero,
-            children: <Widget>[
-              //TODO: add drawer items
-            ],
+            children: const <Widget>[],
           ),
         ),
         body: Column(
@@ -93,12 +91,10 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                     onCommentPressed: _openAddCommentOverlay,
                   ),
                   const Padding(padding: EdgeInsets.only(bottom: 8)),
-                  ...postComments
-                      .map((comment) => CommentItem(
-                            comment: comment,
-                            uid: 'user1',
-                          ))
-                      .toList(),
+                  ...postComments.map((comment) => CommentItem(
+                        comment: comment,
+                        uid: 'user1',
+                      )),
                 ],
               ),
             ),
