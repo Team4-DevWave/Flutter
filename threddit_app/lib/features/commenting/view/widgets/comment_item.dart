@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
-import 'package:threddit_clone/features/commenting/model/comment.dart';
+import 'package:threddit_clone/models/comment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -50,6 +50,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                     padding: EdgeInsets.only(right: 10.0),
                     child: CircleAvatar(
                       radius: 18,
+                      backgroundImage: AssetImage('assets/images/Default_Avatar.png'),
                     ),
                   ),
                   Text(
