@@ -118,10 +118,12 @@ Future<UserMock> getUserInfo(http.Client client) async {
   );
   return UserMock.fromJson(jsonDecode(response.body));
 }
-/// API Call to fetch the User data
-Future<UserMock> getBlockedUserInfo(http.Client client) async {
+
+Future<List<String>> getBlockedUsers(http.Client client, String query) async {
   http.Response response = await client.get(
-    Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
+    Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
   );
-  return UserMock.fromJson(jsonDecode(response.body));
+  List<String> searchResults = jsonDecode(response.body);
+  print(searchResults);
+  return searchResults;
 }
