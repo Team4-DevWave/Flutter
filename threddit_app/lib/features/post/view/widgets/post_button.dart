@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
 class PostButton extends StatelessWidget {

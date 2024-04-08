@@ -6,7 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/features/post/model/post_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
-import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
+import 'package:threddit_clone/features/post/view/widgets/add_video.dart';
+import 'package:threddit_clone/features/post/view/widgets/close_button.dart';
 import 'package:threddit_clone/features/post/view/widgets/next_button.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -26,11 +27,13 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   late TextEditingController _bodytextController;
   bool isImage = false;
   bool isLink = false;
+  bool isVideo = false;
 
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
   List<XFile>? _imagesList;
+  XFile? _video;
 
   Future<void> _pickMulti() async {
     final pickedList = await picker.pickMultiImage();
@@ -38,6 +41,18 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     setState(() {
       _imagesList = pickedList;
       isImage = true;
+      ref.read(postDataProvider.notifier).updateImages(_imagesList!);
+    });
+  }
+
+  Future<void> _pickVideo() async{
+    final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
+    // If the user does not select a video then return null.
+    if (pickedVideo == null) return;
+    setState(() {
+      _video = pickedVideo;
+      isVideo  = true;
+      ref.read(postDataProvider.notifier).updateVideo(_video!);
     });
   }
 
@@ -48,6 +63,13 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
+  Future<void> _removeVideo()async{
+    setState(() {
+      _video = null;
+      isVideo= false;
+    });
+
+  }
   Future<void> _addLink() async {
     setState(() {
       isLink = true;
@@ -59,6 +81,13 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       isLink = false;
     });
   }
+
+   void resetAll(){
+    _titleController = TextEditingController(text: "");
+    _bodytextController = TextEditingController(text: "");
+    ref.read(postDataProvider.notifier).resetAll();
+  }
+
 
   @override
   void initState() {
@@ -81,27 +110,31 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     PostData? post = ref.watch(postDataProvider);
 
     Widget buildImageContent() {
-      if (_imagesList == null || isLink) {
+      if (_imagesList == null || isLink || isVideo) {
         return const SizedBox();
       }
       return AddImageWidget(onPressed: _removeImage, imagesList: _imagesList!);
     }
 
-    Widget buildLink() {
-      if (isImage) {
+    Widget buildVideoContent(){
+      if(_video == null || isLink || isImage){
         return const SizedBox();
       }
-      return AddLinkWidget(removeLink: _removeLink,);
+      return AddVideoWidget(onPressed: _removeVideo, videoPath: _video!.path);
+    }
+
+    Widget buildLink() {
+      if(isLink)
+      {
+        return AddLinkWidget(removeLink: _removeLink,);
+      }
+      return const SizedBox();
     }
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: IconButton(
-            onPressed: () {
-              ref.read(currentScreenProvider.notifier).returnToPrevious();
-            },
-            icon: const Icon(Icons.close)),
+        leading: ClosedButton(resetAll: resetAll, firstScreen: true, titleController: _titleController, isImage: isImage, isLink: isLink, isVideo: isVideo),
         actions: [
           NextButton(titleController: _titleController),
         ],
@@ -135,7 +168,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                             fontSize: 24)),
                     onChanged: (value) => {
                       if(post?.title != value){
-                        ref.read(postDataProvider.notifier).state = post?.copyWith(title: value)
+                        ref.read(postDataProvider.notifier).updateTitle(value),
                       },
                       setState(() {
                         postTitle = value;
@@ -144,7 +177,8 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                   ),
                 ),
                 buildImageContent(),
-                isLink ? buildLink() : const SizedBox(),
+                buildLink(),
+                buildVideoContent(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
                   child: TextField(
@@ -168,7 +202,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                               TextStyle(color: AppColors.whiteColor, fontSize: 16)),
                       onChanged: (value) => {
                         if(post?.postBody != value){
-                        ref.read(postDataProvider.notifier).state = post?.copyWith(postBody: value)
+                        ref.read(postDataProvider.notifier).updateBodyText(value)
                       },
                       setState(() {
                         postBody = value;
@@ -186,14 +220,19 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         child: Row(
           children: [
             IconButton(
-              onPressed: !isLink ? _pickMulti : (){},
+              onPressed: (!isLink && !isVideo) ? _pickMulti : (){},
               icon: const Icon(Icons.image),
-              color: isLink || isImage?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
+              color:  isLink || isImage || isVideo?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: !isImage ? _addLink : (){},
+              onPressed: (!isLink && !isImage) ? _pickVideo : (){},
+              icon: const Icon(Icons.video_library_outlined),
+              color: isLink || isImage || isVideo?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
+            ),
+            IconButton(
+              onPressed: (!isImage && !isVideo)? _addLink : (){},
               icon: const Icon(Icons.link),
-              color: isLink || isImage?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
+              color:  isLink || isImage || isVideo?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
             ),
           ],
         ),

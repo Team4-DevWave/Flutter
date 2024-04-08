@@ -5,10 +5,10 @@ import 'package:threddit_clone/features/home_page/view_model/get_user_communitie
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:threddit_clone/theme/theme.dart';
 
 class CommunityList extends ConsumerStatefulWidget {
-  const CommunityList({super.key});
+  const CommunityList({super.key, required this.searchRes});
+  final Future<List<String>> searchRes;
 
   @override
   ConsumerState<CommunityList> createState() => _CommunityListState();
@@ -26,14 +26,14 @@ class _CommunityListState extends ConsumerState<CommunityList> {
 
   @override
   Widget build(BuildContext context) {
-    final ref = this.ref;
-    final post = ref.read(postDataProvider);
     return FutureBuilder<List<String>>(
-        future: _communityData,
+        future: Future.wait([widget.searchRes, _communityData]).then((value) {
+          final communityData = value[1];
+          final searchRes = value[0];
+          return searchRes.isEmpty ? communityData : searchRes;
+        }),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Loading(); //Placeholder while loading
-          } else if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
             List<String> dataList = snapshot.data ?? [];
@@ -44,8 +44,8 @@ class _CommunityListState extends ConsumerState<CommunityList> {
                   String communityName = dataList[index];
                   return InkWell(
                       onTap: (){
-                        ref.read(postDataProvider.notifier).state = post?.copyWith(community: communityName);
-                        Navigator.pushNamed(context, RouteClass.confirmPostScreen);
+                        ref.read(postDataProvider.notifier).updateCommunityName(communityName);
+                        Navigator.pushReplacementNamed(context, RouteClass.confirmPostScreen);
                       },
                       splashColor: AppColors.whiteColor,
                       child: Container(

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
 class AddImageWidget extends ConsumerWidget {
@@ -13,7 +14,6 @@ class AddImageWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //i want to make sure if the backend takes a list of images or just one image?
-    //PostData? post = ref.read(postDataProvider)
 
     return Stack(clipBehavior: Clip.hardEdge, children: [
       ConstrainedBox(
@@ -34,7 +34,10 @@ class AddImageWidget extends ConsumerWidget {
         top: 0,
         right: 0,
         child: IconButton(
-          onPressed: onPressed,
+          onPressed: (){
+            onPressed!.call();
+            ref.read(postDataProvider.notifier).removeImages();
+          },
           icon: const Icon(Icons.close, color: AppColors.whiteGlowColor),
           style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(AppColors.mainColor.withOpacity(0.5))),
         ),
