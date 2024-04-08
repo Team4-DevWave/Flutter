@@ -1,11 +1,11 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/features/user_system/view/screens/change_password_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
-import 'package:threddit_clone/features/user_system/view/screens/update_email_screen.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,32 +20,36 @@ const List<String> genders = <String>['Man', 'Woman'];
 /// Pick Country Selector
 /// Also calls fetchUser to display the User Email under the Update Email Address
 /// tile.
-class BasicSettings extends StatefulWidget {
+class BasicSettings extends ConsumerStatefulWidget {
+  const BasicSettings({super.key});
+
   @override
-  State<BasicSettings> createState() => _BasicSettingsState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _BasicSettingsState();
 }
 
-class _BasicSettingsState extends State<BasicSettings> {
+class _BasicSettingsState extends ConsumerState<BasicSettings> {
   final client = http.Client();
   String pickedGender = genders.first;
   Country selectedCountry = Country.worldWide;
   void _selectBasicSetting(BuildContext context, String settingName) {
     if (settingName == "email") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => UpdateEmailScreen()));
+      Navigator.pushNamed(context, RouteClass.updateEmailScreen).then((value) => setState(() {
+        ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+      }));
     } else if (settingName == "password") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => ChangePasswordScreen()));
+      Navigator.pushNamed(context, RouteClass.changePasswordScreen);
     }
   }
 
   Future<UserMock> fetchUser() async {
-    return getUserInfo(client);
+    setState(() {
+      ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+    }); 
+    return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    // TODO: implement builds
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -54,11 +58,11 @@ class _BasicSettingsState extends State<BasicSettings> {
             future: fetchUser(),
             builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
               if (snapshot.hasError) {
                 print(snapshot.error);
-                return Text("ERROR LOADING USER DATA");
+                return const Text("ERROR LOADING USER DATA");
               } else {
                 final UserMock user = snapshot.data!;
                 return ListTile(
@@ -105,11 +109,11 @@ class _BasicSettingsState extends State<BasicSettings> {
           future: fetchUser(),
           builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
             while (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
             if (snapshot.hasError) {
               print(snapshot.error);
-              return Text("ERROR LOADING USER DATA");
+              return const Text("ERROR LOADING USER DATA");
             } else {
               final UserMock user = snapshot.data!;
               pickedGender = user.getGender;
@@ -129,8 +133,8 @@ class _BasicSettingsState extends State<BasicSettings> {
                   value: pickedGender,
                   items: genders.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
-                      child: Text(value),
                       value: value,
+                      child: Text(value),
                     );
                   }).toList(),
                 ),

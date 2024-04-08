@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
@@ -16,25 +17,30 @@ import 'package:threddit_clone/features/user_system/view/widgets/save_changes.da
 /// Two buttons: One to cancel and another to submit.
 /// The submit button calls the save changes function which calls the change email function.
 /// Then the check response.
-class UpdateEmailScreen extends StatefulWidget {
-  UpdateEmailScreen({super.key});
+class UpdateEmailScreen extends ConsumerStatefulWidget {
+  const UpdateEmailScreen({super.key});
   @override
-  _UpdateEmailScreenState createState() => _UpdateEmailScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _UpdateEmailScreenState();
 }
 
-class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
+class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Reddit password");
   final EmailForm newEmailForm = EmailForm("New email address");
   final client = http.Client();
+  
   Future<UserMock> fetchUser() async {
-    return getUserInfo(client);
+    setState(() {
+      ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+    });
+    return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+    
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Update email address"),
+        title: const Text("Update email address"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -45,11 +51,11 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
               future: fetchUser(),
               builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
                 while (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
                 if (snapshot.hasError) {
                   print(snapshot.error);
-                  return Text("ERROR LOADING USER DATA");
+                  return const Text("ERROR LOADING USER DATA");
                 } else {
                   final UserMock user = snapshot.data!;
                   return Row(
@@ -64,7 +70,7 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                             Text("u/${user.getUsername}",
                                 style: AppTextStyles.primaryTextStyle),
                             Text(
-                              "${user.getEmail}",
+                              user.getEmail,
                               style: AppTextStyles.primaryTextStyle,
                             ),
                           ])
@@ -76,11 +82,11 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
             newEmailForm,
             currentPasswordForm,
             Container(
-              child:
-                  TextButton(onPressed: () {}, child: Text("Forgot password?")),
               alignment: Alignment.topRight,
+              child:
+                  TextButton(onPressed: () {}, child: const Text("Forgot password?")),
             ),
-            Spacer(),
+            const Spacer(),
             SaveChanges(
               saveChanges: () {
                 final String newEmail = newEmailForm.enteredEmail;
@@ -92,6 +98,9 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                     newEmail: newEmail);
                 checkEmailUpdateResponse(
                     context: context, statusCodeFuture: statusCode);
+                setState(() {
+                  ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+                });
               },
             ),
           ],

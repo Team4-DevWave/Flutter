@@ -8,27 +8,29 @@ import 'package:threddit_clone/theme/text_styles.dart';
 class EnableSetting extends StatefulWidget {
   final String optionName;
   final IconData? settingIcon;
-  EnableSetting(this.optionName, this.settingIcon);
+  final VoidCallback enable;
+  bool isEnabled;
+  EnableSetting({required this.isEnabled, required this.optionName, required this.settingIcon, required this.enable, super.key});
   @override
   State<EnableSetting> createState() => _EnableSettingState();
 }
 
 class _EnableSettingState extends State<EnableSetting> {
-  bool isEnabled = false;
+  
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ListTile(
       leading: Icon(widget.settingIcon),
       title: Text(widget.optionName),
       titleTextStyle: AppTextStyles.primaryTextStyle,
       trailing: Switch(
           activeColor: const Color.fromARGB(255, 1, 61, 110),
-          value: isEnabled,
+          value: widget.isEnabled,
           onChanged: (bool? value) {
             setState(() {
-              isEnabled = value!;
+              widget.isEnabled = value!;
+              widget.enable();
             });
           }),
     );

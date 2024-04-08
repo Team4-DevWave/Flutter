@@ -9,7 +9,7 @@ void showAlert(final String alertName, BuildContext context) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
-        Future.delayed(Duration(seconds: 2), () {
+        Future.delayed(const Duration(seconds: 2), () {
           if (isOpen) {
             Navigator.of(context).pop();
             isOpen = false;
@@ -23,8 +23,8 @@ void showAlert(final String alertName, BuildContext context) {
           alignment: Alignment.bottomCenter,
           content: Text(alertName),
           contentTextStyle: AppTextStyles.secondaryTextStyle,
-          insetPadding: EdgeInsets.only(bottom: 100),
-          contentPadding: EdgeInsets.all(15),
+          insetPadding: const EdgeInsets.only(bottom: 100),
+          contentPadding: const EdgeInsets.all(15),
         );
       });
 }

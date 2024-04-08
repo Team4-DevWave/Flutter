@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-/// SaveChanges class responisble for the save/cancel button in Update Email and Change 
-/// Password takes the function it's going to call when save is Pressed as a 
+
+/// SaveChanges class responisble for the save/cancel button in Update Email and Change
+/// Password takes the function it's going to call when save is Pressed as a
 /// parameter.
 class SaveChanges extends StatefulWidget {
   final VoidCallback saveChanges;
-  SaveChanges({required this.saveChanges});
+  const SaveChanges({super.key, required this.saveChanges});
 
   @override
   State<SaveChanges> createState() => _SaveChangesState();
@@ -13,8 +14,7 @@ class SaveChanges extends StatefulWidget {
 class _SaveChangesState extends State<SaveChanges> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -36,7 +36,7 @@ class _SaveChangesState extends State<SaveChanges> {
               onPressed: widget.saveChanges,
               style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
-                  backgroundColor: Color.fromARGB(255, 0, 140, 255)),
+                  backgroundColor: const Color.fromARGB(255, 0, 140, 255)),
               child: const Text("Save"),
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PasswordForm extends StatefulWidget {
   final String formName;
   String enteredPassword = "";
-  PasswordForm(this.formName);
+  PasswordForm(this.formName, {super.key});
 
   @override
   State<PasswordForm> createState() => _PasswordFormState();

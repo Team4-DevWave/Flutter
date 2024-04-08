@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
@@ -15,27 +18,29 @@ import 'package:threddit_clone/features/user_system/view_model/settings_function
 ///
 /// Two buttons: One to cancel and another to submit.
 /// The submit button calls the save changes function which calls the change Password function.
-class ChangePasswordScreen extends StatefulWidget {
-  ChangePasswordScreen({super.key});
+class ChangePasswordScreen extends ConsumerStatefulWidget {
+  const ChangePasswordScreen({super.key});
   @override
-  _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ChangePasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Current password");
   final PasswordForm newPasswordForm = PasswordForm("New password");
   final PasswordForm confirmPasswordForm = PasswordForm("Confirm new password");
   final client = http.Client();
+  void _forgetPassword(){
+    Navigator.pushNamed(navigatorKey.currentContext!, RouteClass.forgetPasswordScreen);
+  }
   Future<UserMock> fetchUser() async {
-    return getUserInfo(client);
+    return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
         appBar: AppBar(
-          title: Text("Change password"),
+          title: const Text("Change password"),
         ),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -46,11 +51,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 future: fetchUser(),
                 builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
                   while (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                   if (snapshot.hasError) {
                     print(snapshot.error);
-                    return Text("ERROR LOADING USER DATA");
+                    return const Text("ERROR LOADING USER DATA");
                   } else {
                     final UserMock user = snapshot.data!;
                     return Row(
@@ -69,12 +74,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               currentPasswordForm,
               newPasswordForm,
               Container(
-                child: TextButton(
-                    onPressed: () {}, child: Text("Forgot password?")),
                 alignment: Alignment.topRight,
+                child: TextButton(
+                    onPressed: () {
+                      print("I am pressed");
+                      return _forgetPassword();
+                    }, child: const Text("Forgot password?")),
               ),
               confirmPasswordForm,
-              Spacer(),
+              const Spacer(),
               SaveChanges(
                 saveChanges: () {
                   final String confirmedPassword =
