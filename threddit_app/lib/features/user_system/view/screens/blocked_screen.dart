@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/text_styles.dart';
+
 /// A placeholder screen that should show the accounts blocked by a user.
 class BlockedScreen extends ConsumerStatefulWidget {
   const BlockedScreen({super.key});
@@ -13,10 +15,17 @@ class BlockedScreen extends ConsumerStatefulWidget {
 
 class _BlockedScreenState extends ConsumerState<BlockedScreen> {
   final client = http.Client();
-  List<String> usernames = [];
-  void search(query) async{
-    final List<String> results =
-        await ref.watch(settingsFetchProvider.notifier).searchUsers(client, query);
+  List<UserMock> usernames = [];
+  void search(query) async {
+    if (query.isEmpty) {
+      setState(() {
+        usernames.clear();
+      });
+      return;
+    }
+    final List<UserMock> results = await ref
+        .watch(settingsFetchProvider.notifier)
+        .searchUsers(client, query);
     setState(() {
       usernames = results;
     });
@@ -37,7 +46,8 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                   search(query);
                 },
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30)),
                   labelText: 'Search',
                 ),
               ),
@@ -46,10 +56,38 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
               ),
               Expanded(
                 child: ListView.builder(
-                    itemCount: usernames.length ?? 0,
+                    itemCount: usernames.length,
                     itemBuilder: (context, index) => ListTile(
-                          title: Text(usernames.isEmpty ? '': usernames[index] ,
+                          title: Text(
+                              usernames.isEmpty
+                                  ? ''
+                                  : usernames[index].getUsername,
                               style: AppTextStyles.secondaryTextStyle),
+                          trailing: ElevatedButton(
+                            onPressed: () {
+                              final username = usernames[index].getUsername;
+                              if (usernames[index].getBlocked) {
+                                unblockUser(
+                                    client: client, userToUnBlock: username);
+                              } else {
+                                blockUser(
+                                    client: client, userToBlock: username);
+                              }
+                              setState(() {
+                                usernames[index] = usernames[index].copyWith(
+                                  isBlocked: !usernames[index].getBlocked,
+                                );
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(),
+                                textStyle: AppTextStyles.buttonTextStyle,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 0, 140, 255)),
+                            child: usernames[index].getBlocked
+                                ? const Text("Unblock")
+                                : const Text("Block"),
+                          ),
                         )),
               )
             ],

@@ -140,7 +140,49 @@ void checkPasswordConfirmResponse(
     showAlert("Invalid Credintals", context);
   }
 }
+void checkBlockResponse(
+    {required BuildContext context,
+    required Future<int> statusCodeFuture}) async {
+  int statusCode = await statusCodeFuture;
+  if (statusCode == 200) {
 
+  } else {
+    showAlert("User was not blocked/unblocked", context);
+  }
+}
+Future<int> blockUser({required http.Client client, required String userToBlock}) async{
+  Map<String, dynamic> body = {
+    'blockUsername': userToBlock
+  };
+  print(userToBlock);
+  print(body);
+  String bodyEncoded = jsonEncode(body);
+
+  http.Response response = await client.post(
+    Uri.parse("http://10.0.2.2:3001/api/block-user"),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: bodyEncoded,
+  );
+  print(response.statusCode);
+  return response.statusCode;
+}
+Future<int> unblockUser({required http.Client client, required String userToUnBlock}) async{
+  Map<String, dynamic> body = {
+    'blockUsername': userToUnBlock
+  };
+  String bodyEncoded = jsonEncode(body);
+
+  http.Response response = await client.post(
+    Uri.parse("http://10.0.2.2:3001/api/unblock-user"),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: bodyEncoded,
+  );
+  return response.statusCode;
+}
 final settingsFetchProvider =
     StateNotifierProvider<SettingsFetch, bool>((ref) => SettingsFetch(ref));
 
@@ -156,14 +198,26 @@ class SettingsFetch extends StateNotifier<bool> {
     return UserMock.fromJson(jsonDecode(response.body));
   }
 
-  Future<List<String>> searchUsers(http.Client client, String query) async {
+  Future<List<UserMock>> searchUsers(http.Client client, String query) async {
     http.Response response = await client.get(
       Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
     );
-    List<dynamic> data = jsonDecode(response.body);
-    print(data);
-    final List<String> searchResults = data.map((user) => user['username'] as String).toList();
-    print(searchResults);
-    return searchResults;
+    List<dynamic> data = jsonDecode(response.body.toString());
+    List<UserMock> users = [];
+    for (var userData in data) {
+      String username = userData['username'] as String;
+      bool blocked = userData['blocked'] as bool;
+      users.add(UserMock(
+          id: '',
+          email: '',
+          username: username,
+          isBlocked: blocked,
+          gender: ''));
+      print(users);
+      print(data);
+      
+    }
+    return users;
   }
+  
 }

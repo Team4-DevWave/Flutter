@@ -55,11 +55,11 @@ app.post('/api/confirm-password', (req, res) => {
         const dataObject = JSON.parse(data);
         const users = dataObject.users
         const userToUpdate = users.find(user => user.user_id === user_id);
-        if (userToUpdate.password == confirmed_password){
-            return res.status(200).json({message : 'Correct password'});
+        if (userToUpdate.password == confirmed_password) {
+            return res.status(200).json({ message: 'Correct password' });
 
-        }else{
-            return res.status(400).json({error: 'Inncorect Password'});
+        } else {
+            return res.status(400).json({ error: 'Inncorect Password' });
         }
 
 
@@ -118,7 +118,7 @@ app.post('/api/change-gender', (req, res) => {
                     console.error('Error writing file:', err);
                     return res.status(500).json({ error: 'Internal Server Error' });
                 }
-                res.json({ message: 'Email changed successfully' });
+                res.json({ message: 'Gender changed successfully' });
             });
         }
 
@@ -141,7 +141,8 @@ app.get('/api/user-info', (req, res) => {
         const username = userToGet.username;
         const email = userToGet.email;
         const gender = userToGet.gender;
-        res.json({ username, email, user_id, gender });
+        const blocked = userToGet.blocked
+        res.json({ username, email, user_id, gender, blocked });
     });
 });
 app.listen(PORT, () => {
@@ -159,8 +160,63 @@ app.get('/api/search-user', (req, res) => {
 
         const dataObject = JSON.parse(data);
         const users = dataObject.users;
-        const matchedUsers = users.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
-        const usernames = matchedUsers.map(user => user.username);
+        const matchedUsers = users.filter(user => user.username.toLowerCase().startsWith(query.toLowerCase()));
         res.json(matchedUsers);
     });
+});
+
+app.post('/api/block-user', (req, res) => {
+    const { blockUsername } = req.body;
+    fs.readFile(dbFile, 'utf-8', (err, data) => {
+        if (err) {
+            console.error('Error reading file:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        const dataObject = JSON.parse(data);
+        const users = dataObject.users
+        const userToUpdate = users.find(user => user.username == blockUsername);
+        if (!userToUpdate) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        else {
+
+            userToUpdate.blocked = true;
+            fs.writeFile(dbFile, JSON.stringify(dataObject, null, 2), err => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                    return res.status(500).json({ error: 'Internal Server Error' });
+                }
+                res.json({ message: 'User blocked successfully' });
+            });
+        }
+    });
+
+});
+app.post('/api/unblock-user', (req, res) => {
+    const { blockUsername } = req.body;
+
+    fs.readFile(dbFile, 'utf-8', (err, data) => {
+        if (err) {
+            console.error('Error reading file:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        const dataObject = JSON.parse(data);
+        const users = dataObject.users
+        const userToUpdate = users.find(user => user.username == blockUsername);
+        if (!userToUpdate) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        else {
+
+            userToUpdate.blocked = false;
+            fs.writeFile(dbFile, JSON.stringify(dataObject, null, 2), err => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                    return res.status(500).json({ error: 'Internal Server Error' });
+                }
+                res.json({ message: 'User unblocked successfully' });
+            });
+        }
+    });
+
 });
