@@ -138,6 +138,8 @@ class RouteClass {
                 ));
       case confirmPostScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPost());
+      case confirmPostScreen:
+        return MaterialPageRoute(builder: (_) => const ConfirmPost());
       case postScreen:
         Post data = settings.arguments as Post;
         return MaterialPageRoute(
