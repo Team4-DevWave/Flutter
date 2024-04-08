@@ -177,7 +177,7 @@ Widget build(BuildContext context) {
                                       comment: comment,
                                       uid: 'user2',
                                     ))
-                                .toList(),
+                                ,
                         ],
                       ),
                     ),
