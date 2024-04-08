@@ -34,3 +34,20 @@ final fetchcommunityProvider = FutureProvider.family<Community, String>((ref, id
  
   return repository.fetchCommunity(id);
 });
+
+final joinCommunityProvider =
+    Provider.autoDispose.family<void Function(String), String>((ref, id) {
+  final repository = ref.watch(communityRepositoryProvider);
+  return (String userID) {
+    repository.joinCommunity(id, userID);
+    
+  };
+});
+
+final unjoinCommunityProvider =
+    Provider.autoDispose.family<void Function(String), String>((ref, id) {
+  final repository = ref.watch(communityRepositoryProvider);
+  return (String userID) {
+    repository.unJoinCommunity(id, userID);
+  };
+});

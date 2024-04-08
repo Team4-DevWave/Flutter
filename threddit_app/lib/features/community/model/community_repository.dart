@@ -41,13 +41,43 @@ Future<Community> fetchCommunity(String id) async {
   if (response.statusCode == 200) {
     final List<dynamic> data = jsonDecode(response.body);
     if (data.isNotEmpty) {
-      Community community=Community.fromJson(data.first);
-      return community;
+      return Community.fromJson(data.first);
     } else {
       throw Exception('Community not found');
     }
   } else {
     throw Exception('Failed to load community');
+  }
+}
+
+Future<void> joinCommunity(String id, String userID) async {
+  final community = await fetchCommunity(id);
+  community.members.add(userID);
+  await updateCommunity(community);
+}
+
+Future<void> unJoinCommunity(String id, String userID) async {
+  final community = await fetchCommunity(id);
+  community.members.remove(userID);
+  await updateCommunity(community);
+}
+
+Future<void> updateCommunity(Community community) async {
+  final String apiUrl = 'http://192.168.100.249:3000/communities/${community.id}';
+  final Map<String, dynamic> data = community.toMap();
+
+  final response = await http.patch(
+    Uri.parse(apiUrl),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(data),
+  );
+
+  if (response.statusCode == 200) {
+    print('Community updated successfully');
+  } else {
+    throw Exception('Failed to update community: ${response.reasonPhrase}');
   }
 }
 
