@@ -6,7 +6,9 @@
       "email": "ahmed@gmail.com",
       "password": "bb",
       "gender": "Man",
-      "blocked": false
+      "blocked": false,
+      "notifications": false,
+      "isFollowable": true
     },
     {
       "user_id": 2,
@@ -14,7 +16,7 @@
       "email": "user2@example.com",
       "password": "password456",
       "gender": "Man",
-      "blocked": false
+      "blocked": true
     }
   ]
 }

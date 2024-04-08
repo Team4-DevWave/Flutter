@@ -139,22 +139,20 @@ void checkPasswordConfirmResponse(
     showAlert("Invalid Credintals", context);
   }
 }
+
 void checkBlockResponse(
     {required BuildContext context,
     required Future<int> statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
-
   } else {
     showAlert("User was not blocked/unblocked", context);
   }
 }
-Future<int> blockUser({required http.Client client, required String userToBlock}) async{
-  Map<String, dynamic> body = {
-    'blockUsername': userToBlock
-  };
-  print(userToBlock);
-  print(body);
+
+Future<int> blockUser(
+    {required http.Client client, required String userToBlock}) async {
+  Map<String, dynamic> body = {'blockUsername': userToBlock};
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await client.post(
@@ -164,13 +162,43 @@ Future<int> blockUser({required http.Client client, required String userToBlock}
     },
     body: bodyEncoded,
   );
+  return response.statusCode;
+}
+Future<int> followableOn(
+    {required http.Client client, required bool isEnabled}) async {
+  Map<String, dynamic> body = {'isOn': isEnabled};
+  String bodyEncoded = jsonEncode(body);
+
+  http.Response response = await client.post(
+    Uri.parse("http://10.0.2.2:3001/api/followable?user_id=1"),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: bodyEncoded,
+  );
   print(response.statusCode);
   return response.statusCode;
 }
-Future<int> unblockUser({required http.Client client, required String userToUnBlock}) async{
-  Map<String, dynamic> body = {
-    'blockUsername': userToUnBlock
-  };
+
+Future<int> notificationOn(
+    {required http.Client client, required bool isEnabled}) async {
+  Map<String, dynamic> body = {'isOn': isEnabled};
+  String bodyEncoded = jsonEncode(body);
+
+  http.Response response = await client.post(
+    Uri.parse("http://10.0.2.2:3001/api/notification?user_id=1"),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: bodyEncoded,
+  );
+  print(response.statusCode);
+  return response.statusCode;
+}
+
+Future<int> unblockUser(
+    {required http.Client client, required String userToUnBlock}) async {
+  Map<String, dynamic> body = {'blockUsername': userToUnBlock};
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await client.post(
@@ -182,6 +210,7 @@ Future<int> unblockUser({required http.Client client, required String userToUnBl
   );
   return response.statusCode;
 }
+
 final settingsFetchProvider =
     StateNotifierProvider<SettingsFetch, bool>((ref) => SettingsFetch(ref));
 
@@ -214,9 +243,37 @@ class SettingsFetch extends StateNotifier<bool> {
           gender: ''));
       print(users);
       print(data);
-      
     }
     return users;
   }
-  
+
+  Future<UserMock> getBlockedUsers(http.Client client) async {
+    http.Response response = await client.get(
+      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=2"),
+    );
+    return UserMock.fromJson(jsonDecode(response.body));
+  }
+
+  Future<bool> getNotificationSetting(http.Client client) async {
+    http.Response response = await client.get(
+      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
+    );
+    Map<String, dynamic> userData = jsonDecode(response.body);
+    final body = jsonDecode(response.body);
+    print(body);
+    final bool isNotificationEnabled = userData['notification'];
+    print(isNotificationEnabled);
+    return isNotificationEnabled;
+  }
+  Future<bool> getFollowableSetting(http.Client client) async {
+    http.Response response = await client.get(
+      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
+    );
+    Map<String, dynamic> userData = jsonDecode(response.body);
+    final body = jsonDecode(response.body);
+    print(body);
+    final bool isFollowableEnabled = userData['isFollowable'];
+    print(isFollowableEnabled);
+    return isFollowableEnabled;
+  }
 }

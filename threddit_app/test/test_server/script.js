@@ -141,12 +141,70 @@ app.get('/api/user-info', (req, res) => {
         const username = userToGet.username;
         const email = userToGet.email;
         const gender = userToGet.gender;
-        const blocked = userToGet.blocked
-        res.json({ username, email, user_id, gender, blocked });
+        const blocked = userToGet.blocked;
+        const notification = userToGet.notifications;
+        const isFollowable = userToGet.isFollowable;
+        res.json({ username, email, user_id, gender, blocked, notification, isFollowable});
     });
 });
 app.listen(PORT, () => {
     console.log("Server is running on port ${PORT}");
+});
+
+
+app.post('/api/notification', (req, res) => {
+    const { user_id } = req.query;
+    const { isOn } = req.body;
+    fs.readFile(dbFile, 'utf-8', (err, data) => {
+        if (err) {
+            console.error('Error reading file:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        const dataObject = JSON.parse(data);
+        const users = dataObject.users
+        const userToUpdate = users.find(user => user.user_id == user_id);
+        if (!userToUpdate) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        else {
+
+            userToUpdate.notifications = isOn;
+            fs.writeFile(dbFile, JSON.stringify(dataObject, null, 2), err => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                    return res.status(500).json({ error: 'Internal Server Error' });
+                }
+                res.json({ message: 'Notification successfully changed' });
+            });
+        }
+    });
+});
+app.post('/api/followable', (req, res) => {
+    const { user_id } = req.query;
+    const { isOn } = req.body;
+    fs.readFile(dbFile, 'utf-8', (err, data) => {
+        if (err) {
+            console.error('Error reading file:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        const dataObject = JSON.parse(data);
+        const users = dataObject.users
+        const userToUpdate = users.find(user => user.user_id == user_id);
+        if (!userToUpdate) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        else {
+
+            userToUpdate.isFollowable = isOn;
+            fs.writeFile(dbFile, JSON.stringify(dataObject, null, 2), err => {
+                if (err) {
+                    console.error('Error writing file:', err);
+                    return res.status(500).json({ error: 'Internal Server Error' });
+                }
+                res.json({ message: 'Followable successfully changed' });
+            });
+        }
+    });
 });
 
 app.get('/api/search-user', (req, res) => {

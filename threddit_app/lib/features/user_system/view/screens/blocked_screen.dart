@@ -16,6 +16,13 @@ class BlockedScreen extends ConsumerStatefulWidget {
 class _BlockedScreenState extends ConsumerState<BlockedScreen> {
   final client = http.Client();
   List<UserMock> usernames = [];
+  Future<UserMock> fetchBlockedUser() async {
+    setState(() {
+      ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+    });
+    return ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+  }
+
   void search(query) async {
     if (query.isEmpty) {
       setState(() {
@@ -23,11 +30,13 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
       });
       return;
     }
+    final UserMock blockedUser = await ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+    final List<UserMock> blockedUsers = [blockedUser];
     final List<UserMock> results = await ref
         .watch(settingsFetchProvider.notifier)
         .searchUsers(client, query);
     setState(() {
-      usernames = results;
+      usernames = results.where((user) => !blockedUsers.any((blocked) => blocked.getUsername == user.getUsername)).toList();
     });
   }
 
@@ -38,9 +47,8 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
           title: const Text("Blocked accounts"),
         ),
         body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            children: [
+            padding: const EdgeInsets.all(10.0),
+            child: Column(children: [
               TextField(
                 onChanged: (query) {
                   search(query);
@@ -48,14 +56,56 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30)),
-                  labelText: 'Search',
+                  labelText: 'Block new account',
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
+              FutureBuilder(
+                  future: fetchBlockedUser(),
+                  builder:
+                      (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+                    while (
+                        snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return const Text("ERROR LOADING USER DATA");
+                    } else {
+                      final UserMock user = snapshot.data!;
+                      List<UserMock> users = [user];
+                      if (user.getBlocked) {
+                        return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: 1,
+                            itemBuilder: (context, index) => ListTile(
+                                title: Text(users[index].getUsername,
+                                    style: AppTextStyles.secondaryTextStyle),
+                                trailing: ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      unblockUser(
+                                          client: client,
+                                          userToUnBlock: users[index].getUsername);
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      shape: const StadiumBorder(),
+                                      textStyle: AppTextStyles.buttonTextStyle,
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 0, 140, 255)),
+                                  child: const Text("Unblock"),
+                                )));
+                      } else {
+                        return const SizedBox();
+                      }
+                    }
+                  }),
               Expanded(
                 child: ListView.builder(
+                    shrinkWrap: true,
                     itemCount: usernames.length,
                     itemBuilder: (context, index) => ListTile(
                           title: Text(
@@ -89,9 +139,7 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                 : const Text("Block"),
                           ),
                         )),
-              )
-            ],
-          ),
-        ));
+              ),
+            ])));
   }
 }

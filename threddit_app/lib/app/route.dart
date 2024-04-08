@@ -98,7 +98,7 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case notificationsSettingsScreen:
         return MaterialPageRoute(
-            builder: (_) => const NotificationsSettingsScreen());
+            builder: (_) =>  NotificationsSettingsScreen());
       case postToScreen:
         return MaterialPageRoute(builder: (_) => const PostToScreen());
       case accountSettingsScreen:
