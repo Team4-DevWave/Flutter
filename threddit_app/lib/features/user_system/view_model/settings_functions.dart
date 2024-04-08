@@ -219,13 +219,13 @@ class SettingsFetch extends StateNotifier<bool> {
   SettingsFetch(this.ref) : super(false);
 
   /// API Call to fetch the User data
+  
   Future<UserMock> getUserInfo(http.Client client) async {
     http.Response response = await client.get(
       Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
     );
     return UserMock.fromJson(jsonDecode(response.body));
   }
-
   Future<List<UserMock>> searchUsers(http.Client client, String query) async {
     http.Response response = await client.get(
       Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
