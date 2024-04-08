@@ -9,6 +9,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/interest_button
 import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
@@ -36,14 +37,30 @@ class _InterestsState extends ConsumerState<Interests> {
 
   Future<void> onContinue() async {
     ref.watch(authProvider.notifier).saveUserInterests(_selectedInterests);
-    await ref.watch(authProvider.notifier).signUp();
-    if (ref.read(signUpSuccess)) {
-      await ref.watch(authProvider.notifier).login();
-      if (ref.read(loginSucceeded)) {
-        Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
-            RouteClass.mainLayoutScreen, (Route<dynamic> route) => false);
+    final isSignedUp = await ref.watch(authProvider.notifier).signUp();
+    isSignedUp.fold((failure) {
+      showSnackBar(navigatorKey.currentContext!, failure.message);
+    }, (signedUp) async {
+      if (signedUp) {
+        final isLoggedIn = await ref.watch(authProvider.notifier).login();
+        isLoggedIn.fold((loginFaliure) {
+          showSnackBar(navigatorKey.currentContext!, loginFaliure.message);
+        }, (loggedIn) {
+          if (loggedIn) {
+            showSnackBar(navigatorKey.currentContext!,
+                'Logged you in as ${ref.watch(userProvider)!.username}');
+            Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
+                RouteClass.mainLayoutScreen, (Route<dynamic> route) => false);
+          } else {
+            showSnackBar(navigatorKey.currentContext!,
+                'Something went wrong while trying to log you in. Please try to log in later!');
+          }
+        });
+      } else {
+        showSnackBar(navigatorKey.currentContext!,
+            'Something went wrong while trying to sign you up. Please try to sign up later!');
       }
-    }
+    });
   }
 
   @override

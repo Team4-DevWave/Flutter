@@ -4,7 +4,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth.dart';
-import 'package:threddit_clone/features/user_system/view_model/utils.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, bool>(
   (ref) => AuthController(
