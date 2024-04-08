@@ -39,8 +39,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     bool isCurrentUser = community.members.contains(widget.uid);
     bool getUserState(Community community) {
       if (community.mods.contains(widget.uid)) {
-        Navigator.pushNamed(
-                            context, RouteClass.communityModTools);
+        Navigator.pushNamed(context, RouteClass.communityModTools);
         return true;
       } else {
         if (community.members.contains(widget.uid)) {
@@ -216,7 +215,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, RouteClass.communityInfo,
+                              arguments: {
+                                'community': community,
+                                'uid': widget.uid,
+                              });
+                        },
                         style: ButtonStyle(
                           minimumSize: MaterialStateProperty.all(
                               Size.zero), // Ensure minimum size is zero

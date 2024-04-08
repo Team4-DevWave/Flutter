@@ -15,7 +15,8 @@ class CommunityRepository {
     members: [uid], 
     mods: [uid], 
     type: _type, 
-    is18plus: is18plus,
+    nsfw: is18plus,
+    rules:[]
   );
 
   Map<String, dynamic> communityData = community.toMap();

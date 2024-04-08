@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
-import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/models/community.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
@@ -59,6 +60,7 @@ class RouteClass {
   static const String forgetUsernameScreen = '/forget_username';
   static const String forgetRdirectScreen = '/forget_redirect';
   static const String communityModTools = '/community_mod_tools';
+  static const String communityInfo = '/community_info';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -140,12 +142,17 @@ class RouteClass {
                   uid: data,
                 ));
       case communityScreen:
-        //var data = settings.arguments as Post;
-
         return MaterialPageRoute(
             builder: (_) => CommunityScreen(id: '1', uid: '1'));
       case communityModTools:
-        return MaterialPageRoute(builder: (_) => const CommunityModTools());      
+        return MaterialPageRoute(builder: (_) => const CommunityModTools());
+      case communityInfo:
+        final args = settings.arguments as Map<String, dynamic>;
+        final community =
+            args['community'] as Community; // Extract the community object
+        final uid = args['uid'] as String;
+        return MaterialPageRoute(
+            builder: (_) => CommunityInfo(community: community, uid: uid));
 
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
