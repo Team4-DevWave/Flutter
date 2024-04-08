@@ -1,15 +1,15 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_clone/features/post/model/post_model.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
+import 'package:threddit_clone/features/post/view/widgets/add_video.dart';
+import 'package:threddit_clone/features/post/view/widgets/close_button.dart';
 import 'package:threddit_clone/features/post/view/widgets/post_button.dart';
 import 'package:threddit_clone/features/post/view/widgets/tags.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
@@ -28,12 +28,14 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   late TextEditingController _bodytextController;
   bool isImage = false;
   bool isLink = false;
+  bool isVideo = false;
   late String postTitle;
   late String postBody;
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
   List<XFile>? _imagesList;
+  XFile? _video;
 
   Future<void> _pickMulti() async {
     final pickedList = await picker.pickMultiImage();
@@ -41,6 +43,18 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     setState(() {
       _imagesList = pickedList;
       isImage = true;
+      ref.read(postDataProvider.notifier).updateImages(_imagesList!);
+    });
+  }
+
+  Future<void> _pickVideo() async {
+    final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
+    // If the user does not select a video then return null.
+    if (pickedVideo == null) return;
+    setState(() {
+      _video = pickedVideo;
+      isVideo = true;
+      ref.read(postDataProvider.notifier).updateVideo(_video!);
     });
   }
 
@@ -57,6 +71,13 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
+  Future<void> _removeVideo() async {
+    setState(() {
+      _video = null;
+      isVideo = false;
+    });
+  }
+
   Future<void> _removeLink() async {
     setState(() {
       isLink = false;
@@ -66,14 +87,25 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   @override
   void initState() {
     super.initState();
-    final intialData = ref.read(postDataProvider);
-    _titleController = TextEditingController(text: intialData?.title ?? '');
-    _imagesList = intialData?.images ?? [];
-    _bodytextController =
-        TextEditingController(text: intialData?.postBody ?? '');
-    if(intialData?.link != ""){
-      isLink = true;
   }
+
+  @override
+  void didChangeDependencies() {
+    final intialData = ref.watch(postDataProvider);
+    _titleController = TextEditingController(text: intialData?.title ?? '');
+    if (intialData?.images != null) {
+      _imagesList = intialData?.images;
+      isImage = true;
+    }
+    if (intialData?.video != null) {
+      _video = intialData?.video;
+      isVideo = true;
+    }
+    _bodytextController = TextEditingController(text: intialData?.postBody);
+    if (intialData?.link != "") {
+      isLink = true;
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -83,30 +115,44 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     super.dispose();
   }
 
+  void resetAll() {
+    _titleController = TextEditingController(text: "");
+    _bodytextController = TextEditingController(text: "");
+    _imagesList = null;
+    ref.read(postDataProvider.notifier).resetAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     final ref = this.ref;
     PostData? post = ref.watch(postDataProvider);
 
     Widget buildImageContent() {
-      if (_imagesList == null || isLink) {
+      if (_imagesList == null || isLink || isVideo) {
         return const SizedBox();
       }
       return AddImageWidget(onPressed: _removeImage, imagesList: _imagesList!);
     }
 
-    Widget buildLink() {
-      if (isImage) {
+    Widget buildVideoContent() {
+      if (_video == null || isLink || isImage) {
         return const SizedBox();
       }
-      return AddLinkWidget(
-        removeLink: _removeLink,
-      );
+      return AddVideoWidget(onPressed: _removeVideo, videoPath: _video!.path);
+    }
+
+    Widget buildLink() {
+      if (isLink) {
+        return AddLinkWidget(
+          removeLink: _removeLink,
+        );
+      }
+      return const SizedBox();
     }
 
     void openRulesOverlay() {
       showModalBottomSheet(
-        backgroundColor: AppColors.backgroundColor,
+          backgroundColor: AppColors.backgroundColor,
           context: context,
           builder: (ctx) {
             return const RulesPage();
@@ -118,21 +164,17 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
           context: context,
           backgroundColor: AppColors.backgroundColor,
           builder: (ctx) {
-            return TagsWidget(post: post,);
-          }
+            return TagsWidget(
+              post: post,
             );
+          });
     }
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: IconButton(
-            onPressed: () {
-              
-            },
-            icon: const Icon(Icons.close)),
+        leading: ClosedButton(resetAll: resetAll, firstScreen: false, titleController: _titleController, isImage: isImage, isLink: isLink, isVideo: isVideo,), 
         actions: [PostButton(titleController: _titleController)],
-        
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -187,7 +229,8 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                           cursorWidth: 1.5,
                           decoration: const InputDecoration(
                               labelText: 'Title',
-                              floatingLabelBehavior: FloatingLabelBehavior.never,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
                               border: InputBorder.none,
                               focusedBorder: InputBorder.none,
                               labelStyle: TextStyle(
@@ -197,19 +240,26 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                           onChanged: (value) => {
                             if (post.title != value)
                               {
-                                ref.read(postDataProvider.notifier).state =
-                                    post.copyWith(title: value)
+                                ref
+                                    .read(postDataProvider.notifier)
+                                    .updateTitle(value)
                               },
                           },
                         ),
                       ),
                       TextButton(
-                          onPressed: openTagsOverlay,
-                          style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(AppColors.whiteHideColor)),
-                          child: const Text("Add Tags", style: TextStyle(color: AppColors.whiteGlowColor),),
-                          ),
+                        onPressed: openTagsOverlay,
+                        style: const ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll(
+                                AppColors.whiteHideColor)),
+                        child: const Text(
+                          "Add Tags",
+                          style: TextStyle(color: AppColors.whiteGlowColor),
+                        ),
+                      ),
                       buildImageContent(),
-                      isLink ? buildLink() : const SizedBox(),
+                      buildLink(),
+                      buildVideoContent(),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
                         child: TextField(
@@ -236,8 +286,9 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                             onChanged: (value) => {
                                   if (post.postBody != value)
                                     {
-                                      ref.read(postDataProvider.notifier).state =
-                                          post.copyWith(postBody: value)
+                                      ref
+                                          .read(postDataProvider.notifier)
+                                          .updateBodyText(value)
                                     },
                                   setState(() {
                                     postBody = value;
@@ -256,16 +307,23 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
         child: Row(
           children: [
             IconButton(
-              onPressed: !isLink ? _pickMulti : () {},
+              onPressed: (!isLink && !isVideo) ? _pickMulti : () {},
               icon: const Icon(Icons.image),
-              color: isLink || isImage
+              color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: !isImage ? _addLink : () {},
+              onPressed: (!isLink && !isImage) ? _pickVideo : () {},
+              icon: const Icon(Icons.video_library_outlined),
+              color: isLink || isImage || isVideo
+                  ? AppColors.whiteHideColor
+                  : AppColors.whiteGlowColor,
+            ),
+            IconButton(
+              onPressed: (!isImage && !isVideo) ? _addLink : () {},
               icon: const Icon(Icons.link),
-              color: isLink || isImage
+              color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),

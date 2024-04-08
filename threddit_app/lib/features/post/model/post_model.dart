@@ -12,6 +12,7 @@ class PostData {
   final bool isSpoiler; 
   final List<XFile>? images;
   final String?community;
+  final XFile?video;
   PostData({
     required this.title,
     this.postBody,
@@ -19,7 +20,8 @@ class PostData {
     required this.isNSFW,
     required this.isSpoiler,
     this.images,
-    this.community
+    this.community,
+    this.video,
   });
 
   PostData copyWith({
@@ -30,6 +32,7 @@ class PostData {
     bool? isSpoiler,
     List<XFile>? images,
     String? community,
+    XFile? video,
   }) {
     return PostData(
       title: title ?? this.title,
@@ -39,6 +42,7 @@ class PostData {
       isSpoiler: isSpoiler ?? this.isSpoiler,
       images: images ?? this.images,
       community: community ?? this.community,
+      video: video ?? this.video,
     );
   }
 
