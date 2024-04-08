@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/app/route.dart';
+// import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/app/global_keys.dart';
+// import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
+// import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, bool>(
   (ref) => AuthController(
@@ -24,31 +28,11 @@ class AuthController extends StateNotifier<bool> {
         _ref = ref,
         super(false);
 
-  void signInWithGoogle(BuildContext context) async {
+  Future<User?> signInWithGoogle() async {
     state = true;
     final user = await _authRepository.signInWithGoogle();
     state = false;
-
-    user.fold(
-      (l) {
-        showSnackBar(navigatorKey.currentContext!, l.message);
-      },
-      (response) {
-        ///If response upon login is 200 therfore user is found and we will login
-        ///else we will continue signup
-        if (response.statusCode == 200) {
-          saveToken(response.body.toString());
-          Navigator.pushNamedAndRemoveUntil(
-            navigatorKey.currentContext!,
-            RouteClass.mainLayoutScreen,
-            (Route<dynamic> route) => false,
-          );
-        } else {
-          Navigator.pushNamed(
-              navigatorKey.currentContext!, RouteClass.aboutMeScreen);
-        }
-      },
-    );
+    return user;
   }
 
   void logout() async {

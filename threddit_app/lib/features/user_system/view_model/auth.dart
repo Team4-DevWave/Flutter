@@ -1,15 +1,23 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
+// import 'package:threddit_clone/app/global_keys.dart';
+// import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/model/user_data.dart';
+import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
+import 'package:threddit_clone/features/user_system/view_model/window_auth_service.dart';
 
 final authProvider = StateNotifierProvider<Auth, bool>((ref) => Auth(ref));
 
@@ -332,6 +340,82 @@ class Auth extends StateNotifier<bool> {
       }
     } finally {
       state = false;
+    }
+  }
+
+  FutureEmailCheck<bool> signInWithGoogle() async {
+    final _authService = AuthService();
+    final String? userToken;
+    final User? user;
+    if (Platform.isWindows) {
+      try {
+        user = await _authService.signInWithGoogle();
+        if (user != null) {
+          userToken = await user.getIdToken();
+        } else {
+          return left(Failure('Sign in with google failed'));
+        }
+      } catch (e) {
+        if (e is SocketException ||
+            e is TimeoutException ||
+            e is HttpException) {
+          return left(Failure('Check your internet connection...'));
+        } else {
+          return left(Failure(e.toString()));
+        }
+      }
+    } else {
+      try {
+        user =
+            await ref.read(authControllerProvider.notifier).signInWithGoogle();
+        if (user != null) {
+          userToken = await user.getIdToken();
+        } else {
+          return left(Failure('Sign in with google failed'));
+        }
+      } catch (e) {
+        if (e is SocketException ||
+            e is TimeoutException ||
+            e is HttpException) {
+          return left(Failure('Check your internet connection...'));
+        } else {
+          return left(Failure(e.toString()));
+        }
+      }
+    }
+
+    //After getting the token we will update the user and send the token to the backend
+    UserModel? currentUser = ref.read(userProvider)!;
+
+    /// Create a new user with the updated email
+    UserModel updatedUser =
+        currentUser.copyWith(token: userToken, isGoogle: true);
+
+    /// Update the userProvider state with the new user
+    ref.read(userProvider.notifier).state = updatedUser;
+    final url = Uri.https(
+        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+        'token.json');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(
+        {
+          'token': userToken,
+        },
+      ),
+    );
+
+    //200 for exiting users
+    //400 new users
+    if (response.statusCode == 200) {
+      saveToken(response.body.toString());
+      return right(true);
+    } else {
+      return right(false);
     }
   }
 }

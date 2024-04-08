@@ -64,6 +64,9 @@ dependencies:
   device_apps: ^2.2.0
   permission_handler: ^11.3.1
   external_app_launcher: ^4.0.0
+  window_to_front: ^0.0.3
+  oauth2: ^2.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
