@@ -4,7 +4,6 @@ import 'package:threddit_clone/features/user_system/view/widgets/basic_settings.
 import 'package:threddit_clone/features/user_system/view/widgets/connected_accounts.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/contact_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/safety.dart';
-import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 
 final genders = [

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -24,10 +23,9 @@ class _ConfirmPasswordScreenState extends ConsumerState<ConfirmPasswordScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('Confirm password'),
+        title: const Text('Confirm password'),
       ),
       body: Column(children: [
         FutureBuilder(future: fetchUser(), builder: (context, snapshot) {

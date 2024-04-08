@@ -2,12 +2,10 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/user_system/view/screens/change_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
-import 'package:threddit_clone/features/user_system/view/screens/update_email_screen.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:http/http.dart' as http;
 
