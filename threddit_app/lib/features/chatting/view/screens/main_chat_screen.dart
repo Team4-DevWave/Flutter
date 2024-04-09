@@ -6,7 +6,7 @@ import 'package:threddit_clone/features/chatting/view%20model/chat_provider.dart
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/communities_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.dart';
-import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
+import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
 import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';

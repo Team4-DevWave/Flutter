@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/features/notifications/view/widgets/notification_feed_unit.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/nottification_feed.dart';
 
 class NotificationsScreen extends StatefulWidget {
