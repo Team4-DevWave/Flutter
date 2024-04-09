@@ -29,6 +29,7 @@ import 'package:threddit_clone/features/user_system/view_model/starting_screen.d
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forget_password.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
+import 'package:threddit_clone/models/post.dart';
 import '../features/user_system/view/screens/login_screen.dart';
 
 class RouteClass {
@@ -128,11 +129,14 @@ class RouteClass {
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
       case postScreen:
-        //var data = settings.arguments as Post;
-        var data = posts[0];
+        final args = settings.arguments as Map<String, dynamic>;
+        final currentpost =
+            args['currentpost'] as Post; // Extract the community object
+        final uid = args['uid'] as String;
         return MaterialPageRoute(
             builder: (_) => PostScreen(
-                  currentPost: data,
+                  currentPost: currentpost,
+                  uid: uid,
                 ));
       case createCommunityScreen:
         //var data = settings.arguments as String;
