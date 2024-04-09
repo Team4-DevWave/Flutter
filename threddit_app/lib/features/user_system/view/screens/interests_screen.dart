@@ -37,12 +37,20 @@ class _InterestsState extends ConsumerState<Interests> {
 
   Future<void> onContinue() async {
     ref.watch(authProvider.notifier).saveUserInterests(_selectedInterests);
-    final isSignedUp = await ref.watch(authProvider.notifier).signUp();
+    final isGoogleAuthenticated = ref.watch(userProvider)!.isGoogle;
+
+    final isSignedUp = isGoogleAuthenticated
+        ? await ref.watch(authProvider.notifier).signUp()
+        : await ref.watch(authProvider.notifier).signUpWithGoogle();
+
     isSignedUp.fold((failure) {
       showSnackBar(navigatorKey.currentContext!, failure.message);
     }, (signedUp) async {
       if (signedUp) {
-        final isLoggedIn = await ref.watch(authProvider.notifier).login();
+        final isLoggedIn = isGoogleAuthenticated
+            ? await ref.watch(authProvider.notifier).login()
+            : await ref.watch(authProvider.notifier).loginWithGoogle();
+
         isLoggedIn.fold((loginFaliure) {
           showSnackBar(navigatorKey.currentContext!, loginFaliure.message);
         }, (loggedIn) {

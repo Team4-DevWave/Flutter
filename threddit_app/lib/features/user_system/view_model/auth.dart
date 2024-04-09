@@ -303,7 +303,85 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> signUp() async {
     state = true;
     final UserModel user = ref.watch(userProvider)!;
-    //change the hit for the
+    //change the hit for the google sign up and also add the token if the user is google
+    final url = Uri.https(
+      'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+      'signUpWithGoogle.json',
+    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'token': user.token,
+            'username': user.username,
+            'country': user.country,
+            'gender': user.gender,
+            'interests': user.interests,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        ref.watch(signUpSuccess.notifier).update((state) => true);
+        return right(true);
+      } else {
+        ref.watch(signUpSuccess.notifier).update((state) => false);
+        return right(false);
+      }
+    } catch (e) {
+      if (e is SocketException || e is TimeoutException || e is HttpException) {
+        return left(Failure('Check your internet connection...'));
+      } else {
+        return left(Failure(e.toString()));
+      }
+    } finally {
+      state = false;
+    }
+  }
+
+  FutureEmailCheck<bool> loginWithGoogle() async {
+    state = true;
+    final user = ref.watch(userProvider)!;
+    final url = Uri.https(
+        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+        'loginWithGoogle.json');
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'token': user.token,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        saveToken(response.body.toString());
+        saveGoogleToken(response.body.toString());
+        return right(true);
+      } else {
+        return right(false);
+      }
+    } catch (e) {
+      if (e is SocketException || e is TimeoutException || e is HttpException) {
+        return left(Failure('Check your internet connection...'));
+      } else {
+        return left(Failure(e.toString()));
+      }
+    } finally {
+      state = false;
+    }
+  }
+
+  FutureEmailCheck<bool> signUpWithGoogle() async {
+    state = true;
+    final UserModel user = ref.watch(userProvider)!;
+    //change the hit for the google sign up and also add the token if the user is google
     final url = Uri.https(
       'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
       'signup.json',
