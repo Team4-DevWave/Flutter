@@ -50,8 +50,7 @@ class _CommunitiesTilesState extends State<CommunitiesTiles> {
                         /// implemented when the community class is made
                         onTap: () {
                           ///go to the community/user's profile screen
-                           Navigator.pushNamed(
-                            context, RouteClass.communityScreen);
+                           
                         },
                         trailing: IconButton(
                           onPressed: () {},

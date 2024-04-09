@@ -1,5 +1,5 @@
 
-import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/models/post101.dart';
 
 final List<Post> posts = [
   Post(
@@ -13,7 +13,7 @@ final List<Post> posts = [
     communityProfilePic: 'sample_community_profile_pic_url',
     upvotes: ['user1', 'user2'],
     downvotes: ['user3', 'user4'],
-    commentCount: 10,
+    commentCount: '10',
     username: 'user1',
     uid: 'user1_uid',
     type: 'type1',
@@ -29,7 +29,7 @@ final List<Post> posts = [
     communityProfilePic: 'another_community_profile_pic_url',
     upvotes: ['user1', 'user3'],
     downvotes: ['user2'],
-    commentCount: 0,
+    commentCount:'0',
     username: 'user2',
     uid: 'user2_uid',
     type: 'type2',

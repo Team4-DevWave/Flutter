@@ -1,76 +1,90 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/models/community.dart';
+import 'package:threddit_clone/models/fetch_community.dart';
 
 class CommunityRepository {
-  static const String baseUrl = 'http://192.168.100.249:3000/communities';
+  final url = Uri.parse('http://192.168.100.249:3000/communities');
 
-  Future<void> createCommunity(String name,bool is18plus,String uid,CommunityType _type) async {
-  final community = Community(
-    id:'0',
-    name: name,
-    avatar: '', 
-    banner:'',
-    members: [uid], 
-    mods: [uid], 
-    type: _type, 
-    nsfw: is18plus,
-    rules:[]
-  );
+  Future<void> createCommunity(String name,bool nsfw,String uid,String _type) async {
 
-  Map<String, dynamic> communityData = community.toMap();
-  String jsonData = jsonEncode(communityData);
-  final response = await http.post(
-    Uri.parse(baseUrl),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonData,
-  );
+ final body = jsonEncode({
+    'name': name,
+    'srType': _type,
+    'nsfw': nsfw,
+  });
 
-  if (response.statusCode == 200) {
-    print('Community added successfully');
-  } else {
-    throw Exception('Failed to add community: ${response.statusCode}');
+  final headers = {
+    HttpHeaders.contentTypeHeader: 'application/json',
+    //token 
+  };
+
+  try {
+    final response = await http.post(
+      url,
+      body: body,
+      headers: headers,
+    );
+
+    if (response.statusCode == 201) {
+      jsonDecode(response.body);
+      //final newCommunityData = responseData['data']['newCommunity'];
+      print('community created successfully');
+    } else {
+      print('Failed to create community. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error creating community: $e');
   }
 }
 
-Future<Community> fetchCommunity(String id) async {
-  final response = await http.get(Uri.parse('http://192.168.100.249:3000/communities?id=${id}'));
+Future<FetchCommunity> fetchCommunity(String id) async {
+  //final url = Uri.parse('http://localhost:8000/api/v1/r/$subreddit/info');
+ final url = Uri.parse('http://192.168.100.249:3000/communities?subredditTitle=${id}');
 
-  if (response.statusCode == 200) {
-    final List<dynamic> data = jsonDecode(response.body);
-    if (data.isNotEmpty) {
-      return Community.fromJson(data.first);
+  try {
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      if (responseData.isNotEmpty) {
+        final Map<String, dynamic> communityData = responseData.first;
+        return FetchCommunity.fromJson(communityData);
+      } else {
+        throw Exception('Community not found');
+      }
     } else {
+      print('Failed to fetch subreddit info. Status code: ${response.statusCode}');
       throw Exception('Community not found');
     }
-  } else {
-    throw Exception('Failed to load community');
+  } catch (e) {
+    print('Error fetching subreddit info: $e');
+    throw Exception('Community not found');
   }
 }
 
 Future<void> joinCommunity(String id, String userID) async {
   final community = await fetchCommunity(id);
-  community.members.add(userID);
+  community.listOfMembers.add(userID);
   await updateCommunity(community);
 }
 
 Future<void> unJoinCommunity(String id, String userID) async {
   final community = await fetchCommunity(id);
-  community.members.remove(userID);
+  community.listOfMembers.remove(userID);
   await updateCommunity(community);
 }
 
-Future<void> updateCommunity(Community community) async {
-  final String apiUrl = 'http://192.168.100.249:3000/communities/${community.id}';
+Future<void> updateCommunity(FetchCommunity community) async {
+  final String apiUrl = 'http://192.168.100.249:3000/communities?subredditTitle=${community.subredditTitle}';
   final Map<String, dynamic> data = community.toMap();
 
   final response = await http.patch(
     Uri.parse(apiUrl),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
+      
     },
     body: jsonEncode(data),
   );
@@ -81,6 +95,5 @@ Future<void> updateCommunity(Community community) async {
     throw Exception('Failed to update community: ${response.reasonPhrase}');
   }
 }
-
 
 }

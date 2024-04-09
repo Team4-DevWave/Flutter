@@ -50,8 +50,8 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
     final createCommunityFuture = ref.watch(createCommunityProvider(
         CreateCommunityParams(
             name: _communityNameController.text,
-            is18plus: is18plus,
-            type: _type,
+            nsfw: is18plus,
+            type: communityType,
             uid: widget.uid)));
     createCommunityFuture;
   }

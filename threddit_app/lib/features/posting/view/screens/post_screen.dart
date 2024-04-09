@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
 
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
-import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 
-import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/models/post101.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
-import 'package:threddit_clone/theme/photos.dart';
-import 'package:threddit_clone/theme/text_styles.dart';
+
 
 class PostScreen extends ConsumerStatefulWidget {
   final Post currentPost;
@@ -172,81 +168,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
               ),
             ],
           ),
-          endDrawer: Drawer(
-            backgroundColor: AppColors.mainColor,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 150.h,
-                  child: DrawerHeader(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                                context, RouteClass.userProfileScreen);
-                          },
-                          child: Image.asset(
-                            Photos.snoLogo,
-                            width: 50.w,
-                            height: 50.h,
-                          ),
-                        ),
-                        Text(
-                          "u/UserName",
-                          style: AppTextStyles.primaryTextStyle,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                RightDrawerButtons(
-                    icon: const Icon(
-                      Icons.person_outline,
-                      color: AppColors.whiteColor,
-                    ),
-                    title: "My profile",
-                    onTap: () {
-                      Navigator.pushNamed(context, RouteClass.postScreen);
-                    }),
-                RightDrawerButtons(
-                    icon: const Icon(
-                      Icons.group_add_outlined,
-                      color: AppColors.whiteColor,
-                    ),
-                    title: "Create a community",
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, RouteClass.createCommunityScreen);
-                    }),
-                RightDrawerButtons(
-                    icon: const Icon(
-                      Icons.bookmarks_outlined,
-                      color: AppColors.whiteColor,
-                    ),
-                    title: "Saved",
-                    onTap: () {}),
-                RightDrawerButtons(
-                    icon: const Icon(
-                      Icons.history_toggle_off_rounded,
-                      color: AppColors.whiteColor,
-                    ),
-                    title: "History",
-                    onTap: () {}),
-                RightDrawerButtons(
-                    icon: const Icon(
-                      Icons.settings_outlined,
-                      color: AppColors.whiteColor,
-                    ),
-                    title: "Settings",
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, RouteClass.accountSettingScreen);
-                    }),
-              ],
-            ),
-          ),
+          endDrawer: const RightDrawer(),
           body: Consumer(
             builder: (context, watch, child) {
               var postComments =
