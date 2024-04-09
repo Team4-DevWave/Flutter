@@ -101,7 +101,9 @@ flutter:
     - assets/icons/arrow_up.png
     - assets/animation/loading.json
     - assets/images/avatar.png
+    - assets/images/thinking-snoo.png
     - assets/images/
+
 
 
   fonts:

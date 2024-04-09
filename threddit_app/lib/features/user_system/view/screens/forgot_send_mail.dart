@@ -118,7 +118,7 @@ class _ForgotSentMail extends ConsumerState<ForgotSentMail> {
                               SizedBox(
                                   height: 200,
                                   width: 200,
-                                  child: Image.asset(Photos.avatar))
+                                  child: Image.asset(Photos.thinkingSno))
                             ],
                           ),
                         );
