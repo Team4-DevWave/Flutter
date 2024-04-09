@@ -84,6 +84,7 @@ Future<void> updateCommunity(FetchCommunity community) async {
     Uri.parse(apiUrl),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
+      
     },
     body: jsonEncode(data),
   );

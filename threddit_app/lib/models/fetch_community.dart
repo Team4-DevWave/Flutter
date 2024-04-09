@@ -1,5 +1,7 @@
 
 
+import 'package:threddit_clone/features/post/model/post_model.dart';
+
 class FetchCommunity {
   late String subredditTitle;
   late String subredditDescription;
@@ -9,6 +11,7 @@ class FetchCommunity {
   late List<String> moderators;
   late List<String> members;
   late List<String> rules;
+  late List<PostData> posts;
   
 
   FetchCommunity({
@@ -20,6 +23,7 @@ class FetchCommunity {
     required this.moderators,
     required this.members,
     required this.rules,
+    required this.posts,
   });
 
   factory FetchCommunity.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,7 @@ class FetchCommunity {
       moderators: List<String>.from(json['moderators']),
       members: List<String>.from(json['members']),
       rules: List<String>.from(json['rules']),
+      posts: List<PostData>.from(json['posts']),
     );
   }
    Map<String, dynamic> toJson() {
@@ -44,6 +49,7 @@ class FetchCommunity {
       'moderators': moderators,
       'members': members,
       'rules': rules,
+      'posts': posts,
     };
   }
     Map<String, dynamic> toMap() {
@@ -56,6 +62,7 @@ class FetchCommunity {
       'moderators': moderators,
       'members': members,
       'rules': rules,
+      'posts': posts,
     };
   }
 }
