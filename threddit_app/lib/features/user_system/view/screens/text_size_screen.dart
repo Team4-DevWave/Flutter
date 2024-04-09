@@ -78,6 +78,10 @@ class _TextSizeScreenState extends ConsumerState<TextSizeScreen> {
                                 ref
                                     .watch(enableResizeProvider.notifier)
                                     .update((state) => value);
+                                ref
+                                    .watch(sliderProvider.notifier)
+                                    .update((state) => 1.0);
+                                saveTextSize(1.0);
                               });
                             },
                           ),
