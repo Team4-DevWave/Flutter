@@ -7,6 +7,7 @@ import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dar
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
 
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
+import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 
 import 'package:threddit_clone/models/post.dart';
