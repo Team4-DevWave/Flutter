@@ -1,4 +1,27 @@
 class UserSettings {
+  final UserProfile userProfile;
+  final SafetyAndPrivacy safetyAndPrivacy;
+  final FeedSettings feedSettings;
+  final String id;
+
+  UserSettings({
+    required this.userProfile,
+    required this.safetyAndPrivacy,
+    required this.feedSettings,
+    required this.id,
+  });
+
+  factory UserSettings.fromJson(Map<String, dynamic> json) {
+    return UserSettings(
+      userProfile: UserProfile.fromJson(json['userProfile']),
+      safetyAndPrivacy: SafetyAndPrivacy.fromJson(json['safetyAndPrivacy']),
+      feedSettings: FeedSettings.fromJson(json['feedSettings']),
+      id: json['_id'],
+    );
+  }
+}
+
+class UserProfile {
   final String displayName;
   final String about;
   final bool nsfw;
@@ -6,11 +29,9 @@ class UserSettings {
   final bool contentVisibility;
   final bool activeCommunitiesVisibility;
   final String profilePicture;
-  final List<String> socialLinks;
+  final List<dynamic> socialLinks;
 
-  final SafetyAndPrivacy safetyAndPrivacy;
-
-  UserSettings({
+  UserProfile({
     required this.displayName,
     required this.about,
     required this.nsfw,
@@ -19,27 +40,25 @@ class UserSettings {
     required this.activeCommunitiesVisibility,
     required this.profilePicture,
     required this.socialLinks,
-    required this.safetyAndPrivacy,
   });
 
-  factory UserSettings.fromJson(Map<String, dynamic> json) {
-    return UserSettings(
-      displayName: json['settings']['userProfile']['displayName'] ?? '',
-      about: json['settings']['userProfile']['about'] ?? '',
-      nsfw: json['settings']['userProfile']['NSFW'] ?? false,
-      allowFollowers: json['settings']['userProfile']['allowFollowers'] ?? true,
-      contentVisibility: json['settings']['userProfile']['contentVisibility'] ?? true,
-      activeCommunitiesVisibility: json['settings']['userProfile']['activeCommunitiesVisibility'] ?? true,
-      profilePicture: json['settings']['userProfile']['profilePicture'] ?? '',
-      socialLinks: List<String>.from(json['settings']['userProfile']['socialLinks'] ?? []),
-      safetyAndPrivacy: SafetyAndPrivacy.fromJson(json['settings']['safetyAndPrivacy']),
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      displayName: json['displayName'] ?? '',
+      about: json['about'] ?? '',
+      nsfw: json['NSFW'] ?? false,
+      allowFollowers: json['allowFollowers'] ?? true,
+      contentVisibility: json['contentVisibility'] ?? true,
+      activeCommunitiesVisibility: json['activeCommunitiesVisibility'] ?? true,
+      profilePicture: json['profilePicture'] ?? '',
+      socialLinks: json['socialLinks'] ?? [],
     );
   }
 }
 
 class SafetyAndPrivacy {
-  final List<String> blockedPeople;
-  final List<String> blockedCommunities;
+  final List<dynamic> blockedPeople;
+  final List<dynamic> blockedCommunities;
 
   SafetyAndPrivacy({
     required this.blockedPeople,
@@ -48,8 +67,37 @@ class SafetyAndPrivacy {
 
   factory SafetyAndPrivacy.fromJson(Map<String, dynamic> json) {
     return SafetyAndPrivacy(
-      blockedPeople: List<String>.from(json['blockedPeople'] ?? []),
-      blockedCommunities: List<String>.from(json['blockedCommunities'] ?? []),
+      blockedPeople: json['blockedPeople'] ?? [],
+      blockedCommunities: json['blockedCommunities'] ?? [],
+    );
+  }
+}
+
+class FeedSettings {
+  final bool matureContent;
+  final bool autoplayMedia;
+  final bool communityThemes;
+  final String communityContentSort;
+  final String globalContentView;
+  final bool openPostInNewTab;
+
+  FeedSettings({
+    required this.matureContent,
+    required this.autoplayMedia,
+    required this.communityThemes,
+    required this.communityContentSort,
+    required this.globalContentView,
+    required this.openPostInNewTab,
+  });
+
+  factory FeedSettings.fromJson(Map<String, dynamic> json) {
+    return FeedSettings(
+      matureContent: json['matureContent'] ?? false,
+      autoplayMedia: json['autoplayMedia'] ?? true,
+      communityThemes: json['communityThemes'] ?? true,
+      communityContentSort: json['communityContentSort'] ?? 'hot',
+      globalContentView: json['globalContentView'] ?? 'card',
+      openPostInNewTab: json['openPostInNewTab'] ?? false,
     );
   }
 }

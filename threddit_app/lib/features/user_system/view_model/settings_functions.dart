@@ -288,6 +288,7 @@ class SettingsFetch extends StateNotifier<bool> {
       return UserMock.fromJson(jsonDecode('sd'));
     }
   }
+  
 
   Future<List<UserMock>> searchUsers(http.Client client, String query) async {
     http.Response response = await client.get(
@@ -322,7 +323,18 @@ class SettingsFetch extends StateNotifier<bool> {
     );
     return UserMock.fromJson(jsonDecode(response.body));
   }
-
+  Future<UserSettings> getSettings(http.Client client) async {
+    final url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
+    http.Response response = await client.get(
+      Uri.parse("$url/api/settings"),
+    );
+    return UserSettings.fromJson(jsonDecode(response.body));
+  }
   Future<bool> getNotificationSetting(http.Client client) async {
     final url;
     if (Platform.isWindows) {
@@ -359,3 +371,23 @@ class SettingsFetch extends StateNotifier<bool> {
     return isFollowableEnabled;
   }
 }
+Future<int> changeSetting({required http.Client client, required String change}) async {
+  Map<String, dynamic> body = {
+    'globalContentView': change
+  };
+  String bodyEncoded = jsonEncode(body);
+    final url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
+     http.Response response = await client.patch(
+    Uri.parse("$url/api/settings"),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: bodyEncoded,
+  );
+    return response.statusCode;
+  }
