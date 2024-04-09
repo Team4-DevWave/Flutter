@@ -1,54 +1,38 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/continue_button.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/email_textformfield.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
-import 'package:threddit_clone/features/user_system/view_model/utils.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
-class ForgetUsername extends ConsumerStatefulWidget {
-  const ForgetUsername({super.key});
+class ForgotSentMail extends ConsumerStatefulWidget {
+  const ForgotSentMail({super.key});
 
   @override
-  ConsumerState<ForgetUsername> createState() => _ForgetUsernameState();
+  ConsumerState<ForgotSentMail> createState() => _ForgotSentMail();
 }
 
-class _ForgetUsernameState extends ConsumerState<ForgetUsername> {
-  TextEditingController emailController = TextEditingController();
-  bool _isValid = false;
+class _ForgotSentMail extends ConsumerState<ForgotSentMail> {
   bool _isLoading = false;
 
-  void updateFormValidity() {
-    setState(() {
-      _isValid = formSignUpKey.currentState != null &&
-          formSignUpKey.currentState!.validate();
-    });
-  }
+  static const platform =
+      MethodChannel('com.example.threddit_clone/launchEmailApp');
 
-  Future<void> onContinue() async {
-    _isLoading = true;
-    final isFound = await ref
-        .watch(authProvider.notifier)
-        .checkEmailAvailability(emailController.text);
-
-    _isLoading = false;
-    if (isFound) {
-      await ref.watch(authProvider.notifier).forgetPassword();
-      showSnackBar(navigatorKey.currentContext!,
-          'Email is sent to ${emailController.text}');
-      ref.watch(enteredAccoutValue.notifier).state = emailController.text;
-      Navigator.pushNamed(
-          navigatorKey.currentContext!, RouteClass.forgetRdirectScreen);
-    } else {
-      showSnackBar(navigatorKey.currentContext!, 'Enter a valid email');
+  static Future<void> launchEmailApp() async {
+    try {
+      await platform.invokeMethod('launchEmailApp');
+    } on PlatformException catch (e) {
+      print("Failed to launch email app: '${e.message}'.");
     }
   }
 
@@ -61,10 +45,28 @@ class _ForgetUsernameState extends ConsumerState<ForgetUsername> {
     }
   }
 
-  @override
-  void dispose() {
-    emailController.dispose();
-    super.dispose();
+  Future<void> resend() async {
+    final forgotOption = ref.watch(forgotType);
+
+    if (forgotOption == 'password') {
+      final isforgotPassSucceeded =
+          await ref.watch(authProvider.notifier).forgotPassword();
+      isforgotPassSucceeded.fold(
+        (failure) =>
+            showSnackBar(navigatorKey.currentContext!, failure.message),
+        (success) => showSnackBar(navigatorKey.currentContext!,
+            'Email is resent to ${ref.watch(enteredAccoutValue)}'),
+      );
+    } else {
+      final isforgotUsernameSucceeded =
+          await ref.watch(authProvider.notifier).forgotUsername();
+      isforgotUsernameSucceeded.fold(
+        (failure) =>
+            showSnackBar(navigatorKey.currentContext!, failure.message),
+        (success) => showSnackBar(navigatorKey.currentContext!,
+            'Email is resent to ${ref.watch(enteredAccoutValue)}'),
+      );
+    }
   }
 
   @override
@@ -93,7 +95,7 @@ class _ForgetUsernameState extends ConsumerState<ForgetUsername> {
                             children: [
                               SizedBox(height: 20.h),
                               Text(
-                                'Reset your username',
+                                'Check you inbox',
                                 style: AppTextStyles.primaryButtonGlowTextStyle
                                     .copyWith(
                                   fontSize: 24.spMin,
@@ -103,27 +105,42 @@ class _ForgetUsernameState extends ConsumerState<ForgetUsername> {
                               ),
                               SizedBox(height: 12.h),
                               Text(
-                                "Enter your email address and we'll send you a link to reset your password",
+                                "A link to reset your password was sent to ${ref.watch(enteredAccoutValue)}",
                                 style: AppTextStyles.primaryTextStyle.copyWith(
-                                  fontSize: 17.spMin,
+                                  fontSize: 16.spMin,
                                   fontWeight: FontWeight.normal,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: 25.h),
-                              Form(
-                                key: formSignUpKey,
-                                onChanged: updateFormValidity,
-                                child: EmailTextFromField(
-                                  controller: emailController,
-                                  identifier: 'signup',
-                                ),
-                              )
+                              SizedBox(height: 35.h),
+                              SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Image.asset(Photos.avatar))
                             ],
                           ),
                         );
                       },
                     ),
+                  ),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Didn't get email? ",
+                          style: AppTextStyles.primaryButtonHideTextStyle,
+                        ),
+                        TextSpan(
+                          text: "Resend",
+                          style: AppTextStyles.primaryButtonGlowTextStyle
+                              .copyWith(decoration: TextDecoration.underline),
+                          recognizer: TapGestureRecognizer()..onTap = resend,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.h,
                   ),
                   Container(
                     padding: EdgeInsets.only(top: 10.h),
@@ -131,9 +148,9 @@ class _ForgetUsernameState extends ConsumerState<ForgetUsername> {
                     decoration:
                         const BoxDecoration(color: AppColors.backgroundColor),
                     child: ContinueButton(
-                      isOn: _isValid,
-                      onPressed: _isValid ? onContinue : null,
-                      identifier: 'Continue',
+                      isOn: true,
+                      onPressed: () => launchEmailApp(),
+                      identifier: 'Open email app',
                     ),
                   ),
                 ],

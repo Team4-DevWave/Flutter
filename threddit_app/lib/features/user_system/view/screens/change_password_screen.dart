@@ -21,7 +21,8 @@ import 'package:threddit_clone/features/user_system/view_model/settings_function
 class ChangePasswordScreen extends ConsumerStatefulWidget {
   const ChangePasswordScreen({super.key});
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ChangePasswordScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ChangePasswordScreenState();
 }
 
 class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
@@ -29,9 +30,11 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final PasswordForm newPasswordForm = PasswordForm("New password");
   final PasswordForm confirmPasswordForm = PasswordForm("Confirm new password");
   final client = http.Client();
-  void _forgetPassword(){
-    Navigator.pushNamed(navigatorKey.currentContext!, RouteClass.forgetPasswordScreen);
+  void _forgetPassword() {
+    Navigator.pushNamed(
+        navigatorKey.currentContext!, RouteClass.forgotPasswordScreen);
   }
+
   Future<UserMock> fetchUser() async {
     return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
   }
@@ -79,7 +82,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     onPressed: () {
                       print("I am pressed");
                       return _forgetPassword();
-                    }, child: const Text("Forgot password?")),
+                    },
+                    child: const Text("Forgot password?")),
               ),
               confirmPasswordForm,
               const Spacer(),

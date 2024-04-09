@@ -18,59 +18,60 @@ class Safety extends ConsumerStatefulWidget {
 
 class _SafetyState extends ConsumerState<Safety> {
   final client = http.Client();
+
   void _blockedAccounts(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (ctx) => const BlockedScreen()));
   }
 
-  Future<bool> isFollowableEnabled() async {
-    setState(() {
-      ref.watch(settingsFetchProvider.notifier).getFollowableSetting(client);
+  bool isFollowableEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    ref
+        .read(settingsFetchProvider.notifier)
+        .getFollowableSetting(client)
+        .then((value) {
+      setState(() {
+        isFollowableEnabled = value;
+      });
     });
-    return ref
-        .watch(settingsFetchProvider.notifier)
-        .getFollowableSetting(client);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const SettingsTitle(title: "SAFETY"),
-      ListTile(
-        leading: const Icon(Icons.block),
-        title: const Text("Manage blocked accounts"),
-        titleTextStyle: AppTextStyles.primaryTextStyle,
-        trailing: const Icon(Icons.navigate_next),
-        onTap: () {
-          _blockedAccounts(context);
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.person),
-        title: const Text("Allow people to follow you"),
-        subtitle: const Text(
-            "Followers will be notified about posts you make to your profile and see them in their home feed."),
-        titleTextStyle: AppTextStyles.primaryTextStyle,
-        trailing: FutureBuilder(
-            future: isFollowableEnabled(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return const CircularProgressIndicator();
-              } else {
-                final isEnabled = snapshot.data!;
-                return Switch(
-                    activeColor: const Color.fromARGB(255, 1, 61, 110),
-                    value: isEnabled,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        followableOn(client: client, isEnabled: value!);
-                      });
-                    });
-              }
-            }),
-      ),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SettingsTitle(title: "SAFETY"),
+        ListTile(
+          leading: const Icon(Icons.block),
+          title: const Text("Manage blocked accounts"),
+          titleTextStyle: AppTextStyles.primaryTextStyle,
+          trailing: const Icon(Icons.navigate_next),
+          onTap: () {
+            _blockedAccounts(context);
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.person),
+          title: const Text("Allow people to follow you"),
+          subtitle: const Text(
+              "Followers will be notified about posts you make to your profile and see them in their home feed."),
+          titleTextStyle: AppTextStyles.primaryTextStyle,
+          trailing: Switch(
+            activeColor: const Color.fromARGB(255, 1, 61, 110),
+            value: isFollowableEnabled,
+            onChanged: (bool? value) {
+              setState(() {
+                isFollowableEnabled = value!;
+                followableOn(client: client, isEnabled: value);
+              });
+            },
+          ),
+        ),
+      ],
+    );
   }
 }

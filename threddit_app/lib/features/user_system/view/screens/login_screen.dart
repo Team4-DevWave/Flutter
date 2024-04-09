@@ -12,7 +12,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/register_appbar
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/navigate_signup.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
-import 'package:threddit_clone/features/user_system/view_model/utils.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
@@ -41,18 +41,23 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
     isLoading = true;
     ref.read(authProvider.notifier).savePassword(passController.text);
     ref.read(authProvider.notifier).saveLoginEmail(emailController.text);
-    await ref.read(authProvider.notifier).login();
-    final isSucceeded = ref.watch(loginSucceeded);
-    final valueEntered = ref.watch(enteredValue);
-    isLoading = false;
+    final isLoggedIn = await ref.read(authProvider.notifier).login();
+    isLoggedIn.fold((failure) {
+      showSnackBar(navigatorKey.currentContext!, failure.message);
+    }, (loggedIn) {
+      final valueEntered = ref.watch(enteredValue);
+      isLoading = false;
 
-    if (isSucceeded) {
-      Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
-          RouteClass.mainLayoutScreen, (Route<dynamic> route) => false);
-    } else {
-      showSnackBar(navigatorKey.currentContext!,
-          '$valueEntered or password is incorrect');
-    }
+      if (loggedIn) {
+        showSnackBar(navigatorKey.currentContext!,
+            'Logged you in as ${ref.watch(userProvider)!.username}');
+        Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
+            RouteClass.mainLayoutScreen, (Route<dynamic> route) => false);
+      } else {
+        showSnackBar(navigatorKey.currentContext!,
+            '$valueEntered or password is incorrect');
+      }
+    });
   }
 
   @override
@@ -150,9 +155,9 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                                                 Navigator.pushNamed(
                                                     context,
                                                     RouteClass
-                                                        .forgetPasswordScreen),
+                                                        .forgotPasswordScreen),
                                             child: Text(
-                                              'Forget password?',
+                                              'forgot password?',
                                               style: AppTextStyles
                                                   .primaryTextStyle
                                                   .copyWith(
@@ -172,9 +177,9 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                                                 Navigator.pushNamed(
                                                     context,
                                                     RouteClass
-                                                        .forgetUsernameScreen),
+                                                        .forgotUsernameScreen),
                                             child: Text(
-                                              'Forget username?',
+                                              'forgot username?',
                                               style: AppTextStyles
                                                   .primaryTextStyle
                                                   .copyWith(

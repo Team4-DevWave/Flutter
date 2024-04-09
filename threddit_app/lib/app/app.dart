@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/theme/theme.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:threddit_clone/features/notifications/view_model/methods.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:threddit_clone/features/notifications/view_model/methods.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -16,16 +16,16 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  String? mtoken = " ";
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  @override
-  void initState() {
-    super.initState();
-    requestPermisseion();
-    getToken();
-    initInfo();
-  }
+  // String? mtoken = " ";
+  // late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
+  // @override
+  // void initState() {
+  //   super.initState();
+  //requestPermisseion();
+  //getToken();
+  //initInfo();
+  //}
 
   /// Initializes the notification system with the necessary settings.
   ///
@@ -50,43 +50,43 @@ class _AppState extends State<App> {
   //remeber to try to make it aync and initialize to await
   //@mipmap/ic_launcher icon of notification
   //for background we need to modifed littte bit
-  initInfo() {
-    var androidInitialize =
-        const AndroidInitializationSettings('@mipmap/ic_launcher');
-    //var iOSInitialize=const IOSInitializationSettings();
-    var initializationSetting =
-        InitializationSettings(android: androidInitialize);
-    flutterLocalNotificationsPlugin.initialize(initializationSetting,
-        onDidReceiveNotificationResponse:
-            (NotificationResponse notificationResponse) async {
-      try {
-        if (notificationResponse.payload != null &&
-            notificationResponse.payload!.isNotEmpty) {}
-        // ignore: empty_catches, avoid_catches_without_on_clauses
-      } catch (e) {}
-    });
+  // initInfo() {
+  //   var androidInitialize =
+  //       const AndroidInitializationSettings('@mipmap/ic_launcher');
+  //   //var iOSInitialize=const IOSInitializationSettings();
+  //   var initializationSetting =
+  //       InitializationSettings(android: androidInitialize);
+  //   flutterLocalNotificationsPlugin.initialize(initializationSetting,
+  //       onDidReceiveNotificationResponse:
+  //           (NotificationResponse notificationResponse) async {
+  //     try {
+  //       if (notificationResponse.payload != null &&
+  //           notificationResponse.payload!.isNotEmpty) {}
+  //       // ignore: empty_catches, avoid_catches_without_on_clauses
+  //     } catch (e) {}
+  //   });
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-          message.notification!.body.toString(),
-          htmlFormatBigText: true,
-          contentTitle: message.notification!.title.toString(),
-          htmlFormatContentTitle: true);
-      AndroidNotificationDetails androidPlatformChannelSpecifics =
-          AndroidNotificationDetails(
-        'Ahmed',
-        'channelName',
-        importance: Importance.high,
-        styleInformation: bigTextStyleInformation,
-        priority: Priority.high,
-      );
-      NotificationDetails platformChannelSpecifics =
-          NotificationDetails(android: androidPlatformChannelSpecifics);
-      await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
-          message.notification?.body, platformChannelSpecifics,
-          payload: message.data['body']);
-    });
-  }
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+  //   BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+  //       message.notification!.body.toString(),
+  //       htmlFormatBigText: true,
+  //       contentTitle: message.notification!.title.toString(),
+  //       htmlFormatContentTitle: true);
+  //   AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //       AndroidNotificationDetails(
+  //     'Ahmed',
+  //     'channelName',
+  //     importance: Importance.high,
+  //     styleInformation: bigTextStyleInformation,
+  //     priority: Priority.high,
+  //   );
+  //   NotificationDetails platformChannelSpecifics =
+  //       NotificationDetails(android: androidPlatformChannelSpecifics);
+  //   await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
+  //       message.notification?.body, platformChannelSpecifics,
+  //       payload: message.data['body']);
+  // });
+//}
 
   /// Retrieves the Firebase Cloud Messaging (FCM) token.
   ///
@@ -102,14 +102,14 @@ class _AppState extends State<App> {
   /// Throws:
   ///   - [FirebaseException] if there's an error while retrieving the token.
   ///
-  void getToken() async {
-    await FirebaseMessaging.instance.getToken().then((value) {
-      setState(() {
-        mtoken = value;
-      });
-      saveToken(value!);
-    });
-  }
+// void getToken() async {
+//   await FirebaseMessaging.instance.getToken().then((value) {
+//     setState(() {
+//       mtoken = value;
+//     });
+//     saveToken(value!);
+//   });
+// }
 
   /// Saves the Firebase Cloud Messaging (FCM) token to Firestore.
   ///
@@ -127,11 +127,11 @@ class _AppState extends State<App> {
   /// Throws:
   ///   - [FirebaseException] if there's an error while saving the token to Firestore.
   ///
-  void saveToken(String token) async {
-    await FirebaseFirestore.instance.collection("UserTokens").doc("User4").set({
-      'token': token,
-    });
-  }
+// void saveToken(String token) async {
+//   await FirebaseFirestore.instance.collection("UserTokens").doc("User4").set({
+//     'token': token,
+//   });
+// }
 
   @override
   Widget build(BuildContext context) {

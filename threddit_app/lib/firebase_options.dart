@@ -33,10 +33,11 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
+      // throw UnsupportedError(
+      //   'DefaultFirebaseOptions have not been configured for windows - '
+      //   'you can reconfigure this by running the FlutterFire CLI again.',
+      // );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -50,6 +51,15 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBARS84ojOSU7LKnWnLixIeJT9Vdpl14TI',
+    appId: '1:300534889914:web:f973ae37e3d6f220eef183',
+    messagingSenderId: '300534889914',
+    projectId: 'threddit-clone-app',
+    authDomain: 'threddit-clone-app.firebaseapp.com',
+    storageBucket: 'threddit-clone-app.appspot.com',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyBARS84ojOSU7LKnWnLixIeJT9Vdpl14TI',
     appId: '1:300534889914:web:f973ae37e3d6f220eef183',
     messagingSenderId: '300534889914',

@@ -4,4 +4,4 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final formSignUpKey = GlobalKey<FormState>();
 final formLogInKey = GlobalKey<FormState>();
 final userNameFormKey = GlobalKey<FormState>();
-final forgetKey = GlobalKey<FormState>();
+final forgotKey = GlobalKey<FormState>();
