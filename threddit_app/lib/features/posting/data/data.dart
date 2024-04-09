@@ -1,5 +1,5 @@
 
-import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/models/post101.dart';
 
 final List<Post> posts = [
   Post(

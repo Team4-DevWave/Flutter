@@ -66,13 +66,13 @@ Future<FetchCommunity> fetchCommunity(String id) async {
 
 Future<void> joinCommunity(String id, String userID) async {
   final community = await fetchCommunity(id);
-  community.members.add(userID);
+  community.listOfMembers.add(userID);
   await updateCommunity(community);
 }
 
 Future<void> unJoinCommunity(String id, String userID) async {
   final community = await fetchCommunity(id);
-  community.members.remove(userID);
+  community.listOfMembers.remove(userID);
   await updateCommunity(community);
 }
 

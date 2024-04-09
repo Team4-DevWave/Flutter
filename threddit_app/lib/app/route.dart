@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
-import 'package:threddit_clone/features/posting/data/data.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
-import 'package:threddit_clone/models/community.dart';
 import 'package:threddit_clone/models/fetch_community.dart';
-import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/models/post101.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
@@ -152,7 +150,7 @@ class RouteClass {
         return MaterialPageRoute(
           builder: (_) => CommunityScreen(
             id: id,
-            uid: 'uid',
+            uid: uid,
           ),
         );
       case confirmPostScreen:

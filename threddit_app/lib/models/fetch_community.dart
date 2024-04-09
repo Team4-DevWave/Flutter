@@ -1,27 +1,27 @@
 
 
-import 'package:threddit_clone/features/post/model/post_model.dart';
+import 'package:threddit_clone/models/post.dart';
 
 class FetchCommunity {
   late String subredditTitle;
   late String subredditDescription;
   late String numJoinedMembers;
+  late List<String> listOfMembers;
   late String numOnlineMembers;
   late FetchCommunitySettings communitySettings;
   late List<String> moderators;
-  late List<String> members;
   late List<String> rules;
-  late List<PostData> posts;
+  late List<Post> posts;
   
 
   FetchCommunity({
     required this.subredditTitle,
     required this.subredditDescription,
     required this.numJoinedMembers,
+    required this.listOfMembers,
     required this.numOnlineMembers,
     required this.communitySettings,
     required this.moderators,
-    required this.members,
     required this.rules,
     required this.posts,
   });
@@ -31,12 +31,14 @@ class FetchCommunity {
       subredditTitle: json['subredditTitle'],
       subredditDescription: json['subredditDescription'],
       numJoinedMembers: json['numJoinedMembers'],
+      listOfMembers: List<String>.from(json['listOfMembers']),
       numOnlineMembers: json['numOnlineMembers'],
       communitySettings: FetchCommunitySettings.fromJson(json['communitySettings']),
       moderators: List<String>.from(json['moderators']),
-      members: List<String>.from(json['members']),
       rules: List<String>.from(json['rules']),
-      posts: List<PostData>.from(json['posts']),
+      posts: (json['posts'] as List<dynamic>)
+        .map((postJson) => Post.fromJson(postJson))
+        .toList(),
     );
   }
    Map<String, dynamic> toJson() {
@@ -44,10 +46,10 @@ class FetchCommunity {
       'subredditTitle': subredditTitle,
       'subredditDescription': subredditDescription,
       'numJoinedMembers': numJoinedMembers,
+      'listOfMembers': listOfMembers,
       'numOnlineMembers': numOnlineMembers,
       'communitySettings': communitySettings.toJson(),
       'moderators': moderators,
-      'members': members,
       'rules': rules,
       'posts': posts,
     };
@@ -57,10 +59,10 @@ class FetchCommunity {
       'subredditTitle': subredditTitle,
       'subredditDescription': subredditDescription,
       'numJoinedMembers': numJoinedMembers,
+      'listOfMembers': listOfMembers,
       'numOnlineMembers': numOnlineMembers,
       'communitySettings': communitySettings.toMap(),
       'moderators': moderators,
-      'members': members,
       'rules': rules,
       'posts': posts,
     };

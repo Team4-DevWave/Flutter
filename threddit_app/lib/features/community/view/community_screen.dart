@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
 import 'package:threddit_clone/models/fetch_community.dart';
@@ -26,7 +27,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     return Scaffold(
       body: communityAsyncValue.when(
         data: (community) => buildCommunityScreen(community),
-        loading: () => const CircularProgressIndicator(),
+        loading: () => Center(
+                child: Lottie.asset(
+                  'assets/animation/loading.json',
+                  repeat: true,
+                ),
+              ),
         error: (error, stack) => Text('Error: $error'),
       ),
     );
@@ -34,13 +40,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   Widget buildCommunityScreen(FetchCommunity community) {
     bool isCurrentUserModerator = community.moderators.contains(widget.uid);
-    bool isCurrentUser = community.members.contains(widget.uid);
+    bool isCurrentUser = community.listOfMembers.contains(widget.uid);
     bool getUserState(FetchCommunity community) {
       if (community.moderators.contains(widget.uid)) {
         Navigator.pushNamed(context, RouteClass.communityModTools);
         return true;
       } else {
-        if (community.members.contains(widget.uid)) {
+        if (community.listOfMembers.contains(widget.uid)) {
           showModalBottomSheet(
               context: context,
               builder: (context) {
@@ -55,7 +61,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                               ref.watch(unjoinCommunityProvider(widget.id));
                           leaveFunction(widget.uid);
                           setState(() {});
-                          community.members.remove(widget.uid);
+                          community.listOfMembers.remove(widget.uid);
                           Navigator.pop(context);
                         }),
                   ],
@@ -66,7 +72,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           var JoinFunction = ref.watch(joinCommunityProvider(widget.id));
           JoinFunction(widget.uid);
           setState(() {});
-          community.members.add(widget.uid);
+          community.listOfMembers.add(widget.uid);
 
           return true;
         }
@@ -168,7 +174,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '${community.members.length} members',
+                              '${community.listOfMembers.length} members',
                               style: const TextStyle(
                                 color: Color.fromARGB(108, 255, 255, 255),
                               ),

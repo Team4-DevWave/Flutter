@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/models/post101.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 
 final postRepositoryProvider = Provider((ref) => PostRepository());
