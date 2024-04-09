@@ -63,8 +63,6 @@ dependencies:
   flutter_secure_storage: ^4.2.1
   email_validator: ^2.1.17
   riverpod: ^2.5.1
-  validator_regex: ^1.1.1
-  video_player: ^2.8.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

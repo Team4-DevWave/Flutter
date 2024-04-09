@@ -45,7 +45,6 @@ class _CommunitiesTilesState extends State<CommunitiesTiles> {
                         title: Text(dataList[index],
                             style: AppTextStyles.secondaryTextStyle
                                 .copyWith(fontSize: 14)),
-
                         /// There should be an icon with the data of community but it will be
                         /// implemented when the community class is made
                         onTap: () {

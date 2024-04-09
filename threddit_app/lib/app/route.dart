@@ -9,7 +9,7 @@ import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart'
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/search_screen.dart';
-import 'package:threddit_clone/features/home_page/view/screens/user_profile_screen.dart';
+import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/post/view/confirm_post.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
@@ -136,8 +136,6 @@ class RouteClass {
                   id: input[0],
                   uid: input[1],
                 ));
-      case confirmPostScreen:
-        return MaterialPageRoute(builder: (_) => const ConfirmPost());
       case confirmPostScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPost());
       case postScreen:
