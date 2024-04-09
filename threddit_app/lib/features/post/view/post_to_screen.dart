@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/communities_list.dart';
+import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -12,17 +13,26 @@ class PostToScreen extends ConsumerStatefulWidget {
 
 class _PostToScreenState extends ConsumerState<PostToScreen> {
   late TextEditingController _communityText;
+  late Future<List<String>> searchResults;
 
   @override
   void initState() {
-    super.initState();
+    ///fetches the data when the widget is intialized
     _communityText = TextEditingController();
+    searchResults = Future.value([]);
+    super.initState();
   }
 
   @override
-  void dispose() {
+  void dispose() {  
     _communityText.dispose();
     super.dispose();
+  }
+
+  void _onQueryChanged (String query){
+    setState(() {
+     searchResults = UserCommunitiesAPI().searchResults(query);
+    });
   }
 
   @override
@@ -61,10 +71,10 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
               textStyle:
                   MaterialStatePropertyAll(AppTextStyles.primaryTextStyle),
               onChanged: (text) {
-                //update provider
+                _onQueryChanged(text);
               },
             ),
-            const CommunityList(),
+           CommunityList(searchRes : searchResults),
           ],
         ),
       ),

@@ -39,7 +39,7 @@ class _NotificationsSettingsScreenState
     return Scaffold(
       appBar: AppBar(title: const Text("Notifications")),
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -200,7 +200,7 @@ class _NotificationsSettingsScreenState
                 }
               },
             ),
-            SettingsTitle(title: "UPDATES"),
+            const SettingsTitle(title: "UPDATES"),
             FutureBuilder<bool>(
               future: isNotificationEnabled(),
               builder: (context, snapshot) {
@@ -218,7 +218,7 @@ class _NotificationsSettingsScreenState
                 }
               },
             ),
-            SettingsTitle(title: "MODERATION"),
+            const SettingsTitle(title: "MODERATION"),
             FutureBuilder<bool>(
               future: isNotificationEnabled(),
               builder: (context, snapshot) {

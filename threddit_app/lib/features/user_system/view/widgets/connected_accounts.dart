@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_data.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
+import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -17,8 +23,9 @@ class ConnectedAccounts extends ConsumerStatefulWidget {
 }
 
 class _ConnectedAcccountsState extends ConsumerState<ConnectedAccounts> {
+  //late bool isValid = true;
   bool checkGoogle() {
-    return ref.watch(userProvider)!.isGoogle;
+    return (ref.watch(userProvider)!.isGoogle);
   }
 
   @override
@@ -31,17 +38,31 @@ class _ConnectedAcccountsState extends ConsumerState<ConnectedAccounts> {
           titleTextStyle: AppTextStyles.primaryTextStyle,
           trailing: checkGoogle()
               ? TextButton(
-                  onPressed: () => ref
-                      .watch(authControllerProvider.notifier)
-                      .googleLogout(),
+                  onPressed: () =>
+                      ref.watch(authControllerProvider.notifier).googleLogout(),
                   child: const Text(
                     "Disconnect",
-                    style:  TextStyle(color: Colors.blue),
+                    style: TextStyle(color: Colors.blue),
                   ))
               : TextButton(
-                  onPressed: () => ref
-                      .watch(authControllerProvider.notifier)
-                      .connectWithGoogle(context),
+                  onPressed: () async {
+                    final response = await ref
+                        .watch(authProvider.notifier)
+                        .signInWithGoogle();
+
+                    response.fold(
+                        (l) => showSnackBar(
+                            navigatorKey.currentContext!, l.message), (r) {
+                      if (r) {
+                        Navigator.pushNamed(
+                            context, RouteClass.confirmPasswordScreen);
+                        UserModel? currentUser = ref.read(userProvider)!;
+                        UserModel updatedUser =
+                            currentUser.copyWith(isGoogle: true);
+                        ref.read(userProvider.notifier).state = updatedUser;
+                      }
+                    });
+                  },
                   child: const Text(
                     "Connect",
                     style: TextStyle(color: Colors.blue),

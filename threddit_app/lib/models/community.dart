@@ -1,7 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
-
-const uuid = Uuid();
 
 enum CommunityType { Restricted, Public, Private }
 
@@ -14,7 +11,8 @@ class Community {
   final List<String> mods;
   final String? description;
   final CommunityType type;
-  final bool is18plus;
+  final bool nsfw; // Renamed is18plus to nsfw
+  final List<String> rules; // Added list of rules
 
   Community({
     required this.id,
@@ -25,31 +23,36 @@ class Community {
     required this.mods,
     this.description,
     required this.type,
-    required this.is18plus,
+    required this.nsfw,
+    required this.rules, // Added rules parameter
   });
 
   Community copyWith({
-  String? id,
-  String? name,
-  String? avatar,
-  List<String>? members,
-  List<String>? mods,
-  String? description,
-  CommunityType? type,
-  bool? is18plus,
-}) {
-  return Community(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    avatar: avatar ?? this.avatar,
-    banner: banner ?? banner,
-    members: members ?? this.members,
-    mods: mods ?? this.mods,
-    description: description ?? this.description,
-    type: type ?? this.type,
-    is18plus: is18plus ?? this.is18plus, 
-  );
-}
+    String? id,
+    String? name,
+    String? avatar,
+    String? banner,
+    List<String>? members,
+    List<String>? mods,
+    String? description,
+    CommunityType? type,
+    bool? nsfw,
+    List<String>? rules,
+  }) {
+    return Community(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      avatar: avatar ?? this.avatar,
+      banner: banner ?? this.banner,
+      members: members ?? this.members,
+      mods: mods ?? this.mods,
+      description: description ?? this.description,
+      type: type ?? this.type,
+      nsfw: nsfw ?? this.nsfw,
+      rules: rules ?? this.rules,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -59,21 +62,24 @@ class Community {
       'members': members,
       'mods': mods,
       'description': description,
-      'type': type.toString().split('.').last, // Convert enum to string
+      'type': type.toString().split('.').last,
+      'nsfw': nsfw,
+      'rules': rules, // Added rules
     };
   }
 
   factory Community.fromMap(Map<String, dynamic> map) {
     return Community(
-      id: map[['id']] ?? '',
+      id: map['id'] ?? '',
       name: map['name'] ?? '',
       avatar: map['avatar'] ?? '',
       banner: map['banner'] ?? '',
       members: List<String>.from(map['members'] ?? []),
       mods: List<String>.from(map['mods'] ?? []),
       description: map['description'],
-      type: _parseCommunityType(map['type']), // Parse enum from string
-      is18plus: map['is18plus']
+      type: _parseCommunityType(map['type']),
+      nsfw: map['nsfw'] ?? false,
+      rules: List<String>.from(map['rules'] ?? []), // Added rules
     );
   }
 
@@ -86,7 +92,9 @@ class Community {
       'members': members,
       'mods': mods,
       'description': description,
-      'type': type.toString().split('.').last, // Convert enum to string
+      'type': type.toString().split('.').last,
+      'nsfw': nsfw,
+      'rules': rules, // Added rules
     };
   }
 
@@ -99,14 +107,15 @@ class Community {
       members: List<String>.from(json['members'] ?? []),
       mods: List<String>.from(json['mods'] ?? []),
       description: json['description'],
-      type: _parseCommunityType(json['type']), // Parse enum from string
-      is18plus:json['is18plus']?? '',
+      type: _parseCommunityType(json['type']),
+      nsfw: json['nsfw'] ?? false,
+      rules: List<String>.from(json['rules'] ?? []), // Added rules
     );
   }
 
   @override
   String toString() {
-    return 'Community(id: $id, name: $name,  avatar: $avatar, members: $members, mods: $mods, description: $description, type: $type)';
+    return 'Community(id: $id, name: $name,  avatar: $avatar, members: $members, mods: $mods, description: $description, type: $type, nsfw: $nsfw)';
   }
 
   @override
@@ -119,7 +128,8 @@ class Community {
         other.avatar == avatar &&
         listEquals(other.members, members) &&
         listEquals(other.mods, mods) &&
-        other.type == type;
+        other.type == type &&
+        other.nsfw == nsfw;
   }
 
   @override
@@ -130,7 +140,8 @@ class Community {
         members.hashCode ^
         mods.hashCode ^
         description.hashCode ^
-        type.hashCode;
+        type.hashCode ^
+        nsfw.hashCode;
   }
 
   static CommunityType _parseCommunityType(String? type) {

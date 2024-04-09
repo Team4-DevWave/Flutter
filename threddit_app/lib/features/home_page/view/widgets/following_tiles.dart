@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_following.dart';
+import 'package:threddit_clone/features/posting/data/data.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -25,9 +27,8 @@ class _FollowingTilesState extends State<FollowingTiles> {
     return FutureBuilder<List<String>>(
         future: _userFollowingData,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); //Placeholder while loading
-          } else if (snapshot.hasError) {
+           //Placeholder while loading
+          if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
             List<String> dataList = snapshot.data ?? [];
@@ -52,6 +53,14 @@ class _FollowingTilesState extends State<FollowingTiles> {
                         /// implemented when the community class is made
                         onTap: () {
                           ///go to the user's profile screen
+                          
+                          //temporarily using this to go to a post screen //Aya
+                          Navigator.pushNamed(context, RouteClass.postScreen,
+                              arguments: {
+                                'currentpost': posts[0],
+                                'uid': 'user2',
+                              });
+
                         },
                         trailing: IconButton(
                           onPressed: () {},

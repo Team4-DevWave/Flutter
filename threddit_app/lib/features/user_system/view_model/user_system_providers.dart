@@ -16,9 +16,12 @@ final userProvider = StateProvider<UserModel?>(
 );
 
 // final isNewProvider = StateProvider<bool>((ref) => false);
-final isEmailUsedProvider = StateProvider<bool>((ref) => false);
-final loginSucceeded = StateProvider<bool>((ref) => false);
+// final isEmailUsedProvider = StateProvider<bool>((ref) => false);
+// final loginSucceeded = StateProvider<bool>((ref) => false);
 final enteredValue = StateProvider<String?>((ref) => null);
 final isUserNameUsedProvider = StateProvider<bool>(((ref) => false));
 final signUpSuccess = StateProvider<bool>((ref) => false);
-final enteredAccoutValue = StateProvider<String?>(((ref) => ''));
+final enteredAccoutValue = StateProvider<String?>(((ref) => null));
+// final forgotPasswordSuccess = StateProvider<bool>(((ref) => false));
+// final forgotUsernameSuccess = StateProvider<bool>(((ref) => false));
+final forgotType = StateProvider<String?>(((ref) => null));

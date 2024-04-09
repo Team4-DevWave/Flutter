@@ -34,7 +34,8 @@ class UserMock {
       email: email ?? this.email,
       gender: gender ?? this.gender,
       id: id ?? this.id,
-    );}
+    );
+  }
 
   String get getUsername {
     return username;
@@ -47,7 +48,8 @@ class UserMock {
   String get getGender {
     return gender;
   }
-  bool get getBlocked{
+
+  bool get getBlocked {
     return isBlocked;
   }
 

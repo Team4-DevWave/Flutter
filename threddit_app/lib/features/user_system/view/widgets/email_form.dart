@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 /// Creates an email form that takes the string as the form name.
+// ignore: must_be_immutable
 class EmailForm extends StatefulWidget {
   final String formName;
   String enteredEmail = "";

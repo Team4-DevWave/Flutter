@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -25,9 +26,7 @@ class _CommunitiesTilesState extends State<CommunitiesTiles> {
     return FutureBuilder<List<String>>(
         future: _userCommunitiesData,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); //Placeholder while loading
-          } else if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
             List<String> dataList = snapshot.data ?? [];
@@ -47,11 +46,12 @@ class _CommunitiesTilesState extends State<CommunitiesTiles> {
                         title: Text(dataList[index],
                             style: AppTextStyles.secondaryTextStyle
                                 .copyWith(fontSize: 14)),
-
                         /// There should be an icon with the data of community but it will be
                         /// implemented when the community class is made
                         onTap: () {
                           ///go to the community/user's profile screen
+                           Navigator.pushNamed(
+                            context, RouteClass.communityScreen);
                         },
                         trailing: IconButton(
                           onPressed: () {},

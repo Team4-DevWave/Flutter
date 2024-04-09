@@ -11,7 +11,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/password_textfo
 import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/navigate_login.dart';
-import 'package:threddit_clone/features/user_system/view_model/utils.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
@@ -41,13 +41,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final isUsed = await ref
         .read(authProvider.notifier)
         .checkEmailAvailability(emailController.text);
-    if (isUsed) {
-      showSnackBar(navigatorKey.currentContext!, 'email is already found');
-    } else {
-      ref.read(authProvider.notifier).saveEmail(passController.text);
-      Navigator.pushNamed(
-          navigatorKey.currentContext!, RouteClass.aboutMeScreen);
-    }
+
+    isUsed.fold(
+      (failure) {
+        showSnackBar(navigatorKey.currentContext!, failure.message);
+      },
+      (isEmailUsed) {
+        if (isEmailUsed) {
+          showSnackBar(navigatorKey.currentContext!, 'email is already found');
+        } else {
+          ref.read(authProvider.notifier).saveEmail(passController.text);
+          Navigator.pushNamed(
+              navigatorKey.currentContext!, RouteClass.aboutMeScreen);
+        }
+      },
+    );
+
     _isLoading = false;
   }
 
