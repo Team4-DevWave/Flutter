@@ -127,7 +127,7 @@ class _InterestsState extends ConsumerState<Interests> {
                                       bool isSelected = _selectedInterests
                                           .contains(interestName);
                                       return Padding(
-                                        padding: EdgeInsets.only(right: 5.w),
+                                        padding: EdgeInsets.only(right: 1.w),
                                         child: InterestButton(
                                           answerText: interestName,
                                           isSelected: isSelected,
@@ -136,6 +136,9 @@ class _InterestsState extends ConsumerState<Interests> {
                                         ),
                                       );
                                     }).toList(),
+                                  ),
+                                  SizedBox(
+                                    height: 3.h,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -146,7 +149,7 @@ class _InterestsState extends ConsumerState<Interests> {
                                       bool isSelected = _selectedInterests
                                           .contains(interestName);
                                       return Padding(
-                                        padding: EdgeInsets.only(right: 5.w),
+                                        padding: EdgeInsets.only(right: 1.w),
                                         child: InterestButton(
                                           answerText: interestName,
                                           isSelected: isSelected,

@@ -303,6 +303,7 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> signUp() async {
     state = true;
     final UserModel user = ref.watch(userProvider)!;
+    //change the hit for the
     final url = Uri.https(
       'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
       'signup.json',
@@ -392,6 +393,7 @@ class Auth extends StateNotifier<bool> {
         currentUser.copyWith(token: userToken, isGoogle: true);
 
     /// Update the userProvider state with the new user
+    /// we are trying to log in by google
     ref.read(userProvider.notifier).state = updatedUser;
     final url = Uri.https(
         'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
