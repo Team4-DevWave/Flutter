@@ -16,7 +16,7 @@ class _ContactSettingState extends State<ContactSettings> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (ctx) => const NotificationsSettingsScreen()));
+            builder: (ctx) => NotificationsSettingsScreen()));
   }
 
   @override

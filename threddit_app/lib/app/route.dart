@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
-import 'package:threddit_clone/features/community/view/community_info.dart';
-import 'package:threddit_clone/models/community.dart';
+import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
+import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
-//import 'package:threddit_clone/features/home_page/view/screens/community_screen.dart';
+import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
@@ -28,7 +28,6 @@ import 'package:threddit_clone/features/user_system/view/screens/username_screen
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forget_password.dart';
-import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/models/post.dart';
 import '../features/user_system/view/screens/login_screen.dart';
 
@@ -38,10 +37,11 @@ class RouteClass {
   static const String signUpScreen = "/signup";
   static const String registerScreen = "/register";
   static const String mainLayoutScreen = "/main";
+  static const String communityScreen = "/community";
   static const String homeScreen = "/home";
   static const String appPostScreen = "/app_post_screen";
   static const String chatScreen = "/chat";
-  static const String communityScreen = "/community";
+  static const String mainCommunityScreen = "/communities";
   static const String notificationsScreen = "/notifications";
   static const String notificationsSettingsScreen = "/notifications_settings";
   static const String postToScreen = "/post_to";
@@ -60,8 +60,7 @@ class RouteClass {
   static const String forgetPasswordScreen = '/forget_password';
   static const String forgetUsernameScreen = '/forget_username';
   static const String forgetRdirectScreen = '/forget_redirect';
-  static const String communityModTools = '/community_mod_tools';
-  static const String communityInfo = '/community_info';
+  static const String confirmPasswordScreen = "/confirm-password";
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -96,14 +95,13 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const AddPostScreen());
       case chatScreen:
         return MaterialPageRoute(builder: (_) => const ChatScreen());
-      case communityScreen:
-        return MaterialPageRoute(
-            builder: (_) => const CommunityScreen(id: '1', uid: 'mod1'));
+      case mainCommunityScreen:
+        return MaterialPageRoute(builder: (_) => const MainCommunityScreen());
       case notificationsScreen:
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case notificationsSettingsScreen:
         return MaterialPageRoute(
-            builder: (_) => const NotificationsSettingsScreen());
+            builder: (_) =>  NotificationsSettingsScreen());
       case postToScreen:
         return MaterialPageRoute(builder: (_) => const PostToScreen());
       case accountSettingsScreen:
@@ -128,15 +126,21 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const ForgetSentMail());
       case mainLayoutScreen:
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
+        case confirmPasswordScreen:
+        return MaterialPageRoute(builder: (_) => const ConfirmPasswordScreen());
+      case communityScreen:
+        List<String> input = settings.arguments as List<String>;
+        print(input);
+        return MaterialPageRoute(
+            builder: (_) => CommunityScreen(
+                  id: input[0],
+                  uid: input[1],
+                ));
       case postScreen:
-        final args = settings.arguments as Map<String, dynamic>;
-        final currentpost =
-            args['currentpost'] as Post; // Extract the community object
-        final uid = args['uid'] as String;
+        Post data = settings.arguments as Post;
         return MaterialPageRoute(
             builder: (_) => PostScreen(
-                  currentPost: currentpost,
-                  uid: uid,
+                  currentPost: data,
                 ));
       case createCommunityScreen:
         //var data = settings.arguments as String;
@@ -145,19 +149,6 @@ class RouteClass {
             builder: (_) => CreateCommunity(
                   uid: data,
                 ));
-      case communityScreen:
-        return MaterialPageRoute(
-            builder: (_) => CommunityScreen(id: '1', uid: '1'));
-      case communityModTools:
-        return MaterialPageRoute(builder: (_) => const CommunityModTools());
-      case communityInfo:
-        final args = settings.arguments as Map<String, dynamic>;
-        final community =
-            args['community'] as Community; // Extract the community object
-        final uid = args['uid'] as String;
-        return MaterialPageRoute(
-            builder: (_) => CommunityInfo(community: community, uid: uid));
-
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }

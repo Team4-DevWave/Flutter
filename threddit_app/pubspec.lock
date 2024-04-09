@@ -721,7 +721,7 @@ packages:
     source: hosted
     version: "3.7.4"
   riverpod:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: riverpod
       sha256: f21b32ffd26a36555e501b04f4a5dca43ed59e16343f1a30c13632b2351dfa4d
@@ -1014,5 +1014,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-  dart: ">=3.3.0 <4.0.0"
+  dart: ">=3.3.2 <4.0.0"
   flutter: ">=3.19.2"

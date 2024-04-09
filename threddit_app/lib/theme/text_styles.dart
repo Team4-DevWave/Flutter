@@ -43,4 +43,14 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: const Color.fromARGB(255, 255, 255, 255),
   );
+  static TextStyle boldTextStyleNotifcation = GoogleFonts.notoSans(
+    fontSize: 15.sp,
+    fontWeight: FontWeight.bold,
+    color: const Color.fromARGB(255, 255, 255, 255),
+  );
+  static TextStyle secondaryTextStylenotifications = GoogleFonts.notoSans(
+    color: Color.fromARGB(166, 255, 255, 255),
+    fontSize: 12.sp,
+    fontWeight: FontWeight.bold,
+  );
 }

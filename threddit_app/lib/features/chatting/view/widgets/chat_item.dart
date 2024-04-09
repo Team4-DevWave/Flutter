@@ -24,7 +24,7 @@ class _ChatItemState extends ConsumerState<ChatItem> {
         padding: const EdgeInsets.symmetric(vertical:10.0),
         child: Container(
           decoration: const BoxDecoration(
-            color: const Color.fromARGB(199, 10, 10, 10),
+            color: Color.fromARGB(199, 10, 10, 10),
           ),
           child: Row(children: [
             const Padding(
@@ -39,11 +39,11 @@ class _ChatItemState extends ConsumerState<ChatItem> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text(widget.message.sender,style: const TextStyle(color: const Color.fromARGB(65, 255, 255, 255),fontSize: 15,fontWeight: FontWeight.bold),),
+                Text(widget.message.sender,style: const TextStyle(color: Color.fromARGB(65, 255, 255, 255),fontSize: 15,fontWeight: FontWeight.bold),),
                 if(widget.message.imageUrl==null)
-                Text(widget.message.text!,style: const TextStyle(color: const Color.fromARGB(73, 255, 255, 255),fontSize: 15))
+                Text(widget.message.text!,style: const TextStyle(color: Color.fromARGB(73, 255, 255, 255),fontSize: 15))
                 else 
-                Text('${widget.message.sender} sent an image',style: TextStyle(color: const Color.fromARGB(70, 255, 255, 255)))
+                Text('${widget.message.sender} sent an image',style: const TextStyle(color: Color.fromARGB(70, 255, 255, 255)))
               ],),
             ),
             Expanded(

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class CommentRepository {
 Future<List<Comment>> fetchComments(String postId) async {
-  final response = await http.get(Uri.parse('http://192.168.100.249:3000/comments?postId=${postId}'));
+  final response = await http.get(Uri.parse('http://192.168.100.249:3000/comments?postId=$postId'));
 
   if (response.statusCode == 200) {
     final List<dynamic> data = jsonDecode(response.body);
@@ -21,7 +21,7 @@ Future<List<Comment>> fetchComments(String postId) async {
   }
 }
 Stream<List<Comment>> getCommentsStream(String postId) {
-    return Stream.periodic(Duration(seconds: 10), (_) {
+    return Stream.periodic(const Duration(seconds: 10), (_) {
       return fetchComments(postId);
     }).asyncMap((_) async => fetchComments(postId));
   }
