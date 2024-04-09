@@ -175,7 +175,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 title: "Settings",
                 onTap: () {
-                  Navigator.pushNamed(context, RouteClass.accountSettingScreen);
+                  Navigator.pushNamed(context, RouteClass.settingsScreen);
                 }),
           ],
         ),

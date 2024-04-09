@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 
@@ -219,7 +221,13 @@ class SettingsFetch extends StateNotifier<bool> {
   SettingsFetch(this.ref) : super(false);
 
   /// API Call to fetch the User data
-  
+  // Future<UserSettings> getUserSettings(http.Client client) async{
+  //   final String? userToken = await user.getIdToken();
+  //   http.Response response = await client.get(
+  //     Uri.parse( )
+  //   )
+
+  // }
   Future<UserMock> getUserInfo(http.Client client) async {
     http.Response response = await client.get(
       Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
