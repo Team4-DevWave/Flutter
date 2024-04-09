@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -49,6 +50,8 @@ class _CommunitiesTilesState extends State<CommunitiesTiles> {
                         /// implemented when the community class is made
                         onTap: () {
                           ///go to the community/user's profile screen
+                           Navigator.pushNamed(
+                            context, RouteClass.communityScreen);
                         },
                         trailing: IconButton(
                           onPressed: () {},
