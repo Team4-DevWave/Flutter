@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
-import 'package:threddit_clone/models/community.dart';
+import 'package:threddit_clone/models/fetch_community.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
   final String id;
   final String uid;
-  const CommunityScreen({Key? key, required this.id, required this.uid})
-      : super(key: key);
+  const CommunityScreen({super.key, required this.id, required this.uid});
 
   @override
   _CommunityScreenState createState() => _CommunityScreenState();
@@ -24,21 +23,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   @override
   Widget build(BuildContext context) {
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
-
     return Scaffold(
       body: communityAsyncValue.when(
         data: (community) => buildCommunityScreen(community),
-        loading: () => CircularProgressIndicator(),
+        loading: () => const CircularProgressIndicator(),
         error: (error, stack) => Text('Error: $error'),
       ),
     );
   }
 
-  Widget buildCommunityScreen(Community community) {
-    bool isCurrentUserModerator = community.mods.contains(widget.uid);
+  Widget buildCommunityScreen(FetchCommunity community) {
+    bool isCurrentUserModerator = community.moderators.contains(widget.uid);
     bool isCurrentUser = community.members.contains(widget.uid);
-    bool getUserState(Community community) {
-      if (community.mods.contains(widget.uid)) {
+    bool getUserState(FetchCommunity community) {
+      if (community.moderators.contains(widget.uid)) {
         Navigator.pushNamed(context, RouteClass.communityModTools);
         return true;
       } else {
@@ -86,7 +84,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               children: [
                 Positioned.fill(
                   child: Image.network(
-                    community.banner,
+                    community.communitySettings.subredditBanner,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -151,7 +149,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(community.avatar),
+                          backgroundImage: NetworkImage(community.communitySettings.subredditImage),
                           radius: 30,
                         ),
                       ),
@@ -163,7 +161,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'r/${community.name}',
+                              'r/${community.subredditTitle}',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 19,
@@ -208,7 +206,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     height: 10,
                   ),
                   Text(
-                    '${community.description}',
+                    '${community.subredditDescription}',
                     style: const TextStyle(color: Colors.white),
                   ),
                   Row(
@@ -261,7 +259,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       });
                     },
                     underline: Container(), // Hide the default underline
-                    dropdownColor: Color.fromARGB(
+                    dropdownColor: const Color.fromARGB(
                         206, 0, 0, 0), // Set dropdown background color
                     items: <String>[
                       'Hot Posts',

@@ -51,7 +51,10 @@ class _CommunitiesTilesState extends State<CommunitiesTiles> {
                         onTap: () {
                           ///go to the community/user's profile screen
                            Navigator.pushNamed(
-                            context, RouteClass.communityScreen);
+                            context, RouteClass.communityScreen, arguments: {
+                                'id': "Sample Subreddit",
+                                'uid': 'user2',
+                              });
                         },
                         trailing: IconButton(
                           onPressed: () {},

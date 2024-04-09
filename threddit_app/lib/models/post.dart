@@ -9,7 +9,7 @@ class Post {
   final String? communityProfilePic;
   final List<String> upvotes;
   final List<String> downvotes;
-  final int commentCount;
+  final String commentCount;
   final String username;
   final String uid;
   final String type;
@@ -41,7 +41,7 @@ class Post {
     String? communityProfilePic,
     List<String>? upvotes,
     List<String>? downvotes,
-    int? commentCount,
+    String? commentCount,
     String? username,
     String? uid,
     String? type,
@@ -147,8 +147,40 @@ class Post {
         createdAt.hashCode ^
         awards.hashCode;
   }
-
-  void upVote(String userID) async {
-    if (downvotes.contains(userID)) {}
+factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      id: json['id'] ?? '',
+      title: json['title'] ?? '',
+      link: json['link'],
+      description: json['description'],
+      communityName: json['communityName'] ?? '',
+      communityProfilePic: json['communityProfilePic'] ?? '',
+      upvotes: List<String>.from(json['upvotes']),
+      downvotes: List<String>.from(json['downvotes']),
+      commentCount: json['commentCount']?.toInt() ?? 0,
+      username: json['username'] ?? '',
+      uid: json['uid'] ?? '',
+      type: json['type'] ?? '',
+      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
+      awards: List<String>.from(json['awards']),
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'link': link,
+      'description': description,
+      'communityName': communityName,
+      'communityProfilePic': communityProfilePic,
+      'upvotes': upvotes,
+      'downvotes': downvotes,
+      'commentCount': commentCount,
+      'username': username,
+      'uid': uid,
+      'type': type,
+      'createdAt': createdAt.millisecondsSinceEpoch,
+      'awards': awards,
+    };
   }
 }

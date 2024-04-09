@@ -17,6 +17,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
   final TextEditingController _communityNameController =
       TextEditingController();
   String communityType = 'Public';
+  // ignore: unused_field
   CommunityType _type = CommunityType.Public;
   bool is18plus = false;
 
@@ -47,11 +48,12 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
       );
       return;
     }
+    //TODO try to fetch communities with similar name first
     final createCommunityFuture = ref.watch(createCommunityProvider(
         CreateCommunityParams(
             name: _communityNameController.text,
-            is18plus: is18plus,
-            type: _type,
+            nsfw: is18plus,
+            type: communityType,
             uid: widget.uid)));
     createCommunityFuture;
   }
@@ -204,7 +206,12 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: FilledButton(
-                        onPressed: createCommunity,
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                           Navigator.pushNamed(
+                            context, RouteClass.communityScreen);
+                            createCommunity();
+                        },
                         style: const ButtonStyle(
                             backgroundColor:
                                 MaterialStatePropertyAll<Color>(Colors.blue)),
