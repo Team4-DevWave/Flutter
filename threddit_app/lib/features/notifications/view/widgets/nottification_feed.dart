@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/empty_notification.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/notification_feed_unit.dart';
 import 'package:threddit_clone/features/notifications/view_model/fetching_notifications.dart';
