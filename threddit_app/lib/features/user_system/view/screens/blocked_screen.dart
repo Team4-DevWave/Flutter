@@ -30,13 +30,17 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
       });
       return;
     }
-    final UserMock blockedUser = await ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+    final UserMock blockedUser =
+        await ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
     final List<UserMock> blockedUsers = [blockedUser];
     final List<UserMock> results = await ref
         .watch(settingsFetchProvider.notifier)
         .searchUsers(client, query);
     setState(() {
-      usernames = results.where((user) => !blockedUsers.any((blocked) => blocked.getUsername == user.getUsername)).toList();
+      usernames = results
+          .where((user) => !blockedUsers
+              .any((blocked) => blocked.getUsername == user.getUsername))
+          .toList();
     });
   }
 
@@ -88,7 +92,8 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                     setState(() {
                                       unblockUser(
                                           client: client,
-                                          userToUnBlock: users[index].getUsername);
+                                          userToUnBlock:
+                                              users[index].getUsername);
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(

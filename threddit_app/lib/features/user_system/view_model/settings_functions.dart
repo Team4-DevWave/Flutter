@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -164,13 +165,14 @@ Future<int> blockUser(
   );
   return response.statusCode;
 }
+
 Future<int> followableOn(
     {required http.Client client, required bool isEnabled}) async {
   Map<String, dynamic> body = {'isOn': isEnabled};
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/followable?user_id=1"),
+    Uri.parse("http://localhost:3001/api/followable?user_id=1"),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -219,13 +221,29 @@ class SettingsFetch extends StateNotifier<bool> {
   SettingsFetch(this.ref) : super(false);
 
   /// API Call to fetch the User data
-  
+
   Future<UserMock> getUserInfo(http.Client client) async {
-    http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
-    );
-    return UserMock.fromJson(jsonDecode(response.body));
+    // final url = Uri.https(
+    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+    //     'users.json');
+    //final url = Uri.http("localhost:3001/api/user-info?user_id=1");
+    final url;
+    if (Platform.isWindows) {
+      url = Uri.parse("http://localhost:3001/api/user-info?user_id=1");
+    } else {
+      url = Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1");
+    }
+    try {
+      http.Response response = await http.get(url);
+
+      print(response.body);
+      return UserMock.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      print(e.toString());
+      return UserMock.fromJson(jsonDecode('sd'));
+    }
   }
+
   Future<List<UserMock>> searchUsers(http.Client client, String query) async {
     http.Response response = await client.get(
       Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
@@ -265,10 +283,12 @@ class SettingsFetch extends StateNotifier<bool> {
     print(isNotificationEnabled);
     return isNotificationEnabled;
   }
+
   Future<bool> getFollowableSetting(http.Client client) async {
     http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
+      Uri.parse("http://localhost:3001/api/user-info?user_id=1"),
     );
+    print('AMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
     Map<String, dynamic> userData = jsonDecode(response.body);
     final body = jsonDecode(response.body);
     print(body);

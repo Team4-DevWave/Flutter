@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/basic_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/connected_accounts.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/contact_settings.dart';
@@ -16,7 +17,8 @@ class AccountSettingsScreen extends ConsumerStatefulWidget {
   const AccountSettingsScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AccountSettingsScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _AccountSettingsScreenState();
 }
 
 class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
@@ -25,12 +27,20 @@ class _AccountSettingsScreenState extends ConsumerState<AccountSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Account Settings")),
-        body: ListView(children: const [
-          BasicSettings(),
-          ConnectedAccounts(),
-          ContactSettings(),
-          Safety(),
-        ]));
+      appBar: AppBar(
+        title: const Text("Account Settings"),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w),
+        child: const Column(
+          children: [
+            BasicSettings(),
+            ConnectedAccounts(),
+            ContactSettings(),
+            Safety(),
+          ],
+        ),
+      ),
+    );
   }
 }

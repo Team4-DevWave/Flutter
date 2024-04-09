@@ -73,7 +73,7 @@ class Auth extends StateNotifier<bool> {
       //this should be 200 but will make it 400 to stop checking
       //200 -> used
       //400 -> notuser
-      if (response.statusCode == 200) {
+      if (response.statusCode == 400) {
         // ref.read(isEmailUsedProvider.notifier).update((state) => true);
         return right(true);
       } else {
@@ -409,12 +409,13 @@ class Auth extends StateNotifier<bool> {
       ),
     );
 
-    //200 for exiting users
+    //200 for exisiting users
     //400 new users
     if (response.statusCode == 200) {
       saveToken(response.body.toString());
       return right(true);
     } else {
+      saveGoogleToken(response.body.toString());
       return right(false);
     }
   }

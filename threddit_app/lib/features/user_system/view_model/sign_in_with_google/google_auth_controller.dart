@@ -6,8 +6,11 @@ import 'package:threddit_clone/app/route.dart';
 // import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/features/user_system/model/user_data.dart';
+// import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 // import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth.dart';
+import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 // import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, bool>(
@@ -37,8 +40,17 @@ class AuthController extends StateNotifier<bool> {
 
   void logout() async {
     deleteToken();
+    deleteGoogleToken();
     _authRepository.logOut();
     Navigator.pushReplacementNamed(
         navigatorKey.currentContext!, RouteClass.registerScreen);
+  }
+
+  void googleLogout() async {
+    deleteGoogleToken();
+    _authRepository.logOut();
+    UserModel? currentUser = _ref.read(userProvider)!;
+    UserModel updatedUser = currentUser.copyWith(isGoogle: false);
+    _ref.read(userProvider.notifier).state = updatedUser;
   }
 }

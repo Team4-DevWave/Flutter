@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 /// Creates a password text form, takes the form name as a parameter.
+// ignore: must_be_immutable
 class PasswordForm extends StatefulWidget {
   final String formName;
   String enteredPassword = "";
@@ -11,12 +13,11 @@ class PasswordForm extends StatefulWidget {
 
 class _PasswordFormState extends State<PasswordForm> {
   bool showText = false;
-  
 
-  void getPassword(String value){
-        setState(() {
-          widget.enteredPassword = value;
-        });
+  void getPassword(String value) {
+    setState(() {
+      widget.enteredPassword = value;
+    });
   }
 
   @override

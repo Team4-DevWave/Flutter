@@ -12,7 +12,7 @@ import 'package:threddit_clone/features/home_page/view/screens/notifications_scr
 import 'package:threddit_clone/features/home_page/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/user_profile_screen.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
-import 'package:threddit_clone/features/posting/data/data.dart';
+// import 'package:threddit_clone/features/posting/data/data.dart';
 import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/about_you_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/account_settings_screen.dart';
@@ -29,7 +29,7 @@ import 'package:threddit_clone/features/user_system/view_model/starting_screen.d
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
 import '../features/user_system/view/screens/login_screen.dart';
-import 'package:threddit_clone/models/post.dart';
+// import 'package:threddit_clone/models/post.dart';
 
 class RouteClass {
   static const String initRoute = "/";
