@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -142,17 +144,19 @@ class _ForgotSentMail extends ConsumerState<ForgotSentMail> {
                   SizedBox(
                     height: 5.h,
                   ),
-                  Container(
-                    padding: EdgeInsets.only(top: 10.h),
-                    width: MediaQuery.of(context).size.width,
-                    decoration:
-                        const BoxDecoration(color: AppColors.backgroundColor),
-                    child: ContinueButton(
-                      isOn: true,
-                      onPressed: () => launchEmailApp(),
-                      identifier: 'Open email app',
-                    ),
-                  ),
+                  Platform.isAndroid
+                      ? Container(
+                          padding: EdgeInsets.only(top: 10.h),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: const BoxDecoration(
+                              color: AppColors.backgroundColor),
+                          child: ContinueButton(
+                            isOn: true,
+                            onPressed: () => launchEmailApp(),
+                            identifier: 'Open email app',
+                          ),
+                        )
+                      : const SizedBox(),
                 ],
               ),
             ),
