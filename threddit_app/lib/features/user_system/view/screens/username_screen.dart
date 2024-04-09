@@ -7,6 +7,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/continue_button
 import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
@@ -39,14 +40,19 @@ class _UserNameState extends ConsumerState<UserName> {
         .read(authProvider.notifier)
         .checkUsernameAvailability(userNameController.text);
     isLoading = false;
-    if (isUsed) {
-      userNameFormKey.currentState!.validate();
-    } else {
-      userNameFormKey.currentState!.validate();
-      ref.read(authProvider.notifier).saveUserName(userNameController.text);
-      Navigator.pushNamed(
-          navigatorKey.currentContext!, RouteClass.interestsScreen);
-    }
+
+    isUsed.fold((failure) {
+      showSnackBar(navigatorKey.currentContext!, failure.message);
+    }, (isUsernameUsed) {
+      if (isUsernameUsed) {
+        userNameFormKey.currentState!.validate();
+      } else {
+        userNameFormKey.currentState!.validate();
+        ref.read(authProvider.notifier).saveUserName(userNameController.text);
+        Navigator.pushNamed(
+            navigatorKey.currentContext!, RouteClass.interestsScreen);
+      }
+    });
   }
 
   @override

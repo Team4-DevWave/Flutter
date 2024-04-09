@@ -27,9 +27,8 @@ class _FollowingTilesState extends State<FollowingTiles> {
     return FutureBuilder<List<String>>(
         future: _userFollowingData,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); //Placeholder while loading
-          } else if (snapshot.hasError) {
+           //Placeholder while loading
+          if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
             List<String> dataList = snapshot.data ?? [];

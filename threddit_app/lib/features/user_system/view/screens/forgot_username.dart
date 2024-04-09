@@ -8,54 +8,64 @@ import 'package:threddit_clone/features/user_system/view/widgets/email_textformf
 import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
-import 'package:threddit_clone/features/user_system/view_model/utils.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ForgetPassword extends ConsumerStatefulWidget {
-  const ForgetPassword({super.key});
+class ForgotUsername extends ConsumerStatefulWidget {
+  const ForgotUsername({super.key});
+
   @override
-  ConsumerState<ForgetPassword> createState() => _ForgetPasswordState();
+  ConsumerState<ForgotUsername> createState() => _ForgotUsernameState();
 }
 
-class _ForgetPasswordState extends ConsumerState<ForgetPassword> {
+class _ForgotUsernameState extends ConsumerState<ForgotUsername> {
   TextEditingController emailController = TextEditingController();
   bool _isValid = false;
   bool _isLoading = false;
 
   void updateFormValidity() {
     setState(() {
-      _isValid =
-          forgetKey.currentState != null && forgetKey.currentState!.validate();
+      _isValid = formSignUpKey.currentState != null &&
+          formSignUpKey.currentState!.validate();
     });
   }
 
   Future<void> onContinue() async {
     _isLoading = true;
-    ref.watch(authProvider.notifier).saveLoginEmail(emailController.text);
-    final enteredCred = ref.watch(enteredValue);
-    final isFound = enteredCred == 'email'
-        ? await ref
-            .watch(authProvider.notifier)
-            .checkEmailAvailability(emailController.text)
-        : await ref
-            .watch(authProvider.notifier)
-            .checkUsernameAvailability(emailController.text);
+    final isFound = await ref
+        .watch(authProvider.notifier)
+        .checkEmailAvailability(emailController.text);
 
     _isLoading = false;
-    if (isFound) {
-      await ref.watch(authProvider.notifier).forgetPassword();
-      ref.watch(enteredAccoutValue.notifier).state = emailController.text;
-      showSnackBar(navigatorKey.currentContext!,
-          'Email is sent to ${emailController.text}');
-      Navigator.pushNamed(
-          navigatorKey.currentContext!, RouteClass.forgetRdirectScreen);
-    } else {
-      showSnackBar(
-          navigatorKey.currentContext!, 'Enter a valid email or username');
-    }
+
+    isFound.fold((failure) {
+      showSnackBar(navigatorKey.currentContext!, failure.message);
+    }, (userFound) async {
+      if (userFound) {
+        ref.watch(authProvider.notifier).saveEmail(emailController.text);
+        final result = await ref.watch(authProvider.notifier).forgotUsername();
+        result.fold((fogetFailure) {
+          showSnackBar(navigatorKey.currentContext!, fogetFailure.message);
+        }, (forgotSuccess) {
+          if (forgotSuccess) {
+            showSnackBar(navigatorKey.currentContext!,
+                'Email is sent to ${emailController.text}');
+            ref.watch(enteredAccoutValue.notifier).state = emailController.text;
+            ref.watch(forgotType.notifier).update((state) => 'username');
+            Navigator.pushNamed(
+                navigatorKey.currentContext!, RouteClass.forgotRdirectScreen);
+          } else {
+            showSnackBar(navigatorKey.currentContext!,
+                'somehting went wrong, try again later!');
+          }
+        });
+      } else {
+        showSnackBar(navigatorKey.currentContext!, 'Enter a valid email');
+      }
+    });
   }
 
   final Uri _url = Uri.parse(
@@ -99,7 +109,7 @@ class _ForgetPasswordState extends ConsumerState<ForgetPassword> {
                             children: [
                               SizedBox(height: 20.h),
                               Text(
-                                'Reset your password',
+                                'Reset your username',
                                 style: AppTextStyles.primaryButtonGlowTextStyle
                                     .copyWith(
                                   fontSize: 24.spMin,
@@ -109,7 +119,7 @@ class _ForgetPasswordState extends ConsumerState<ForgetPassword> {
                               ),
                               SizedBox(height: 12.h),
                               Text(
-                                "Enter your email address or username and we'll send you a link to reset your password",
+                                "Enter your email address and we'll send you a link to reset your password",
                                 style: AppTextStyles.primaryTextStyle.copyWith(
                                   fontSize: 17.spMin,
                                   fontWeight: FontWeight.normal,
@@ -118,11 +128,11 @@ class _ForgetPasswordState extends ConsumerState<ForgetPassword> {
                               ),
                               SizedBox(height: 25.h),
                               Form(
-                                key: forgetKey,
+                                key: formSignUpKey,
                                 onChanged: updateFormValidity,
                                 child: EmailTextFromField(
                                   controller: emailController,
-                                  identifier: 'login',
+                                  identifier: 'signup',
                                 ),
                               )
                             ],

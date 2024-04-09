@@ -33,9 +33,10 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
   Country selectedCountry = Country.worldWide;
   void _selectBasicSetting(BuildContext context, String settingName) {
     if (settingName == "email") {
-      Navigator.pushNamed(context, RouteClass.updateEmailScreen).then((value) => setState(() {
-        ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
-      }));
+      Navigator.pushNamed(context, RouteClass.updateEmailScreen)
+          .then((value) => setState(() {
+                ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+              }));
     } else if (settingName == "password") {
       Navigator.pushNamed(context, RouteClass.changePasswordScreen);
     }
@@ -44,10 +45,10 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
   Future<UserMock> fetchUser() async {
     setState(() {
       ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
-    }); 
+    });
     return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(

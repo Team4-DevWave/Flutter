@@ -5,8 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
+
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
+
 import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -124,7 +126,11 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                         backgroundColor:
                                             AppColors.backgroundColor,
                                         builder: (context) {
-                                          return ReportBottomSheet(userID: widget.uid,reportedID: widget.currentPost.id,type: "post",);
+                                          return ReportBottomSheet(
+                                            userID: widget.uid,
+                                            reportedID: widget.currentPost.id,
+                                            type: "post",
+                                          );
                                         },
                                       );
                                     },

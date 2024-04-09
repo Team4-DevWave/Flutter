@@ -26,9 +26,7 @@ class _CommunitiesTilesState extends State<CommunitiesTiles> {
     return FutureBuilder<List<String>>(
         future: _userCommunitiesData,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); //Placeholder while loading
-          } else if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
             List<String> dataList = snapshot.data ?? [];
@@ -48,7 +46,6 @@ class _CommunitiesTilesState extends State<CommunitiesTiles> {
                         title: Text(dataList[index],
                             style: AppTextStyles.secondaryTextStyle
                                 .copyWith(fontSize: 14)),
-
                         /// There should be an icon with the data of community but it will be
                         /// implemented when the community class is made
                         onTap: () {
