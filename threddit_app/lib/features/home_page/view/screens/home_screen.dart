@@ -32,7 +32,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       key: _scaffoldKey,
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
@@ -70,7 +69,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           },
         ),
       ),
-      drawer: const LeftDrawer(),
+      drawer:  const LeftDrawer(),
       endDrawer: const RightDrawer(),
       body: FeedWidget(feedID: feedID),
     );
