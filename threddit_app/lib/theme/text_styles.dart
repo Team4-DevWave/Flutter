@@ -49,7 +49,7 @@ class AppTextStyles {
     color: const Color.fromARGB(255, 255, 255, 255),
   );
   static TextStyle secondaryTextStylenotifications = GoogleFonts.notoSans(
-    color: Color.fromARGB(166, 255, 255, 255),
+    color: const Color.fromARGB(166, 255, 255, 255),
     fontSize: 12.sp,
     fontWeight: FontWeight.bold,
   );

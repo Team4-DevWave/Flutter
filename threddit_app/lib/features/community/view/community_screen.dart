@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
 import 'package:threddit_clone/models/community.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
   final String id;
   final String uid;
-  const CommunityScreen({super.key, required this.id, required this.uid});
+  const CommunityScreen({Key? key, required this.id, required this.uid})
+      : super(key: key);
 
   @override
   _CommunityScreenState createState() => _CommunityScreenState();
@@ -22,11 +24,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   @override
   Widget build(BuildContext context) {
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
-    print(widget.id + "Hello");
+
     return Scaffold(
       body: communityAsyncValue.when(
         data: (community) => buildCommunityScreen(community),
-        loading: () => const CircularProgressIndicator(),
+        loading: () => CircularProgressIndicator(),
         error: (error, stack) => Text('Error: $error'),
       ),
     );
@@ -34,6 +36,44 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   Widget buildCommunityScreen(Community community) {
     bool isCurrentUserModerator = community.mods.contains(widget.uid);
+    bool isCurrentUser = community.members.contains(widget.uid);
+    bool getUserState(Community community) {
+      if (community.mods.contains(widget.uid)) {
+        Navigator.pushNamed(context, RouteClass.communityModTools);
+        return true;
+      } else {
+        if (community.members.contains(widget.uid)) {
+          showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ListTile(
+                        leading: Icon(Icons.exit_to_app),
+                        title: Text('Leave Community'),
+                        onTap: () {
+                          var leaveFunction =
+                              ref.watch(unjoinCommunityProvider(widget.id));
+                          leaveFunction(widget.uid);
+                          setState(() {});
+                          community.members.remove(widget.uid);
+                          Navigator.pop(context);
+                        }),
+                  ],
+                );
+              });
+          return true;
+        } else {
+          var JoinFunction = ref.watch(joinCommunityProvider(widget.id));
+          JoinFunction(widget.uid);
+          setState(() {});
+          community.members.add(widget.uid);
+
+          return true;
+        }
+      }
+    }
 
     return NestedScrollView(
       headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -51,9 +91,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 50,
-                  left: 15,
-                  right: 15,
+                  top: 53,
+                  left: 5,
+                  right: 5,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -65,7 +105,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                               const Color.fromARGB(223, 49, 49, 49)),
                         ),
                       ),
-                      const SizedBox(width: 187),
+                      const SizedBox(width: 205),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -144,14 +184,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           width: 110,
                           height: 33,
                           child: FilledButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              await getUserState(community);
+                            },
                             style: const ButtonStyle(
                                 backgroundColor:
                                     MaterialStatePropertyAll<Color>(
                                         Color.fromARGB(255, 8, 46, 77))),
                             child: Text(
-                              isCurrentUserModerator ? 'Mod Tools' : 'Join',
-                              style: const TextStyle(fontSize: 13),
+                              isCurrentUserModerator
+                                  ? 'Mod Tools'
+                                  : isCurrentUser
+                                      ? 'Joined'
+                                      : 'Join',
+                              style: TextStyle(fontSize: 13),
                             ),
                           ),
                         ),
@@ -169,7 +215,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, RouteClass.communityInfo,
+                              arguments: {
+                                'community': community,
+                                'uid': widget.uid,
+                              });
+                        },
                         style: ButtonStyle(
                           minimumSize: MaterialStateProperty.all(
                               Size.zero), // Ensure minimum size is zero
@@ -209,7 +261,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       });
                     },
                     underline: Container(), // Hide the default underline
-                    dropdownColor: const Color.fromARGB(
+                    dropdownColor: Color.fromARGB(
                         206, 0, 0, 0), // Set dropdown background color
                     items: <String>[
                       'Hot Posts',

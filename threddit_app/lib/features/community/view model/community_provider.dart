@@ -16,10 +16,10 @@ class CreateCommunityParams {
   });
 }
 
+
 final communityRepositoryProvider = Provider((ref) => CommunityRepository());
 
-final createCommunityProvider = FutureProvider.autoDispose
-    .family<void, CreateCommunityParams>((ref, params) async {
+final createCommunityProvider = FutureProvider.autoDispose.family<void, CreateCommunityParams>((ref, params) async {
   final repository = ref.watch(communityRepositoryProvider);
   await repository.createCommunity(
     params.name,
@@ -29,9 +29,25 @@ final createCommunityProvider = FutureProvider.autoDispose
   );
 });
 
-final fetchcommunityProvider =
-    FutureProvider.family<Community, String>((ref, id) async {
+final fetchcommunityProvider = FutureProvider.family<Community, String>((ref, id) async {
   final repository = ref.watch(communityRepositoryProvider);
-
+ 
   return repository.fetchCommunity(id);
+});
+
+final joinCommunityProvider =
+    Provider.autoDispose.family<void Function(String), String>((ref, id) {
+  final repository = ref.watch(communityRepositoryProvider);
+  return (String userID) {
+    repository.joinCommunity(id, userID);
+    
+  };
+});
+
+final unjoinCommunityProvider =
+    Provider.autoDispose.family<void Function(String), String>((ref, id) {
+  final repository = ref.watch(communityRepositoryProvider);
+  return (String userID) {
+    repository.unJoinCommunity(id, userID);
+  };
 });

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
+import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -87,7 +88,86 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.more_horiz_outlined)),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            backgroundColor: AppColors.backgroundColor,
+                            builder: (context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[                                  
+                                  ListTile(
+                                    title: const Text(
+                                      'Share',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.ios_share_sharp,color: Colors.white,),
+                                    onTap: () {},
+                                  ),
+                                  ListTile(
+                                    title: const Text(
+                                      'Save',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.save,color: Colors.white,),
+                                    onTap: () {},
+                                  ),
+                                  
+                                  ListTile(
+                                    title: const Text(
+                                      'Copy text',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.copy,color: Colors.white,),
+                                    onTap: () {},
+                                  ),
+                                  ListTile(
+                                    title: const Text(
+                                      'Report',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(
+                                      Icons.flag_outlined,
+                                      color: Colors.white,
+                                    ),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      showModalBottomSheet(
+                                        useSafeArea: true,
+                                        isScrollControlled: true,
+                                        context: context,
+                                        backgroundColor:
+                                            AppColors.backgroundColor,
+                                        builder: (context) {
+                                          return ReportBottomSheet(reportedID: widget.comment.id,userID: widget.uid,type: "comment",);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                  ListTile(
+                                    title: const Text(
+                                      'Block account',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(
+                                      Icons.block,
+                                      color: Colors.white,
+                                    ),
+                                    onTap: () {},
+                                  ),
+                                  ListTile(
+                                    title: const Text(
+                                      'Collapse thread',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.compare_arrows_rounded,color: Colors.white,),
+                                    onTap: () {},
+                                  )
+                                ],
+                              );
+                            });
+                      
+                      }, icon: const Icon(Icons.more_horiz_outlined)),
                   IconButton(
                       onPressed: () {}, icon: const Icon(Icons.reply_outlined)),
                   IconButton(

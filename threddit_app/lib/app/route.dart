@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
+import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
+import 'package:threddit_clone/models/community.dart';
 import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
-import 'package:threddit_clone/features/home_page/view/screens/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/search_screen.dart';
-import 'package:threddit_clone/features/home_page/view/screens/user_profile_screen.dart';
+import 'package:threddit_clone/features/post/view/add_post_screen.dart';
+import 'package:threddit_clone/features/post/view/confirm_post.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
-// import 'package:threddit_clone/features/posting/data/data.dart';
+import 'package:threddit_clone/features/posting/data/data.dart';
 import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/about_you_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/account_settings_screen.dart';
@@ -27,7 +32,7 @@ import 'package:threddit_clone/features/user_system/view/screens/update_email_sc
 import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
-import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
+import 'package:threddit_clone/models/post.dart';
 import '../features/user_system/view/screens/login_screen.dart';
 // import 'package:threddit_clone/models/post.dart';
 
@@ -61,6 +66,9 @@ class RouteClass {
   static const String forgotUsernameScreen = '/forgot_username';
   static const String forgotRdirectScreen = '/forgot_redirect';
   static const String confirmPasswordScreen = "/confirm-password";
+  static const String confirmPostScreen = '/confirmpost';
+  static const String communityModTools = '/communitymodtools';
+  static const String communityInfo = '/communityinfo';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -83,6 +91,16 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
         return MaterialPageRoute(builder: (_) => const SearchScreen());
+      case communityInfo:
+        final args = settings.arguments as Map<String, dynamic>;
+        final community =
+            args['community'] as Community; // Extract the community object
+        final uid = args['uid'] as String;
+        return MaterialPageRoute(
+            builder: (_) => CommunityInfo(community: community, uid: uid));
+
+      case communityModTools:
+        return MaterialPageRoute(builder: (_) => const CommunityModTools());
       case loginScreen:
         return MaterialPageRoute(builder: (_) => const LogInScreen());
       case signUpScreen:
@@ -135,11 +153,14 @@ class RouteClass {
                   id: input[0],
                   uid: input[1],
                 ));
+      case confirmPostScreen:
+        return MaterialPageRoute(builder: (_) => const ConfirmPost());
       case postScreen:
         Post data = settings.arguments as Post;
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   currentPost: data,
+                  uid: '',
                 ));
       case createCommunityScreen:
         //var data = settings.arguments as String;
