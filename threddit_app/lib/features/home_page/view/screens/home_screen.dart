@@ -7,6 +7,7 @@ import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.d
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
@@ -168,7 +169,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               title: "Logout",
               onTap: () {
-                deleteToken();
+                ref.watch(authRepositoryProvider).logOut();
               }, //ref.watch(authControllerProvider.notifier).logout(),
             ),
             RightDrawerButtons(
