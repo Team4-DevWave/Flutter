@@ -26,6 +26,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void _selectAccountSetting(BuildContext context) {
     Navigator.pushNamed(context, RouteClass.accountSettingScreen);
   }
+  void _selectTextSizeScreen(BuildContext context) {
+    Navigator.pushNamed(context, RouteClass.textSize);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +65,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             titleTextStyle: AppTextStyles.primaryTextStyle,
             trailing: const Icon(Icons.navigate_next),
             onTap: () {
-              _selectAccountSetting(context);
+              _selectTextSizeScreen(context);
             },
           ),
         ]));

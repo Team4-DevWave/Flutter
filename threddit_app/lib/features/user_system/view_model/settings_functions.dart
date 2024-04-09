@@ -9,6 +9,9 @@ import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 
+const String urlAndroid = "http://10.0.2.2:3001";
+const String urlWindows = "http://localhost:3001";
+
 /// API call for changing password address:
 /// Recieves the client, current password, new password, confirmed password as parameters,
 /// Currently defaults to user_id 1 should be changed to token later.
@@ -25,9 +28,14 @@ Future<int> changePasswordFunction(
     'confirmed_password': confirmedPassword,
   };
   String bodyEncoded = jsonEncode(body);
-
+  final url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/change-password"),
+    Uri.parse("$url/api/change-password"),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -70,11 +78,17 @@ Future<int> changeEmailFunction({
     'current_password': currentPassword,
     'new_email': newEmail,
   };
+  final url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
 
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/change-email"),
+    Uri.parse("$url/api/change-email"),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -93,11 +107,16 @@ Future<int> changeGenderFunction(
     'user_id': 1,
     'gender': gender,
   };
-
+  final url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/change-gender"),
+    Uri.parse("$url/api/change-gender"),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -157,9 +176,14 @@ Future<int> blockUser(
     {required http.Client client, required String userToBlock}) async {
   Map<String, dynamic> body = {'blockUsername': userToBlock};
   String bodyEncoded = jsonEncode(body);
-
+  final url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/block-user"),
+    Uri.parse("$url/api/block-user"),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -173,8 +197,14 @@ Future<int> followableOn(
   Map<String, dynamic> body = {'isOn': isEnabled};
   String bodyEncoded = jsonEncode(body);
 
+  final url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://localhost:3001/api/followable?user_id=1"),
+    Uri.parse("$url/api/followable?user_id=1"),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -189,8 +219,15 @@ Future<int> notificationOn(
   Map<String, dynamic> body = {'isOn': isEnabled};
   String bodyEncoded = jsonEncode(body);
 
+  final url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/notification?user_id=1"),
+    Uri.parse("$url/api/notification?user_id=1"),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -204,9 +241,14 @@ Future<int> unblockUser(
     {required http.Client client, required String userToUnBlock}) async {
   Map<String, dynamic> body = {'blockUsername': userToUnBlock};
   String bodyEncoded = jsonEncode(body);
-
+  final url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/unblock-user"),
+    Uri.parse("$url/api/unblock-user"),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -231,12 +273,13 @@ class SettingsFetch extends StateNotifier<bool> {
     //final url = Uri.http("localhost:3001/api/user-info?user_id=1");
     final url;
     if (Platform.isWindows) {
-      url = Uri.parse("http://localhost:3001/api/user-info?user_id=1");
+      url = urlWindows;
     } else {
-      url = Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1");
+      url = urlAndroid;
     }
     try {
-      http.Response response = await http.get(url);
+      http.Response response =
+          await http.get(Uri.parse("$url/api/user-info?user_id=1"));
 
       print(response.body);
       return UserMock.fromJson(jsonDecode(response.body));
@@ -268,15 +311,27 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 
   Future<UserMock> getBlockedUsers(http.Client client) async {
+    final url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
     http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=2"),
+      Uri.parse("$url/api/user-info?user_id=2"),
     );
     return UserMock.fromJson(jsonDecode(response.body));
   }
 
   Future<bool> getNotificationSetting(http.Client client) async {
+    final url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
     http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
+      Uri.parse("$url/api/user-info?user_id=1"),
     );
     Map<String, dynamic> userData = jsonDecode(response.body);
     final body = jsonDecode(response.body);
@@ -287,10 +342,15 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 
   Future<bool> getFollowableSetting(http.Client client) async {
+    final url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
     http.Response response = await client.get(
-      Uri.parse("http://localhost:3001/api/user-info?user_id=1"),
+      Uri.parse("$url/api/user-info?user_id=1"),
     );
-    print('AMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
     Map<String, dynamic> userData = jsonDecode(response.body);
     final body = jsonDecode(response.body);
     print(body);
