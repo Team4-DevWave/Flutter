@@ -123,6 +123,8 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                 title: const Text("Gender"),
                 titleTextStyle: AppTextStyles.primaryTextStyle,
                 trailing: DropdownButton(
+                  dropdownColor: AppColors.backgroundColor,
+                  style: AppTextStyles.primaryTextStyle,
                   icon: const Icon(Icons.arrow_downward),
                   onChanged: (String? value) {
                     setState(() {

@@ -67,7 +67,7 @@ class _ConfirmPasswordScreenState extends ConsumerState<ConfirmPasswordScreen> {
                        // "Password length must be greater than 8", context);
                   //} else {
                     final statusCode = confirmPasswordFunction(client: client, confirmedPassword: confirmPassword);
-                    checkPasswordConfirmResponse(context: context, statusCodeFuture: statusCode);
+                    ref.watch(settingsFetchProvider.notifier).checkPasswordConfirmResponse(context: context, statusCodeFuture: statusCode);
                     
                   //}
               },

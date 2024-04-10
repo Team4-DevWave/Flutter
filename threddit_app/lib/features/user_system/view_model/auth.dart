@@ -419,4 +419,80 @@ class Auth extends StateNotifier<bool> {
       return right(false);
     }
   }
+FutureEmailCheck<bool> connectWithGoogle() async {
+    final _authService = AuthService();
+    final String? userToken;
+    final User? user;
+    if (Platform.isWindows) {
+      try {
+        user = await _authService.signInWithGoogle();
+        if (user != null) {
+          userToken = await user.getIdToken();
+        } else {
+          return left(Failure('Sign in with google failed'));
+        }
+      } catch (e) {
+        if (e is SocketException ||
+            e is TimeoutException ||
+            e is HttpException) {
+          return left(Failure('Check your internet connection...'));
+        } else {
+          return left(Failure(e.toString()));
+        }
+      }
+    } else {
+      try {
+        user =
+            await ref.read(authControllerProvider.notifier).signInWithGoogle();
+        if (user != null) {
+          userToken = await user.getIdToken();
+        } else {
+          return left(Failure('Sign in with google failed'));
+        }
+      } catch (e) {
+        if (e is SocketException ||
+            e is TimeoutException ||
+            e is HttpException) {
+          return left(Failure('Check your internet connection...'));
+        } else {
+          return left(Failure(e.toString()));
+        }
+      }
+    }
+
+    //After getting the token we will update the user and send the token to the backend
+    UserModel? currentUser = ref.read(userProvider)!;
+
+    /// Create a new user with the updated email
+    UserModel updatedUser =
+        currentUser.copyWith(token: userToken);
+
+    /// Update the userProvider state with the new user
+    ref.read(userProvider.notifier).state = updatedUser;
+    final url = Uri.https(
+        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+        'token.json');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode(
+        {
+          'token': userToken,
+        },
+      ),
+    );
+
+    //200 for exisiting users
+    //400 new users
+    if (response.statusCode == 200) {
+      saveToken(response.body.toString());
+      return right(true);
+    } else {
+      saveGoogleToken(response.body.toString());
+      return right(false);
+    }
+  }
 }

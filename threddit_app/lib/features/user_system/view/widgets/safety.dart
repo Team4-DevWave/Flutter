@@ -61,7 +61,6 @@ class _SafetyState extends ConsumerState<Safety> {
               "Followers will be notified about posts you make to your profile and see them in their home feed."),
           titleTextStyle: AppTextStyles.primaryTextStyle,
           trailing: Switch(
-            activeColor: const Color.fromARGB(255, 1, 61, 110),
             value: isFollowableEnabled,
             onChanged: (bool? value) {
               setState(() {

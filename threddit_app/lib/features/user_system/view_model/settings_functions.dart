@@ -4,10 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 
 const String urlAndroid = "http://10.0.2.2:3001";
 const String urlWindows = "http://localhost:3001";
@@ -28,7 +29,7 @@ Future<int> changePasswordFunction(
     'confirmed_password': confirmedPassword,
   };
   String bodyEncoded = jsonEncode(body);
-  final url;
+  final String url;
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -78,7 +79,7 @@ Future<int> changeEmailFunction({
     'current_password': currentPassword,
     'new_email': newEmail,
   };
-  final url;
+  final String url;
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -107,7 +108,7 @@ Future<int> changeGenderFunction(
     'user_id': 1,
     'gender': gender,
   };
-  final url;
+  final String url;
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -151,17 +152,6 @@ void checkPasswordChangeResponse(
   }
 }
 
-void checkPasswordConfirmResponse(
-    {required BuildContext context,
-    required Future<int> statusCodeFuture}) async {
-  int statusCode = await statusCodeFuture;
-  if (statusCode == 200) {
-    Navigator.pop(context);
-  } else {
-    showAlert("Invalid Credintals", context);
-  }
-}
-
 void checkBlockResponse(
     {required BuildContext context,
     required Future<int> statusCodeFuture}) async {
@@ -176,7 +166,7 @@ Future<int> blockUser(
     {required http.Client client, required String userToBlock}) async {
   Map<String, dynamic> body = {'blockUsername': userToBlock};
   String bodyEncoded = jsonEncode(body);
-  final url;
+  final String url;
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -197,7 +187,7 @@ Future<int> followableOn(
   Map<String, dynamic> body = {'isOn': isEnabled};
   String bodyEncoded = jsonEncode(body);
 
-  final url;
+  final String url;
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -210,7 +200,6 @@ Future<int> followableOn(
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
   return response.statusCode;
 }
 
@@ -219,7 +208,7 @@ Future<int> notificationOn(
   Map<String, dynamic> body = {'isOn': isEnabled};
   String bodyEncoded = jsonEncode(body);
 
-  final url;
+  final String url;
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -233,7 +222,6 @@ Future<int> notificationOn(
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
   return response.statusCode;
 }
 
@@ -241,7 +229,7 @@ Future<int> unblockUser(
     {required http.Client client, required String userToUnBlock}) async {
   Map<String, dynamic> body = {'blockUsername': userToUnBlock};
   String bodyEncoded = jsonEncode(body);
-  final url;
+  final String url;
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -263,6 +251,19 @@ final settingsFetchProvider =
 class SettingsFetch extends StateNotifier<bool> {
   final Ref ref;
   SettingsFetch(this.ref) : super(false);
+  void checkPasswordConfirmResponse(
+      {required BuildContext context,
+      required Future<int> statusCodeFuture}) async {
+    int statusCode = await statusCodeFuture;
+    if (statusCode == 200) {
+      UserModel? currentUser = ref.read(userProvider)!;
+      UserModel updatedUser = currentUser.copyWith(isGoogle: true);
+      ref.read(userProvider.notifier).state = updatedUser;
+      Navigator.pop(context);
+    } else {
+      showAlert("Invalid Credintals", context);
+    }
+  }
 
   /// API Call to fetch the User data
 
@@ -271,7 +272,7 @@ class SettingsFetch extends StateNotifier<bool> {
     //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
     //     'users.json');
     //final url = Uri.http("localhost:3001/api/user-info?user_id=1");
-    final url;
+    final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
@@ -281,14 +282,11 @@ class SettingsFetch extends StateNotifier<bool> {
       http.Response response =
           await http.get(Uri.parse("$url/api/user-info?user_id=1"));
 
-      print(response.body);
       return UserMock.fromJson(jsonDecode(response.body));
     } catch (e) {
-      print(e.toString());
       return UserMock.fromJson(jsonDecode('sd'));
     }
   }
-  
 
   Future<List<UserMock>> searchUsers(http.Client client, String query) async {
     http.Response response = await client.get(
@@ -305,14 +303,12 @@ class SettingsFetch extends StateNotifier<bool> {
           username: username,
           isBlocked: blocked,
           gender: ''));
-      print(users);
-      print(data);
     }
     return users;
   }
 
   Future<UserMock> getBlockedUsers(http.Client client) async {
-    final url;
+    final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
@@ -323,8 +319,9 @@ class SettingsFetch extends StateNotifier<bool> {
     );
     return UserMock.fromJson(jsonDecode(response.body));
   }
+
   Future<UserSettings> getSettings(http.Client client) async {
-    final url;
+    final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
@@ -335,8 +332,9 @@ class SettingsFetch extends StateNotifier<bool> {
     );
     return UserSettings.fromJson(jsonDecode(response.body));
   }
+
   Future<bool> getNotificationSetting(http.Client client) async {
-    final url;
+    final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
@@ -347,14 +345,12 @@ class SettingsFetch extends StateNotifier<bool> {
     );
     Map<String, dynamic> userData = jsonDecode(response.body);
     final body = jsonDecode(response.body);
-    print(body);
     final bool isNotificationEnabled = userData['notification'];
-    print(isNotificationEnabled);
     return isNotificationEnabled;
   }
 
   Future<bool> getFollowableSetting(http.Client client) async {
-    final url;
+    final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
@@ -365,29 +361,27 @@ class SettingsFetch extends StateNotifier<bool> {
     );
     Map<String, dynamic> userData = jsonDecode(response.body);
     final body = jsonDecode(response.body);
-    print(body);
     final bool isFollowableEnabled = userData['isFollowable'];
-    print(isFollowableEnabled);
     return isFollowableEnabled;
   }
 }
-Future<int> changeSetting({required http.Client client, required String change}) async {
-  Map<String, dynamic> body = {
-    'globalContentView': change
-  };
+
+Future<int> changeSetting(
+    {required http.Client client, required String change}) async {
+  Map<String, dynamic> body = {'globalContentView': change};
   String bodyEncoded = jsonEncode(body);
-    final url;
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
-     http.Response response = await client.patch(
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  http.Response response = await client.patch(
     Uri.parse("$url/api/settings"),
     headers: {
       'Content-Type': 'application/json',
     },
     body: bodyEncoded,
   );
-    return response.statusCode;
-  }
+  return response.statusCode;
+}

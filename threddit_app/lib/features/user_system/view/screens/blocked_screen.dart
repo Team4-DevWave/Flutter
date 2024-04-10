@@ -54,6 +54,7 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
             padding: const EdgeInsets.all(10.0),
             child: Column(children: [
               TextField(
+                style: AppTextStyles.primaryTextStyle,
                 onChanged: (query) {
                   search(query);
                 },
