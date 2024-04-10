@@ -69,6 +69,7 @@ dependencies:
   external_app_launcher: ^4.0.0
   window_to_front: ^0.0.3
   oauth2: ^2.0.2
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:

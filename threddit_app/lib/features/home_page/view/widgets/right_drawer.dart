@@ -90,7 +90,7 @@ class RightDrawer extends ConsumerWidget{
                 ),
                 title: "Settings",
                 onTap: () {
-                  Navigator.pushNamed(context, RouteClass.settingsScreen);
+                  Navigator.pushNamed(context, RouteClass.communityModTools);
                 }),
           ],
         ),

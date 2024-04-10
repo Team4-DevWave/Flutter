@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
@@ -72,6 +74,8 @@ class RouteClass {
   static const String communityModTools = '/community_mod_tools';
   static const String communityInfo = '/community_info';
   static const String textSize = '/text-size';
+  static const String bannedUsersScreen = '/banned-users';
+  static const String banScreen = '/ban';
   /// Generates the appropriate route based on the provided [settings].
   ///
   /// The [settings] parameter contains the name of the route and optional arguments.
@@ -143,6 +147,10 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
         case textSize:
         return MaterialPageRoute(builder: (_) => TextSizeScreen());
+        case bannedUsersScreen:
+        return MaterialPageRoute(builder: (_) => const BannedUsersScreen());
+        case banScreen:
+        return MaterialPageRoute(builder: (_) => const BanScreen(), fullscreenDialog: true);
       case communityInfo:
         final args = settings.arguments as Map<String, dynamic>;
         final community =
