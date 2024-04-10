@@ -25,17 +25,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
-    return Scaffold(
-      body: communityAsyncValue.when(
-        data: (community) => buildCommunityScreen(community),
-        loading: () => Center(
-          child: Lottie.asset(
-            'assets/animation/loading.json',
-            repeat: true,
+    return ScreenUtilInit(
+      child: Scaffold(
+        body: communityAsyncValue.when(
+          data: (community) => buildCommunityScreen(community),
+          loading: () => Center(
+            child: Lottie.asset(
+              'assets/animation/loading.json',
+              repeat: true,
+            ),
           ),
+          error: (error, stack) => Text('Error: $error'),
         ),
-        error: (error, stack) => Text('Error: $error'),
       ),
     );
   }
@@ -87,7 +90,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
           SliverAppBar(
-            expandedHeight: 60,
+            expandedHeight: 60.h,
             floating: true,
             snap: true,
             flexibleSpace: Stack(
@@ -99,9 +102,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 53,
-                  left: 5,
-                  right: 5,
+                  top: 53.h,
+                  left: 5.w,
+                  right: 5.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -255,8 +258,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           SizedBox(
             child: Container(
               color: const Color.fromARGB(130, 12, 12, 12),
-              height: 40,
-              width: double.infinity,
+              height: 40.h,
+              width: double.infinity.w,
               child: Row(
                 children: [
                   const SizedBox(width: 16), // Add some spacing
@@ -299,7 +302,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               ),
             ),
           ),
-          SizedBox(height: 500.h, child: FeedWidget(feedID: _selectedItem))
+          Flexible( child: FeedWidget(feedID: _selectedItem))
         ],
       ),
     );

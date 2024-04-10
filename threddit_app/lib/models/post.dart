@@ -42,27 +42,28 @@ class Post {
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      title: json['title'],
-      postBody: json['postBody'],
-      link: json['link'],
-      NSFW: json['NSFW'],
-      spoiler: json['spoiler'],
-      imageUrl: json['imageUrl'],
-      community: json['community'],
-      videoUrl: json['videoUrl'],
-      upvotes: List<String>.from(json['upvotes']),
-      downvotes: List<String>.from(json['downvotes']),
-      commentsID: List<String>.from(json['commentsID']),
-      mentioned: List<String>.from(json['mentioned']),
-      userID: json['uid'],
-      postedTime: DateTime.parse(json['createdAt']),
-      id: json['_id'],
-      numViews: json['numViews'],
-      locked: json['locked'],
-      approved: json['approved'],
-    );
-  }
+  return Post(
+    title: json['title'] ?? '',
+    postBody: json['postBody'],
+    link: json['link'],
+    NSFW: json['NSFW'] ?? false,
+    spoiler: json['spoiler'] ?? false,
+    imageUrl: json['imageUrl'],
+    community: json['community'],
+    videoUrl: json['videoUrl'],
+    upvotes: List<String>.from(json['upvotes'] ?? []),
+    downvotes: List<String>.from(json['downvotes'] ?? []),
+    commentsID: List<String>.from(json['commentsID'] ?? []),
+    mentioned: List<String>.from(json['mentioned'] ?? []),
+    userID: json['uid'] ?? '',
+    postedTime: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+    id: json['_id'] ?? '',
+    numViews: json['numViews'] ?? 0,
+    locked: json['locked'] ?? false,
+    approved: json['approved'] ?? false,
+  );
+}
+
 
   Map<String, dynamic> toJson() {
     return {
