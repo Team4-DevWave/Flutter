@@ -73,10 +73,10 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
                   print(username);
                   return ListTile(
                     leading: const CircleAvatar(
-                    radius: 16,
-                    backgroundImage:
-                        AssetImage('assets/images/Default_Avatar.png'),
-                  ),
+                      radius: 16,
+                      backgroundImage:
+                          AssetImage('assets/images/Default_Avatar.png'),
+                    ),
                     title: Text("u/$username",
                         style: AppTextStyles.primaryTextStyle),
                     trailing: IconButton(

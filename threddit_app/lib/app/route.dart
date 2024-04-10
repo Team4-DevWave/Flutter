@@ -81,8 +81,6 @@ class RouteClass {
   static const String communityModTools = '/communitymodtools';
   static const String communityInfo = '/communityinfo';
   static const String settingsScreen = "/settings";
-  static const String communityModTools = '/community_mod_tools';
-  static const String communityInfo = '/community_info';
   static const String textSize = '/text-size';
   static const String bannedUsersScreen = '/banned-users';
   static const String banScreen = '/ban';
@@ -191,7 +189,7 @@ class RouteClass {
       case communityInfo:
         final args = settings.arguments as Map<String, dynamic>;
         final community =
-            args['community'] as Community; // Extract the community object
+            args['community'] as FetchCommunity; // Extract the community object
         final uid = args['uid'] as String;
         return MaterialPageRoute(
             builder: (_) => CommunityInfo(community: community, uid: uid));
