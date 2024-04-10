@@ -1,4 +1,4 @@
-import 'package:threddit_clone/models/post101.dart';
+import 'package:threddit_clone/models/post.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;

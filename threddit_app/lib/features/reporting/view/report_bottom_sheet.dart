@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/features/posting/data/data.dart';
+import 'package:threddit_clone/models/data.dart';
 //import 'package:threddit_clone/features/reporting/view/breaks_community_rules.dart';
 import 'package:threddit_clone/features/reporting/view/copyright_violation.dart';
 import 'package:threddit_clone/features/reporting/view/harassment.dart';

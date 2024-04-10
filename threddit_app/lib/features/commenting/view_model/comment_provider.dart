@@ -5,37 +5,21 @@ import 'package:threddit_clone/models/comment.dart';
 
 final commentRepositoryProvider = Provider((ref) => CommentRepository());
 
-// final commentsProvider = FutureProvider.family<List<Comment>, String>((ref, postId) async {
-//   final repository = ref.watch(commentRepositoryProvider);
-//   return repository.fetchComments(postId);
-// });
-
-final commentsProvider = StreamProvider.family<List<Comment>, String>((ref, postId) {
-  final repository = ref.watch(commentRepositoryProvider);
-  return repository.getCommentsStream(postId);
+typedef Parameters= ({String postID, String uid,List<String> commentIds});
+final commentsProvider = StreamProvider.family<List<Comment>, Parameters>((ref, arguments) {
+final repository = ref.watch(commentRepositoryProvider);
+return repository.getCommentsStream(arguments.commentIds, arguments.postID,arguments.uid );
 });
-
+typedef parameters=({String postId,String content,String uid});
 final addCommentProvider =
-    FutureProvider.autoDispose.family<void, List<String>>((ref,data,) async {
+    FutureProvider.autoDispose.family<void, parameters>((ref,arguments,) async {
   final repository = ref.watch(commentRepositoryProvider);
-  await repository.addComment(
-      data[0],
-      data[1],
-      data[2]); //the give list should include 3 values: the comment text, the post ID, the userID
+  repository.addComment(arguments.postId,arguments.content,arguments.uid); 
 });
 
-final commentUpvoteProvider =
-    Provider.autoDispose.family<void Function(String), Comment>((ref, comment) {
+typedef votingParameters=({String commentID,int voteType,String uid});
+final commentVoteProvider =
+    FutureProvider.autoDispose.family<void, votingParameters>((ref, arguments) async {
   final repository = ref.watch(commentRepositoryProvider);
-  return (String userID) {
-    repository.upVote(comment, userID);
-  };
-});
-
-final commentDownvoteProvider =
-    Provider.autoDispose.family<void Function(String), Comment>((ref, comment) {
-  final repository = ref.watch(commentRepositoryProvider);
-  return (String userID) {
-    repository.downVote(comment, userID);
-  };
+  repository.voteComment(arguments.commentID,arguments.voteType,arguments.uid);
 });

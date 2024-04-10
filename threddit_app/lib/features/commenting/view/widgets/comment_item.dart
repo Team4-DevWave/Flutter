@@ -18,15 +18,27 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   @override
   Widget build(BuildContext context) {
     void upVotePost(WidgetRef ref) async {
-      final upvoteFunction = ref.read(commentUpvoteProvider(widget.comment));
-      upvoteFunction(widget.uid);
+      ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1, uid: widget.uid)));
+      if(widget.comment.downvotes.contains(widget.uid)){
+        widget.comment.downvotes.remove(widget.uid);
+      }
+      if(widget.comment.upvotes.contains(widget.uid))
+        widget.comment.upvotes.remove(widget.uid);
+      else
+        widget.comment.upvotes.add(widget.uid);
+      
       setState(() {});
     }
 
     void downVotePost(WidgetRef ref) async {
-      final downvoteFunction =
-          ref.read(commentDownvoteProvider(widget.comment));
-      downvoteFunction(widget.uid);
+      ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1, uid: widget.uid)));
+      if(widget.comment.upvotes.contains(widget.uid)){
+        widget.comment.upvotes.remove(widget.uid);
+      }
+      if(widget.comment.downvotes.contains(widget.uid))
+        widget.comment.downvotes.remove(widget.uid);
+      else
+        widget.comment.downvotes.add(widget.uid);
       setState(() {});
     }
 
@@ -55,7 +67,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                     ),
                   ),
                   Text(
-                    widget.comment.username,
+                    widget.comment.user,
                     style: AppTextStyles.primaryTextStyle.copyWith(
                       color: const Color.fromARGB(114, 255, 255, 255),
                     ),
@@ -80,7 +92,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                 height: 10,
               ),
               Text(
-                widget.comment.text,
+                widget.comment.content,
                 style: AppTextStyles.primaryTextStyle
                     .copyWith(color: Colors.white, fontSize: 15),
               ),
@@ -96,14 +108,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[                                  
-                                  ListTile(
-                                    title: const Text(
-                                      'Share',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: const Icon(Icons.ios_share_sharp,color: Colors.white,),
-                                    onTap: () {},
-                                  ),
+                                  
                                   ListTile(
                                     title: const Text(
                                       'Save',
