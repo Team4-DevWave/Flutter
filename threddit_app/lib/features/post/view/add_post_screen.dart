@@ -1,4 +1,8 @@
 
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,40 +36,50 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
-  List<XFile>? _imagesList;
-  XFile? _video;
+  // ByteData? image;
+  // ByteData? video;
+  String?image;
+  String?video;
+  File?videoFile;
+  File?imageFile;
 
-  Future<void> _pickMulti() async {
-    final pickedList = await picker.pickMultiImage();
-    if (pickedList.isEmpty) return;
+    Future<void> _pickImage() async {
+    final XFile? pickedImage =
+        await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) return;
+    imageFile = File(pickedImage.path);
+    Uint8List imageBytes = await imageFile!.readAsBytes();
     setState(() {
-      _imagesList = pickedList;
+      image = base64Encode(imageBytes);
       isImage = true;
-      ref.read(postDataProvider.notifier).updateImages(_imagesList!);
+      ref.read(postDataProvider.notifier).updateImages(image!);
     });
   }
 
-  Future<void> _pickVideo() async{
+  Future<void> _pickVideo() async {
     final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
     // If the user does not select a video then return null.
     if (pickedVideo == null) return;
+    videoFile = File(pickedVideo.path);
+    Uint8List videoBytes = await videoFile!.readAsBytes();
     setState(() {
-      _video = pickedVideo;
-      isVideo  = true;
-      ref.read(postDataProvider.notifier).updateVideo(_video!);
+      video = base64Encode(videoBytes);
+      isVideo = true;
+      ref.read(postDataProvider.notifier).updateVideo(video!);
     });
   }
 
+
   Future<void> _removeImage()async{
     setState(() {
-      _imagesList = null;
+      image = null;
       isImage=false;
     });
   }
 
   Future<void> _removeVideo()async{
     setState(() {
-      _video = null;
+      video = null;
       isVideo= false;
     });
 
@@ -110,17 +124,17 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     PostData? post = ref.watch(postDataProvider);
 
     Widget buildImageContent() {
-      if (_imagesList == null || isLink || isVideo) {
+      if (image == null || isLink || isVideo) {
         return const SizedBox();
       }
-      return AddImageWidget(onPressed: _removeImage, imagesList: _imagesList!);
+      return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
 
     Widget buildVideoContent(){
-      if(_video == null || isLink || isImage){
+      if(video == null || isLink || isImage){
         return const SizedBox();
       }
-      return AddVideoWidget(onPressed: _removeVideo, videoPath: _video!.path);
+      return AddVideoWidget(onPressed: _removeVideo, videoPath: videoFile!.path);
     }
 
     Widget buildLink() {
@@ -201,7 +215,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                           labelStyle:
                               TextStyle(color: AppColors.whiteColor, fontSize: 16)),
                       onChanged: (value) => {
-                        if(post?.postBody != value){
+                        if(post?.text_body != value){
                         ref.read(postDataProvider.notifier).updateBodyText(value)
                       },
                       setState(() {
@@ -220,7 +234,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         child: Row(
           children: [
             IconButton(
-              onPressed: (!isLink && !isVideo) ? _pickMulti : (){},
+              onPressed: (!isLink && !isVideo) ? _pickImage : (){},
               icon: const Icon(Icons.image),
               color:  isLink || isImage || isVideo?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
             ),

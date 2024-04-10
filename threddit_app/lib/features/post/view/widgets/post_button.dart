@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
+import 'package:threddit_clone/features/post/viewmodel/send_post.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
-class PostButton extends StatelessWidget {
-  const PostButton({super.key, required this.titleController});
+
+class PostButton extends ConsumerWidget {
+  const PostButton(
+      {super.key, required this.titleController, required this.type});
   final TextEditingController titleController;
+  final String type;
   Color textColor() {
     return titleController.text.isEmpty ? AppColors.whiteColor : Colors.white;
   }
@@ -15,14 +24,20 @@ class PostButton extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    void onPost() {
-      ///check if there is a title 
+  Widget build(BuildContext context, WidgetRef ref) {
+    //this functions collects the data to send it to the backend
+
+    void onPost() async {
+      ///check if there is a title
       if (titleController.text.isNotEmpty) {
         ///call function to send data to the backend
-        
-        ///route to the posted post page
-        ///Navigator.pushNamed(context, RouteClass.?);
+        final response = await ref.watch(createPost.notifier).submitPost(type);
+        response.fold(
+            (l) => showSnackBar(navigatorKey.currentContext!, l.message), (r) {
+          ///should route to the posted post page but it routes to the mainLayout for now
+          ref.read(currentScreenProvider.notifier).updateCurrentScreen(0);
+          Navigator.pushReplacementNamed(context, RouteClass.mainLayoutScreen);
+        });
       } else {
         null;
       }
@@ -37,7 +52,7 @@ class PostButton extends StatelessWidget {
           backgroundColor: MaterialStatePropertyAll(
             backgroundColor(),
           ),
-          iconSize:const MaterialStatePropertyAll(40),
+          iconSize: const MaterialStatePropertyAll(40),
         ),
         child: Text(
           "Post",

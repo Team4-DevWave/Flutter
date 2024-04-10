@@ -4,5 +4,4 @@ import 'package:threddit_clone/app/pref_constants.dart';
 
 SharedPreferences?pref;
 final favouriteListProvider = StateProvider<List<String>>(
-  (ref) => ref.watch(sharedPreferencesProvider)
-      .getStringList(PrefConstants.favourites) ?? [],); 
+  (ref) => pref?.getStringList(PrefConstants.favourites) ?? []); 

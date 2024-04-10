@@ -22,7 +22,7 @@ class NextButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isValid = (titleController.text.trim().isNotEmpty &&
-        (ref.watch(validLink) || ref.watch(postDataProvider)!.link == ""));
+        (ref.watch(validLink) || ref.watch(postDataProvider)!.url == ""));
     return ElevatedButton(
       onPressed: isValid
           ? () {
