@@ -164,13 +164,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: const Text("Default comment sort"),
               subtitle: Text(commentSorting),
               titleTextStyle: AppTextStyles.primaryTextStyle,
-              trailing: IconButton(
-                  icon: const Icon(Icons.arrow_downward),
-                  onPressed: () {
+              trailing: const Icon(Icons.arrow_downward),
+                  onTap: () {
                     showModalBottomSheet(
                       backgroundColor: AppColors.backgroundColor,
                       context: context,
-                      builder: (context) => Column(
+                      builder: (context) => Wrap(
                         children: [
                           RadioListTile<String>(
                             title: Text(
@@ -247,7 +246,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ],
                       ),
                     );
-                  })),
+                  }),
           ListTile(
             leading: const Icon(Icons.delete),
             title: const Text("Clear local history"),
