@@ -1,34 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/features/listing/model/post_model.dart';
 
-Future<PostApi> fetchdata(String id) async {
-  String urlLocal =
-      'https://d1884b69-05d1-43d1-acf8-86c6ac9d7b85.mock.pstmn.io/getbestpost';
-  if (id == "Best") {
-    urlLocal =
-        'https://d1884b69-05d1-43d1-acf8-86c6ac9d7b85.mock.pstmn.io/getbestpost';
-  } else if (id == "Hot") {
-    urlLocal =
-        'https://e59c8b6e-2d09-4b54-8bd6-6caa975cb21d.mock.pstmn.io/hotpost';
-  }
-
-  final response = await http.get(Uri.parse(urlLocal));
+Future<PostApiResponse> fetchPosts(String feedID, int currentPage) async {
+  final response = await http.get(Uri.parse(
+      'https://e10d733d-62c5-4e9e-b5a3-767c31f392c9.mock.pstmn.io/getbestpost'));
 
   if (response.statusCode == 200) {
-    return PostApi.fromJson(jsonDecode(response.body));
-  }
-  throw Exception('Failed to load album');
-}
-
-class PostApi {
-  final int success;
-  final List<dynamic> result;
-
-  const PostApi({required this.success, required this.result});
-
-  factory PostApi.fromJson(Map<String, dynamic> json) {
-    return PostApi(
-        success: json['status'], result: List<dynamic>.from(json['data']));
+    return PostApiResponse.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load posts');
   }
 }
