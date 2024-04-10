@@ -1,4 +1,3 @@
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/app/route.dart';
@@ -14,6 +13,9 @@ class CommunityModTools extends StatefulWidget {
 void navigateTo(BuildContext context, String page) {
   if (page == "banned") {
     Navigator.pushNamed(context, RouteClass.bannedUsersScreen);
+  }
+  else if (page == "approved") {
+    Navigator.pushNamed(context, RouteClass.approvedUsersScreen);
   }
 }
 
@@ -32,7 +34,13 @@ class _CommunityModToolsState extends State<CommunityModTools> {
                 title: const Text("Banned users"),
                 titleTextStyle: AppTextStyles.primaryTextStyle,
                 trailing: const Icon(Icons.navigate_next),
-                onTap: () => navigateTo(context, "banned"))
+                onTap: () => navigateTo(context, "banned")),
+            ListTile(
+                leading: const FaIcon(FontAwesomeIcons.check),
+                title: const Text("Approved users"),
+                titleTextStyle: AppTextStyles.primaryTextStyle,
+                trailing: const Icon(Icons.navigate_next),
+                onTap: () => navigateTo(context, "approved"))
           ],
         ));
   }

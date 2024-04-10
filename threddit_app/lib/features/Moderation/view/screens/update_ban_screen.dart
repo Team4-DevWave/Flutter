@@ -10,9 +10,12 @@ import 'package:http/http.dart' as http;
 
 enum BanType { permenant, custom }
 
-class BanScreen extends ConsumerStatefulWidget {
-  const BanScreen({super.key});
-  ConsumerState<ConsumerStatefulWidget> createState() => _BanScreenState();
+class UpdateBanScreen extends ConsumerStatefulWidget {
+  final String user;
+  final String reason;
+  const UpdateBanScreen({super.key, required this.user, required this.reason});
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _UpdateBanScreenState();
 }
 
 /// Validator function
@@ -21,79 +24,54 @@ class BanScreen extends ConsumerStatefulWidget {
 /// 2 for ban length == 0(custom ban and the length = 0)
 /// 3 for name is empty
 /// 0 if all checks pass
-int validateBan(String name, String rule, String length) {
-  if (rule == "Select a rule") {
-    return 1;
-  } else if (length == "0") {
-    return 2;
-  } else if (name == "") {
-    return 3;
-  } else {
-    return 0;
-  }
-}
 
-class _BanScreenState extends ConsumerState<BanScreen> {
-  final InputForm usernameForm = InputForm("username");
+class _UpdateBanScreenState extends ConsumerState<UpdateBanScreen> {
   final InputForm banLengthForm = InputForm("Ban length (days)");
   final InputForm messageForm = InputForm("Message to user");
   final InputForm modForm = InputForm("Mod note");
   final client = http.Client();
+  
   BanType banView = BanType.permenant;
-  String ruleBroken = "Select a rule";
+  String ruleBroken = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    ruleBroken = widget.reason;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    final String currentUser = widget.user;
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
               onPressed: () async {
-                final String username = usernameForm.input;
                 final String banLength = banLengthForm.input;
                 final String message = messageForm.input;
                 final String modNote = modForm.input;
-                int validationValue = validateBan(username, ruleBroken, banLength);
-                print(validationValue);
-                switch (validationValue) {
-                  case 0:
-                    print(username);
-                    int statusCode = await ref
-                        .watch(moderationApisProvider.notifier)
-                        .banUser(
-                            client: client,
-                            username: username,
-                            reason: ruleBroken,
-                            length: banLength,
-                            message: message,
-                            modnote: modNote);
-                    print(statusCode);
-                    setState(() {
-                      ref
-                          .watch(moderationApisProvider.notifier)
-                          .getBannedUsers(client: client);
-                    });
-                    Navigator.pop(context);
-                  case 1:
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please choose a reason")),
-                    );
-                  case 2:
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text(
-                              "Please make sure length is not equal zero")),
-                    );
-
-                  case 3:
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please type a user name")),
-                    );
-                }
+                print(currentUser);
+                int statusCode = await ref
+                    .watch(moderationApisProvider.notifier)
+                    .updateBannedUser(
+                        client: client,
+                        username: currentUser,
+                        reason: ruleBroken,
+                        length: banLength,
+                        message: message,
+                        modnote: modNote);
+                print(statusCode);
+                setState(() {
+                  ref
+                      .watch(moderationApisProvider.notifier)
+                      .getBannedUsers(client: client);
+                });
+                Navigator.pop(context);
               },
-              icon: Icon(Icons.add))
+              icon: const Icon(Icons.update))
         ],
-        title: const Text(
-          "Add a banned user",
+        title: Text(
+          "Ban $currentUser",
         ),
       ),
       body: SingleChildScrollView(
@@ -101,11 +79,6 @@ class _BanScreenState extends ConsumerState<BanScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              margin: EdgeInsets.all(10.h),
-              child: Text("Username", style: AppTextStyles.boldTextStyle),
-            ),
-            usernameForm,
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10.h),
               child: Text("Rule broken", style: AppTextStyles.boldTextStyle),

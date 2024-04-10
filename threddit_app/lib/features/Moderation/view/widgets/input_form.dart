@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+// ignore: must_be_immutable
 class InputForm extends StatefulWidget {
   final String formname;
   String input = "";

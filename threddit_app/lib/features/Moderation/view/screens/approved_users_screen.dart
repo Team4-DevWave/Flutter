@@ -2,74 +2,74 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/Moderation/model/banned_user.dart';
-import 'package:threddit_clone/features/Moderation/view/widgets/banned_users_search.dart';
+import 'package:threddit_clone/features/Moderation/model/approved_user.dart';
+import 'package:threddit_clone/features/Moderation/view/widgets/approved_user_search.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
 
-class BannedUsersScreen extends ConsumerStatefulWidget {
-  const BannedUsersScreen({super.key});
+class ApprovedUsersScreen extends ConsumerStatefulWidget {
+  const ApprovedUsersScreen({super.key});
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _BannedUsersScreenState();
+      _ApprovedUsersScreenState();
 }
 
-class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
+class _ApprovedUsersScreenState extends ConsumerState<ApprovedUsersScreen> {
   final client = http.Client();
-  Future<List<BannedUser>> fetchBannedUsers() async {
+  Future<List<ApprovedUser>> fetchApprovedUsers() async {
     setState(() {
-      ref.watch(moderationApisProvider.notifier).getBannedUsers(client: client);
+      ref
+          .watch(moderationApisProvider.notifier)
+          .getApprovedUsers(client: client);
     });
     return ref
         .watch(moderationApisProvider.notifier)
-        .getBannedUsers(client: client);
+        .getApprovedUsers(client: client);
   }
 
-  String bannedOption = "";
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Banned users"),
+        title: const Text("Approved users"),
         actions: [
           IconButton(
               onPressed: () async {
                 showSearch(
                     context: context,
-                    delegate: BannedUsersSearch(
+                    delegate: ApprovedUsersSearch(
                         searchTerms: await ref
                             .watch(moderationApisProvider.notifier)
-                            .getBannedUsers(client: client)));
+                            .getApprovedUsers(client: client)));
               },
-              icon: Icon(Icons.search)),
+              icon: const Icon(Icons.search)),
           IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, RouteClass.banScreen)
+                Navigator.pushNamed(context, RouteClass.approveScreen)
                     .then((value) => setState(() {
                           ref
                               .watch(moderationApisProvider.notifier)
-                              .getBannedUsers(client: client);
+                              .getApprovedUsers(client: client);
                         }));
               },
               icon: Icon(Icons.add)),
         ],
       ),
       body: FutureBuilder(
-        future: fetchBannedUsers(),
+        future: fetchApprovedUsers(),
         builder: (context, snapshot) {
           {
-            if (snapshot.connectionState == ConnectionState.waiting)
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            else if (snapshot.hasError) {
+            } else if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             } else {
-              final bannedUsers = snapshot.data!;
+              final approvedUsers = snapshot.data!;
               return ListView.builder(
-                itemCount: bannedUsers.length,
+                itemCount: approvedUsers.length,
                 itemBuilder: (context, index) {
-                  final username = bannedUsers[index].getUsername;
+                  final username = approvedUsers[index].getUsername;
                   print(username);
                   return ListTile(
                     leading: const CircleAvatar(
@@ -88,24 +88,9 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
                             children: [
                               ListTile(
                                 leading: const Icon(Icons.edit),
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, RouteClass.updateBanScreen,
-                                      arguments: [
-                                        username,
-                                        bannedUsers[index].getReason
-                                      ]).then((value) {
-                                    Navigator.pop(context);
-                                    setState(() {
-                                      ref
-                                          .watch(
-                                              moderationApisProvider.notifier)
-                                          .getBannedUsers(client: client);
-                                    });
-                                  });
-                                },
+                                onTap: () {},
                                 title: Text(
-                                  "See details",
+                                  "Send Message",
                                   style: AppTextStyles.primaryTextStyle,
                                 ),
                               ),
@@ -120,18 +105,18 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
                                 ),
                               ),
                               ListTile(
-                                leading: const FaIcon(FontAwesomeIcons.hammer),
+                                leading: const FaIcon(FontAwesomeIcons.xmark),
                                 onTap: () async {
                                   setState(() {
                                     ref
                                         .watch(moderationApisProvider.notifier)
-                                        .unbanUser(
+                                        .removeUser(
                                             client: client, username: username);
                                     Navigator.pop(context);
                                   });
                                 },
                                 title: Text(
-                                  "Unban",
+                                  "Remove",
                                   style: AppTextStyles.primaryTextStyle,
                                 ),
                               ),
@@ -139,7 +124,7 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
                           ),
                         );
                       },
-                      icon: Icon(Icons.more_vert),
+                      icon: const Icon(Icons.more_vert),
                     ),
                   );
                 },
