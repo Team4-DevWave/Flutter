@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 Future<NotificationAPI> fetchdata(String id) async {
   // user id
   String urlLocal =
-      'https://d1884b69-05d1-43d1-acf8-86c6ac9d7b85.mock.pstmn.io/getbestpost';
+      'https://e10d733d-62c5-4e9e-b5a3-767c31f392c9.mock.pstmn.io/getbestpost';
 
   final response = await http.get(Uri.parse(urlLocal));
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
+import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
 import 'package:threddit_clone/models/fetch_community.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
@@ -28,11 +30,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       body: communityAsyncValue.when(
         data: (community) => buildCommunityScreen(community),
         loading: () => Center(
-                child: Lottie.asset(
-                  'assets/animation/loading.json',
-                  repeat: true,
-                ),
-              ),
+          child: Lottie.asset(
+            'assets/animation/loading.json',
+            repeat: true,
+          ),
+        ),
         error: (error, stack) => Text('Error: $error'),
       ),
     );
@@ -40,7 +42,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   Widget buildCommunityScreen(FetchCommunity community) {
     bool isCurrentUserModerator = community.moderators.contains(widget.uid);
+
     bool isCurrentUser = community.listOfMembers.contains(widget.uid);
+
     bool getUserState(FetchCommunity community) {
       if (community.moderators.contains(widget.uid)) {
         Navigator.pushNamed(context, RouteClass.communityModTools);
@@ -155,7 +159,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(community.communitySettings.subredditImage),
+                          backgroundImage: NetworkImage(
+                              community.communitySettings.subredditImage),
                           radius: 30,
                         ),
                       ),
@@ -271,8 +276,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       'Hot Posts',
                       'New Posts',
                       'Top Posts',
-                      'Controversial Posts',
-                      'Rising Posts'
+                      // 'Controversial Posts',
+                      // 'Rising Posts'
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -294,6 +299,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               ),
             ),
           ),
+          SizedBox(height: 500.h, child: FeedWidget(feedID: _selectedItem))
         ],
       ),
     );
@@ -307,10 +313,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         return Icons.fiber_new;
       case 'Top Posts':
         return Icons.star;
-      case 'Controversial Posts':
-        return Icons.warning;
-      case 'Rising Posts':
-        return Icons.trending_up;
+      // case 'Controversial Posts':
+      //   return Icons.warning;
+      // case 'Rising Posts':
+      //   return Icons.trending_up;
       default:
         return Icons.whatshot; // Default to hot icon
     }

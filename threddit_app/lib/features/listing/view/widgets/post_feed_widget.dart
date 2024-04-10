@@ -21,7 +21,6 @@ class _FeedUnitState extends State<FeedUnit> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     numbberOfvotes = int.parse(widget.dataOfPost['votes'].toString());
   }
