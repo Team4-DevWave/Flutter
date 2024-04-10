@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/communities_list.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class PostToScreen extends ConsumerStatefulWidget {
+class PostToScreen extends StatefulWidget {
   const PostToScreen({super.key});
   @override
-  ConsumerState<PostToScreen> createState() => _PostToScreenState();
+  State<PostToScreen> createState() => _PostToScreenState();
 }
 
-class _PostToScreenState extends ConsumerState<PostToScreen> {
+class _PostToScreenState extends State<PostToScreen> {
   late TextEditingController _communityText;
   late Future<List<String>> searchResults;
 

@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 
 class UserFollowingAPI{
 
-  final String followingURL = "https://c320a7f6-e041-4f5e-871e-0081b6fb07c2.mock.pstmn.io/user_following";
+  final String followingURL = "https://c461e240-480f-4854-a607-619e661e3370.mock.pstmn.io/following";
 
   ///The function returns the names of the user's communities
   Future<List<String>> getUserFollowing() async{
