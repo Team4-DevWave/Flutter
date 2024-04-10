@@ -3,7 +3,7 @@ import 'package:http/http.dart';
 
 class UserCommunitiesAPI{
 
-  final String communitiesURL = "https://c320a7f6-e041-4f5e-871e-0081b6fb07c2.mock.pstmn.io/user_communities";
+  final String communitiesURL = "https://c461e240-480f-4854-a607-619e661e3370.mock.pstmn.io/communities";
 
   ///The function returns the names of the user's communities
   Future<List<String>> getUserCommunities() async{
@@ -13,7 +13,7 @@ class UserCommunitiesAPI{
     ///the name of the community only
     if(res.statusCode == 200)
     {
-      Map<String, dynamic> body = jsonDecode(res.body);
+    Map<String, dynamic> body = jsonDecode(res.body);
       List<String>  communitiesNames = List<String>.from(body['userCommunities']);
       return communitiesNames;
     } 

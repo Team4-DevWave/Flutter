@@ -4,14 +4,12 @@ import 'package:threddit_clone/theme/colors.dart';
 
 class SearchBarWidget extends ConsumerStatefulWidget {
   const SearchBarWidget(
-      // ignore: lines_longer_than_80_chars
       {super.key,
       required this.hintText,
       required this.onTextChange,
       this.textController});
 
   final String hintText;
-  //the text editing controller will probably be removed and replaced by providers
   final TextEditingController? textController;
   final void Function(String) onTextChange;
   @override

@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/models/data.dart';
 //import 'package:threddit_clone/features/reporting/view/breaks_community_rules.dart';
 import 'package:threddit_clone/features/reporting/view/copyright_violation.dart';
 import 'package:threddit_clone/features/reporting/view/harassment.dart';
@@ -12,6 +11,7 @@ import 'package:threddit_clone/features/reporting/view/sharing_personal_informat
 import 'package:threddit_clone/features/reporting/view/spam.dart';
 import 'package:threddit_clone/features/reporting/view/threat_bottom_sheet.dart';
 import 'package:threddit_clone/features/reporting/view/trademark_violation.dart';
+import 'package:threddit_clone/models/data.dart';
 import 'package:threddit_clone/models/report.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
