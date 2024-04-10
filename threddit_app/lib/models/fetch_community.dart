@@ -10,7 +10,7 @@ class FetchCommunity {
   late String numOnlineMembers;
   late FetchCommunitySettings communitySettings;
   late List<String> moderators;
-  late List<String> rules;
+  late List<String> communityRules;
   late List<Post> posts;
   
 
@@ -22,7 +22,7 @@ class FetchCommunity {
     required this.numOnlineMembers,
     required this.communitySettings,
     required this.moderators,
-    required this.rules,
+    required this.communityRules,
     required this.posts,
   });
 
@@ -35,7 +35,7 @@ class FetchCommunity {
       numOnlineMembers: json['numOnlineMembers'],
       communitySettings: FetchCommunitySettings.fromJson(json['communitySettings']),
       moderators: List<String>.from(json['moderators']),
-      rules: List<String>.from(json['rules']),
+      communityRules: List<String>.from(json['communityRules']),
       posts: (json['posts'] as List<dynamic>)
         .map((postJson) => Post.fromJson(postJson))
         .toList(),
@@ -50,7 +50,7 @@ class FetchCommunity {
       'numOnlineMembers': numOnlineMembers,
       'communitySettings': communitySettings.toJson(),
       'moderators': moderators,
-      'rules': rules,
+      'communityRules': communityRules,
       'posts': posts,
     };
   }
@@ -63,7 +63,7 @@ class FetchCommunity {
       'numOnlineMembers': numOnlineMembers,
       'communitySettings': communitySettings.toMap(),
       'moderators': moderators,
-      'rules': rules,
+      'communityRules': communityRules,
       'posts': posts,
     };
   }

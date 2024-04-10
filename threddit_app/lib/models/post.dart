@@ -4,31 +4,41 @@ class Post {
   final String title;
   final String? postBody;
   final String? link;
-  final bool isNSFW;
-  final bool isSpoiler;
+  final bool NSFW;
+  final bool spoiler;
   final String? imageUrl;
   final String? community;
   final String? videoUrl;
   final List<String> upvotes;
   final List<String> downvotes;
-  final String commentCount;
-  final String uid;
-  final DateTime createdAt;
+  final List<String> commentsID;
+  final List<String> mentioned;
+  final String userID;
+  final DateTime postedTime;
+  final String id;
+  final int numViews;
+  final bool locked;
+  final bool approved;
 
   Post({
     required this.title,
     this.postBody,
     this.link,
-    required this.isNSFW,
-    required this.isSpoiler,
+    required this.NSFW,
+    required this.spoiler,
     this.imageUrl,
     this.community,
     this.videoUrl,
     required this.upvotes,
     required this.downvotes,
-    required this.commentCount,
-    required this.uid,
-    required this.createdAt,
+    required this.commentsID,
+    required this.mentioned,
+    required this.userID,
+    required this.postedTime,
+    required this.id,
+    required this.numViews,
+    required this.locked,
+    required this.approved,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -36,16 +46,21 @@ class Post {
       title: json['title'],
       postBody: json['postBody'],
       link: json['link'],
-      isNSFW: json['isNSFW'],
-      isSpoiler: json['isSpoiler'],
+      NSFW: json['NSFW'],
+      spoiler: json['spoiler'],
       imageUrl: json['imageUrl'],
       community: json['community'],
       videoUrl: json['videoUrl'],
       upvotes: List<String>.from(json['upvotes']),
       downvotes: List<String>.from(json['downvotes']),
-      commentCount: json['commentCount'],
-      uid: json['uid'],
-      createdAt: DateTime.parse(json['createdAt']),
+      commentsID: List<String>.from(json['commentsID']),
+      mentioned: List<String>.from(json['mentioned']),
+      userID: json['uid'],
+      postedTime: DateTime.parse(json['createdAt']),
+      id: json['_id'],
+      numViews: json['numViews'],
+      locked: json['locked'],
+      approved: json['approved'],
     );
   }
 
@@ -54,16 +69,22 @@ class Post {
       'title': title,
       'postBody': postBody,
       'link': link,
-      'isNSFW': isNSFW,
-      'isSpoiler': isSpoiler,
+      'NSFW': NSFW,
+      'spoiler': spoiler,
       'imageUrl': imageUrl,
       'community': community,
       'videoUrl': videoUrl,
       'upvotes': upvotes,
       'downvotes': downvotes,
-      'commentCount': commentCount,
-      'uid': uid,
-      'createdAt': createdAt.toIso8601String(),
+      'commentsID': commentsID,
+      'mentioned': mentioned,
+      'uid': userID,
+      'createdAt': postedTime.toIso8601String(),
+      '_id': id,
+      'numViews': numViews,
+      'locked': locked,
+      'approved': approved,
+
     };
   }
 }

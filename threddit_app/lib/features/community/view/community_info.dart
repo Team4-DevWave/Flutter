@@ -63,7 +63,7 @@ class CommunityInfo extends ConsumerWidget {
                             ],
                           ),
                         const SizedBox(height: 15),
-                        if (community.rules.isNotEmpty)
+                        if (community.communityRules.isNotEmpty)
                           Column(
                             children: [
                               const Row(
@@ -78,7 +78,7 @@ class CommunityInfo extends ConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              for (var rule in community.rules)
+                              for (var rule in community.communityRules)
                                 Row(
                                   children: [
                                     Text(

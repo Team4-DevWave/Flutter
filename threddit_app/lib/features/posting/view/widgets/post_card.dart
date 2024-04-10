@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
-import 'package:threddit_clone/models/post101.dart';
+//import 'package:threddit_clone/models/post101.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:threddit_clone/models/post.dart';
 
 class PostCard extends ConsumerStatefulWidget {
   const PostCard(
@@ -22,15 +23,15 @@ class _PostCardState extends ConsumerState<PostCard> {
   @override
   Widget build(BuildContext context) {
     void upVotePost(WidgetRef ref) async {
-      final upvoteFunction = ref.read(postUpvoteProvider(widget.post));
-      upvoteFunction(widget.uid);
-      setState(() {});
+      // final upvoteFunction = ref.read(postUpvoteProvider(widget.post));
+      // upvoteFunction(widget.uid);
+      // setState(() {});
     }
 
     void downVotePost(WidgetRef ref) async {
-      final downvoteFunction = ref.read(postDownvoteProvider(widget.post));
-      downvoteFunction(widget.uid);
-      setState(() {});
+      // final downvoteFunction = ref.read(postDownvoteProvider(widget.post));
+      // downvoteFunction(widget.uid);
+      // setState(() {});
     }
 
     // final isTypeImage = widget.post.type == 'image';
@@ -38,7 +39,7 @@ class _PostCardState extends ConsumerState<PostCard> {
     // final isTypeLink = widget.post.type == 'link';
 
     final now = DateTime.now();
-    final difference = now.difference(widget.post.createdAt);
+    final difference = now.difference(widget.post.postedTime);
     final hoursSincePost = difference.inHours;
 
     return Container(
@@ -64,7 +65,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('r/${widget.post.communityName}',
+                    Text('r/${widget.post.community}',
                         style: AppTextStyles.primaryTextStyle.copyWith(
                             fontSize: 12,
                             color: const Color.fromARGB(98, 255, 255, 255),
@@ -72,7 +73,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                     Row(
                       children: [
                         Text(
-                          'u/${widget.post.username}',
+                          'u/${widget.post.userID}',
                           style: AppTextStyles.primaryTextStyle.copyWith(
                               fontSize: 12,
                               color: const Color.fromARGB(206, 20, 113, 190)),
@@ -108,9 +109,9 @@ class _PostCardState extends ConsumerState<PostCard> {
                     fontSize: 18),
               ),
             ),
-            if (widget.post.description != null)
+            if (widget.post.postBody != null)
               Text(
-                widget.post.description!,
+                widget.post.postBody!,
                 style: AppTextStyles.primaryTextStyle.copyWith(
                     color: const Color.fromARGB(196, 255, 255, 255),
                     fontSize: 15),
@@ -150,17 +151,17 @@ class _PostCardState extends ConsumerState<PostCard> {
                     onPressed: widget.onCommentPressed,
                     icon: const Icon(Icons.comment)),
                 Text(
-                    '${widget.post.commentCount == 0 ? "comment" : widget.post.commentCount}',
+                    '${widget.post.commentsID.isEmpty ? "comment" : widget.post.commentsID.length}',
                     style: AppTextStyles.primaryTextStyle
                         .copyWith(color: AppColors.whiteColor)),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (widget.uid == widget.post.uid)
+                      if (widget.uid == widget.post.userID)
                         IconButton(
                             onPressed: () {}, icon: const Icon(Icons.delete)),
-                      if (widget.uid != widget.post.uid)
+                      if (widget.uid != widget.post.userID)
                         IconButton(
                             onPressed: () {}, icon: const Icon(Icons.refresh))
                     ],

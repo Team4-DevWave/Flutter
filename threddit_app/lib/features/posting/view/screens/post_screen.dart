@@ -3,15 +3,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
-
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
-
-import 'package:threddit_clone/models/post101.dart';
+//import 'package:threddit_clone/models/post101.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
-
+import 'package:threddit_clone/models/post.dart';
 
 class PostScreen extends ConsumerStatefulWidget {
   final Post currentPost;
@@ -34,7 +32,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         isScrollControlled: true,
         context: context,
         builder: (ctx) => AddComment(
-              postID: widget.currentPost.id,
+              postID: widget.currentPost.id!,
               uid: 'user2',
             ));
   }
@@ -172,7 +170,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
           body: Consumer(
             builder: (context, watch, child) {
               var postComments =
-                  ref.watch(commentsProvider(widget.currentPost.id));
+                  ref.watch(commentsProvider(widget.currentPost.id!));
               return postComments.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stackTrace) =>
@@ -200,7 +198,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                         ),
                       ),
                       AddComment(
-                        postID: widget.currentPost.id,
+                        postID: widget.currentPost.id!,
                         uid: 'user2',
                       )
                     ],
