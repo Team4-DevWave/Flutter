@@ -45,7 +45,7 @@ class AuthManager {
 
     request.response.statusCode = 200;
     request.response.headers.set('content-type', 'text/plain');
-    request.response.writeln('Please close the tab');
+    request.response.writeln('Signed in succesfully! Please close the tab');
     await request.response.close();
     await redirectServer!.close();
     redirectServer = null;

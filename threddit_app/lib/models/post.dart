@@ -1,154 +1,91 @@
-import 'package:flutter/foundation.dart';
+
 
 class Post {
-  final String id;
   final String title;
+  final String? postBody;
   final String? link;
-  final String? description;
- final String? communityName;
-  final String? communityProfilePic;
+  final bool NSFW;
+  final bool spoiler;
+  final String? imageUrl;
+  final String? community;
+  final String? videoUrl;
   final List<String> upvotes;
   final List<String> downvotes;
-  final int commentCount;
-  final String username;
-  final String uid;
-  final String type;
-  final DateTime createdAt;
-  final List<String> awards;
+  final List<String> commentsID;
+  final List<String> mentioned;
+  final String userID;
+  final DateTime postedTime;
+  final String id;
+  final int numViews;
+  final bool locked;
+  final bool approved;
+
   Post({
-    required this.id,
     required this.title,
+    this.postBody,
     this.link,
-    this.description,
-   this.communityName,
-   this.communityProfilePic,
+    required this.NSFW,
+    required this.spoiler,
+    this.imageUrl,
+    this.community,
+    this.videoUrl,
     required this.upvotes,
     required this.downvotes,
-    required this.commentCount,
-    required this.username,
-    required this.uid,
-    required this.type,
-    required this.createdAt,
-    required this.awards,
+    required this.commentsID,
+    required this.mentioned,
+    required this.userID,
+    required this.postedTime,
+    required this.id,
+    required this.numViews,
+    required this.locked,
+    required this.approved,
   });
 
-  Post copyWith({
-    String? id,
-    String? title,
-    String? link,
-    String? description,
-    String? communityName,
-    String? communityProfilePic,
-    List<String>? upvotes,
-    List<String>? downvotes,
-    int? commentCount,
-    String? username,
-    String? uid,
-    String? type,
-    DateTime? createdAt,
-    List<String>? awards,
-  }) {
-    return Post(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      link: link ?? this.link,
-      description: description ?? this.description,
-      communityName: communityName ?? this.communityName,
-      communityProfilePic: communityProfilePic ?? this.communityProfilePic,
-      upvotes: upvotes ?? this.upvotes,
-      downvotes: downvotes ?? this.downvotes,
-      commentCount: commentCount ?? this.commentCount,
-      username: username ?? this.username,
-      uid: uid ?? this.uid,
-      type: type ?? this.type,
-      createdAt: createdAt ?? this.createdAt,
-      awards: awards ?? this.awards,
-    );
-  }
+  factory Post.fromJson(Map<String, dynamic> json) {
+  return Post(
+    title: json['title'] ?? '',
+    postBody: json['postBody'],
+    link: json['link'],
+    NSFW: json['NSFW'] ?? false,
+    spoiler: json['spoiler'] ?? false,
+    imageUrl: json['imageUrl'],
+    community: json['community'],
+    videoUrl: json['videoUrl'],
+    upvotes: List<String>.from(json['upvotes'] ?? []),
+    downvotes: List<String>.from(json['downvotes'] ?? []),
+    commentsID: List<String>.from(json['commentsID'] ?? []),
+    mentioned: List<String>.from(json['mentioned'] ?? []),
+    userID: json['uid'] ?? '',
+    postedTime: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
+    id: json['_id'] ?? '',
+    numViews: json['numViews'] ?? 0,
+    locked: json['locked'] ?? false,
+    approved: json['approved'] ?? false,
+  );
+}
 
-  Map<String, dynamic> toMap() {
+
+  Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'title': title,
+      'postBody': postBody,
       'link': link,
-      'description': description,
-      'communityName': communityName,
-      'communityProfilePic': communityProfilePic,
+      'NSFW': NSFW,
+      'spoiler': spoiler,
+      'imageUrl': imageUrl,
+      'community': community,
+      'videoUrl': videoUrl,
       'upvotes': upvotes,
       'downvotes': downvotes,
-      'commentCount': commentCount,
-      'username': username,
-      'uid': uid,
-      'type': type,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'awards': awards,
+      'commentsID': commentsID,
+      'mentioned': mentioned,
+      'uid': userID,
+      'createdAt': postedTime.toIso8601String(),
+      '_id': id,
+      'numViews': numViews,
+      'locked': locked,
+      'approved': approved,
+
     };
-  }
-
-  factory Post.fromMap(Map<String, dynamic> map) {
-    return Post(
-      id: map['id'] ?? '',
-      title: map['title'] ?? '',
-      link: map['link'],
-      description: map['description'],
-      communityName: map['communityName'] ?? '',
-      communityProfilePic: map['communityProfilePic'] ?? '',
-      upvotes: List<String>.from(map['upvotes']),
-      downvotes: List<String>.from(map['downvotes']),
-      commentCount: map['commentCount']?.toInt() ?? 0,
-      username: map['username'] ?? '',
-      uid: map['uid'] ?? '',
-      type: map['type'] ?? '',
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
-      awards: List<String>.from(map['awards']),
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Post(id: $id, title: $title, link: $link, description: $description, communityName: $communityName, communityProfilePic: $communityProfilePic, upvotes: $upvotes, downvotes: $downvotes, commentCount: $commentCount, username: $username, uid: $uid, type: $type, createdAt: $createdAt, awards: $awards)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Post &&
-        other.id == id &&
-        other.title == title &&
-        other.link == link &&
-        other.description == description &&
-        other.communityName == communityName &&
-        other.communityProfilePic == communityProfilePic &&
-        listEquals(other.upvotes, upvotes) &&
-        listEquals(other.downvotes, downvotes) &&
-        other.commentCount == commentCount &&
-        other.username == username &&
-        other.uid == uid &&
-        other.type == type &&
-        other.createdAt == createdAt &&
-        listEquals(other.awards, awards);
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        title.hashCode ^
-        link.hashCode ^
-        description.hashCode ^
-        communityName.hashCode ^
-        communityProfilePic.hashCode ^
-        upvotes.hashCode ^
-        downvotes.hashCode ^
-        commentCount.hashCode ^
-        username.hashCode ^
-        uid.hashCode ^
-        type.hashCode ^
-        createdAt.hashCode ^
-        awards.hashCode;
-  }
-
-  void upVote(String userID) async {
-    if (downvotes.contains(userID)) {}
   }
 }

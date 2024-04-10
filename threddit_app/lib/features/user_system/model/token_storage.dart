@@ -1,35 +1,38 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+  import 'package:shared_preferences/shared_preferences.dart';
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
+
+SharedPreferences?prefs;
 
 Future<void> saveToken(String token) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('authToken', token);
+  prefs = await SharedPreferences.getInstance();
+  await prefs?.setString(PrefConstants.authToken, token);
 }
 
 Future<void> saveGoogleToken(String token) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('googleToken', token);
+  prefs = await SharedPreferences.getInstance();
+  await prefs?.setString(PrefConstants.googleToken, token);
 }
 
 Future<String?> getToken() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('authToken');
+  prefs = await SharedPreferences.getInstance();
+  return prefs?.getString(PrefConstants.authToken);
 }
 
 Future<void> deleteToken() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.remove('authToken');
+  prefs = await SharedPreferences.getInstance();
+  await prefs?.remove(PrefConstants.authToken);
 }
 
 Future<String?> getGoogleToken() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('googleToken');
+  prefs = await SharedPreferences.getInstance();
+  return prefs?.getString(PrefConstants.googleToken);
 }
 
 Future<void> deleteGoogleToken() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.remove('googleToken');
+  prefs = await SharedPreferences.getInstance();
+  await prefs?.remove(PrefConstants.googleToken);
 }
 
 final textSizeProvider =

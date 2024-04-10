@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/listing/model/post_model.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
 
 class FeedUnit extends StatefulWidget {
-  final Map<String, dynamic> dataOfPost;
+  final Post dataOfPost;
   // ignore: lines_longer_than_80_chars
   const FeedUnit(this.dataOfPost, {super.key});
 
@@ -21,9 +22,8 @@ class _FeedUnitState extends State<FeedUnit> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    numbberOfvotes = int.parse(widget.dataOfPost['votes'].toString());
+    numbberOfvotes = int.parse(widget.dataOfPost.votes.toString());
   }
 
   @override
@@ -45,7 +45,7 @@ class _FeedUnitState extends State<FeedUnit> {
                           arguments: ["1", "mod2"]);
                     },
                     child: Text(
-                      'r/${widget.dataOfPost['username']}',
+                      'r/${widget.dataOfPost.username}',
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
@@ -53,7 +53,7 @@ class _FeedUnitState extends State<FeedUnit> {
                     width: 7.w,
                   ),
                   Text(
-                    widget.dataOfPost['time'],
+                    widget.dataOfPost.time,
                     style: const TextStyle(color: AppColors.whiteHideColor),
                   ),
                 ],
@@ -73,11 +73,11 @@ class _FeedUnitState extends State<FeedUnit> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.dataOfPost['header'],
+                  widget.dataOfPost.header,
                   style: AppTextStyles.boldTextStyle,
                 ),
                 Text(
-                  widget.dataOfPost['container'],
+                  widget.dataOfPost.container,
                   style: AppTextStyles.secondaryTextStyle,
                 ),
               ],
@@ -91,12 +91,12 @@ class _FeedUnitState extends State<FeedUnit> {
                   borderRadius:
                       BorderRadius.circular(35) // Adjust the radius as needed
                   ),
-              child: (widget.dataOfPost['imageLink'] != null)
+              child: (widget.dataOfPost.imageLink != "null")
                   ? Image(
                       height: 250.h,
                       width: 360.w,
                       fit: BoxFit.fitWidth,
-                      image: NetworkImage(widget.dataOfPost['imageLink']
+                      image: NetworkImage(widget.dataOfPost.imageLink
                           //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                           ),
                     )
@@ -116,7 +116,7 @@ class _FeedUnitState extends State<FeedUnit> {
                               if (choiceBottum == -1 || choiceBottum == 2) {
                                 setState(() {
                                   if (numbberOfvotes ==
-                                      int.parse(widget.dataOfPost['votes']
+                                      int.parse(widget.dataOfPost.votes
                                               .toString()) -
                                           1) {
                                     numbberOfvotes += 2;
@@ -145,7 +145,7 @@ class _FeedUnitState extends State<FeedUnit> {
                               if (choiceBottum == -1 || choiceBottum == 1) {
                                 setState(() {
                                   if (numbberOfvotes ==
-                                      int.parse(widget.dataOfPost['votes']
+                                      int.parse(widget.dataOfPost.votes
                                               .toString()) +
                                           1) {
                                     numbberOfvotes -= 2;
@@ -176,7 +176,7 @@ class _FeedUnitState extends State<FeedUnit> {
                           width: 5.w,
                         ),
                         Text(
-                          widget.dataOfPost['numberOfComments'].toString(),
+                          widget.dataOfPost.numberOfComments.toString(),
                           style: const TextStyle(color: AppColors.whiteColor),
                         ),
                       ],

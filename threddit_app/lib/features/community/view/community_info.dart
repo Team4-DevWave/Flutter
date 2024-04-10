@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/models/community.dart';
+import 'package:threddit_clone/models/fetch_community.dart';
 
 class CommunityInfo extends ConsumerWidget {
   const CommunityInfo({Key? key, required this.community, required this.uid})
       : super(key: key);
 
-  final Community community;
+  final FetchCommunity community;
   final String uid;
 
   @override
@@ -36,7 +36,7 @@ class CommunityInfo extends ConsumerWidget {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        if (community.description != null)
+                        if (community.subredditDescription != '')
                           Column(
                             children: [
                               const Row(
@@ -54,7 +54,7 @@ class CommunityInfo extends ConsumerWidget {
                               Row(
                                 children: [
                                   Text(
-                                    community.description!,
+                                    community.subredditDescription,
                                     style: const TextStyle(
                                         color: Colors.white, fontSize: 15),
                                   ),
@@ -63,7 +63,7 @@ class CommunityInfo extends ConsumerWidget {
                             ],
                           ),
                         const SizedBox(height: 15),
-                        if (community.rules.isNotEmpty)
+                        if (community.communityRules.isNotEmpty)
                           Column(
                             children: [
                               const Row(
@@ -78,7 +78,7 @@ class CommunityInfo extends ConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              for (var rule in community.rules)
+                              for (var rule in community.communityRules)
                                 Row(
                                   children: [
                                     Text(
@@ -110,7 +110,7 @@ class CommunityInfo extends ConsumerWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           opacity: 0.7,
-          image: NetworkImage(community.banner),
+          image: NetworkImage(community.communitySettings.subredditBanner),
           fit: BoxFit.cover,
         ),
       ),
@@ -132,11 +132,11 @@ class CommunityInfo extends ConsumerWidget {
               color: Colors.white, // Set the color of the icon
             ),
             title: Text(
-              'r/${community.name}',
+              'r/${community.subredditTitle}',
               style: TextStyle(fontSize: 18, color: Colors.white),
             ),
             actions: [
-              community.mods.contains(uid)
+              community.moderators.contains(uid)
                   ? TextButton(
                       onPressed: () {Navigator.pushNamed(context, RouteClass.communityModTools);},
                       child: const Text('Mod Tools'),
