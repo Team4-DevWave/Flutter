@@ -5,6 +5,8 @@ import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
+import 'package:threddit_clone/features/posting/data/data.dart';
+import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
@@ -20,7 +22,7 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const MainCommunityScreen(),
+    PostScreen(currentPost: posts[0], uid: "user2"),
     const AddPostScreen(),
     const CommunityScreen(id:"Sample Subreddit",uid:'user2'),                
     const NotificationsScreen()
