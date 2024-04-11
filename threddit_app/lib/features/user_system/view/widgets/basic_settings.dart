@@ -90,16 +90,19 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                 return const Text("ERROR LOADING USER DATA");
               } else {
                 final UserModelMe user = snapshot.data!;
-                return ListTile(
-                  leading: const Icon(Icons.settings),
-                  title: const Text("Update email address"),
-                  titleTextStyle: AppTextStyles.primaryTextStyle,
-                  subtitle: Text(user.email!),
-                  trailing: const Icon(Icons.navigate_next),
-                  onTap: () {
-                    _selectBasicSetting(context, "email");
-                  },
-                );
+                
+                return ListView(shrinkWrap: true, children: [
+                  ListTile(
+                    leading: const Icon(Icons.settings),
+                    title: const Text("Update email address"),
+                    titleTextStyle: AppTextStyles.primaryTextStyle,
+                    subtitle: Text(user.email!),
+                    trailing: const Icon(Icons.navigate_next),
+                    onTap: () {
+                      _selectBasicSetting(context, "email");
+                    },
+                  ),
+                ]);
               }
             }),
         ListTile(
@@ -109,25 +112,6 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
           trailing: const Icon(Icons.navigate_next),
           onTap: () {
             _selectBasicSetting(context, "password");
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.location_pin),
-          title: const Text("Country"),
-          subtitle: Text(selectedCountry.displayName),
-          titleTextStyle: AppTextStyles.primaryTextStyle,
-          trailing: const Icon(Icons.navigate_next),
-          onTap: () {
-            showCountryPicker(
-                context: context,
-                onSelect: (Country country) {
-                  setState(() {
-                    selectedCountry = country;
-                  });
-                },
-                countryListTheme: CountryListThemeData(
-                    backgroundColor: AppColors.backgroundColor,
-                    textStyle: AppTextStyles.primaryTextStyle));
           },
         ),
         FutureBuilder(
@@ -142,28 +126,52 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
             } else {
               final UserModelMe user = snapshot.data!;
               pickedGender = user.gender!;
-              return ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text("Gender"),
-                titleTextStyle: AppTextStyles.primaryTextStyle,
-                trailing: DropdownButton(
-                  dropdownColor: AppColors.backgroundColor,
-                  style: AppTextStyles.primaryTextStyle,
-                  icon: const Icon(Icons.arrow_downward),
-                  onChanged: (String? value) {
-                    setState(() {
-                      pickedGender = value!;
-                    });
+              selectedCountry = Country.parse(user.country!);
+              return ListView(shrinkWrap: true, children: [
+                ListTile(
+                  leading: const Icon(Icons.location_pin),
+                  title: const Text("Country"),
+                  subtitle: Text(selectedCountry.displayName),
+                  titleTextStyle: AppTextStyles.primaryTextStyle,
+                  trailing: const Icon(Icons.navigate_next),
+                  onTap: () {
+                    showCountryPicker(
+                        context: context,
+                        onSelect: (Country country) {
+                          setState(() {
+                            selectedCountry = country;
+                            changeCountry(client: client, country: country.displayName, token: token!);
+                          });
+                        },
+                        countryListTheme: CountryListThemeData(
+                            backgroundColor: AppColors.backgroundColor,
+                            textStyle: AppTextStyles.primaryTextStyle));
                   },
-                  value: pickedGender,
-                  items: genders.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
                 ),
-              );
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text("Gender"),
+                  titleTextStyle: AppTextStyles.primaryTextStyle,
+                  trailing: DropdownButton(
+                    dropdownColor: AppColors.backgroundColor,
+                    style: AppTextStyles.primaryTextStyle,
+                    icon: const Icon(Icons.arrow_downward),
+                    onChanged: (String? value) {
+                      setState(() {
+                        pickedGender = value!;
+                      });
+                    },
+                    value: pickedGender,
+                    items:
+                        genders.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                )
+              ]);
             }
           },
         ),
