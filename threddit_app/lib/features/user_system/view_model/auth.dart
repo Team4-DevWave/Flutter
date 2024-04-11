@@ -269,11 +269,7 @@ class Auth extends StateNotifier<bool> {
     // final url = Uri.http('localhost:8000/api/v1/users/login');
     try {
       final response = await http.post(
-<<<<<<< Updated upstream
-        Uri.parse("10.0.2.2:8000/api/v1/users/login"),
-=======
         Uri.parse("http://10.0.2.2:8000/api/v1/users/login"),
->>>>>>> Stashed changes
         headers: {
           'Content-Type': 'application/json',
         },
