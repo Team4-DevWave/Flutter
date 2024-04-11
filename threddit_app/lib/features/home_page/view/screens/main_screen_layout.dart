@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
-import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
-import 'package:threddit_clone/models/data.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
@@ -20,11 +19,8 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-
-    //PostScreen(id: "6617f3328ae9d1cadf035a39", uid: "6617fe34a0a16be5fbadc423"),
-
-    // PostScreen(currentPost: posts[1], uid: "user2"),
-
+    //PostScreen(currentPost: posts[1], uid: "user2"),
+    const MainCommunityScreen(),
     const AddPostScreen(),
     const CommunityScreen(id: "he7", uid: 'user2'),
     const NotificationsScreen()

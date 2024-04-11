@@ -15,7 +15,8 @@ final userCommunitisProvider =
 class UserCommunities extends StateNotifier<bool> {
   Ref ref;
   UserCommunities(this.ref) : super(false);
-  final String communitiesURL = "https://c461e240-480f-4854-a607-619e661e3370.mock.pstmn.io/communities";
+  final String communitiesURL =
+      "https://c461e240-480f-4854-a607-619e661e3370.mock.pstmn.io/communities";
 
   static String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
   //afinal String communitiesURL = "http://$local:8000/api/v1/homepage/submit";
@@ -29,18 +30,18 @@ class UserCommunities extends StateNotifier<bool> {
 
       if (res.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(res.body);
-         print('DA7dooooooooooooooooooooo7');
-         print(body);
-        List<List<String>> communitiedData =  (body["userSubreddits"] as List<dynamic>).map((e) => List<String>.from(e))
-      .toList();
-            
-            print("aloooooooooo from data");
+        print('DA7dooooooooooooooooooooo7');
+        print(body);
+        List<List<String>> communitiedData =
+            (body["userSubreddits"] as List<dynamic>)
+                .map((e) => List<String>.from(e))
+                .toList();
 
+        print("aloooooooooo from data");
 
-          // List<List<String>> communitiedData  = jsonDecode(res.body)["userSubreddits"];
-            print(communitiedData);
-            
-            
+        // List<List<String>> communitiedData  = jsonDecode(res.body)["userSubreddits"];
+        print(communitiedData);
+
         return right(communitiedData);
       } else {
         return left(Failure("Unable to retrieve communities"));
@@ -48,8 +49,8 @@ class UserCommunities extends StateNotifier<bool> {
       }
     } catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {
-          return left(Failure('Check your internet connection...'));
-        } else {
+        return left(Failure('Check your internet connection...'));
+      } else {
         return left(Failure(e.toString()));
       }
     }
@@ -62,10 +63,11 @@ class UserCommunities extends StateNotifier<bool> {
     try {
       if (res.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(res.body);
-        List<List<String>> communities = (body["userSubreddits"] as List<dynamic>).map((e) => List<String>.from(e))
-      .toList();
-        return 
-        right( communities
+        List<List<String>> communities =
+            (body["userSubreddits"] as List<dynamic>)
+                .map((e) => List<String>.from(e))
+                .toList();
+        return right(communities
             .where((list) =>
                 list[0].toLowerCase().contains(searchString.toLowerCase()))
             .toList());

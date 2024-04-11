@@ -1,3 +1,4 @@
+// ignore_for_file: non_constant_identifier_names
 class Vote {
   final int upvotes;
   final int downvotes;
@@ -71,7 +72,7 @@ class Post {
       numViews: json['numViews'] ?? 0,
       id: json['_id'] ?? '',
       votes: Vote.fromJson(json['votes']),
-      community: json['community'] ,
+      community: json['community'],
     );
   }
 
@@ -92,6 +93,8 @@ class Post {
       'community': community,
     };
   }
+
+  static fromMap(Map<String, dynamic> map) {}
 }
 
 class PostApiResponse {

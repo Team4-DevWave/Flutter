@@ -18,11 +18,12 @@ class RegisterAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         TextButton(
-            onPressed: action,
-            child: Text(
-              title,
-              style: AppTextStyles.primaryTextStyle,
-            )),
+          onPressed: action,
+          child: Text(
+            title,
+            style: AppTextStyles.primaryTextStyle,
+          ),
+        ),
       ],
     );
   }

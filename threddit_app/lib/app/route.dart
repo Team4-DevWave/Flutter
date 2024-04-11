@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/features/post/view/cross_post.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approve_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approved_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
-import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
-import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
@@ -40,8 +39,9 @@ import 'package:threddit_clone/features/user_system/view/screens/update_email_sc
 import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/login_screen.dart';
+import 'package:threddit_clone/features/post/view/choose_community.dart';
 
-import '../features/user_system/view/screens/login_screen.dart';
 // import 'package:threddit_clone/models/post.dart';
 
 class RouteClass {
@@ -77,6 +77,8 @@ class RouteClass {
   static const String confirmPostScreen = '/confirmpost';
   static const String communityModTools = '/communitymodtools';
   static const String communityInfo = '/communityinfo';
+  static const String chooseCommunity = '/choose_communtiy';
+  static const String crossPost = '/cross_post';
   static const String settingsScreen = "/settings";
   static const String textSize = '/text-size';
   static const String bannedUsersScreen = '/banned-users';
@@ -117,6 +119,10 @@ class RouteClass {
 
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
+      case chooseCommunity:
+        return MaterialPageRoute(builder: (_) => const ChooseCommunity());
+      case crossPost:
+        return MaterialPageRoute(builder: (_) => const CrossPost());
       case loginScreen:
         return MaterialPageRoute(builder: (_) => const LogInScreen());
       case signUpScreen:
