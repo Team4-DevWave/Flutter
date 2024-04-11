@@ -5,33 +5,32 @@ import 'package:threddit_clone/models/comment.dart';
 
 final commentRepositoryProvider = Provider((ref) => CommentRepository());
 
-typedef Parameters= ({String postID, String uid,List<String> commentIds});
-final commentsProvider = StreamProvider.family<List<Comment>, Parameters>((ref, arguments) {
+final commentsProvider = StreamProvider.family<List<Comment>, List<String>>((ref, commentIds) {
 final repository = ref.watch(commentRepositoryProvider);
-return repository.getCommentsStream(arguments.commentIds, arguments.postID,arguments.uid );
+return repository.getCommentsStream(commentIds);
 });
 typedef parameters=({String postId,String content,String uid});
 final addCommentProvider =
     FutureProvider.autoDispose.family<void, parameters>((ref,arguments,) async {
   final repository = ref.watch(commentRepositoryProvider);
-  repository.addComment(arguments.postId,arguments.content,arguments.uid); 
+  repository.createComment(arguments.postId,arguments.content); 
 });
 
-typedef votingParameters=({String commentID,int voteType,String uid});
+typedef votingParameters=({String commentID,int voteType});
 final commentVoteProvider =
     FutureProvider.autoDispose.family<void, votingParameters>((ref, arguments) async {
   final repository = ref.watch(commentRepositoryProvider);
-  repository.voteComment(arguments.commentID,arguments.voteType,arguments.uid);
+  repository.voteComment(arguments.commentID,arguments.voteType);
 });
-typedef editParameters=({String postId,String commentId,String newContent,String uid});
+typedef editParameters=({String commentId,String newContent});
 final editCommentProvider=FutureProvider.autoDispose.family<void, editParameters>((ref,arguments,) async {
   final repository = ref.watch(commentRepositoryProvider);
-  repository.editComment(arguments.postId, arguments.commentId, arguments.newContent, arguments.uid); 
+  repository.editComment(arguments.commentId, arguments.newContent); 
 });
 
-typedef deleteParameters=({String postId, String commentId,String uid});
+typedef deleteParameters=({String postId, String commentId});
 final deleteCommentProvider=FutureProvider.autoDispose.family<void, deleteParameters>((ref,arguments,) async {
   final repository = ref.watch(commentRepositoryProvider);
-  repository.deleteComment(arguments.postId, arguments.commentId, arguments.uid); 
+  repository.deleteComment(arguments.postId, arguments.commentId); 
 });
 
