@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -17,37 +19,37 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
   String? token;
   final client = http.Client();
   List<UserMock> usernames = [];
-  Future<UserMock> fetchBlockedUser() async {
+  Future<UserModelMe> fetchBlockedUser() async {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getBlockedUsers(client: client, token: token!);
+          .getMe(client: client, token: token!);
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getBlockedUsers(client: client, token: token!);
+        .getMe(client: client, token: token!);
   }
 
-  void search(query) async {
+  void block(query) async {
     if (query.isEmpty) {
       setState(() {
         usernames.clear();
       });
       return;
     }
-    final UserMock blockedUser = await ref
-        .watch(settingsFetchProvider.notifier)
-        .getBlockedUsers(client: client, token: token!);
-    final List<UserMock> blockedUsers = [blockedUser];
-    final List<UserMock> results = await ref
-        .watch(settingsFetchProvider.notifier)
-        .searchUsers(client, query);
-    setState(() {
-      usernames = results
-          .where((user) => !blockedUsers
-              .any((blocked) => blocked.getUsername == user.getUsername))
-          .toList();
-    });
+    // final UserModelMe blockedUser = await ref
+    //     .watch(settingsFetchProvider.notifier)
+    //     .getMe(client: client, token: token!);
+    // final List<UserModelMe> blockedUsers = [blockedUser];
+    // final List<UserMock> results = await ref
+    //     .watch(settingsFetchProvider.notifier)
+    //     .searchUsers(client, query);
+    // setState(() {
+    //   usernames = results
+    //       .where((user) => !blockedUsers
+    //           .any((blocked) => blocked.getUsername == user.getUsername))
+    //       .toList();
+    // });
   }
 
   Future getUserToken() async {
@@ -68,29 +70,22 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteClass.blockUserScreen);
+                },
+                icon: const Icon(Icons.add))
+          ],
           title: const Text("Blocked accounts"),
         ),
         body: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(children: [
-              TextField(
-                style: AppTextStyles.primaryTextStyle,
-                onChanged: (query) {
-                  search(query);
-                },
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  labelText: 'Block new account',
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
               FutureBuilder(
                   future: fetchBlockedUser(),
                   builder:
-                      (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+                      (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
                     while (
                         snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
@@ -99,22 +94,23 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                       print(snapshot.error);
                       return const Text("ERROR LOADING USER DATA");
                     } else {
-                      final UserMock user = snapshot.data!;
-                      List<UserMock> users = [user];
-                      if (user.getBlocked) {
+                      final UserModelMe user = snapshot.data!;
+                      List<String> users = user.blockedUsers!;
+                      if (users.isEmpty) {
+                        return SizedBox();
+                      } else {
                         return ListView.builder(
                             shrinkWrap: true,
                             itemCount: 1,
                             itemBuilder: (context, index) => ListTile(
-                                title: Text(users[index].getUsername,
+                                title: Text(users[index],
                                     style: AppTextStyles.secondaryTextStyle),
                                 trailing: ElevatedButton(
                                   onPressed: () {
                                     setState(() {
                                       unblockUser(
                                           client: client,
-                                          userToUnBlock:
-                                              users[index].getUsername,
+                                          userToUnBlock: users[index],
                                           token: token!);
                                     });
                                   },
@@ -125,8 +121,6 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                           255, 0, 140, 255)),
                                   child: const Text("Unblock"),
                                 )));
-                      } else {
-                        return const SizedBox();
                       }
                     }
                   }),

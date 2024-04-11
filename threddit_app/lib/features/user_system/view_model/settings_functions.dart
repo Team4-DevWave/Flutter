@@ -175,8 +175,6 @@ Future<int> blockUser(
     {required http.Client client,
     required String userToBlock,
     required String token}) async {
-  Map<String, dynamic> body = {'blockUsername': userToBlock};
-  String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
@@ -184,12 +182,11 @@ Future<int> blockUser(
     url = urlAndroid;
   }
   http.Response response = await client.post(
-    Uri.parse("$url/api/block-user/$userToBlock"),
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/block/$userToBlock"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
-    body: bodyEncoded,
   );
   return response.statusCode;
 }

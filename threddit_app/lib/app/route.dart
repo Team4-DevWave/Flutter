@@ -10,6 +10,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/community_mod_to
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
 import 'package:threddit_clone/models/fetch_community.dart';
@@ -87,6 +88,7 @@ class RouteClass {
   static const String updateBanScreen = '/update-ban';
   static const String approvedUsersScreen = '/approved-users';
   static const String approveScreen = '/approve';
+  static const String blockUserScreen = '/block-user';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -164,8 +166,10 @@ class RouteClass {
       case confirmPasswordScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPasswordScreen());
       case settingsScreen:
-
         return MaterialPageRoute(builder: (_) => SettingsScreen());
+      case blockUserScreen:
+        return MaterialPageRoute( 
+            builder: (_) => const BlockUserScreen(), fullscreenDialog: true);
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
       case textSize:

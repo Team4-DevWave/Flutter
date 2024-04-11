@@ -10,7 +10,7 @@ import 'package:threddit_clone/features/user_system/view_model/settings_function
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-const List<String> defaultView = <String>['card', 'classic view'];
+const List<String> defaultView = <String>['card', 'classic'];
 const List<String> thumbnail = <String>[
   "Always show",
   "Never show",
