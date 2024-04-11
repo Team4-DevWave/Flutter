@@ -22,7 +22,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
         (postId: widget.postID, content: _commentController.text, uid: widget.uid)));
     addCommentFuture;
     setState(() {});
-    Navigator.pop(context); // Close the bottom sheet after adding the comment
+    
   }
 
   @override
@@ -66,6 +66,9 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
                       IconButton(
                         onPressed: () {
                           addComment(ref);
+                          setState(() {
+                            _commentController.clear();
+                          });
                         },
                         icon: const Icon(Icons.send),
                         color: Colors.white,

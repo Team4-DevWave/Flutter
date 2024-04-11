@@ -208,6 +208,7 @@ class RouteClass {
         );
       case confirmPostScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPost());
+
       // case postScreen:
       //   final args = settings.arguments as Map<String, dynamic>;
       //   final currentpost =
@@ -218,6 +219,7 @@ class RouteClass {
       //             currentPost: currentpost,
       //             uid: uid,
       //           ));
+
       case createCommunityScreen:
         //var data = settings.arguments as String;
         var data = 'User2';
