@@ -5,7 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
 import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
-import 'package:threddit_clone/models/fetch_community.dart';
+import 'package:threddit_clone/models/subreddit.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
   final String id;
@@ -25,7 +25,6 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
     return ScreenUtilInit(
       child: Scaffold(
@@ -43,17 +42,19 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     );
   }
 
-  Widget buildCommunityScreen(FetchCommunity community) {
+  Widget buildCommunityScreen(Subreddit community) {
+    community.srLooks.banner ??= "https://htmlcolorcodes.com/assets/images/colors/bright-blue-color-solid-background-1920x1080.png";
+    community.srLooks.icon ??= "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg";
     bool isCurrentUserModerator = community.moderators.contains(widget.uid);
 
-    bool isCurrentUser = community.listOfMembers.contains(widget.uid);
+    bool isCurrentUser = community.members.contains(widget.uid);
 
-    bool getUserState(FetchCommunity community) {
+    bool getUserState(Subreddit community) {
       if (community.moderators.contains(widget.uid)) {
         Navigator.pushNamed(context, RouteClass.communityModTools);
         return true;
       } else {
-        if (community.listOfMembers.contains(widget.uid)) {
+        if (community.members.contains(widget.uid)) {
           showModalBottomSheet(
               context: context,
               builder: (context) {
@@ -64,11 +65,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         leading: const Icon(Icons.exit_to_app),
                         title: const Text('Leave Community'),
                         onTap: () {
-                          var leaveFunction =
                               ref.watch(unjoinCommunityProvider(widget.id));
-                          leaveFunction(widget.uid);
+                              community.members.remove(widget.uid);
                           setState(() {});
-                          community.listOfMembers.remove(widget.uid);
                           Navigator.pop(context);
                         }),
                   ],
@@ -76,11 +75,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               });
           return true;
         } else {
-          var JoinFunction = ref.watch(joinCommunityProvider(widget.id));
-          JoinFunction(widget.uid);
+          ref.watch(joinCommunityProvider(widget.id));
+          community.members.add(widget.uid);
           setState(() {});
-          community.listOfMembers.add(widget.uid);
-
           return true;
         }
       }
@@ -97,18 +94,15 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               children: [
                 Positioned.fill(
                   child: Image.network(
-                    community.communitySettings.subredditBanner,
+                    community.srLooks.banner!,
                     fit: BoxFit.cover,
                   ),
                 ),
                 Positioned(
                   top: 53.h,
-                  
                   right: 5.w,
                   child: Row(
-                  
                     children: [
-                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -155,11 +149,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
                           backgroundImage: NetworkImage(
-                              community.communitySettings.subredditImage),
+                              community.srLooks.icon!),
                           radius: 30,
                         ),
                       ),
-                       SizedBox(
+                      SizedBox(
                         width: 12.w,
                       ),
                       Expanded(
@@ -167,14 +161,14 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'r/${community.subredditTitle}',
+                              'r/${community.name}',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 19,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '${community.listOfMembers.length} members',
+                              '${community.members.length} members',
                               style: const TextStyle(
                                 color: Color.fromARGB(108, 255, 255, 255),
                               ),
@@ -211,8 +205,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(
                     height: 10,
                   ),
+                  community.description!=null?
                   Text(
-                    community.subredditDescription,
+                    community.description!,
+                    style: const TextStyle(color: Colors.white),
+                  ):const Text(
+                    '',
                     style: const TextStyle(color: Colors.white),
                   ),
                   Row(
@@ -278,8 +276,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         value: value,
                         child: Row(
                           children: [
-                            Icon(_getIcon(value),
-                                color: Colors.white), 
+                            Icon(_getIcon(value), color: Colors.white),
                             SizedBox(width: 8.w),
                             Text(
                               value,
@@ -294,7 +291,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               ),
             ),
           ),
-          Flexible( child: FeedWidget(feedID: _selectedItem))
+          Flexible(child: FeedWidget(feedID: _selectedItem))
         ],
       ),
     );

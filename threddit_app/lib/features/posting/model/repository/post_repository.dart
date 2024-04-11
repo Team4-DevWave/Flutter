@@ -113,4 +113,26 @@ Future<List<String>> getDownvotes(String postId) async {
   }
 
   }
+
+  Future<void> togglePostNSFW(String postId, String uid) async {
+  try {
+    // Construct the URL
+    //String url = 'http://localhost:8000/api/v1/posts/$postId/nsfw';
+    String url = 'http://192.168.100.249:3000/posts/${postId}';
+
+    // Construct the request headers with Authorization
+    Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      //'Authorization': 'Bearer $jwtToken',
+    };
+
+    final response = await http.post(Uri.parse(url), headers: headers);
+
+    if (response.statusCode == 200) {
+      print('Post NSFW status toggled successfully');
+    } 
+  } catch (e) {
+    print('Error toggling post NSFW status: $e');
+  }
+}
 }

@@ -15,7 +15,13 @@ class CommentItem extends ConsumerStatefulWidget {
 }
 
 class _CommentItemState extends ConsumerState<CommentItem> {
-  final _commentController = TextEditingController();
+  late TextEditingController _commentController;
+  @override
+   void initState() {
+    super.initState();
+    _commentController = TextEditingController(text: widget.comment.content);
+  }
+ 
   @override
   Widget build(BuildContext context) {
     void upVoteComment(WidgetRef ref) async {
@@ -55,23 +61,25 @@ class _CommentItemState extends ConsumerState<CommentItem> {
       barrierDismissible: false, // Prevent user from dismissing dialog by tapping outside
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Delete'),
-          content: SingleChildScrollView(
+          backgroundColor: AppColors.backgroundColor,
+          title: const Text('Confirm Delete',style: TextStyle(color: Colors.white),),
+          content: const SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Are you sure?'),
-                Text('You cannot restore comments that have been deleted.'),
+                Text('Are you sure?',style: TextStyle(color: Colors.white),),
+                Text('You cannot restore comments that have been deleted.',style: TextStyle(color: Colors.white),),
               ],
             ),
           ),
           actions: <Widget>[
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 // Close the dialog and delete the comment
                 Navigator.of(context).pop();
                 _deleteComment(); // Call your delete comment function here
               },
               child: Text('Delete'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red,foregroundColor: Colors.white),
             ),
             TextButton(
               onPressed: () {
@@ -79,6 +87,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                 Navigator.of(context).pop();
               },
               child: Text('Cancel'),
+              style:ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 43, 43, 43),foregroundColor: const Color.fromARGB(112, 255, 255, 255)) ,
             ),
           ],
         );
@@ -326,16 +335,38 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                                           Colors.white),
                                                                   border:
                                                                       InputBorder.none,
+                                                                      
                                                                 ),
+                                                                style: const TextStyle(
+                                                                    color: Colors.white),
+
                                                               ),
                                                             ),
                                                             Row(
                                                               mainAxisAlignment: MainAxisAlignment.end,
                                                               children: [
                                                                 ElevatedButton(onPressed: (){
+                                                                  if(_commentController.text.isNotEmpty){
+                                                                  Navigator.pop(context);
                                                                   Navigator.pop(context);
                                                                ref.read(editCommentProvider((commentId: widget.comment.id , newContent: _commentController.text , postId:widget.comment.post , uid: widget.uid ) ) );
-                                                                },style: ElevatedButton.styleFrom(backgroundColor: Colors.blue), child: const Text("Save", style: TextStyle(color: Colors.white),)),
+                                                               
+                                                }
+                                                else
+                                                {
+                                                  showDialog(context: context, builder: (context){
+                                                    return AlertDialog(
+                                                      title: const Text("Error"),
+                                                      content: const Text("Comment cannot be empty"),
+                                                      actions: <Widget>[
+                                                        ElevatedButton(onPressed: (){
+                                                          Navigator.pop(context);
+                                                        },style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: const Text("Ok", style: TextStyle(color: Colors.white),)),
+                                                      ],
+                                                    );
+                                                  });
+                                                }
+                                                },style: ElevatedButton.styleFrom(backgroundColor: Colors.blue), child: const Text("Save", style: TextStyle(color: Colors.white),)),
       
                                                               ],
                                                             )

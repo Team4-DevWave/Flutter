@@ -46,7 +46,7 @@ void initState() {
     if(widget.post.community!=null)
     {final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.post.community!));
     communityAsyncValue.whenData((community) {
-      communityImage = community.communitySettings.subredditImage;
+      communityImage = community.srLooks.icon!;
     });
     }
    return Container(
