@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
+import 'package:threddit_clone/models/votes.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/models/post.dart';
@@ -21,11 +22,15 @@ class PostCard extends ConsumerStatefulWidget {
 
 class _PostCardState extends ConsumerState<PostCard> {
   late VideoPlayerController _controller;
+  late AsyncValue<Votes> upvotes;
+  late AsyncValue<Votes> downvotes;
   void initState() {
     super.initState();
-    if (widget.post.videoUrl != null) {
+    upvotes=ref.read(getUserUpvotesProvider);
+    downvotes=ref.read(getUserDownvotesProvider);
+    if (widget.post.video != null) {
       _controller = VideoPlayerController.networkUrl(
-        Uri.parse(widget.post.videoUrl!),
+        Uri.parse(widget.post.video!),
       )..initialize().then((_) {
           setState(() {});
         });
@@ -37,21 +42,25 @@ class _PostCardState extends ConsumerState<PostCard> {
     _controller.dispose(); // Dispose the controller when the widget is removed
     super.dispose();
   }
-
   @override
-  Widget build(BuildContext context) {
-    void upVotePost(WidgetRef ref) async {
-      final upvoteFunction = ref.read(postUpvoteProvider(widget.post));
-      upvoteFunction(widget.uid);
-      setState(() {});
+  Widget build(BuildContext) {
+    
+     bool upvoteStatus = upvotes.maybeWhen(
+    data: (votes) => votes.containsPost(widget.post.id),
+    orElse: () => false,
+  );
+
+  bool downvoteStatus = downvotes.maybeWhen(
+    data: (votes) => votes.containsPost(widget.post.id),
+    orElse: () => false,
+  );
+  void upVotePost(WidgetRef ref) async {
+    
     }
 
     void downVotePost(WidgetRef ref) async {
-      final downvoteFunction = ref.read(postDownvoteProvider(widget.post));
-      downvoteFunction(widget.uid);
-      setState(() {});
+     
     }
-
     final now = DateTime.now();
     final difference = now.difference(widget.post.postedTime);
     final hoursSincePost = difference.inHours;
@@ -122,19 +131,19 @@ class _PostCardState extends ConsumerState<PostCard> {
                     fontSize: 18),
               ),
             ),
-            if (widget.post.postBody != null)
+            if (widget.post.textBody != null)
               Text(
-                widget.post.postBody!,
+                widget.post.textBody!,
                 style: AppTextStyles.primaryTextStyle.copyWith(
                     color: const Color.fromARGB(196, 255, 255, 255),
                     fontSize: 15),
               ),
-            if (widget.post.imageUrl != null)
+            if (widget.post.image != null)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Image.network(widget.post.imageUrl!),
+                child: Image.network(widget.post.image!),
               ),
-            if (widget.post.videoUrl != null)
+            if (widget.post.video != null)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: _controller.value.isInitialized
@@ -185,12 +194,12 @@ class _PostCardState extends ConsumerState<PostCard> {
                     Icons.arrow_upward_outlined,
                     size: 30,
                   ),
-                  color: widget.post.upvotes.contains(widget.uid)
+                  color: upvoteStatus
                       ? const Color.fromARGB(255, 217, 77, 67)
                       : Colors.white,
                 ),
                 Text(
-                  '${widget.post.upvotes.length - widget.post.downvotes.length == 0 ? "vote" : widget.post.upvotes.length - widget.post.downvotes.length}',
+                  '${widget.post.votes.upvotes - widget.post.votes.downvotes == 0 ? "vote" : widget.post.votes.upvotes- widget.post.votes.downvotes}',
                   style: AppTextStyles.primaryTextStyle
                       .copyWith(color: AppColors.whiteColor),
                 ),
@@ -202,7 +211,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                     Icons.arrow_downward_outlined,
                     size: 30,
                   ),
-                  color: widget.post.downvotes.contains(widget.uid)
+                  color: downvoteStatus
                       ? const Color.fromARGB(255, 97, 137, 212)
                       : Colors.white,
                 ),
@@ -251,7 +260,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                             ),
                                             ListTile(
                                               title: Text(
-                                                widget.post.NSFW
+                                                widget.post.nsfw
                                                     ? 'UnMark NSFW'
                                                     : 'Mark NSFW',
                                                 style: TextStyle(

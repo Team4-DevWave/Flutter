@@ -78,7 +78,7 @@ class _FeedUnitState extends State<FeedUnit> {
                   style: AppTextStyles.boldTextStyle,
                 ),
                 Text(
-                  widget.dataOfPost.postBody.toString(),
+                  widget.dataOfPost.textBody.toString(),
                   style: AppTextStyles.secondaryTextStyle,
                 ),
               ],
@@ -92,12 +92,12 @@ class _FeedUnitState extends State<FeedUnit> {
                   borderRadius:
                       BorderRadius.circular(35) // Adjust the radius as needed
                   ),
-              child: (widget.dataOfPost.imageUrl != "null")
+              child: (widget.dataOfPost.image != "null")
                   ? Image(
                       height: 250.h,
                       width: 360.w,
                       fit: BoxFit.fitWidth,
-                      image: NetworkImage(widget.dataOfPost.imageUrl.toString()
+                      image: NetworkImage(widget.dataOfPost.image.toString()
                           //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                           ),
                     )

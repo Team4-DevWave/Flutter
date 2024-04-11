@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
+import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
 import 'package:threddit_clone/models/comment.dart';
@@ -12,9 +15,9 @@ import 'package:threddit_clone/features/commenting/view_model/comment_provider.d
 import 'package:threddit_clone/models/post.dart';
 
 class PostScreen extends ConsumerStatefulWidget {
-  final Post currentPost;
+  final String id;
   final String uid;
-  const PostScreen({super.key, required this.currentPost, required this.uid});
+  const PostScreen({super.key,required this.id,required this.uid});
 
   @override
   _PostScreenState createState() => _PostScreenState();
@@ -32,13 +35,30 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         isScrollControlled: true,
         context: context,
         builder: (ctx) => AddComment(
-              postID: widget.currentPost.id,
+              postID: widget.id,
               uid: widget.uid,
             ));
   }
-
-  @override
+@override
   Widget build(BuildContext context) {
+    final postAsyncValue = ref.watch(fetchpostProvider(widget.id));
+    return ScreenUtilInit(
+      child: Scaffold(
+        body: postAsyncValue.when(
+          data: (currentPost) => buildPostScreen(currentPost),
+          loading: () => Center(
+            child: Lottie.asset(
+              'assets/animation/loading.json',
+              repeat: true,
+            ),
+          ),
+          error: (error, stack) => Text('Error: $error'),
+        ),
+      ),
+    );
+  }
+  @override
+  Widget buildPostScreen(Post currentPost) {
     return MaterialApp(
       home: SafeArea(
         child: Scaffold(
@@ -68,7 +88,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                             builder: (context) {
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
-                                children: widget.currentPost.userID!=widget.uid?[
+                                children: currentPost.userID!=widget.uid?[
                                   ListTile(
                                       title: const Text(
                                         'More actions...',
@@ -123,7 +143,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                         builder: (context) {
                                           return ReportBottomSheet(
                                             userID: widget.uid,
-                                            reportedID: widget.currentPost.id,
+                                            reportedID: currentPost.id,
                                             type: "post",
                                           );
                                         },
@@ -178,7 +198,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                     onTap: () {},
                                   ),
                                   ListTile(
-                                    title: Text(widget.currentPost.spoiler?
+                                    title: Text(currentPost.spoiler?
                                       'UnMark Spoiler':"Mark Spoiler",
                                       style: TextStyle(color: Colors.white),
                                     ),
@@ -186,7 +206,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                     onTap: () {},
                                   ),
                                   ListTile(
-                                    title: Text(widget.currentPost.NSFW?
+                                    title: Text(currentPost.nsfw?
                                       'UnMark NSFW':"Mark NSFW",
                                       style: TextStyle(color: Colors.white),
                                     ),
@@ -228,7 +248,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
           body: Consumer(
             builder: (context, watch, child) {
              final AsyncValue<List<Comment>> postComments =
-                  ref.watch(commentsProvider((commentIds:widget.currentPost.commentsID,postID: widget.currentPost.id,uid: widget.uid)));
+                  ref.watch(commentsProvider((currentPost.commentsID)));
               return postComments.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stackTrace) =>
@@ -240,7 +260,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                         child: ListView(
                           children: [
                             PostCard(                             
-                              post: widget.currentPost,
+                              post: currentPost,
                               uid: widget.uid,
                               onCommentPressed: _openAddCommentOverlay,
                             ),
@@ -256,7 +276,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                         ),
                       ),
                       AddComment(
-                        postID: widget.currentPost.id,
+                        postID: currentPost.id,
                         uid: widget.uid,
                       )
                     ],
