@@ -160,7 +160,8 @@ class RouteClass {
       case confirmPasswordScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPasswordScreen());
       case settingsScreen:
-        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+
+        return MaterialPageRoute(builder: (_) => SettingsScreen());
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
       case textSize:

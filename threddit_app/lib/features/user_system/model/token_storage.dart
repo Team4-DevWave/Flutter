@@ -4,7 +4,6 @@ import 'package:threddit_clone/features/user_system/view/screens/text_size_scree
 import 'package:threddit_clone/app/pref_constants.dart';
 
 SharedPreferences? prefs;
-
 Future<void> saveToken(String token) async {
   prefs = await SharedPreferences.getInstance();
   await prefs?.setString(PrefConstants.authToken, token);

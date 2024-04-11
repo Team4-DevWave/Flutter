@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_data.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -10,7 +12,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/settings_title.
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:http/http.dart' as http;
 
-const List<String> genders = <String>['Man', 'Woman'];
+const List<String> genders = <String>['man', 'woman'];
 
 /// The class responsible for the Basic Settings part of the Account Settings
 /// which Includes:
@@ -46,15 +48,15 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
     }
   }
 
-  Future<UserMock> fetchUser() async {
+  Future<UserModelMe> fetchUser() async {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getUserInfo(client: client, token: token!);
+          .getMe(client: client, token: token!);
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getUserInfo(client: client, token: token!);
+        .getMe(client: client, token: token!);
   }
 
   Future getUserToken() async {
@@ -79,7 +81,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
         const SettingsTitle(title: "BASIC SETTINGS"),
         FutureBuilder(
             future: fetchUser(),
-            builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+            builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               }
@@ -87,12 +89,12 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                 print(snapshot.error);
                 return const Text("ERROR LOADING USER DATA");
               } else {
-                final UserMock user = snapshot.data!;
+                final UserModelMe user = snapshot.data!;
                 return ListTile(
                   leading: const Icon(Icons.settings),
                   title: const Text("Update email address"),
                   titleTextStyle: AppTextStyles.primaryTextStyle,
-                  subtitle: Text(user.getEmail),
+                  subtitle: Text(user.email!),
                   trailing: const Icon(Icons.navigate_next),
                   onTap: () {
                     _selectBasicSetting(context, "email");
@@ -130,7 +132,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
         ),
         FutureBuilder(
           future: fetchUser(),
-          builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+          builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
             while (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
             }
@@ -138,8 +140,8 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
               print(snapshot.error);
               return const Text("ERROR LOADING USER DATA");
             } else {
-              final UserMock user = snapshot.data!;
-              pickedGender = user.getGender;
+              final UserModelMe user = snapshot.data!;
+              pickedGender = user.gender!;
               return ListTile(
                 leading: const Icon(Icons.person),
                 title: const Text("Gender"),
@@ -151,8 +153,6 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                   onChanged: (String? value) {
                     setState(() {
                       pickedGender = value!;
-                      changeGenderFunction(
-                          client: client, gender: pickedGender, token: token!);
                     });
                   },
                   value: pickedGender,
