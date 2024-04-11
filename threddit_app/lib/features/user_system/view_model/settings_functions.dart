@@ -11,8 +11,8 @@ import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 
-const String urlAndroid = "http://10.0.2.2:3001";
-const String urlWindows = "http://localhost:3001";
+const String urlAndroid = "http://10.0.2.2";
+const String urlWindows = "http://localhost";
 
 /// API call for changing password address:
 /// Recieves the client, current password, new password, confirmed password as parameters,
@@ -37,7 +37,7 @@ Future<int> changePasswordFunction(
     url = urlAndroid;
   }
   http.Response response = await client.patch(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/settings/changepassword"),
+    Uri.parse("$url:8000/api/v1/users/me/settings/changepassword"),
     headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -58,9 +58,14 @@ Future<int> confirmPasswordFunction(
     'confirmed_password': confirmedPassword,
   };
   String bodyEncoded = jsonEncode(body);
-
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/confirm-password"),
+    Uri.parse("$url:3001/api/confirm-password"),
     headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -92,7 +97,7 @@ Future<int> changeEmailFunction(
   String bodyEncoded = jsonEncode(body);
   print(bodyEncoded);
   http.Response response = await client.patch(
-    Uri.parse("http://10.0.0.2:8000/api/v1/users/forgotUsername"),
+    Uri.parse("$url:8000/api/v1/users/forgotUsername"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -124,7 +129,7 @@ Future<int> changeGenderFunction(
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await client.post(
-    Uri.parse("$url/api/change-gender"),
+    Uri.parse("$url:3001/api/change-gender"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -183,35 +188,11 @@ Future<int> blockUser(
     url = urlAndroid;
   }
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/block/$userToBlock"),
+    Uri.parse("$url:8000/api/v1/users/me/block/$userToBlock"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
-  );
-  return response.statusCode;
-}
-
-Future<int> followableOn(
-    {required http.Client client,
-    required bool isEnabled,
-    required String token}) async {
-  Map<String, dynamic> body = {'isOn': isEnabled};
-  String bodyEncoded = jsonEncode(body);
-
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
-  http.Response response = await client.post(
-    Uri.parse("$url/api/followable?user_id=1"),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-    body: bodyEncoded,
   );
   return response.statusCode;
 }
@@ -254,7 +235,7 @@ Future<int> unblockUser(
     url = urlAndroid;
   }
   http.Response response = await client.delete(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/block/$userToUnBlock"),
+    Uri.parse("$url:8000/api/v1/users/me/block/$userToUnBlock"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -301,7 +282,7 @@ class SettingsFetch extends StateNotifier<bool> {
     }
     try {
       http.Response response = await http.get(
-        Uri.parse("$url/api/user-info?user_id=1"),
+        Uri.parse("$url:3001/api/user-info?user_id=1"),
       );
 
       return UserMock.fromJson(jsonDecode(response.body));
@@ -338,7 +319,7 @@ class SettingsFetch extends StateNotifier<bool> {
       url = urlAndroid;
     }
     http.Response response = await client.get(
-      Uri.parse("$url/api/user-info?user_id=2"),
+      Uri.parse("$url:3001/api/user-info?user_id=2"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -356,7 +337,7 @@ class SettingsFetch extends StateNotifier<bool> {
       url = urlAndroid;
     }
     http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:8000/api/v1/users/me/current"),
+      Uri.parse("$url:8000/api/v1/users/me/current"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -375,7 +356,7 @@ class SettingsFetch extends StateNotifier<bool> {
       url = urlAndroid;
     }
     http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:8000/api/v1/users/me/settings"),
+      Uri.parse("$url:8000/api/v1/users/me/settings"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -395,7 +376,7 @@ class SettingsFetch extends StateNotifier<bool> {
       url = urlAndroid;
     }
     http.Response response = await client.get(
-      Uri.parse("$url/api/user-info?user_id=1"),
+      Uri.parse("$url:3001/api/user-info?user_id=1"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -448,7 +429,7 @@ Future<int> changeSetting(
     url = urlAndroid;
   }
   http.Response response = await client.patch(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/settings"),
+    Uri.parse("${url}:8000/api/v1/users/me/settings"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -474,7 +455,7 @@ Future<int> changeCountry(
     url = urlAndroid;
   }
   http.Response response = await client.patch(
-    Uri.parse("http://10.0.0.2:8000/api/v1/users/me/settings/changecountry"),
+    Uri.parse("${url}:8000/api/v1/users/me/settings/changecountry"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
