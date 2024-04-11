@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names
 import 'dart:convert';
 
-import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
 class SharedPost {
   final String? title;
@@ -63,9 +63,6 @@ class SharedPost {
     return SharedPost(
       title: map['title'] != null ? map['title'] as String : null,
       string: map['string'] != null ? map['string'] as String : null,
-      post: map['post'] != null
-          ? Post.fromMap(map['post'] as Map<String, dynamic>)
-          : null,
       postIn: map['postIn'] != null ? map['postIn'] as String : null,
       postInName:
           map['postInName'] != null ? map['postInName'] as String : null,

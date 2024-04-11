@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:http/http.dart' as http;
 
@@ -32,29 +33,31 @@ class SharePosts extends StateNotifier<bool> {
     */
     //final token = await getToken();
 
-    final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'share.json');
+    // final url = Uri.https(
+    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+    //     'share.json');
+    String? token = await getToken();
     try {
       final response = await http.post(
-        url,
+        Uri.parse('http://10.0.2.2:8000/api/v1/posts/share'),
         headers: {
           'Content-Type': 'application/json',
-          //'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer $token',
         },
         body: json.encode(
           {
+            "destination": (sharedPost.postIn == 'user profile')
+                ? ''
+                : sharedPost.postInName,
+            "nsfw": sharedPost.NSFW,
             "title": sharedPost.title,
-            "postIn": sharedPost.postIn,
-            "postInName": sharedPost.postInName,
-            "postID": sharedPost.post?.id,
-            "NSFW": sharedPost.NSFW,
             "spoiler": sharedPost.spoiler,
-            "postCommentNotifications": sharedPost.postCommentNotifications,
+            "postid": sharedPost.post?.id
           },
         ),
       );
-
+      print('SHRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR');
+      print(response.statusCode);
       if (response.statusCode == 200) {
         return right(true);
       } else {

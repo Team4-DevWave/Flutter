@@ -220,6 +220,7 @@ class RouteClass {
       //   final currentpost =
       //       args['currentpost'] as Post; // Extract the community object
       //   final uid = args['uid'] as String;
+
       //   return MaterialPageRoute(
       //       builder: (_) => PostScreen(
       //             currentPost: currentpost,

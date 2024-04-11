@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
-import 'package:threddit_clone/models/post.dart';
+
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -41,6 +42,8 @@ class _SharePostState extends ConsumerState<SharePost> {
 
     return Center(
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.backgroundColor),
         onPressed: () {
           showModalBottomSheet<void>(
               context: context,
@@ -52,7 +55,7 @@ class _SharePostState extends ConsumerState<SharePost> {
               backgroundColor: AppColors.backgroundColor,
               builder: (context) {
                 return Container(
-                  height: 120.h,
+                  height: 150.h,
                   padding: EdgeInsets.fromLTRB(10.w, 10.h, 5.w, 5.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +126,10 @@ class _SharePostState extends ConsumerState<SharePost> {
                 );
               });
         },
-        child: const Text('Share'),
+        child: const Text(
+          'Share',
+          style: TextStyle(color: AppColors.whiteColor),
+        ),
       ),
     );
   }

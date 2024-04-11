@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/route.dart';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedpost.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
+import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -60,9 +63,14 @@ class _FeedUnitShareState extends State<FeedUnitShare> {
             widget.parentPost.textBody ?? '',
             style: AppTextStyles.secondaryTextStyle,
           ),
-          Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: FeedUnitSharedPost(widget.dataOfPost),
+          GestureDetector(
+            onTap: () {
+              //Navigator.pushNamed(context, RouteClass.postScreen,arguments: [])
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: FeedUnitSharedPost(widget.dataOfPost),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -145,7 +153,12 @@ class _FeedUnitShareState extends State<FeedUnitShare> {
                   ),
                 ],
               ),
-              const Icon(Icons.share, color: AppColors.whiteColor),
+              // IconButton(
+              //     onPressed: () {},
+              //     icon: Icon(Icons.share, color: AppColors.whiteColor)),
+              SharePost(
+                post: widget.dataOfPost,
+              ),
             ],
           ),
           const Divider(color: AppColors.whiteHideColor),
