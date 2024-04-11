@@ -30,17 +30,24 @@ class _CommunityModToolsState extends State<CommunityModTools> {
           children: [
             const SettingsTitle(title: "USER MANAGEMENT"),
             ListTile(
-                leading: const FaIcon(FontAwesomeIcons.hammer),
-                title: const Text("Banned users"),
+                leading: const FaIcon(FontAwesomeIcons.shield),
+                title: const Text("Moderators"),
                 titleTextStyle: AppTextStyles.primaryTextStyle,
                 trailing: const Icon(Icons.navigate_next),
-                onTap: () => navigateTo(context, "banned")),
+                onTap: () => navigateTo(context, "approved")),
             ListTile(
                 leading: const FaIcon(FontAwesomeIcons.check),
                 title: const Text("Approved users"),
                 titleTextStyle: AppTextStyles.primaryTextStyle,
                 trailing: const Icon(Icons.navigate_next),
-                onTap: () => navigateTo(context, "approved"))
+                onTap: () => navigateTo(context, "approved")),
+            ListTile(
+                leading: const FaIcon(FontAwesomeIcons.hammer),
+                title: const Text("Banned users"),
+                titleTextStyle: AppTextStyles.primaryTextStyle,
+                trailing: const Icon(Icons.navigate_next),
+                onTap: () => navigateTo(context, "banned")),
+            
           ],
         ));
   }

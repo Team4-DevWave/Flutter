@@ -58,7 +58,7 @@ class _BlockUserScreenState extends ConsumerState<BlockUserScreen> {
               icon: Icon(Icons.add))
         ],
         title: const Text(
-          "Add an approved user",
+          "Block a user",
         ),
       ),
       body: SingleChildScrollView(
@@ -73,7 +73,7 @@ class _BlockUserScreenState extends ConsumerState<BlockUserScreen> {
             Container(
                 margin: EdgeInsets.only(left: 20.w, bottom: 20.h),
                 child: Text(
-                  "This user will be able to submit ccontent to your community",
+                  "This user will be blocked from your account",
                   style: AppTextStyles.secondaryTextStyle,
                 )),
           ],
