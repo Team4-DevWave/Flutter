@@ -1,91 +1,96 @@
 // ignore_for_file: non_constant_identifier_names
+class Vote {
+  final int upvotes;
+  final int downvotes;
+
+  Vote({
+    required this.upvotes,
+    required this.downvotes,
+  });
+
+  factory Vote.fromJson(Map<String, dynamic> json) {
+    return Vote(
+      upvotes: json['upvotes'] ?? 0,
+      downvotes: json['downvotes'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'upvotes': upvotes,
+      'downvotes': downvotes,
+    };
+  }
+}
 
 class Post {
   final String title;
-  final String? postBody;
-  final String? link;
-  final bool NSFW;
-  final bool spoiler;
-  final String? imageUrl;
+  final String? textBody;
+  final String? video;
+  final String? image;
   final String? community;
-  final String? videoUrl;
-  final List<String> upvotes;
-  final List<String> downvotes;
+  final bool spoiler;
+  final bool nsfw;
+  final bool locked;
   final List<String> commentsID;
-  final List<String> mentioned;
   final String userID;
   final DateTime postedTime;
-  final String id;
   final int numViews;
-  final bool locked;
-  final bool approved;
+  final String id;
+  final Vote votes;
 
   Post({
     required this.title,
-    this.postBody,
-    this.link,
-    required this.NSFW,
-    required this.spoiler,
-    this.imageUrl,
+    this.textBody,
     this.community,
-    this.videoUrl,
-    required this.upvotes,
-    required this.downvotes,
+    this.video,
+    this.image,
+    required this.spoiler,
+    required this.nsfw,
+    required this.locked,
     required this.commentsID,
-    required this.mentioned,
     required this.userID,
     required this.postedTime,
-    required this.id,
     required this.numViews,
-    required this.locked,
-    required this.approved,
+    required this.id,
+    required this.votes,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       title: json['title'] ?? '',
-      postBody: json['postBody'],
-      link: json['link'],
-      NSFW: json['NSFW'] ?? false,
+      textBody: json['text_body'] ?? '',
+      video: json['video'],
       spoiler: json['spoiler'] ?? false,
-      imageUrl: json['imageUrl'],
-      community: json['community'],
-      videoUrl: json['videoUrl'],
-      upvotes: List<String>.from(json['upvotes'] ?? []),
-      downvotes: List<String>.from(json['downvotes'] ?? []),
-      commentsID: List<String>.from(json['commentsID'] ?? []),
-      mentioned: List<String>.from(json['mentioned'] ?? []),
-      userID: json['uid'] ?? '',
-      postedTime: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : DateTime.now(),
-      id: json['_id'] ?? '',
-      numViews: json['numViews'] ?? 0,
+      nsfw: json['nsfw'] ?? false,
       locked: json['locked'] ?? false,
-      approved: json['approved'] ?? false,
+      commentsID: List<String>.from(json['commentsID'] ?? []),
+      userID: json['userID'] ?? '',
+      postedTime: json['postedTime'] != null
+          ? DateTime.parse(json['postedTime'])
+          : DateTime.now(),
+      numViews: json['numViews'] ?? 0,
+      id: json['_id'] ?? '',
+      votes: Vote.fromJson(json['votes']),
+      community: json['community'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'title': title,
-      'postBody': postBody,
-      'link': link,
-      'NSFW': NSFW,
+      'text_body': textBody,
+      'video': video,
       'spoiler': spoiler,
-      'imageUrl': imageUrl,
-      'community': community,
-      'videoUrl': videoUrl,
-      'upvotes': upvotes,
-      'downvotes': downvotes,
-      'commentsID': commentsID,
-      'mentioned': mentioned,
-      'uid': userID,
-      'createdAt': postedTime.toIso8601String(),
-      '_id': id,
-      'numViews': numViews,
+      'nsfw': nsfw,
       'locked': locked,
-      'approved': approved,
+      'commentsID': commentsID,
+      'userID': userID,
+      'postedTime': postedTime.toIso8601String(),
+      'numViews': numViews,
+      '_id': id,
+      'votes': votes.toJson(),
+      'community': community,
     };
   }
 
@@ -93,7 +98,7 @@ class Post {
 }
 
 class PostApiResponse {
-  final int status;
+  final String status;
   final List<Post> data;
 
   PostApiResponse({

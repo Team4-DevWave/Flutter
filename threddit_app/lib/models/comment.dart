@@ -1,10 +1,32 @@
+class Vote {
+  final int upvotes;
+  final int downvotes;
+
+  Vote({
+    required this.upvotes,
+    required this.downvotes,
+  });
+
+  factory Vote.fromJson(Map<String, dynamic> json) {
+    return Vote(
+      upvotes: json['upvotes'] ?? 0,
+      downvotes: json['downvotes'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'upvotes': upvotes,
+      'downvotes': downvotes,
+    };
+  }
+}
+
 class Comment {
   final String user;
   final String content;
   final DateTime createdAt;
-  final int votes;
-  final List<String> upvotes;
-  final List<String> downvotes;
+  final Vote votes;
   final String post;
   final bool hidden;
   final bool saved;
@@ -18,8 +40,6 @@ class Comment {
     required this.content,
     required this.createdAt,
     required this.votes,
-    required this.upvotes,
-    required this.downvotes,
     required this.post,
     required this.hidden,
     required this.saved,
@@ -34,9 +54,7 @@ class Comment {
       user: json['user'],
       content: json['content'],
       createdAt: DateTime.parse(json['createdAt']),
-      votes: json['votes'],
-      upvotes: List<String>.from(json['upvotes']),
-      downvotes: List<String>.from(json['downvotes']),
+      votes: Vote.fromJson(json['votes']),
       post: json['post'],
       hidden: json['hidden'],
       saved: json['saved'],
@@ -51,9 +69,7 @@ class Comment {
       'user': user,
       'content': content,
       'createdAt': createdAt.toIso8601String(),
-      'votes': votes,
-      'upvotes': upvotes,
-      'downvotes': downvotes,
+      'votes': votes.toJson(),
       'post': post,
       'hidden': hidden,
       'saved': saved,

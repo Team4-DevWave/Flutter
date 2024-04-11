@@ -22,9 +22,9 @@ class _PostClassicState extends ConsumerState<PostClassic> {
 late VideoPlayerController _controller;
 void initState() {
     super.initState();
-    if (widget.post.videoUrl != null) {
+    if (widget.post.video != null) {
       _controller = VideoPlayerController.networkUrl(
-        Uri.parse(widget.post.videoUrl!),
+        Uri.parse(widget.post.video!),
       )..initialize().then((_) {
           setState(() {});
         });
@@ -137,140 +137,11 @@ void initState() {
                   ],
                 ),
               ),
-              if(widget.post.videoUrl != null || widget.post.imageUrl!=null )Column()
+              if(widget.post.video != null || widget.post.image!=null )Column()
                   
             ],
           ),
-          Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    //upVotePost(ref);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_upward_outlined,
-                    size: 30,
-                  ),
-                  color: widget.post.upvotes.contains(widget.uid)
-                      ? const Color.fromARGB(255, 217, 77, 67)
-                      : Colors.white,
-                ),
-                Text(
-                  '${widget.post.upvotes.length - widget.post.downvotes.length == 0 ? "vote" : widget.post.upvotes.length - widget.post.downvotes.length}',
-                  style: AppTextStyles.primaryTextStyle
-                      .copyWith(color: AppColors.whiteColor),
-                ),
-                IconButton(
-                  onPressed: () {
-                    //downVotePost(ref);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_downward_outlined,
-                    size: 30,
-                  ),
-                  color: widget.post.downvotes.contains(widget.uid)
-                      ? const Color.fromARGB(255, 97, 137, 212)
-                      : Colors.white,
-                ),
-                IconButton(
-                    onPressed: widget.onCommentPressed,
-                    icon: const Icon(Icons.comment)),
-                Text(
-                    '${widget.post.commentsID.isEmpty ? "comment" : widget.post.commentsID.length}',
-                    style: AppTextStyles.primaryTextStyle
-                        .copyWith(color: AppColors.whiteColor)),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: 
-                      widget.uid == widget.post.userID?[
-                        IconButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                            context: context,
-                            backgroundColor: AppColors.backgroundColor,
-                            builder: (context) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  
-                                  ListTile(
-                                    title: Text( widget.post.spoiler?
-                                      'UnMark Spoiler':'Mark Spoiler',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: const Icon(Icons.warning_rounded),
-                                    onTap: () {},
-                                  ),
-                                  ListTile(
-                                    title: const Text(
-                                      'Lock Comments',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: const Icon(Icons.lock),
-                                    onTap: () {},
-                                  ),
-                                  ListTile(
-                                    title: Text(widget.post.NSFW?
-                                      'UnMark NSFW':'Mark NSFW',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: const Icon(Icons.copy),
-                                    onTap: () {},
-                                  ),
-                                  ListTile(
-                                    title: const Text(
-                                      'Distinguish as moderator',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: const Icon(
-                                      Icons.star_outline_outlined,
-                                      
-                                    ),
-                                    onTap: () {
-                                      
-                                    },
-                                  ),
-                                  ListTile(
-                                    title: const Text(
-                                      'Remove post',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: const Icon(
-                                      Icons.delete,
-                                      
-                                    ),
-                                    onTap: () {},
-                                  ),
-                                  ListTile(
-                                    title: const Text(
-                                      'Remove as spam',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: const Icon(Icons.folder_delete_outlined),
-                                    onTap: () {},
-                                  ),
-                                  ListTile(
-                                    title: const Text(
-                                      'Approve',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    leading: const Icon(Icons.verified_user_rounded),
-                                    onTap: () {},
-                                  )
-                                ],
-                              );
-                            });
-                            }, icon: const Icon(Icons.add_moderator_sharp)),
-                            IconButton(onPressed: (){},icon: Icon(Icons.insights,color: Colors.purple,),)]:[
-                    
-                        ElevatedButton.icon(onPressed: (){}, icon: Icon(Icons.ios_share_rounded,color: Colors.white,),label: Text("Share"),style: ElevatedButton.styleFrom(backgroundColor: Colors.transparent,foregroundColor: Colors.white),),
-                            
-                    ],
-                  ),
-                )
-              ],
-            )
+          
         ],
       ),
    );
