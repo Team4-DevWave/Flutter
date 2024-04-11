@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -17,9 +20,10 @@ class CommunitiesTiles extends ConsumerStatefulWidget {
 }
 
 class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
-  Future<List<String>>? _userCommunitiesData;
+  List<List<String>>? _userCommunitiesData;
   List<String>? _favouritesList;
   Map<String, bool>? _isFavouriteSub;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -30,15 +34,24 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
 
   Future<void> _initializeData() async {
     // Fetch user communities data
-    _userCommunitiesData = UserCommunitiesAPI().getUserCommunities();
-    await _userCommunitiesData; // Wait for userFollowingData to be fetched
-    _isFavouriteSub = {};
-    _userCommunitiesData?.then((value) {
-      for (String user in value) {
-        _isFavouriteSub![user] = _favouritesList!.contains(user);
-      }
-      setState(() {}); // Trigger a rebuild after initializing data
+    setState(() {
+      isLoading = true;
     });
+    final response =
+        await ref.read(userCommunitisProvider.notifier).getUserCommunities();
+    response.fold(
+        (failure) =>
+            showSnackBar(navigatorKey.currentContext!, failure.message),
+        (list) {
+      _userCommunitiesData = list;
+      isLoading = false;
+    });
+    // Wait for userFollowingData to be fetched
+    _isFavouriteSub = {};
+    for (final value in _userCommunitiesData!) {
+      _isFavouriteSub![value[0]] = _favouritesList!.contains(value[0]);
+    }
+    // Trigger a rebuild after initializing data
   }
 
   Future<void> _getFavourites() async {
@@ -49,20 +62,12 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
         .update((state) => _favouritesList!);
   }
 
-  // Future<void> _fetchUserCommunitiesData() async {
-  //   _userCommunitiesData = UserCommunitiesAPI().getUserCommunities();
-  //   // Wait for the user communities data to be fetched
-  //   await _userCommunitiesData;
-  // }
-
   Future<void> _updateIsFavouriteSub() async {
     if (_favouritesList != null) {
       _isFavouriteSub = {};
-      _userCommunitiesData?.then((value) {
-        for (String user in value) {
-          _isFavouriteSub![user] = _favouritesList!.contains(user);
-        }
-      });
+      for (final value in _userCommunitiesData!) {
+        _isFavouriteSub![value[0]] = _favouritesList!.contains(value[0]);
+      }
       setState(() {});
     }
   }
@@ -114,56 +119,40 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<String>>(
-        future: _userCommunitiesData,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            List<String> dataList = snapshot.data ?? [];
-            return ExpansionTile(
-              title: Text(
-                widget.title,
-                style: AppTextStyles.primaryTextStyle,
-              ),
-              children: [
-                ListView.builder(
-                  itemCount: dataList.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      splashColor: AppColors.whiteColor,
-                      child: ListTile(
-                        title: Text(dataList[index],
-                            style: AppTextStyles.secondaryTextStyle
-                                .copyWith(fontSize: 14)),
-
-                        /// There should be an icon with the data of community but it will be
-                        /// implemented when the community class is made
-                        onTap: () {
-                          ///go to the community/user's profile screen
-                         
-                        },
-                        trailing: IconButton(
-                          onPressed: () => _onStarPressed(dataList[index]),
-                          icon: _isFavouriteSub?[dataList[index]] == false
-                              ? const Icon(
-                                  Icons.star_border_rounded,
-                                  size: 24,
-                                )
-                              : const Icon(
-                                  Icons.star_rounded,
-                                  color: AppColors.whiteGlowColor,
-                                  size: 24,
-                                ),
-                        ),
-                      ),
-                    );
+    return ExpansionTile(
+        title: Text(
+          widget.title,
+          style: AppTextStyles.primaryTextStyle,
+        ),
+        children: [
+          if (!isLoading)
+            ..._userCommunitiesData!.map((community) => ListTile(
+                  onTap: () {
+                    ///go to the community/user's profile screen
+                    Navigator.pushNamed(context, RouteClass.communityScreen);
                   },
-                )
-              ],
-            );
-          }
-        });
+                  leading: CircleAvatar(
+                    radius: 10,
+                    backgroundImage: NetworkImage(community[0]),
+                  ),
+                  title: Text(community[0],
+                      style: AppTextStyles.primaryTextStyle.copyWith(
+                        fontSize: 20.spMin,
+                      )),
+                  trailing: IconButton(
+                    onPressed: () => _onStarPressed(community[0]),
+                    icon: _isFavouriteSub?[community[0]] == false
+                        ? const Icon(
+                            Icons.star_border_rounded,
+                            size: 24,
+                          )
+                        : const Icon(
+                            Icons.star_rounded,
+                            color: AppColors.whiteGlowColor,
+                            size: 24,
+                          ),
+                  ),
+                ))
+        ]);
   }
 }
