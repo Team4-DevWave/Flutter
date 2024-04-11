@@ -2,6 +2,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -29,13 +30,16 @@ class BasicSettings extends ConsumerStatefulWidget {
 
 class _BasicSettingsState extends ConsumerState<BasicSettings> {
   final client = http.Client();
+  String? token;
   String pickedGender = genders.first;
   Country selectedCountry = Country.worldWide;
   void _selectBasicSetting(BuildContext context, String settingName) {
     if (settingName == "email") {
       Navigator.pushNamed(context, RouteClass.updateEmailScreen)
           .then((value) => setState(() {
-                ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+                ref
+                    .watch(settingsFetchProvider.notifier)
+                    .getUserInfo(client: client, token: token!);
               }));
     } else if (settingName == "password") {
       Navigator.pushNamed(context, RouteClass.changePasswordScreen);
@@ -44,9 +48,27 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
 
   Future<UserMock> fetchUser() async {
     setState(() {
-      ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+      ref
+          .watch(settingsFetchProvider.notifier)
+          .getUserInfo(client: client, token: token!);
     });
-    return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+    return ref
+        .watch(settingsFetchProvider.notifier)
+        .getUserInfo(client: client, token: token!);
+  }
+
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
+    setState(() {
+      token = result!;
+    });
+  }
+
+  @override
+  void initState() {
+    getUserToken();
+    super.initState();
   }
 
   @override
@@ -130,7 +152,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                     setState(() {
                       pickedGender = value!;
                       changeGenderFunction(
-                          client: client, gender: pickedGender);
+                          client: client, gender: pickedGender, token: token!);
                     });
                   },
                   value: pickedGender,

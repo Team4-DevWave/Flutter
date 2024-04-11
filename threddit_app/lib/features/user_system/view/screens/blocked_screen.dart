@@ -4,23 +4,28 @@ import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/text_styles.dart';
+import "package:threddit_clone/features/user_system/model/token_storage.dart";
 
 /// A placeholder screen that should show the accounts blocked by a user.
 class BlockedScreen extends ConsumerStatefulWidget {
   const BlockedScreen({super.key});
-
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _BlockedScreenState();
 }
 
 class _BlockedScreenState extends ConsumerState<BlockedScreen> {
+  String? token;
   final client = http.Client();
   List<UserMock> usernames = [];
   Future<UserMock> fetchBlockedUser() async {
     setState(() {
-      ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+      ref
+          .watch(settingsFetchProvider.notifier)
+          .getBlockedUsers(client: client, token: token!);
     });
-    return ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+    return ref
+        .watch(settingsFetchProvider.notifier)
+        .getBlockedUsers(client: client, token: token!);
   }
 
   void search(query) async {
@@ -30,8 +35,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
       });
       return;
     }
-    final UserMock blockedUser =
-        await ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+    final UserMock blockedUser = await ref
+        .watch(settingsFetchProvider.notifier)
+        .getBlockedUsers(client: client, token: token!);
     final List<UserMock> blockedUsers = [blockedUser];
     final List<UserMock> results = await ref
         .watch(settingsFetchProvider.notifier)
@@ -42,6 +48,20 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
               .any((blocked) => blocked.getUsername == user.getUsername))
           .toList();
     });
+  }
+
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
+    setState(() {
+      token = result!;
+    });
+  }
+
+  @override
+  void initState() {
+    getUserToken();
+    super.initState();
   }
 
   @override
@@ -94,7 +114,8 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                       unblockUser(
                                           client: client,
                                           userToUnBlock:
-                                              users[index].getUsername);
+                                              users[index].getUsername,
+                                          token: token!);
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -124,10 +145,14 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                               final username = usernames[index].getUsername;
                               if (usernames[index].getBlocked) {
                                 unblockUser(
-                                    client: client, userToUnBlock: username);
+                                    client: client,
+                                    userToUnBlock: username,
+                                    token: token!);
                               } else {
                                 blockUser(
-                                    client: client, userToBlock: username);
+                                    client: client,
+                                    userToBlock: username,
+                                    token: token!);
                               }
                               setState(() {
                                 usernames[index] = usernames[index].copyWith(

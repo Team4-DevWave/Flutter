@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/screens/blocked_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -18,7 +19,7 @@ class Safety extends ConsumerStatefulWidget {
 
 class _SafetyState extends ConsumerState<Safety> {
   final client = http.Client();
-
+  String? token = "";
   void _blockedAccounts(BuildContext context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (ctx) => const BlockedScreen()));
@@ -27,15 +28,24 @@ class _SafetyState extends ConsumerState<Safety> {
   bool isFollowableEnabled = false;
 
   @override
-  void initState() {
+  void initState()  {
+    ///getUserToken();
     super.initState();
     ref
         .read(settingsFetchProvider.notifier)
-        .getFollowableSetting(client)
+        .getFollowableSetting(client: client, token: token!)
         .then((value) {
       setState(() {
         isFollowableEnabled = value;
       });
+    });
+  }
+
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
+    setState(() {
+      token = result!;
     });
   }
 
@@ -65,7 +75,7 @@ class _SafetyState extends ConsumerState<Safety> {
             onChanged: (bool? value) {
               setState(() {
                 isFollowableEnabled = value!;
-                followableOn(client: client, isEnabled: value);
+                followableOn(client: client, isEnabled: value, token: token!);
               });
             },
           ),

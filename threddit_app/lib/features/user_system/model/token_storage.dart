@@ -41,7 +41,7 @@ final textSizeProvider =
 class TextSize extends StateNotifier<bool> {
   final Ref ref;
   TextSize(this.ref) : super(false);
-
+  
   Future<double?> getTextSize() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     double? size = prefs.getDouble('textSize');

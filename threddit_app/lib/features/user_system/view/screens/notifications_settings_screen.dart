@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/enable_setting.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
@@ -18,24 +19,38 @@ class NotificationsSettingsScreen extends ConsumerStatefulWidget {
 class _NotificationsSettingsScreenState
     extends ConsumerState<NotificationsSettingsScreen> {
   final client = http.Client();
+  String? token;
   Future<bool> isNotificationEnabled() async {
     setState(() {
-      ref.watch(settingsFetchProvider.notifier).getNotificationSetting(client);
+      ref.watch(settingsFetchProvider.notifier).getNotificationSetting(client: client, token: token!);
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getNotificationSetting(client);
+        .getNotificationSetting(client: client, token: token!);
+  }
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
+    setState(() {
+      token = result!;
+    });
+  }
+  @override
+  void initState() {
+    getUserToken();
+    super.initState();
   }
 
   void toggleNotificationSettings(bool isEnabled) async {
-    notificationOn(client: client, isEnabled: isEnabled);
+    notificationOn(client: client, isEnabled: isEnabled, token: token!);
     setState(() {
-      ref.watch(settingsFetchProvider.notifier).getNotificationSetting(client);
+      ref.watch(settingsFetchProvider.notifier).getNotificationSetting(client: client, token: token!);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    getUserToken();
     return Scaffold(
       appBar: AppBar(title: const Text("Notifications")),
       body: Padding(

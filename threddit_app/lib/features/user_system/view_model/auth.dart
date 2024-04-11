@@ -271,7 +271,7 @@ class Auth extends StateNotifier<bool> {
         'login.json');
     try {
       final response = await http.post(
-        url,
+        Uri.parse("10.0.2.2:8000/api/v1/users/login"),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -499,7 +499,8 @@ class Auth extends StateNotifier<bool> {
       return right(false);
     }
   }
-FutureEmailCheck<bool> connectWithGoogle() async {
+
+  FutureEmailCheck<bool> connectWithGoogle() async {
     final _authService = AuthService();
     final String? userToken;
     final User? user;
@@ -544,8 +545,7 @@ FutureEmailCheck<bool> connectWithGoogle() async {
     UserModel? currentUser = ref.read(userProvider)!;
 
     /// Create a new user with the updated email
-    UserModel updatedUser =
-        currentUser.copyWith(token: userToken);
+    UserModel updatedUser = currentUser.copyWith(token: userToken);
 
     /// Update the userProvider state with the new user
     ref.read(userProvider.notifier).state = updatedUser;

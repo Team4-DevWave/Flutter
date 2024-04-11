@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
+import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -26,10 +28,13 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   final client = http.Client();
+  late String token;
 
   Future<UserSettings> fetchUser(http.Client client) async {
-    final userSettings =
-        ref.watch(settingsFetchProvider.notifier).getSettings(client);
+    final userSettings = ref
+        .watch(settingsFetchProvider.notifier)
+        .getSettings(client: client, token: token);
+        final user = await userSettings;
     return userSettings;
   }
 
@@ -41,12 +46,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     Navigator.pushNamed(context, RouteClass.textSize);
   }
 
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
+    setState(() {
+      token = result!;
+    });
+  }
+  @override
+  void initState() {
+    getUserToken();
+    super.initState();
+  }
+
   String currentThumbnail = "Community default";
   bool volumeOff = false;
   bool recentOn = false;
   String commentSorting = "Best";
   @override
   Widget build(BuildContext context) {
+    //getUserToken();
     return Scaffold(
         appBar: AppBar(title: const Text("Settings")),
         body: ListView(children: [
@@ -62,7 +81,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               } else {
                 final UserSettings user = snapshot.data!;
                 String pickedView = user.feedSettings.globalContentView;
-
+                print(user.userProfile.displayName);
                 return ListView(shrinkWrap: true, children: [
                   ListTile(
                     leading: const Icon(Icons.person),
@@ -86,7 +105,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       onChanged: (String? value) {
                         setState(() {
                           pickedView = value!;
-                          changeSetting(client: client, change: pickedView);
+                          changeSetting(
+                              client: client,
+                              change: pickedView,
+                              token: token);
                         });
                       },
                       value: user.feedSettings.globalContentView,
@@ -165,88 +187,88 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               subtitle: Text(commentSorting),
               titleTextStyle: AppTextStyles.primaryTextStyle,
               trailing: const Icon(Icons.arrow_downward),
-                  onTap: () {
-                    showModalBottomSheet(
-                      backgroundColor: AppColors.backgroundColor,
-                      context: context,
-                      builder: (context) => Wrap(
-                        children: [
-                          RadioListTile<String>(
-                            title: Text(
-                              "Best",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                            value: "Best",
-                            groupValue: commentSorting,
-                            onChanged: (value) => setState(() {
-                              commentSorting = value!;
-                              Navigator.pop(context);
-                            }),
-                          ),
-                          RadioListTile<String>(
-                            title: Text(
-                              "Top",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                            value: "Top",
-                            groupValue: commentSorting,
-                            onChanged: (value) => setState(() {
-                              commentSorting = value!;
-                              Navigator.pop(context);
-                            }),
-                          ),
-                          RadioListTile<String>(
-                            title: Text(
-                              "New",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                            value: "New",
-                            groupValue: commentSorting,
-                            onChanged: (value) => setState(() {
-                              commentSorting = value!;
-                              Navigator.pop(context);
-                            }),
-                          ),
-                          RadioListTile<String>(
-                            title: Text(
-                              "Controversial",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                            value: "Controversial",
-                            groupValue: commentSorting,
-                            onChanged: (value) => setState(() {
-                              commentSorting = value!;
-                              Navigator.pop(context);
-                            }),
-                          ),
-                          RadioListTile<String>(
-                            title: Text(
-                              "Old",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                            value: "Old",
-                            groupValue: commentSorting,
-                            onChanged: (value) => setState(() {
-                              commentSorting = value!;
-                              Navigator.pop(context);
-                            }),
-                          ),
-                          RadioListTile<String>(
-                            title: Text(
-                              "Q&A",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                            value: "Q&A",
-                            groupValue: commentSorting,
-                            onChanged: (value) => setState(() {
-                              commentSorting = value!;
-                              Navigator.pop(context);
-                            }),
-                          ),
-                        ],
+              onTap: () {
+                showModalBottomSheet(
+                  backgroundColor: AppColors.backgroundColor,
+                  context: context,
+                  builder: (context) => Wrap(
+                    children: [
+                      RadioListTile<String>(
+                        title: Text(
+                          "Best",
+                          style: AppTextStyles.primaryTextStyle,
+                        ),
+                        value: "Best",
+                        groupValue: commentSorting,
+                        onChanged: (value) => setState(() {
+                          commentSorting = value!;
+                          Navigator.pop(context);
+                        }),
                       ),
-                    );
-                  }),
+                      RadioListTile<String>(
+                        title: Text(
+                          "Top",
+                          style: AppTextStyles.primaryTextStyle,
+                        ),
+                        value: "Top",
+                        groupValue: commentSorting,
+                        onChanged: (value) => setState(() {
+                          commentSorting = value!;
+                          Navigator.pop(context);
+                        }),
+                      ),
+                      RadioListTile<String>(
+                        title: Text(
+                          "New",
+                          style: AppTextStyles.primaryTextStyle,
+                        ),
+                        value: "New",
+                        groupValue: commentSorting,
+                        onChanged: (value) => setState(() {
+                          commentSorting = value!;
+                          Navigator.pop(context);
+                        }),
+                      ),
+                      RadioListTile<String>(
+                        title: Text(
+                          "Controversial",
+                          style: AppTextStyles.primaryTextStyle,
+                        ),
+                        value: "Controversial",
+                        groupValue: commentSorting,
+                        onChanged: (value) => setState(() {
+                          commentSorting = value!;
+                          Navigator.pop(context);
+                        }),
+                      ),
+                      RadioListTile<String>(
+                        title: Text(
+                          "Old",
+                          style: AppTextStyles.primaryTextStyle,
+                        ),
+                        value: "Old",
+                        groupValue: commentSorting,
+                        onChanged: (value) => setState(() {
+                          commentSorting = value!;
+                          Navigator.pop(context);
+                        }),
+                      ),
+                      RadioListTile<String>(
+                        title: Text(
+                          "Q&A",
+                          style: AppTextStyles.primaryTextStyle,
+                        ),
+                        value: "Q&A",
+                        groupValue: commentSorting,
+                        onChanged: (value) => setState(() {
+                          commentSorting = value!;
+                          Navigator.pop(context);
+                        }),
+                      ),
+                    ],
+                  ),
+                );
+              }),
           ListTile(
             leading: const Icon(Icons.delete),
             title: const Text("Clear local history"),
