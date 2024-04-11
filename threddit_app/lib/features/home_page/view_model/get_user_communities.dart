@@ -25,19 +25,15 @@ class UserCommunities extends StateNotifier<bool> {
   FutureEither<List<List<String>>> getUserCommunities() async {
     try {
       Response res = await get(Uri.parse(communitiesURL));
-      print("alooooooo from status code");
       print(res.statusCode);
 
       if (res.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(res.body);
-        print('DA7dooooooooooooooooooooo7');
         print(body);
         List<List<String>> communitiedData =
             (body["userSubreddits"] as List<dynamic>)
                 .map((e) => List<String>.from(e))
                 .toList();
-
-        print("aloooooooooo from data");
 
         // List<List<String>> communitiedData  = jsonDecode(res.body)["userSubreddits"];
         print(communitiedData);
