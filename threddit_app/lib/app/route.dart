@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/post/view/cross_post.dart';
-import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approve_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approved_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
-import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
-import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
@@ -45,7 +42,6 @@ import 'package:threddit_clone/features/user_system/view/screens/interests_scree
 import 'package:threddit_clone/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_clone/features/post/view/choose_community.dart';
 
-import '../features/user_system/view/screens/login_screen.dart';
 // import 'package:threddit_clone/models/post.dart';
 
 class RouteClass {
