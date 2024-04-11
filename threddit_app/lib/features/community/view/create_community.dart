@@ -1,9 +1,22 @@
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:threddit_clone/app/route.dart";
-import "package:threddit_clone/models/community.dart";
 import "package:threddit_clone/features/community/view%20model/community_provider.dart";
 import "package:threddit_clone/theme/colors.dart";
+
+ enum CommunityType { Restricted, Public, Private }
+  CommunityType _parseCommunityType(String? type) {
+    switch (type) {
+      case 'Restricted':
+        return CommunityType.Restricted;
+      case 'Public':
+        return CommunityType.Public;
+      case 'Private':
+        return CommunityType.Private;
+      default:
+        return CommunityType.Public;
+    }
+  }
 
 class CreateCommunity extends ConsumerStatefulWidget {
   const CreateCommunity({super.key, required this.uid});
@@ -17,6 +30,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
   final TextEditingController _communityNameController =
       TextEditingController();
   String communityType = 'Public';
+  // ignore: unused_field
   CommunityType _type = CommunityType.Public;
   bool is18plus = false;
 
@@ -204,7 +218,15 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: FilledButton(
-                        onPressed: createCommunity,
+                        onPressed: (){createCommunity;
+                         Navigator.pop(context);
+                         Navigator.pushNamed(
+                              context, RouteClass.communityScreen,arguments:{
+                                'uid': widget.uid,
+                                'id':"Sample Subreddit"
+                              });
+                             
+                        },
                         style: const ButtonStyle(
                             backgroundColor:
                                 MaterialStatePropertyAll<Color>(Colors.blue)),

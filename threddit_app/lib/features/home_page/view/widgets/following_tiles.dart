@@ -144,12 +144,7 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                         onTap: () {
                           ///go to the user's profile screen
 
-                          //temporarily using this to go to a post screen //Aya
-                          Navigator.pushNamed(context, RouteClass.postScreen,
-                              arguments: {
-                                'currentpost': posts[0],
-                                'uid': 'user2',
-                              });
+                        
                         },
                         trailing: IconButton(
                           onPressed: () => _onStarPressed(dataList[index]),

@@ -61,8 +61,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                        leading: Icon(Icons.exit_to_app),
-                        title: Text('Leave Community'),
+                        leading: const Icon(Icons.exit_to_app),
+                        title: const Text('Leave Community'),
                         onTap: () {
                           var leaveFunction =
                               ref.watch(unjoinCommunityProvider(widget.id));
@@ -103,20 +103,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 ),
                 Positioned(
                   top: 53.h,
-                  left: 5.w,
+                  
                   right: 5.w,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  
                     children: [
-                      IconButton.filled(
-                        onPressed: () {},
-                        icon: const Icon(Icons.arrow_back),
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color.fromARGB(223, 49, 49, 49)),
-                        ),
-                      ),
-                      const SizedBox(width: 205),
+                    
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -153,7 +145,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.sp),
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
@@ -167,8 +159,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           radius: 30,
                         ),
                       ),
-                      const SizedBox(
-                        width: 12,
+                       SizedBox(
+                        width: 12.w,
                       ),
                       Expanded(
                         child: Column(
@@ -193,8 +185,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: SizedBox(
-                          width: 110,
-                          height: 33,
+                          width: 110.w,
+                          height: 33.h,
                           child: FilledButton(
                             onPressed: () async {
                               await getUserState(community);
@@ -220,7 +212,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     height: 10,
                   ),
                   Text(
-                    '${community.subredditDescription}',
+                    community.subredditDescription,
                     style: const TextStyle(color: Colors.white),
                   ),
                   Row(
@@ -262,9 +254,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               width: double.infinity.w,
               child: Row(
                 children: [
-                  const SizedBox(width: 16), // Add some spacing
+                  SizedBox(width: 16.w), // Add some spacing
 
-                  const SizedBox(width: 8), // Add some spacing
+                  SizedBox(width: 8.w), // Add some spacing
                   DropdownButton<String>(
                     value: _selectedItem,
                     onChanged: (value) {
@@ -287,8 +279,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         child: Row(
                           children: [
                             Icon(_getIcon(value),
-                                color: Colors.white), // Get corresponding icon
-                            const SizedBox(width: 8), // Add some spacing
+                                color: Colors.white), 
+                            SizedBox(width: 8.w),
                             Text(
                               value,
                               style: const TextStyle(color: Colors.white),

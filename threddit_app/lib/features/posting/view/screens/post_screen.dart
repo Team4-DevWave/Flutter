@@ -4,10 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
-import 'package:threddit_clone/features/posting/view/widgets/post_card_home_screen.dart';
-import 'package:threddit_clone/features/posting/view/widgets/post_classic_view.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
-//import 'package:threddit_clone/models/post101.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -35,7 +32,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         isScrollControlled: true,
         context: context,
         builder: (ctx) => AddComment(
-              postID: widget.currentPost.id!,
+              postID: widget.currentPost.id,
               uid: widget.uid,
             ));
   }
@@ -242,7 +239,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                       Expanded(
                         child: ListView(
                           children: [
-                            PostClassic(                             
+                            PostCard(                             
                               post: widget.currentPost,
                               uid: widget.uid,
                               onCommentPressed: _openAddCommentOverlay,
