@@ -12,7 +12,7 @@ class StartScreen extends ConsumerWidget {
     ref.watch(textSizeProvider.notifier).getFontOption();
     ref.watch(textSizeProvider.notifier).getTextSize();
     return FutureBuilder<String?>(
-      future: getToken(), 
+      future: getToken(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Loading();
@@ -23,6 +23,9 @@ class StartScreen extends ConsumerWidget {
           if (token == null) {
             return const RegisterScreen();
           } else {
+            print("Token");
+            print(token);
+            print("Token222");
             return const MainScreenLayout();
           }
         }

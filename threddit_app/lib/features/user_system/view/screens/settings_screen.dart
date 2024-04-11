@@ -34,7 +34,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final userSettings = ref
         .watch(settingsFetchProvider.notifier)
         .getSettings(client: client, token: token);
-        final user = await userSettings;
+    final user = await userSettings;
     return userSettings;
   }
 
@@ -48,11 +48,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future getUserToken() async {
     String? result = await getToken();
-    print(result);
+
     setState(() {
       token = result!;
     });
   }
+
   @override
   void initState() {
     getUserToken();
@@ -106,9 +107,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         setState(() {
                           pickedView = value!;
                           changeSetting(
-                              client: client,
-                              change: pickedView,
-                              token: token);
+                              client: client, change: pickedView, token: token);
                         });
                       },
                       value: user.feedSettings.globalContentView,

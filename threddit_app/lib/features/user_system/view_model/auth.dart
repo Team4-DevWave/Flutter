@@ -283,7 +283,7 @@ class Auth extends StateNotifier<bool> {
       );
       print(response.statusCode);
       if (response.statusCode == 200) {
-        saveToken(response.body.toString());
+        saveToken(jsonDecode(response.body)['token']);
         return right(true);
       } else {
         return right(false);

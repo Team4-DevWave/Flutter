@@ -357,12 +357,13 @@ class SettingsFetch extends StateNotifier<bool> {
       url = urlAndroid;
     }
     http.Response response = await client.get(
-      Uri.parse("$url/api/settings"),
+      Uri.parse("http://10.0.2.2:8000/api/v1/users/me/settings"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
+
     return UserSettings.fromJson(jsonDecode(response.body));
   }
 

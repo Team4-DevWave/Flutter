@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-  import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 
-SharedPreferences?prefs;
+SharedPreferences? prefs;
 
 Future<void> saveToken(String token) async {
   prefs = await SharedPreferences.getInstance();
@@ -41,14 +41,12 @@ final textSizeProvider =
 class TextSize extends StateNotifier<bool> {
   final Ref ref;
   TextSize(this.ref) : super(false);
-  
+
   Future<double?> getTextSize() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     double? size = prefs.getDouble('textSize');
     if (size != null) {
-      ref
-          .watch(sliderProvider.notifier)
-          .update((state) => size);
+      ref.watch(sliderProvider.notifier).update((state) => size);
     }
     return prefs.getDouble('textSize');
   }
@@ -57,9 +55,7 @@ class TextSize extends StateNotifier<bool> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? isOn = prefs.getBool('textOn');
     if (isOn != null) {
-      ref
-          .watch(enableResizeProvider.notifier)
-          .update((state) => isOn);
+      ref.watch(enableResizeProvider.notifier).update((state) => isOn);
     }
     return prefs.getBool('textOn');
   }
