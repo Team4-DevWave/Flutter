@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
@@ -48,7 +47,7 @@ class _ConnectedAcccountsState extends ConsumerState<ConnectedAccounts> {
                   onPressed: () async {
                     final response = await ref
                         .watch(authProvider.notifier)
-                        .signInWithGoogle();
+                        .connectWithGoogle();
 
                     response.fold(
                         (l) => showSnackBar(
@@ -56,10 +55,8 @@ class _ConnectedAcccountsState extends ConsumerState<ConnectedAccounts> {
                       if (r) {
                         Navigator.pushNamed(
                             context, RouteClass.confirmPasswordScreen);
-                        UserModel? currentUser = ref.read(userProvider)!;
-                        UserModel updatedUser =
-                            currentUser.copyWith(isGoogle: true);
-                        ref.read(userProvider.notifier).state = updatedUser;
+                        
+                        
                       }
                     });
                   },

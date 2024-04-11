@@ -4,8 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/user_system/model/user_data.dart';
+import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
+
+const String urlAndroid = "http://10.0.2.2:3001";
+const String urlWindows = "http://localhost:3001";
 
 /// API call for changing password address:
 /// Recieves the client, current password, new password, confirmed password as parameters,
@@ -13,20 +19,26 @@ import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 /// Returns the status Code
 Future<int> changePasswordFunction(
     {required http.Client client,
+    required String token,
     required String currentPassword,
     required String newPassword,
     required String confirmedPassword}) async {
   Map<String, dynamic> body = {
-    'user_id': 1,
     'current_password': currentPassword,
     'new_password': newPassword,
     'confirmed_password': confirmedPassword,
   };
   String bodyEncoded = jsonEncode(body);
-
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/change-password"),
+    Uri.parse("$url/api/change-password"),
     headers: {
+      'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     },
     body: bodyEncoded,
@@ -36,7 +48,9 @@ Future<int> changePasswordFunction(
 }
 
 Future<int> confirmPasswordFunction(
-    {required http.Client client, required String confirmedPassword}) async {
+    {required http.Client client,
+    required String confirmedPassword,
+    required String token}) async {
   Map<String, dynamic> body = {
     'user_id': 1,
     'confirmed_password': confirmedPassword,
@@ -46,6 +60,7 @@ Future<int> confirmPasswordFunction(
   http.Response response = await client.post(
     Uri.parse("http://10.0.2.2:3001/api/confirm-password"),
     headers: {
+      'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     },
     body: bodyEncoded,
@@ -58,23 +73,30 @@ Future<int> confirmPasswordFunction(
 /// Recieves the client, current password, the new email as parameters,
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status Code
-Future<int> changeEmailFunction({
-  required http.Client client,
-  required String currentPassword,
-  required String newEmail,
-}) async {
+Future<int> changeEmailFunction(
+    {required http.Client client,
+    required String currentPassword,
+    required String newEmail,
+    required String token}) async {
   Map<String, dynamic> body = {
     'user_id': 1,
     'current_password': currentPassword,
     'new_email': newEmail,
   };
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
 
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/change-email"),
+    Uri.parse("$url/api/change-email"),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
@@ -86,18 +108,26 @@ Future<int> changeEmailFunction({
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status code.
 Future<int> changeGenderFunction(
-    {required http.Client client, required String gender}) async {
+    {required http.Client client,
+    required String gender,
+    required String token}) async {
   Map<String, dynamic> body = {
     'user_id': 1,
     'gender': gender,
   };
-
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/change-gender"),
+    Uri.parse("$url/api/change-gender"),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
@@ -119,25 +149,15 @@ void checkEmailUpdateResponse(
 
 /// API Call for checking the Password Change Response,
 /// Depending on the Status Code returns an alert to inform the User.
-void checkPasswordChangeResponse(
-    {required BuildContext context,
-    required Future<int> statusCodeFuture}) async {
+void checkPasswordChangeResponse({
+  required BuildContext context,
+  required Future<int> statusCodeFuture,
+}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
     showAlert("Password was changed correctly!", context);
   } else {
     showAlert("Password was incorrect.", context);
-  }
-}
-
-void checkPasswordConfirmResponse(
-    {required BuildContext context,
-    required Future<int> statusCodeFuture}) async {
-  int statusCode = await statusCodeFuture;
-  if (statusCode == 200) {
-    Navigator.pop(context);
-  } else {
-    showAlert("Invalid Credintals", context);
   }
 }
 
@@ -152,14 +172,22 @@ void checkBlockResponse(
 }
 
 Future<int> blockUser(
-    {required http.Client client, required String userToBlock}) async {
+    {required http.Client client,
+    required String userToBlock,
+    required String token}) async {
   Map<String, dynamic> body = {'blockUsername': userToBlock};
   String bodyEncoded = jsonEncode(body);
-
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/block-user"),
+    Uri.parse("$url/api/block-user/$userToBlock"),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
@@ -167,46 +195,71 @@ Future<int> blockUser(
 }
 
 Future<int> followableOn(
-    {required http.Client client, required bool isEnabled}) async {
+    {required http.Client client,
+    required bool isEnabled,
+    required String token}) async {
   Map<String, dynamic> body = {'isOn': isEnabled};
   String bodyEncoded = jsonEncode(body);
 
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://localhost:3001/api/followable?user_id=1"),
+    Uri.parse("$url/api/followable?user_id=1"),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
   return response.statusCode;
 }
 
 Future<int> notificationOn(
-    {required http.Client client, required bool isEnabled}) async {
+    {required http.Client client,
+    required bool isEnabled,
+    required String token}) async {
   Map<String, dynamic> body = {'isOn': isEnabled};
   String bodyEncoded = jsonEncode(body);
 
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/notification?user_id=1"),
+    Uri.parse("$url/api/notification?user_id=1"),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
   return response.statusCode;
 }
 
 Future<int> unblockUser(
-    {required http.Client client, required String userToUnBlock}) async {
+    {required http.Client client,
+    required String userToUnBlock,
+    required String token}) async {
   Map<String, dynamic> body = {'blockUsername': userToUnBlock};
   String bodyEncoded = jsonEncode(body);
-
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
   http.Response response = await client.post(
-    Uri.parse("http://10.0.2.2:3001/api/unblock-user"),
+    Uri.parse("$url/api/unblock-user"),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
@@ -219,27 +272,41 @@ final settingsFetchProvider =
 class SettingsFetch extends StateNotifier<bool> {
   final Ref ref;
   SettingsFetch(this.ref) : super(false);
+  void checkPasswordConfirmResponse(
+      {required BuildContext context,
+      required Future<int> statusCodeFuture}) async {
+    int statusCode = await statusCodeFuture;
+    if (statusCode == 200) {
+      UserModel? currentUser = ref.read(userProvider)!;
+      UserModel updatedUser = currentUser.copyWith(isGoogle: true);
+      ref.read(userProvider.notifier).state = updatedUser;
+      Navigator.pop(context);
+    } else {
+      showAlert("Invalid Credintals", context);
+    }
+  }
 
   /// API Call to fetch the User data
 
-  Future<UserMock> getUserInfo(http.Client client) async {
+  Future<UserMock> getUserInfo(
+      {required http.Client client, required String token}) async {
     // final url = Uri.https(
     //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
     //     'users.json');
     //final url = Uri.http("localhost:3001/api/user-info?user_id=1");
-    final url;
+    final String url;
     if (Platform.isWindows) {
-      url = Uri.parse("http://localhost:3001/api/user-info?user_id=1");
+      url = urlWindows;
     } else {
-      url = Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1");
+      url = urlAndroid;
     }
     try {
-      http.Response response = await http.get(url);
+      http.Response response = await http.get(
+        Uri.parse("$url/api/user-info?user_id=1"),
+      );
 
-      print(response.body);
       return UserMock.fromJson(jsonDecode(response.body));
     } catch (e) {
-      print(e.toString());
       return UserMock.fromJson(jsonDecode('sd'));
     }
   }
@@ -259,41 +326,108 @@ class SettingsFetch extends StateNotifier<bool> {
           username: username,
           isBlocked: blocked,
           gender: ''));
-      print(users);
-      print(data);
     }
     return users;
   }
 
-  Future<UserMock> getBlockedUsers(http.Client client) async {
+  Future<UserMock> getBlockedUsers(
+      {required http.Client client, required String token}) async {
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
     http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=2"),
+      Uri.parse("$url/api/user-info?user_id=2"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
     return UserMock.fromJson(jsonDecode(response.body));
   }
 
-  Future<bool> getNotificationSetting(http.Client client) async {
+  Future<UserSettings> getSettings(
+      {required http.Client client, required String token}) async {
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
     http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:3001/api/user-info?user_id=1"),
+      Uri.parse("$url/api/settings"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    return UserSettings.fromJson(jsonDecode(response.body));
+  }
+
+  Future<bool> getNotificationSetting(
+      {required http.Client client, required String token}) async {
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
+    http.Response response = await client.get(
+      Uri.parse("$url/api/user-info?user_id=1"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
     Map<String, dynamic> userData = jsonDecode(response.body);
     final body = jsonDecode(response.body);
-    print(body);
     final bool isNotificationEnabled = userData['notification'];
-    print(isNotificationEnabled);
     return isNotificationEnabled;
   }
 
-  Future<bool> getFollowableSetting(http.Client client) async {
+  Future<bool> getFollowableSetting(
+      {required http.Client client, required String token}) async {
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
     http.Response response = await client.get(
-      Uri.parse("http://localhost:3001/api/user-info?user_id=1"),
+      Uri.parse("$url/api/user-info?user_id=1"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
     );
-    print('AMOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
     Map<String, dynamic> userData = jsonDecode(response.body);
     final body = jsonDecode(response.body);
-    print(body);
     final bool isFollowableEnabled = userData['isFollowable'];
-    print(isFollowableEnabled);
     return isFollowableEnabled;
   }
+}
+
+Future<int> changeSetting(
+    {required http.Client client,
+    required String change,
+    required String token}) async {
+  Map<String, dynamic> body = {'globalContentView': change};
+  String bodyEncoded = jsonEncode(body);
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  http.Response response = await client.patch(
+    Uri.parse("$url/api/settings"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: bodyEncoded,
+  );
+  return response.statusCode;
 }

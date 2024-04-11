@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/features/listing/model/post_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 import 'package:threddit_clone/features/listing/view_model/fetching_posts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:threddit_clone/main.dart';
-import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/models/post.dart';
 
 class FeedWidget extends StatefulWidget {
   final String feedID;

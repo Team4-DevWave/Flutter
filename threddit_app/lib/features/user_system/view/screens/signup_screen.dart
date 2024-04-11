@@ -50,7 +50,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         if (isEmailUsed) {
           showSnackBar(navigatorKey.currentContext!, 'email is already found');
         } else {
-          ref.read(authProvider.notifier).saveEmail(passController.text);
+          ref.read(authProvider.notifier).saveEmail(emailController.text);
           Navigator.pushNamed(
               navigatorKey.currentContext!, RouteClass.aboutMeScreen);
         }

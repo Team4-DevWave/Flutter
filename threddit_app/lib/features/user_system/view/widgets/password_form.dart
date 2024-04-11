@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 
 /// Creates a password text form, takes the form name as a parameter.
 // ignore: must_be_immutable
@@ -23,6 +24,7 @@ class _PasswordFormState extends State<PasswordForm> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: AppTextStyles.primaryTextStyle,
       onChanged: getPassword,
       decoration: InputDecoration(
         labelText: widget.formName,
