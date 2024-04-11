@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/user_system/model/user_data.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
@@ -24,9 +25,9 @@ Future<int> changePasswordFunction(
     required String newPassword,
     required String confirmedPassword}) async {
   Map<String, dynamic> body = {
-    'current_password': currentPassword,
-    'new_password': newPassword,
-    'confirmed_password': confirmedPassword,
+    'currentPassword': currentPassword,
+    'newPassword': newPassword,
+    'passwordConfirm': confirmedPassword,
   };
   String bodyEncoded = jsonEncode(body);
   final String url;
@@ -35,14 +36,15 @@ Future<int> changePasswordFunction(
   } else {
     url = urlAndroid;
   }
-  http.Response response = await client.post(
-    Uri.parse("$url/api/change-password"),
+  http.Response response = await client.patch(
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/settings/changepassword"),
     headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
     },
     body: bodyEncoded,
   );
+  print(response.statusCode);
 
   return response.statusCode;
 }
@@ -75,13 +77,10 @@ Future<int> confirmPasswordFunction(
 /// Returns the status Code
 Future<int> changeEmailFunction(
     {required http.Client client,
-    required String currentPassword,
     required String newEmail,
     required String token}) async {
   Map<String, dynamic> body = {
-    'user_id': 1,
-    'current_password': currentPassword,
-    'new_email': newEmail,
+    'email': newEmail,
   };
   final String url;
   if (Platform.isWindows) {
@@ -91,15 +90,16 @@ Future<int> changeEmailFunction(
   }
 
   String bodyEncoded = jsonEncode(body);
-
-  http.Response response = await client.post(
-    Uri.parse("$url/api/change-email"),
+  print(bodyEncoded);
+  http.Response response = await client.patch(
+    Uri.parse("http://10.0.0.2:8000/api/v1/users/forgotUsername"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
+  print(response.statusCode);
   return response.statusCode;
 }
 
@@ -348,6 +348,25 @@ class SettingsFetch extends StateNotifier<bool> {
     return UserMock.fromJson(jsonDecode(response.body));
   }
 
+  Future<UserModelMe> getMe(
+      {required http.Client client, required String token}) async {
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
+    http.Response response = await client.get(
+      Uri.parse("http://10.0.2.2:8000/api/v1/users/me/current"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print(response.body);
+    return UserModelMe.fromJson(jsonDecode(response.body));
+  }
+
   Future<UserSettings> getSettings(
       {required http.Client client, required String token}) async {
     final String url;
@@ -363,7 +382,8 @@ class SettingsFetch extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
-
+    print(response.statusCode);
+    print(UserSettings.fromJson(jsonDecode(response.body)));
     return UserSettings.fromJson(jsonDecode(response.body));
   }
 
@@ -412,9 +432,15 @@ class SettingsFetch extends StateNotifier<bool> {
 
 Future<int> changeSetting(
     {required http.Client client,
-    required String change,
+    required change,
+    required String settingsName,
+    required String settingsType,
     required String token}) async {
-  Map<String, dynamic> body = {'globalContentView': change};
+  Map<String, dynamic> body = {
+    settingsType: {
+      settingsName: change,
+    }
+  };
   String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
@@ -423,12 +449,13 @@ Future<int> changeSetting(
     url = urlAndroid;
   }
   http.Response response = await client.patch(
-    Uri.parse("$url/api/settings"),
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/settings"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
+  print(response.statusCode);
   return response.statusCode;
 }

@@ -5,6 +5,7 @@ import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -37,10 +38,10 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         navigatorKey.currentContext!, RouteClass.forgotPasswordScreen);
   }
 
-  Future<UserMock> fetchUser() async {
+  Future<UserModelMe> fetchUser() async {
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getUserInfo(client: client, token: token!);
+        .getMe(client: client, token: token!);
   }
 
   Future getUserToken() async {
@@ -70,7 +71,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             children: [
               FutureBuilder(
                 future: fetchUser(),
-                builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+                builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
                   while (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   }
@@ -78,14 +79,14 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     print(snapshot.error);
                     return const Text("ERROR LOADING USER DATA");
                   } else {
-                    final UserMock user = snapshot.data!;
+                    final UserModelMe user = snapshot.data!;
                     return Row(
                       children: [
                         const Icon(
                           Icons.person,
                           color: AppColors.redditOrangeColor,
                         ),
-                        Text("u/${user.getUsername}",
+                        Text("u/${user.username}",
                             style: AppTextStyles.primaryTextStyle),
                       ],
                     );

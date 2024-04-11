@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
@@ -30,15 +31,15 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
   final EmailForm newEmailForm = EmailForm("New email address");
   final client = http.Client();
   String? token;
-  Future<UserMock> fetchUser() async {
+  Future<UserModelMe> fetchUser() async {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getUserInfo(client: client, token: token!);
+          .getMe(client: client, token: token!);
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getUserInfo(client: client, token: token!);
+        .getMe(client: client, token: token!);
   }
 
   Future getUserToken() async {
@@ -68,7 +69,7 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
           children: [
             FutureBuilder(
               future: fetchUser(),
-              builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+              builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
                 while (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 }
@@ -76,7 +77,7 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
                   print(snapshot.error);
                   return const Text("ERROR LOADING USER DATA");
                 } else {
-                  final UserMock user = snapshot.data!;
+                  final UserModelMe user = snapshot.data!;
                   return Row(
                     children: [
                       const Icon(
@@ -86,10 +87,10 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("u/${user.getUsername}",
+                            Text("u/${user.username}",
                                 style: AppTextStyles.primaryTextStyle),
                             Text(
-                              user.getEmail,
+                              user.email!,
                               style: AppTextStyles.primaryTextStyle,
                             ),
                           ])
@@ -113,7 +114,6 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
                     currentPasswordForm.enteredPassword;
                 final statusCode = changeEmailFunction(
                     client: client,
-                    currentPassword: currentPassword,
                     newEmail: newEmail,
                     token: token!);
                 checkEmailUpdateResponse(
