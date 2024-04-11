@@ -456,3 +456,29 @@ Future<int> changeSetting(
   print(response.statusCode);
   return response.statusCode;
 }
+
+Future<int> changeCountry(
+    {required http.Client client,
+    required String country,
+    required String token}) async {
+  Map<String, dynamic> body = {
+    "country": country,
+  };
+  String bodyEncoded = jsonEncode(body);
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  http.Response response = await client.patch(
+    Uri.parse("http://10.0.0.2:8000/api/v1/users/me/settings/changecountry"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: bodyEncoded,
+  );
+  print(response.statusCode);
+  return response.statusCode;
+}
