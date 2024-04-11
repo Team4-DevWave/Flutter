@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
-import 'package:threddit_clone/features/listing/view_model/fetching_posts.dart';
+
 import 'package:lottie/lottie.dart';
-import 'package:threddit_clone/models/post.dart';
 
 class FeedWidget extends StatefulWidget {
   final String feedID;
@@ -32,9 +33,10 @@ class _FeedWidgetState extends State<FeedWidget> {
   }
 
   Future _fetchPosts() async {
-    final response = await fetchPosts(widget.feedID, _currentPage);
+    final response = await fetchPosts();
+
     setState(() {
-      _posts.addAll(response.data);
+      _posts.addAll(response.posts);
       _currentPage++;
     });
   }
@@ -59,7 +61,11 @@ class _FeedWidgetState extends State<FeedWidget> {
             itemCount: _posts.length + 1,
             itemBuilder: (context, index) {
               if (index < _posts.length) {
-                return FeedUnit(_posts[index]);
+                return _posts[index].parentPost != null
+                    ? FeedUnitShare(
+                        dataOfPost: _posts[index].parentPost!,
+                        parentPost: _posts[index])
+                    : FeedUnit(_posts[index]);
               } else {
                 return SizedBox(
                   height: 75.h,
