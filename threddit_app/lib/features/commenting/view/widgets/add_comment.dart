@@ -22,7 +22,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
         (postId: widget.postID, content: _commentController.text, uid: widget.uid)));
     addCommentFuture;
     setState(() {});
-    //Navigator.pop(context); // Close the bottom sheet after adding the comment
+    Navigator.pop(context); // Close the bottom sheet after adding the comment
   }
 
   @override

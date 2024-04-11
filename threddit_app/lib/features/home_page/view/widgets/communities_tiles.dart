@@ -142,8 +142,7 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                         /// implemented when the community class is made
                         onTap: () {
                           ///go to the community/user's profile screen
-                          Navigator.pushNamed(
-                              context, RouteClass.communityScreen);
+                         
                         },
                         trailing: IconButton(
                           onPressed: () => _onStarPressed(dataList[index]),
