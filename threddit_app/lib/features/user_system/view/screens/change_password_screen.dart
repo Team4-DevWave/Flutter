@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -30,13 +32,30 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   final PasswordForm newPasswordForm = PasswordForm("New password");
   final PasswordForm confirmPasswordForm = PasswordForm("Confirm new password");
   final client = http.Client();
+  String? token;
   void _forgetPassword() {
     Navigator.pushNamed(
         navigatorKey.currentContext!, RouteClass.forgotPasswordScreen);
   }
 
-  Future<UserMock> fetchUser() async {
-    return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+  Future<UserModelMe> fetchUser() async {
+    return ref
+        .watch(settingsFetchProvider.notifier)
+        .getMe(client: client, token: token!);
+  }
+
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
+    setState(() {
+      token = result!;
+    });
+  }
+
+  @override
+  void initState() {
+    getUserToken();
+    super.initState();
   }
 
   @override
@@ -52,7 +71,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             children: [
               FutureBuilder(
                 future: fetchUser(),
-                builder: (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+                builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
                   while (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   }
@@ -60,14 +79,14 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     print(snapshot.error);
                     return const Text("ERROR LOADING USER DATA");
                   } else {
-                    final UserMock user = snapshot.data!;
+                    final UserModelMe user = snapshot.data!;
                     return Row(
                       children: [
                         const Icon(
                           Icons.person,
                           color: AppColors.redditOrangeColor,
                         ),
-                        Text("u/${user.getUsername}",
+                        Text("u/${user.username}",
                             style: AppTextStyles.primaryTextStyle),
                       ],
                     );
@@ -102,7 +121,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                         client: client,
                         currentPassword: currentPassword,
                         newPassword: newPassword,
-                        confirmedPassword: confirmedPassword);
+                        confirmedPassword: confirmedPassword,
+                        token: token!);
                     checkPasswordChangeResponse(
                         context: context, statusCodeFuture: statusCode);
                   }

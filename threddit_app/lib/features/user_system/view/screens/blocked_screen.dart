@@ -1,75 +1,99 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import "package:threddit_clone/features/user_system/model/token_storage.dart";
 
 /// A placeholder screen that should show the accounts blocked by a user.
 class BlockedScreen extends ConsumerStatefulWidget {
   const BlockedScreen({super.key});
-
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _BlockedScreenState();
 }
 
 class _BlockedScreenState extends ConsumerState<BlockedScreen> {
+  String? token;
   final client = http.Client();
   List<UserMock> usernames = [];
-  Future<UserMock> fetchBlockedUser() async {
+  Future<UserModelMe> fetchBlockedUser() async {
     setState(() {
-      ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+      ref
+          .watch(settingsFetchProvider.notifier)
+          .getMe(client: client, token: token!);
     });
-    return ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
+    return ref
+        .watch(settingsFetchProvider.notifier)
+        .getMe(client: client, token: token!);
   }
 
-  void search(query) async {
+  void block(query) async {
     if (query.isEmpty) {
       setState(() {
         usernames.clear();
       });
       return;
     }
-    final UserMock blockedUser =
-        await ref.watch(settingsFetchProvider.notifier).getBlockedUsers(client);
-    final List<UserMock> blockedUsers = [blockedUser];
-    final List<UserMock> results = await ref
-        .watch(settingsFetchProvider.notifier)
-        .searchUsers(client, query);
+    // final UserModelMe blockedUser = await ref
+    //     .watch(settingsFetchProvider.notifier)
+    //     .getMe(client: client, token: token!);
+    // final List<UserModelMe> blockedUsers = [blockedUser];
+    // final List<UserMock> results = await ref
+    //     .watch(settingsFetchProvider.notifier)
+    //     .searchUsers(client, query);
+    // setState(() {
+    //   usernames = results
+    //       .where((user) => !blockedUsers
+    //           .any((blocked) => blocked.getUsername == user.getUsername))
+    //       .toList();
+    // });
+  }
+
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
     setState(() {
-      usernames = results
-          .where((user) => !blockedUsers
-              .any((blocked) => blocked.getUsername == user.getUsername))
-          .toList();
+      token = result!;
     });
+  }
+
+  @override
+  void initState() {
+    getUserToken();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, RouteClass.blockUserScreen)
+                      .then((value) {
+                    setState(() {
+                      ref
+                          .watch(settingsFetchProvider.notifier)
+                          .getMe(client: client, token: token!);
+                    });
+                  });
+                },
+                icon: const Icon(Icons.add))
+          ],
           title: const Text("Blocked accounts"),
         ),
         body: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(children: [
-              TextField(
-                onChanged: (query) {
-                  search(query);
-                },
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  labelText: 'Block new account',
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
               FutureBuilder(
                   future: fetchBlockedUser(),
                   builder:
-                      (BuildContext ctx, AsyncSnapshot<UserMock> snapshot) {
+                      (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
                     while (
                         snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
@@ -78,22 +102,29 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                       print(snapshot.error);
                       return const Text("ERROR LOADING USER DATA");
                     } else {
-                      final UserMock user = snapshot.data!;
-                      List<UserMock> users = [user];
-                      if (user.getBlocked) {
+                      final UserModelMe user = snapshot.data!;
+                      final List<BlockedUsers>? users = user.blockedUsers;
+                      print(users);
+                      if (users!.isEmpty) {
+                        return SizedBox();
+                      } else {
                         return ListView.builder(
                             shrinkWrap: true,
-                            itemCount: 1,
+                            itemCount: users.length,
                             itemBuilder: (context, index) => ListTile(
-                                title: Text(users[index].getUsername,
+                                title: Text(users[index].username,
                                     style: AppTextStyles.secondaryTextStyle),
                                 trailing: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    await unblockUser(
+                                      client: client,
+                                      userToUnBlock: users[index].username,
+                                      token: token!,
+                                    );
                                     setState(() {
-                                      unblockUser(
-                                          client: client,
-                                          userToUnBlock:
-                                              users[index].getUsername);
+                                      ref
+                                          .watch(settingsFetchProvider.notifier)
+                                          .getMe(client: client, token: token!);
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -103,8 +134,6 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                           255, 0, 140, 255)),
                                   child: const Text("Unblock"),
                                 )));
-                      } else {
-                        return const SizedBox();
                       }
                     }
                   }),
@@ -123,10 +152,14 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                               final username = usernames[index].getUsername;
                               if (usernames[index].getBlocked) {
                                 unblockUser(
-                                    client: client, userToUnBlock: username);
+                                    client: client,
+                                    userToUnBlock: username,
+                                    token: token!);
                               } else {
                                 blockUser(
-                                    client: client, userToBlock: username);
+                                    client: client,
+                                    userToBlock: username,
+                                    token: token!);
                               }
                               setState(() {
                                 usernames[index] = usernames[index].copyWith(

@@ -10,7 +10,7 @@ class AddVideoWidget extends ConsumerStatefulWidget {
   const AddVideoWidget(
       {super.key, required this.onPressed, required this.videoPath});
   final Function()? onPressed;
-  final String videoPath;
+  final String videoPath; 
 
   @override
   ConsumerState<AddVideoWidget> createState() => _AddVideoWidgetState();

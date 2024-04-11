@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,13 +16,13 @@ class AddComment extends ConsumerStatefulWidget {
 
 class _AddComment extends ConsumerState<AddComment> {
   final _commentController = TextEditingController();
-
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   void addComment(WidgetRef ref) async {
     final addCommentFuture = ref.read(addCommentProvider(
-        [_commentController.text, widget.postID, widget.uid]));
+        (postId: widget.postID, content: _commentController.text, uid: widget.uid)));
     addCommentFuture;
     setState(() {});
-    //Navigator.pop(context); // Close the bottom sheet after adding the comment
+    Navigator.pop(context); // Close the bottom sheet after adding the comment
   }
 
   @override
@@ -49,6 +50,7 @@ class _AddComment extends ConsumerState<AddComment> {
                     children: [
                       Expanded(
                         child: TextField(
+                          key: navigatorKey,
                           controller: _commentController,
                           onTap: () {},
                           decoration: const InputDecoration(

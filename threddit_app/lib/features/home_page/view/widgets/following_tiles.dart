@@ -1,73 +1,116 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_following.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/posting/data/data.dart';
+import 'package:threddit_clone/models/data.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class FollowingTiles extends StatefulWidget {
+class FollowingTiles extends ConsumerStatefulWidget {
   const FollowingTiles({super.key, required this.title});
   final String title;
   @override
-  State<FollowingTiles> createState() => _FollowingTilesState();
+  ConsumerState<FollowingTiles> createState() => _FollowingTilesState();
 }
 
-class _FollowingTilesState extends State<FollowingTiles> {
-  late Future<List<String>> _userFollowingData;
+class _FollowingTilesState extends ConsumerState<FollowingTiles> {
+  Future<List<String>>?_userFollowingData;
   List<String>? _favouritesList;
-  Map<String, bool>? _isFavouriteMap;
+  Map<String, bool>? _isFavouriteFollowing;
 
-  void _getFavourites() async {
+  @override
+  void initState() {
+    super.initState();
+
+    ///fetches the data when the widget is intialized
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _getFavourites();
+    _userFollowingData = UserFollowingAPI().getUserFollowing();
+    await _userFollowingData; // Wait for userFollowingData to be fetched
+    _isFavouriteFollowing = {};
+    _userFollowingData?.then((value) {
+      for (String user in value) {
+        _isFavouriteFollowing![user] = _favouritesList!.contains(user);
+      }
+      setState(() {}); // Trigger a rebuild after initializing data
+    });
+  }
+
+  Future<void> _getFavourites() async {
     prefs = await SharedPreferences.getInstance();
+    _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
+    print("alo from get");
+    print(ref
+        .read(favouriteListProvider.notifier)
+        .update((state) => _favouritesList!));
+  }
 
-      _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
-      print(_favouritesList);
+  // Future<void> _fetchFollowingData() async {
+  //   _userFollowingData = UserFollowingAPI().getUserFollowing();
+  //   await _userFollowingData;
+  // }
+
+  Future<void> _updateIsFavouriteSub() async {
+    if (_favouritesList != null) {
+      _isFavouriteFollowing = {};
+      _userFollowingData?.then((value) {
+        for (String user in value) {
+          _isFavouriteFollowing![user] = _favouritesList!.contains(user);
+        }
+      });
+      setState(() {});
+    }
   }
 
   void _removeFavourites(String toBeRemoved) async {
     prefs = await SharedPreferences.getInstance();
     if (prefs != null) {
-      // _favouritesList = prefs!.getStringList(PrefConstants.favourites) ?? [];
-        _favouritesList?.removeWhere((element) => element == toBeRemoved);
-        prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
+      _favouritesList?.removeWhere((element) => element == toBeRemoved);
+      prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
+      print("alo from remove");
+      print(ref
+          .read(favouriteListProvider.notifier)
+          .update((state) => _favouritesList!));
     }
-  }
-
-  void _onStarPressed(String selected) {
-    setState(() {
-      if (_isFavouriteMap?[selected] == true) {
-        _isFavouriteMap![selected] = false;
-        _removeFavourites(selected);
-      } else {
-        _isFavouriteMap![selected] = true;
-        _setFavourites(selected);
-      }
-    });
-    print(_favouritesList);
-    print(_isFavouriteMap);
   }
 
   void _setFavourites(String favourite) async {
     prefs = await SharedPreferences.getInstance();
     if (prefs != null) {
-      setState(() {
-        // _favouritesList = prefs!.getStringList(PrefConstants.favourites)!;
-        _favouritesList?.add(favourite);
-        prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      });
+      _favouritesList?.add(favourite);
+      prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
+      print("alo from set");
+      print(ref
+          .read(favouriteListProvider.notifier)
+          .update((state) => _favouritesList!));
     }
   }
 
+  void _onStarPressed(String selected) {
+    setState(() {
+      if (_isFavouriteFollowing?[selected] == true) {
+        _isFavouriteFollowing![selected] = false;
+        _removeFavourites(selected);
+        _updateIsFavouriteSub();
+      } else {
+        _isFavouriteFollowing![selected] = true;
+        _setFavourites(selected);
+        _updateIsFavouriteSub();
+      }
+    });
+  }
+
   @override
-  void initState() {
-    ///fetches the data when the widget is intialized
-    _userFollowingData = UserFollowingAPI().getUserFollowing();
-    _getFavourites();
-    _isFavouriteMap = {};
-    super.initState();
+  void didChangeDependencies() {
+    _favouritesList = ref.watch(favouriteListProvider);
+    super.didChangeDependencies();
   }
 
   @override
@@ -100,18 +143,12 @@ class _FollowingTilesState extends State<FollowingTiles> {
                         /// implemented when the community class is made
                         onTap: () {
                           ///go to the user's profile screen
-                          
-                          //temporarily using this to go to a post screen //Aya
-                          Navigator.pushNamed(context, RouteClass.postScreen,
-                              arguments: {
-                                'currentpost': posts[0],
-                                'uid': 'user2',
-                              });
 
+                        
                         },
                         trailing: IconButton(
                           onPressed: () => _onStarPressed(dataList[index]),
-                          icon: _isFavouriteMap?[dataList[index]] ?? false
+                          icon: _isFavouriteFollowing?[dataList[index]] == false
                               ? const Icon(
                                   Icons.star_border_rounded,
                                   size: 24,

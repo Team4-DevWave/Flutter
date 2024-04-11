@@ -91,3 +91,20 @@ class Post {
 
   static fromMap(Map<String, dynamic> map) {}
 }
+
+class PostApiResponse {
+  final int status;
+  final List<Post> data;
+
+  PostApiResponse({
+    required this.status,
+    required this.data,
+  });
+
+  factory PostApiResponse.fromJson(Map<String, dynamic> json) {
+    return PostApiResponse(
+      status: json['status'],
+      data: (json['data'] as List).map((i) => Post.fromJson(i)).toList(),
+    );
+  }
+}

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
-import 'package:threddit_clone/models/fetch_community.dart';
+import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
+import 'package:threddit_clone/models/subreddit.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
   final String id;
@@ -24,29 +26,35 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   @override
   Widget build(BuildContext context) {
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
-    return Scaffold(
-      body: communityAsyncValue.when(
-        data: (community) => buildCommunityScreen(community),
-        loading: () => Center(
-                child: Lottie.asset(
-                  'assets/animation/loading.json',
-                  repeat: true,
-                ),
-              ),
-        error: (error, stack) => Text('Error: $error'),
+    return ScreenUtilInit(
+      child: Scaffold(
+        body: communityAsyncValue.when(
+          data: (community) => buildCommunityScreen(community),
+          loading: () => Center(
+            child: Lottie.asset(
+              'assets/animation/loading.json',
+              repeat: true,
+            ),
+          ),
+          error: (error, stack) => Text('Error: $error'),
+        ),
       ),
     );
   }
 
-  Widget buildCommunityScreen(FetchCommunity community) {
+  Widget buildCommunityScreen(Subreddit community) {
+    community.srLooks.banner ??= "https://htmlcolorcodes.com/assets/images/colors/bright-blue-color-solid-background-1920x1080.png";
+    community.srLooks.icon ??= "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg";
     bool isCurrentUserModerator = community.moderators.contains(widget.uid);
-    bool isCurrentUser = community.listOfMembers.contains(widget.uid);
-    bool getUserState(FetchCommunity community) {
+
+    bool isCurrentUser = community.members.contains(widget.uid);
+
+    bool getUserState(Subreddit community) {
       if (community.moderators.contains(widget.uid)) {
         Navigator.pushNamed(context, RouteClass.communityModTools);
         return true;
       } else {
-        if (community.listOfMembers.contains(widget.uid)) {
+        if (community.members.contains(widget.uid)) {
           showModalBottomSheet(
               context: context,
               builder: (context) {
@@ -54,14 +62,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ListTile(
-                        leading: Icon(Icons.exit_to_app),
-                        title: Text('Leave Community'),
+                        leading: const Icon(Icons.exit_to_app),
+                        title: const Text('Leave Community'),
                         onTap: () {
-                          var leaveFunction =
                               ref.watch(unjoinCommunityProvider(widget.id));
-                          leaveFunction(widget.uid);
+                              community.members.remove(widget.uid);
                           setState(() {});
-                          community.listOfMembers.remove(widget.uid);
                           Navigator.pop(context);
                         }),
                   ],
@@ -69,11 +75,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               });
           return true;
         } else {
-          var JoinFunction = ref.watch(joinCommunityProvider(widget.id));
-          JoinFunction(widget.uid);
+          ref.watch(joinCommunityProvider(widget.id));
+          community.members.add(widget.uid);
           setState(() {});
-          community.listOfMembers.add(widget.uid);
-
           return true;
         }
       }
@@ -83,33 +87,22 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
           SliverAppBar(
-            expandedHeight: 60,
+            expandedHeight: 60.h,
             floating: true,
             snap: true,
             flexibleSpace: Stack(
               children: [
                 Positioned.fill(
                   child: Image.network(
-                    community.communitySettings.subredditBanner,
+                    community.srLooks.banner!,
                     fit: BoxFit.cover,
                   ),
                 ),
                 Positioned(
-                  top: 53,
-                  left: 5,
-                  right: 5,
+                  top: 53.h,
+                  right: 5.w,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      IconButton.filled(
-                        onPressed: () {},
-                        icon: const Icon(Icons.arrow_back),
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color.fromARGB(223, 49, 49, 49)),
-                        ),
-                      ),
-                      const SizedBox(width: 205),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -146,7 +139,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16.sp),
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
@@ -155,26 +148,27 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(community.communitySettings.subredditImage),
+                          backgroundImage: NetworkImage(
+                              community.srLooks.icon!),
                           radius: 30,
                         ),
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: 12.w,
                       ),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'r/${community.subredditTitle}',
+                              'r/${community.name}',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 19,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '${community.listOfMembers.length} members',
+                              '${community.members.length} members',
                               style: const TextStyle(
                                 color: Color.fromARGB(108, 255, 255, 255),
                               ),
@@ -185,8 +179,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: SizedBox(
-                          width: 110,
-                          height: 33,
+                          width: 110.w,
+                          height: 33.h,
                           child: FilledButton(
                             onPressed: () async {
                               await getUserState(community);
@@ -211,8 +205,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(
                     height: 10,
                   ),
+                  community.description!=null?
                   Text(
-                    '${community.subredditDescription}',
+                    community.description!,
+                    style: const TextStyle(color: Colors.white),
+                  ):const Text(
+                    '',
                     style: const TextStyle(color: Colors.white),
                   ),
                   Row(
@@ -250,13 +248,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           SizedBox(
             child: Container(
               color: const Color.fromARGB(130, 12, 12, 12),
-              height: 40,
-              width: double.infinity,
+              height: 40.h,
+              width: double.infinity.w,
               child: Row(
                 children: [
-                  const SizedBox(width: 16), // Add some spacing
+                  SizedBox(width: 16.w), // Add some spacing
 
-                  const SizedBox(width: 8), // Add some spacing
+                  SizedBox(width: 8.w), // Add some spacing
                   DropdownButton<String>(
                     value: _selectedItem,
                     onChanged: (value) {
@@ -271,16 +269,15 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       'Hot Posts',
                       'New Posts',
                       'Top Posts',
-                      'Controversial Posts',
-                      'Rising Posts'
+                      // 'Controversial Posts',
+                      // 'Rising Posts'
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Row(
                           children: [
-                            Icon(_getIcon(value),
-                                color: Colors.white), // Get corresponding icon
-                            const SizedBox(width: 8), // Add some spacing
+                            Icon(_getIcon(value), color: Colors.white),
+                            SizedBox(width: 8.w),
                             Text(
                               value,
                               style: const TextStyle(color: Colors.white),
@@ -294,6 +291,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               ),
             ),
           ),
+          Flexible(child: FeedWidget(feedID: _selectedItem))
         ],
       ),
     );
@@ -307,10 +305,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         return Icons.fiber_new;
       case 'Top Posts':
         return Icons.star;
-      case 'Controversial Posts':
-        return Icons.warning;
-      case 'Rising Posts':
-        return Icons.trending_up;
+      // case 'Controversial Posts':
+      //   return Icons.warning;
+      // case 'Rising Posts':
+      //   return Icons.trending_up;
       default:
         return Icons.whatshot; // Default to hot icon
     }

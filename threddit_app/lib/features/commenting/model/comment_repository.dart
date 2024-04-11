@@ -2,166 +2,144 @@ import 'package:threddit_clone/models/comment.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'package:uuid/uuid.dart';
 
 class CommentRepository {
-Future<List<Comment>> fetchComments(String postId) async {
-  final response = await http.get(Uri.parse('http://192.168.100.249:3000/comments?postId=$postId'));
+var uuid = Uuid();
+Future<Comment> fetchComment(String postId, String commentId, String uid) async { //uid to be changed to token 
+  final String baseUrl = 'http://192.168.100.249:3000/comments?_id=$commentId';
 
-  if (response.statusCode == 200) {
-    final List<dynamic> data = jsonDecode(response.body);
-   
-    List<Comment> comments = data.map((json) => Comment.fromJson(json)).toList();
-   
-    return comments;
-  } else {
-    
-    throw Exception('Failed to load comments');
+  final Map<String, String> headers = {
+    'Content-Type': 'application/json', 
+    //'Authorization': 'Bearer $token',
+  };
 
-  }
+    final http.Response response = await http.get(Uri.parse(baseUrl), headers: headers);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+    final Map<String, dynamic> comment = data.first;
+        return Comment.fromJson(comment);
+    } else {
+    throw Exception('Failed to fetch comment: ${response.statusCode}');
+  
 }
-Stream<List<Comment>> getCommentsStream(String postId) {
-    return Stream.periodic(const Duration(seconds: 10), (_) {
-      return fetchComments(postId);
-    }).asyncMap((_) async => fetchComments(postId));
+}
+Future<List<Comment>> fetchAllComments(List<String> commentIds, String postId, String uid) async { //TODO to be changed to token 
+  final List<Future<Comment>> commentFutures = [];
+
+  for (final commentId in commentIds) {
+    final commentFuture = fetchComment(postId, commentId, uid);
+    commentFutures.add(commentFuture);
   }
 
-  Future<void> addComment(String commentText, String postID, String uid) async {
-    // Create a JSON object representing the comment
-    Map<String, dynamic> commentData = {
-      'text': commentText,
-      'postId': postID,
-      'username': uid,
-      'createdAt': DateTime.now().toIso8601String(),
-      'upvotes': [],
-      'downvotes': [],
-    };
+  final List<Comment> allComments = await Future.wait(commentFutures);
+  return allComments;
+}
 
-    String jsonData = jsonEncode(commentData);
+Stream<List<Comment>> getCommentsStream(List<String> commentIds, String postId, String uid) {
+    return Stream.periodic(const Duration(seconds: 10), (_) {
+      return fetchAllComments(commentIds, postId, uid);
+    }).asyncMap((_) async => fetchAllComments(commentIds, postId, uid));
+  }
 
-    final response = await http.post(
-      Uri.parse('http://192.168.100.249:3000/comments'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonData,
-    );
+ void addComment(String postId, String content, String uid) async {
+  const String baseUrl = 'http://192.168.100.249:3000/comments';
+  Comment comment=Comment(collapsed: false,content: content,createdAt: DateTime.now(),downvotes: [],hidden: false,mentioned: [],post: postId,saved: false,upvotes: [],user: uid,votes: 0,version: 0,id: uuid.v4());
 
-    if (response.statusCode == 201) {
-      print('Comment added successfully');
-      
+  final Map<String, String> headers = {
+    'Content-Type': 'application/json',
+    //'Authorization': 'Bearer $token',
+  };
+  // final Map<String, dynamic> body = {
+  //   'content': content,
+  // };
+  final Map<String, dynamic> body = comment.toJson();
+
+    final http.Response response = await http.post(Uri.parse(baseUrl), headers: headers, body: jsonEncode(body));
+    if (response.statusCode == 200) {
+      print('added comment successfully');
     } else {
       throw Exception('Failed to add comment: ${response.statusCode}');
     }
-  }
+  } 
 
-Future<List<String>> getUpvotes(String commentId) async {
-  
-  final String apiUrl = 'http://192.168.100.249:3000/comments/$commentId';
-  final response = await http.get(Uri.parse(apiUrl));
-  
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> responseData = jsonDecode(response.body);
-    final List<dynamic> upvotes = responseData['upvotes'] ?? [];
-    return upvotes.cast<String>(); // Ensure the upvotes are of type List<String>
-  } else {
-    print('Failed to get upvotes. Error: ${response.reasonPhrase}');
-    return []; // Return an empty list in case of failure
-  }
-}
 
-Future<List<String>> getDownvotes(String commentId) async {
-  
-  final String apiUrl = 'http://192.168.100.249:3000/comments/$commentId';
-  final response = await http.get(Uri.parse(apiUrl));
-  
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> responseData = jsonDecode(response.body);
-    final List<dynamic> downvotes = responseData['downvotes'] ?? [];
-    return downvotes.cast<String>(); // Ensure the upvotes are of type List<String>
-  } else {
-    print('Failed to get downvotes. Error: ${response.reasonPhrase}');
-    return []; // Return an empty list in case of failure
-  }
-}
 
-  Future<void> upVote(Comment comment, String userID) async {
-    List<String>upvotes=await getUpvotes(comment.id);
-    List<String>downvotes=await getDownvotes(comment.id);
+  Future<void> voteComment(String commentId, int voteType,String token) async {
+  try {
+    final url = 'http://192.168.100.249:3000/comments?_id=$commentId';
+    final Map<String, String> headers = {
+    'Content-Type': 'application/json',
+    //'Authorization': 'Bearer $token',
+  };
+    final response = await http.patch(
+      Uri.parse(url),
+      body: jsonEncode({'voteType': voteType}),
+      headers: headers,
+    );
 
-    if (downvotes.contains(userID)) {
-      comment.downvotes.remove(userID);
-      downvotes.remove(userID);
-
-    }
-    if (upvotes.contains(userID)) {
-      comment.upvotes.remove(userID);
-      upvotes.remove(userID);
-      
+    if (response.statusCode == 200) {
+      print("data fteched successfully");
     } else {
-      comment.upvotes.add(userID);
-      upvotes.add(userID);
+      print('Failed to vote on comment: ${response.statusCode}');
     }
+  } catch (e) {
+    print('Error voting on comment: $e');
+  }
+}
 
-    final String apiUrl = 'http://192.168.100.249:3000/comments/${comment.id}';
-    final Map<String, dynamic> data = {
-    'upvotes': upvotes,
-    'downvotes':downvotes,
+Future<void> editComment(String postId, String commentId, String newContent, String uid) async {
+  try {
+    // Construct the URL
+    String url = 'http://192.168.100.249:3000/comments?_id=$commentId';
+
+    Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      //'Authorization': 'Bearer $token',
+    };
+
+    final body = jsonEncode({
+    "content": newContent,
+  });
+    final response = await http.patch(Uri.parse(url), headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      // Comment edited successfully
+      print('Comment edited successfully');
+    } else {
+      // Error occurred
+      print('Failed to edit comment. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+  } catch (e) {
+    print('Error editing comment: $e');
+  }
+}
+
+Future<void> deleteComment(String postId, String commentId, String uid) async {
+  //final url = Uri.parse('http://localhost:8000/api/v1/posts/$postId/comments/$commentId');
+  String url = 'http://192.168.100.249:3000/comments?_id=$commentId';
+
+  final headers = {
+    "Content-Type": "application/json",
+    //"Authorization": "Bearer $token", // Add your token here
   };
 
-  final response = await http.patch(
-    Uri.parse(apiUrl),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(data),
-  );
-
-  if (response.statusCode == 200) {
-  } else {
-    print('Failed to update upvotes. Error: ${response.reasonPhrase}');
-  }
-
-  }
-
-  Future<void> downVote(Comment comment, String userID) async {
-    List<String>upvotes=await getUpvotes(comment.id);
-    List<String>downvotes=await getDownvotes(comment.id);
-
-     if (upvotes.contains(userID)) {
-      comment.upvotes.remove(userID);
-      upvotes.remove(userID);
-      
-    }
-    if (downvotes.contains(userID)) {
-      comment.downvotes.remove(userID);
-      downvotes.remove(userID);
-      
+  try {
+    final response = await http.delete(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      print("Comment deleted successfully.");
     } else {
-      comment.downvotes.add(userID);
-      downvotes.add(userID);
-      
+      print("Failed to delete comment. Status code: ${response.statusCode}");
+      print("Response body: ${response.body}");
     }
-
-    final String apiUrl = 'http://192.168.100.249:3000/comments/${comment.id}';
-    final Map<String, dynamic> data = {
-    'upvotes': upvotes,
-    'downvotes':downvotes,
-  };
-
-  final response = await http.patch(
-    Uri.parse(apiUrl),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(data),
-  );
-
-  if (response.statusCode == 200) {
-  } else {
-    print('Failed to update upvotes. Error: ${response.reasonPhrase}');
+  } catch (e) {
+    print("Error deleting comment: $e");
   }
+}
 
-  }
+
 
 }
+

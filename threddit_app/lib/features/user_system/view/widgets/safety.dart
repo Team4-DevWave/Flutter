@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/screens/blocked_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -18,24 +21,31 @@ class Safety extends ConsumerStatefulWidget {
 
 class _SafetyState extends ConsumerState<Safety> {
   final client = http.Client();
-
+  String? token = "";
   void _blockedAccounts(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => const BlockedScreen()));
+    Navigator.pushNamed(context, RouteClass.blockedScreen);
   }
 
   bool isFollowableEnabled = false;
 
   @override
   void initState() {
+    getUserToken().then((value) => ref
+            .read(settingsFetchProvider.notifier)
+            .getSettings(client: client, token: token!)
+            .then((value) {
+          setState(() {
+            isFollowableEnabled = value.userProfile.allowFollowers;
+          });
+        }));
     super.initState();
-    ref
-        .read(settingsFetchProvider.notifier)
-        .getFollowableSetting(client)
-        .then((value) {
-      setState(() {
-        isFollowableEnabled = value;
-      });
+  }
+
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
+    setState(() {
+      token = result!;
     });
   }
 
@@ -61,12 +71,16 @@ class _SafetyState extends ConsumerState<Safety> {
               "Followers will be notified about posts you make to your profile and see them in their home feed."),
           titleTextStyle: AppTextStyles.primaryTextStyle,
           trailing: Switch(
-            activeColor: const Color.fromARGB(255, 1, 61, 110),
             value: isFollowableEnabled,
             onChanged: (bool? value) {
               setState(() {
                 isFollowableEnabled = value!;
-                followableOn(client: client, isEnabled: value);
+                changeSetting(
+                    client: client,
+                    change: value,
+                    settingsName: "allowFollowers",
+                    settingsType: "userProfile",
+                    token: token!);
               });
             },
           ),

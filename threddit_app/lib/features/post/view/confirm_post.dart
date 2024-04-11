@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,16 +38,23 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
-  List<XFile>? _imagesList;
-  XFile? _video;
+  // ByteData? image;
+  // ByteData? video;
+  String? image;
+  String? video;
+  File? videoFile;
+  File? imageFile;
 
-  Future<void> _pickMulti() async {
-    final pickedList = await picker.pickMultiImage();
-    if (pickedList.isEmpty) return;
+  Future<void> _pickImage() async {
+    final XFile? pickedImage =
+        await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) return;
+    imageFile = File(pickedImage.path);
+    Uint8List imageBytes = await imageFile!.readAsBytes();
     setState(() {
-      _imagesList = pickedList;
+      image = base64Encode(imageBytes);
       isImage = true;
-      ref.read(postDataProvider.notifier).updateImages(_imagesList!);
+      ref.read(postDataProvider.notifier).updateImages(image!);
     });
   }
 
@@ -51,16 +62,18 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
     // If the user does not select a video then return null.
     if (pickedVideo == null) return;
+    videoFile = File(pickedVideo.path);
+    Uint8List videoBytes = await videoFile!.readAsBytes();
     setState(() {
-      _video = pickedVideo;
+      video = base64Encode(videoBytes);
       isVideo = true;
-      ref.read(postDataProvider.notifier).updateVideo(_video!);
+      ref.read(postDataProvider.notifier).updateVideo(video!);
     });
   }
 
   Future<void> _removeImage() async {
     setState(() {
-      _imagesList = null;
+      image = null;
       isImage = false;
     });
   }
@@ -73,7 +86,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
 
   Future<void> _removeVideo() async {
     setState(() {
-      _video = null;
+      video = null;
       isVideo = false;
     });
   }
@@ -93,16 +106,16 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   void didChangeDependencies() {
     final intialData = ref.watch(postDataProvider);
     _titleController = TextEditingController(text: intialData?.title ?? '');
-    if (intialData?.images != null) {
-      _imagesList = intialData?.images;
+    if (intialData?.image != null) {
+      image = intialData?.image!;
       isImage = true;
     }
     if (intialData?.video != null) {
-      _video = intialData?.video;
+      video = intialData?.video;
       isVideo = true;
     }
-    _bodytextController = TextEditingController(text: intialData?.postBody);
-    if (intialData?.link != "") {
+    _bodytextController = TextEditingController(text: intialData?.text_body);
+    if (intialData?.url != "") {
       isLink = true;
     }
     super.didChangeDependencies();
@@ -118,7 +131,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   void resetAll() {
     _titleController = TextEditingController(text: "");
     _bodytextController = TextEditingController(text: "");
-    _imagesList = null;
+    image = null;
     ref.read(postDataProvider.notifier).resetAll();
   }
 
@@ -128,17 +141,18 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     PostData? post = ref.watch(postDataProvider);
 
     Widget buildImageContent() {
-      if (_imagesList == null || isLink || isVideo) {
+      if (image == null || isLink || isVideo) {
         return const SizedBox();
       }
-      return AddImageWidget(onPressed: _removeImage, imagesList: _imagesList!);
+      return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
 
     Widget buildVideoContent() {
-      if (_video == null || isLink || isImage) {
+      if (video == null || isLink || isImage) {
         return const SizedBox();
       }
-      return AddVideoWidget(onPressed: _removeVideo, videoPath: _video!.path);
+      return AddVideoWidget(
+          onPressed: _removeVideo, videoPath: videoFile!.path);
     }
 
     Widget buildLink() {
@@ -172,10 +186,26 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: ClosedButton(resetAll: resetAll, firstScreen: false, titleController: _titleController, isImage: isImage, isLink: isLink, isVideo: isVideo,), 
-        actions: [PostButton(titleController: _titleController)],
-      ),
+          automaticallyImplyLeading: false,
+          leading: ClosedButton(
+            resetAll: resetAll,
+            firstScreen: false,
+            titleController: _titleController,
+            isImage: isImage,
+            isLink: isLink,
+            isVideo: isVideo,
+          ),
+          actions: [
+            if (isImage)
+              PostButton(
+                titleController: _titleController,
+                type: "image",
+              )
+            else if (isLink)
+              PostButton(titleController: _titleController, type: "link")
+            else
+              PostButton(titleController: _titleController, type: "video")
+          ]),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -284,7 +314,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                 labelStyle: TextStyle(
                                     color: AppColors.whiteColor, fontSize: 16)),
                             onChanged: (value) => {
-                                  if (post.postBody != value)
+                                  if (post.text_body != value)
                                     {
                                       ref
                                           .read(postDataProvider.notifier)
@@ -307,7 +337,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
         child: Row(
           children: [
             IconButton(
-              onPressed: (!isLink && !isVideo) ? _pickMulti : () {},
+              onPressed: (!isLink && !isVideo) ? _pickImage : () {},
               icon: const Icon(Icons.image),
               color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor

@@ -1,0 +1,59 @@
+{
+    "status": 1,
+    "data": [
+        {
+            "username": "user1",
+            "time": "1d",
+            "header": "Sunset over the Mountains",
+            "container": "mountain_gallery",
+            "imageLink": "https://plus.unsplash.com/premium_photo-1709311441238-1c83ef3b8d04?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "numberOfComments": 25,
+            "votes": 200
+        },
+        {
+            "username": "user2",
+            "time": "1d",
+            "header": "City Skyline at Night",
+            "container": "city_gallery",
+            "imageLink": "https://images.unsplash.com/photo-1711064644461-e8607629e20e?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "numberOfComments": 15,
+            "votes": 180
+        },
+        {
+            "username": "user3",
+            "time": "1d",
+            "header": "Ocean Waves",
+            "container": "ocean_gallery",
+            "imageLink": "https://images.unsplash.com/photo-1711307391537-e45eb85eac5a?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "numberOfComments": 30,
+            "votes": 220
+        },
+        {
+            "username": "user1",
+            "time": "1d",
+            "header": "Sunset over the Mountains",
+            "container": "mountain_gallery",
+            "imageLink": "https://images.unsplash.com/photo-1711330980173-f308124e153d?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "numberOfComments": 25,
+            "votes": 200
+        },
+        {
+            "username": "user2",
+            "time": "1d",
+            "header": "City Skyline at Night",
+            "container": "city_gallery",
+            "imageLink": "https://images.unsplash.com/photo-1682685796852-aa311b46f50d?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "numberOfComments": 15,
+            "votes": 180
+        },
+        {
+            "username": "user3",
+            "time": "1d",
+            "header": "Ocean Waves",
+            "container": "ocean_gallery",
+            "imageLink": "https://plus.unsplash.com/premium_photo-1709311450714-10ac913ec590?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "numberOfComments": 30,
+            "votes": 220
+        }
+    ]
+}

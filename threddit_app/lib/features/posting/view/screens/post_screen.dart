@@ -3,15 +3,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
-
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
-
-import 'package:threddit_clone/models/post101.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
+import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
-
+import 'package:threddit_clone/models/post.dart';
 
 class PostScreen extends ConsumerStatefulWidget {
   final Post currentPost;
@@ -35,7 +33,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         context: context,
         builder: (ctx) => AddComment(
               postID: widget.currentPost.id,
-              uid: 'user2',
+              uid: widget.uid,
             ));
   }
 
@@ -70,7 +68,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                             builder: (context) {
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
+                                children: widget.currentPost.userID!=widget.uid?[
                                   ListTile(
                                       title: const Text(
                                         'More actions...',
@@ -151,6 +149,64 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                     leading: const Icon(Icons.hide_source),
                                     onTap: () {},
                                   )
+                                ]:<Widget>[
+                                  ListTile(
+                                      title: const Text(
+                                        'More actions...',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      }),
+                                  
+                                  ListTile(
+                                    title: const Text(
+                                      'Save',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.save),
+                                    onTap: () {},
+                                  ),
+                                  ListTile(
+                                    title: const Text(
+                                      'Copy text',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.copy),
+                                    onTap: () {},
+                                  ),
+                                  ListTile(
+                                    title: Text(widget.currentPost.spoiler?
+                                      'UnMark Spoiler':"Mark Spoiler",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.warning_amber_rounded),
+                                    onTap: () {},
+                                  ),
+                                  ListTile(
+                                    title: Text(widget.currentPost.NSFW?
+                                      'UnMark NSFW':"Mark NSFW",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.eighteen_mp),
+                                    onTap: () {},
+                                  ),
+                                  ListTile(
+                                    title: const Text("Delete post",
+                                      style: TextStyle(color: Colors.orange),
+                                    ),
+                                    leading: const Icon(Icons.delete_outline,color: Colors.orange,),
+                                    onTap: () {},
+                                  ),
+                                  ListTile(
+                                    title: const Text("Crosspost to community",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    leading: const Icon(Icons.share_outlined),
+                                    onTap: () {},
+                                  ),
                                 ],
                               );
                             });
@@ -171,29 +227,29 @@ class _PostScreenState extends ConsumerState<PostScreen> {
           endDrawer: const RightDrawer(),
           body: Consumer(
             builder: (context, watch, child) {
-              var postComments =
-                  ref.watch(commentsProvider(widget.currentPost.id));
+             final AsyncValue<List<Comment>> postComments =
+                  ref.watch(commentsProvider((commentIds:widget.currentPost.commentsID,postID: widget.currentPost.id,uid: widget.uid)));
               return postComments.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (error, stackTrace) =>
                     Center(child: Text('Error: $error')),
-                data: (postComments) {
+                data: (comments) {
                   return Column(
                     children: [
                       Expanded(
                         child: ListView(
                           children: [
-                            PostCard(
+                            PostCard(                             
                               post: widget.currentPost,
-                              uid: 'user2',
+                              uid: widget.uid,
                               onCommentPressed: _openAddCommentOverlay,
                             ),
                             const Padding(padding: EdgeInsets.only(bottom: 8)),
-                            if (postComments != [])
-                              ...postComments
+                            if (comments.isNotEmpty)
+                              ...comments
                                   .map((comment) => CommentItem(
                                         comment: comment,
-                                        uid: 'user2',
+                                        uid: widget.uid,
                                       ))
                                   .toList(),
                           ],
@@ -201,7 +257,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                       ),
                       AddComment(
                         postID: widget.currentPost.id,
-                        uid: 'user2',
+                        uid: widget.uid,
                       )
                     ],
                   );

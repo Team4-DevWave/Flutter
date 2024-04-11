@@ -27,7 +27,7 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
   @override
   void didChangeDependencies() {
     final intialData = ref.watch(postDataProvider);
-    _linkController = TextEditingController(text: intialData?.link);
+    _linkController = TextEditingController(text: intialData?.url);
     super.didChangeDependencies();
   }
 
@@ -58,15 +58,15 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
         controller: _linkController,
         style: AppTextStyles.primaryTextStyle,
         onChanged: (data) {
-          ///check the validity of the link
+          ///check the validity of the.url
           final bool result = _validateLink(data);
           setState(() {
             isValid = result;
             ref.watch(validLink.notifier).update((state) => isValid);
           });
-          ///check if the link actually changed and the link is valid
-          if (post?.link != data) {
-            ///update the link with the new value
+          ///check if the.url actually changed and the.url is valid
+          if (post?.url != data) {
+            ///update the.url with the new value
             ref.read(postDataProvider.notifier).updateLink(data);
           }
         },

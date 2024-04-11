@@ -17,6 +17,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
   final TextEditingController _communityNameController =
       TextEditingController();
   String communityType = 'Public';
+  // ignore: unused_field
   CommunityType _type = CommunityType.Public;
   bool is18plus = false;
 
@@ -47,12 +48,13 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
       );
       return;
     }
+    
     final createCommunityFuture = ref.watch(createCommunityProvider(
         CreateCommunityParams(
             name: _communityNameController.text,
             nsfw: is18plus,
-            type: communityType,
-            uid: widget.uid)));
+            type: communityType.toLowerCase(),
+           )));
     createCommunityFuture;
   }
 
