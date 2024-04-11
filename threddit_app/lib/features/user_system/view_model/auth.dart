@@ -1,16 +1,12 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
-// import 'package:threddit_clone/app/global_keys.dart';
-// import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';

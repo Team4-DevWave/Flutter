@@ -146,7 +146,7 @@ class _InterestsState extends ConsumerState<Interests> {
                                     }).toList(),
                                   ),
                                   SizedBox(
-                                    height: 3.h,
+                                    height: 2.h,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,

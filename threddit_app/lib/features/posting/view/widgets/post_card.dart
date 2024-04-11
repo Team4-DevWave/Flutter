@@ -57,7 +57,8 @@ class _PostCardState extends ConsumerState<PostCard> {
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: CircleAvatar(
                     radius: 16,
-                    backgroundImage: AssetImage('assets/images/Default_Avatar.png'),
+                    backgroundImage:
+                        AssetImage('assets/images/Default_Avatar.png'),
                   ),
                 ),
                 //Image.asset(Photos.defaultavatar,width: 16,height: 16,),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/features/post/view/cross_post.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
@@ -31,7 +32,8 @@ import 'package:threddit_clone/features/user_system/view/screens/update_email_sc
 import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
-import '../features/user_system/view/screens/login_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/login_screen.dart';
+import 'package:threddit_clone/features/post/view/choose_community.dart';
 // import 'package:threddit_clone/models/post.dart';
 
 class RouteClass {
@@ -67,6 +69,8 @@ class RouteClass {
   static const String confirmPostScreen = '/confirmpost';
   static const String communityModTools = '/communitymodtools';
   static const String communityInfo = '/communityinfo';
+  static const String chooseCommunity = '/choose_communtiy';
+  static const String crossPost = '/cross_post';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -99,6 +103,10 @@ class RouteClass {
 
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
+      case chooseCommunity:
+        return MaterialPageRoute(builder: (_) => const ChooseCommunity());
+      case crossPost:
+        return MaterialPageRoute(builder: (_) => const CrossPost());
       case loginScreen:
         return MaterialPageRoute(builder: (_) => const LogInScreen());
       case signUpScreen:

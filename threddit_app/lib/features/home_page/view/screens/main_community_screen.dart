@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
+import 'package:threddit_clone/features/post/model/post_data.dart';
 
-class MainCommunityScreen extends StatefulWidget {
+class MainCommunityScreen extends ConsumerStatefulWidget {
   const MainCommunityScreen({super.key});
   @override
-  State<MainCommunityScreen> createState() => _CommunityScreenState();
+  ConsumerState<MainCommunityScreen> createState() => _CommunityScreenState();
 }
 
-class _CommunityScreenState extends State<MainCommunityScreen> {
+class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          automaticallyImplyLeading: false, title: const Text('Community')),
-      body: Text(
-        'This is the community screen Exploring Community',
-        style: TextStyle(color: Colors.white),
-      ),
+    return SharePost(
+      post: posts[0],
     );
   }
 }
