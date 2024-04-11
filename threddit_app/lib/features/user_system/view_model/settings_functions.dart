@@ -166,6 +166,7 @@ void checkBlockResponse(
     required Future<int> statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
+    print("BLOCKED");
   } else {
     showAlert("User was not blocked/unblocked", context);
   }
@@ -175,8 +176,6 @@ Future<int> blockUser(
     {required http.Client client,
     required String userToBlock,
     required String token}) async {
-  Map<String, dynamic> body = {'blockUsername': userToBlock};
-  String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
@@ -184,12 +183,11 @@ Future<int> blockUser(
     url = urlAndroid;
   }
   http.Response response = await client.post(
-    Uri.parse("$url/api/block-user/$userToBlock"),
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/block/$userToBlock"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
-    body: bodyEncoded,
   );
   return response.statusCode;
 }
@@ -255,14 +253,15 @@ Future<int> unblockUser(
   } else {
     url = urlAndroid;
   }
-  http.Response response = await client.post(
-    Uri.parse("$url/api/unblock-user"),
+  http.Response response = await client.delete(
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/block/$userToUnBlock"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
+  print(response.statusCode);
   return response.statusCode;
 }
 
@@ -450,6 +449,32 @@ Future<int> changeSetting(
   }
   http.Response response = await client.patch(
     Uri.parse("http://10.0.2.2:8000/api/v1/users/me/settings"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: bodyEncoded,
+  );
+  print(response.statusCode);
+  return response.statusCode;
+}
+
+Future<int> changeCountry(
+    {required http.Client client,
+    required String country,
+    required String token}) async {
+  Map<String, dynamic> body = {
+    "country": country,
+  };
+  String bodyEncoded = jsonEncode(body);
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  http.Response response = await client.patch(
+    Uri.parse("http://10.0.0.2:8000/api/v1/users/me/settings/changecountry"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

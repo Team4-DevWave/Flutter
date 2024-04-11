@@ -1,108 +1,68 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedpost.dart';
+import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
 
-class FeedUnit extends StatefulWidget {
+class FeedUnitShare extends StatefulWidget {
+  final Post parentPost;
   final Post dataOfPost;
-  // ignore: lines_longer_than_80_chars
-  const FeedUnit(this.dataOfPost, {super.key});
+
+  const FeedUnitShare(
+      {super.key, required this.dataOfPost, required this.parentPost});
 
   @override
-  State<FeedUnit> createState() => _FeedUnitState();
+  State<FeedUnitShare> createState() => _FeedUnitShareState();
 }
 
-class _FeedUnitState extends State<FeedUnit> {
+class _FeedUnitShareState extends State<FeedUnitShare> {
   late int numbberOfvotes;
   int choiceBottum = -1; // 1 upvote 2 downvote
 
   @override
   void initState() {
     super.initState();
-    numbberOfvotes = int.parse(widget.dataOfPost.numViews.toString());
+    numbberOfvotes = int.parse(widget.parentPost.numViews.toString());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                  child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, RouteClass.communityScreen,
-                          arguments: ["1", "mod2"]);
-                    },
-                    child: Text(
-                      'r/${widget.dataOfPost.userID?.username}',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 7.w,
-                  ),
-                  Text(
-                    widget.dataOfPost.postedTime.toString(),
-                    style: TextStyle(color: AppColors.whiteHideColor),
-                  ),
-                ],
-              )),
-              InkWell(
-                onTap: () {},
-                child: const Icon(
-                  Icons.more_vert,
-                  color: AppColors.whiteHideColor,
+                child: Text(
+                  'r/${widget.parentPost.userID!.username}',
+                  style: TextStyle(color: Colors.white),
                 ),
-              )
+              ),
+              SizedBox(
+                width: 7.w,
+              ),
+              Text(
+                widget.dataOfPost.postedTime.toString().substring(0, 10),
+                style: TextStyle(color: AppColors.whiteHideColor),
+              ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.dataOfPost.title,
-                  style: AppTextStyles.boldTextStyle,
-                ),
-                Text(
-                  widget.dataOfPost.textBody.toString(),
-                  style: AppTextStyles.secondaryTextStyle,
-                ),
-              ],
-            ),
+          Text(
+            widget.parentPost.title,
+            style: AppTextStyles.boldTextStyle,
           ),
-          Center(
-            child: Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.backgroundColor),
-                  borderRadius:
-                      BorderRadius.circular(35) // Adjust the radius as needed
-                  ),
-              child: (widget.dataOfPost.image != null)
-                  ? Image(
-                      height: 250.h,
-                      width: 360.w,
-                      fit: BoxFit.fitWidth,
-                      image: NetworkImage(widget.dataOfPost.image.toString()
-                          //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                          ),
-                    )
-                  : const SizedBox(),
-            ),
+          Text(
+            widget.parentPost.textBody ?? '',
+            style: AppTextStyles.secondaryTextStyle,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: FeedUnitSharedPost(widget.dataOfPost),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
