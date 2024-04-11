@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 
 /// Creates an email form that takes the string as the form name.
 // ignore: must_be_immutable
@@ -21,6 +22,7 @@ class _EmailFormState extends State<EmailForm> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+        style: AppTextStyles.primaryTextStyle,
         onChanged: getEmail,
         decoration: InputDecoration(
           labelText: widget.formName,

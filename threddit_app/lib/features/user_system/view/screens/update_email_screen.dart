@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
@@ -20,20 +21,38 @@ import 'package:threddit_clone/features/user_system/view/widgets/save_changes.da
 class UpdateEmailScreen extends ConsumerStatefulWidget {
   const UpdateEmailScreen({super.key});
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _UpdateEmailScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _UpdateEmailScreenState();
 }
 
 class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
   final PasswordForm currentPasswordForm = PasswordForm("Reddit password");
   final EmailForm newEmailForm = EmailForm("New email address");
   final client = http.Client();
-  
+  String? token;
   Future<UserMock> fetchUser() async {
     setState(() {
-      ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+      ref
+          .watch(settingsFetchProvider.notifier)
+          .getUserInfo(client: client, token: token!);
     });
-    return ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
-    
+    return ref
+        .watch(settingsFetchProvider.notifier)
+        .getUserInfo(client: client, token: token!);
+  }
+
+  Future getUserToken() async {
+    String? result = await getToken();
+    print(result);
+    setState(() {
+      token = result!;
+    });
+  }
+
+  @override
+  void initState() {
+    getUserToken();
+    super.initState();
   }
 
   @override
@@ -83,8 +102,8 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
             currentPasswordForm,
             Container(
               alignment: Alignment.topRight,
-              child:
-                  TextButton(onPressed: () {}, child: const Text("Forgot password?")),
+              child: TextButton(
+                  onPressed: () {}, child: const Text("Forgot password?")),
             ),
             const Spacer(),
             SaveChanges(
@@ -95,11 +114,14 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
                 final statusCode = changeEmailFunction(
                     client: client,
                     currentPassword: currentPassword,
-                    newEmail: newEmail);
+                    newEmail: newEmail,
+                    token: token!);
                 checkEmailUpdateResponse(
                     context: context, statusCodeFuture: statusCode);
                 setState(() {
-                  ref.watch(settingsFetchProvider.notifier).getUserInfo(client);
+                  ref
+                      .watch(settingsFetchProvider.notifier)
+                      .getUserInfo(client: client, token: token!);
                 });
               },
             ),
