@@ -89,6 +89,57 @@ Stream<List<Comment>> getCommentsStream(List<String> commentIds, String postId, 
   }
 }
 
+Future<void> editComment(String postId, String commentId, String newContent, String uid) async {
+  try {
+    // Construct the URL
+    String url = 'http://192.168.100.249:3000/comments?_id=$commentId';
 
+    Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      //'Authorization': 'Bearer $token',
+    };
+
+    final body = jsonEncode({
+    "content": newContent,
+  });
+    final response = await http.patch(Uri.parse(url), headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      // Comment edited successfully
+      print('Comment edited successfully');
+    } else {
+      // Error occurred
+      print('Failed to edit comment. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+  } catch (e) {
+    print('Error editing comment: $e');
   }
+}
+
+Future<void> deleteComment(String postId, String commentId, String uid) async {
+  //final url = Uri.parse('http://localhost:8000/api/v1/posts/$postId/comments/$commentId');
+  String url = 'http://192.168.100.249:3000/comments?_id=$commentId';
+
+  final headers = {
+    "Content-Type": "application/json",
+    //"Authorization": "Bearer $token", // Add your token here
+  };
+
+  try {
+    final response = await http.delete(Uri.parse(url), headers: headers);
+    if (response.statusCode == 200) {
+      print("Comment deleted successfully.");
+    } else {
+      print("Failed to delete comment. Status code: ${response.statusCode}");
+      print("Response body: ${response.body}");
+    }
+  } catch (e) {
+    print("Error deleting comment: $e");
+  }
+}
+
+
+
+}
 

@@ -23,3 +23,15 @@ final commentVoteProvider =
   final repository = ref.watch(commentRepositoryProvider);
   repository.voteComment(arguments.commentID,arguments.voteType,arguments.uid);
 });
+typedef editParameters=({String postId,String commentId,String newContent,String uid});
+final editCommentProvider=FutureProvider.autoDispose.family<void, editParameters>((ref,arguments,) async {
+  final repository = ref.watch(commentRepositoryProvider);
+  repository.editComment(arguments.postId, arguments.commentId, arguments.newContent, arguments.uid); 
+});
+
+typedef deleteParameters=({String postId, String commentId,String uid});
+final deleteCommentProvider=FutureProvider.autoDispose.family<void, deleteParameters>((ref,arguments,) async {
+  final repository = ref.watch(commentRepositoryProvider);
+  repository.deleteComment(arguments.postId, arguments.commentId, arguments.uid); 
+});
+

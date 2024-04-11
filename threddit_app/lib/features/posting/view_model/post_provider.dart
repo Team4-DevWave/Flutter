@@ -19,3 +19,11 @@ final postDownvoteProvider =
     repository.downVote(post, userID);
   };
 });
+
+// final postDownvoteProvider =
+//     Provider.autoDispose.family<void Function(String), Post>((ref, post) {
+//   final repository = ref.watch(postRepositoryProvider);
+//   return (String userID) {
+//     repository.downVote(post, userID);
+//   };
+// });

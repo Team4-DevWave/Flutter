@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_following.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/models/data.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -16,35 +18,44 @@ class FollowingTiles extends ConsumerStatefulWidget {
 }
 
 class _FollowingTilesState extends ConsumerState<FollowingTiles> {
-  Future<List<String>>? _userFollowingData;
+  Future<List<String>>?_userFollowingData;
   List<String>? _favouritesList;
   Map<String, bool>? _isFavouriteFollowing;
+
   @override
   void initState() {
     super.initState();
+
+    ///fetches the data when the widget is intialized
     _initializeData();
   }
 
   Future<void> _initializeData() async {
     await _getFavourites();
     _userFollowingData = UserFollowingAPI().getUserFollowing();
-    await _userFollowingData;
+    await _userFollowingData; // Wait for userFollowingData to be fetched
     _isFavouriteFollowing = {};
     _userFollowingData?.then((value) {
       for (String user in value) {
         _isFavouriteFollowing![user] = _favouritesList!.contains(user);
       }
-      setState(() {});
+      setState(() {}); // Trigger a rebuild after initializing data
     });
   }
 
   Future<void> _getFavourites() async {
     prefs = await SharedPreferences.getInstance();
     _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
-    (ref
+    print("alo from get");
+    print(ref
         .read(favouriteListProvider.notifier)
         .update((state) => _favouritesList!));
   }
+
+  // Future<void> _fetchFollowingData() async {
+  //   _userFollowingData = UserFollowingAPI().getUserFollowing();
+  //   await _userFollowingData;
+  // }
 
   Future<void> _updateIsFavouriteSub() async {
     if (_favouritesList != null) {
@@ -63,7 +74,8 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
     if (prefs != null) {
       _favouritesList?.removeWhere((element) => element == toBeRemoved);
       prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      (ref
+      print("alo from remove");
+      print(ref
           .read(favouriteListProvider.notifier)
           .update((state) => _favouritesList!));
     }
@@ -74,7 +86,8 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
     if (prefs != null) {
       _favouritesList?.add(favourite);
       prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      (ref
+      print("alo from set");
+      print(ref
           .read(favouriteListProvider.notifier)
           .update((state) => _favouritesList!));
     }
@@ -125,7 +138,12 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                         title: Text(dataList[index],
                             style: AppTextStyles.secondaryTextStyle
                                 .copyWith(fontSize: 14)),
+
+                        /// There should be an icon with the data of following but it will be
+                        /// implemented when the community class is made
                         onTap: () {
+                          ///go to the user's profile screen
+
                         
                         },
                         trailing: IconButton(
