@@ -12,7 +12,8 @@ class RulesPage extends ConsumerWidget{
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text("Rules", style: AppTextStyles.boldTextStyle,),
-          
+          //ListView.builder(itemBuilder: ),
+          ElevatedButton(onPressed: Navigator.of(context).pop, child: Text("I Understand", style: AppTextStyles.buttonTextStyle,))
         ]
       ),
     );
