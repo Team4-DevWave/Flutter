@@ -5,6 +5,8 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/screens/register_screen.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+
+
 class StartScreen extends ConsumerWidget {
   const StartScreen({super.key});
   @override

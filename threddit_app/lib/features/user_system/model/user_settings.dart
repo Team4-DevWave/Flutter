@@ -12,11 +12,24 @@ class UserSettings {
   });
 
   factory UserSettings.fromJson(Map<String, dynamic> json) {
+    // Check if the top-level 'settings' key exists
+    if (json['data'] == null) {
+      throw Exception('Missing "data" key in JSON response');
+    }
+
+    final data = json['data'] as Map<String, dynamic>;
+
+    // Check for nested 'settings' key
+    if (data['settings'] == null) {
+      throw Exception('Missing "settings" key in JSON response');
+    }
+
+    final settings = data['settings'] as Map<String, dynamic>;
     return UserSettings(
-      userProfile: UserProfile.fromJson(json['userProfile']),
-      safetyAndPrivacy: SafetyAndPrivacy.fromJson(json['safetyAndPrivacy']),
-      feedSettings: FeedSettings.fromJson(json['feedSettings']),
-      id: json['_id'],
+      userProfile: UserProfile.fromJson(settings['userProfile']),
+      safetyAndPrivacy: SafetyAndPrivacy.fromJson(settings['safetyAndPrivacy']),
+      feedSettings: FeedSettings.fromJson(settings['feedSettings']),
+      id: settings['_id'] as String, // Ensure id is a String
     );
   }
 }
@@ -29,7 +42,7 @@ class UserProfile {
   final bool contentVisibility;
   final bool activeCommunitiesVisibility;
   final String profilePicture;
-  final List<dynamic> socialLinks;
+  final List<String> socialLinks; // Specify String type
 
   UserProfile({
     required this.displayName,
@@ -51,7 +64,8 @@ class UserProfile {
       contentVisibility: json['contentVisibility'] ?? true,
       activeCommunitiesVisibility: json['activeCommunitiesVisibility'] ?? true,
       profilePicture: json['profilePicture'] ?? '',
-      socialLinks: json['socialLinks'] ?? [],
+      socialLinks:
+          json['socialLinks']?.cast<String>() ?? [], // Cast to String list
     );
   }
 }

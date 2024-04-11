@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/screens/blocked_screen.dart';
@@ -28,17 +29,16 @@ class _SafetyState extends ConsumerState<Safety> {
   bool isFollowableEnabled = false;
 
   @override
-  void initState()  {
-    ///getUserToken();
+  void initState() {
+    getUserToken().then((value) => ref
+            .read(settingsFetchProvider.notifier)
+            .getSettings(client: client, token: token!)
+            .then((value) {
+          setState(() {
+            isFollowableEnabled = value.userProfile.allowFollowers;
+          });
+        }));
     super.initState();
-    ref
-        .read(settingsFetchProvider.notifier)
-        .getFollowableSetting(client: client, token: token!)
-        .then((value) {
-      setState(() {
-        isFollowableEnabled = value;
-      });
-    });
   }
 
   Future getUserToken() async {
@@ -75,7 +75,12 @@ class _SafetyState extends ConsumerState<Safety> {
             onChanged: (bool? value) {
               setState(() {
                 isFollowableEnabled = value!;
-                followableOn(client: client, isEnabled: value, token: token!);
+                changeSetting(
+                    client: client,
+                    change: value,
+                    settingsName: "allowFollowers",
+                    settingsType: "userProfile",
+                    token: token!);
               });
             },
           ),
