@@ -38,8 +38,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
-  // ByteData? image;
-  // ByteData? video;
   String? image;
   String? video;
   File? videoFile;

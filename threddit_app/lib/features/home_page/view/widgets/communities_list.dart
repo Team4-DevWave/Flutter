@@ -1,64 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
-import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
 class CommunityList extends ConsumerStatefulWidget {
   const CommunityList({super.key, required this.searchRes});
-  final Future<List<String>> searchRes;
+  final List<List<String>> searchRes;
 
   @override
   ConsumerState<CommunityList> createState() => _CommunityListState();
 }
 
 class _CommunityListState extends ConsumerState<CommunityList> {
-  late Future<List<String>> _communityData;
+  bool _isLoading = false;
+  List<List<String>> _communityData = [[]];
+  Future<void> _fetchCommunities() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final response =
+        await ref.read(userCommunitisProvider.notifier).getUserCommunities();
+    response.fold(
+        (failure) =>
+            showSnackBar(navigatorKey.currentContext!, failure.message),
+        (list) {
+      setState(() {
+        _communityData = list;
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   void initState() {
     ///fetches the data when the widget is intialized
-    _communityData = UserCommunitiesAPI().getUserCommunities();
+    _fetchCommunities();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<String>>(
-        future: Future.wait([widget.searchRes, _communityData]).then((value) {
-          final communityData = value[1];
-          final searchRes = value[0];
-          return searchRes.isEmpty ? communityData : searchRes;
-        }),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            List<String> dataList = snapshot.data ?? [];
-            return ListView.builder(
-                itemCount: dataList.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  String communityName = dataList[index];
-                  return InkWell(
-                      onTap: (){
-                        ref.read(postDataProvider.notifier).updateCommunityName(communityName);
-                        Navigator.pushReplacementNamed(context, RouteClass.confirmPostScreen);
-                      },
-                      splashColor: AppColors.whiteColor,
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        height: 50,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 16),
-                        child: Text(dataList[index],
-                            style: AppTextStyles.secondaryTextStyle
-                                .copyWith(fontSize: 14)),
-                      ));
-                });
-          }
-        });
+    final dispalyedData =
+        widget.searchRes.isEmpty ? _communityData : widget.searchRes;
+
+    return _isLoading
+        ? const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Loading(),
+          )
+        : Column(children: [
+            ...dispalyedData.map(
+              (community) => ListTile(
+                onTap: () {
+                  ref
+                      .read(postDataProvider.notifier)
+                      .updateCommunityName(community[0]);
+                  Navigator.pushReplacementNamed(
+                      context, RouteClass.confirmPostScreen);
+                },
+                leading: CircleAvatar(
+                  radius: 10,
+                  backgroundImage: NetworkImage(community[0]),
+                ),
+                title: Text(community[0],
+                    style: AppTextStyles.primaryTextStyle.copyWith(
+                      fontSize: 20.spMin,
+                    )),
+              ),
+            )
+          ]);
   }
 }
