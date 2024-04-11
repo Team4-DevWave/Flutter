@@ -1,5 +1,5 @@
 const types = [
-  'Male',
-  'Female',
+  'man',
+  'woman',
   'I prefer not to say',
 ];

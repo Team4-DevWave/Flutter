@@ -25,7 +25,6 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
     return ScreenUtilInit(
       child: Scaffold(
@@ -116,7 +115,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                               const Color.fromARGB(223, 49, 49, 49)),
                         ),
                       ),
-                      const SizedBox(width: 205),
+                      SizedBox(width: 205.w),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -167,8 +166,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           radius: 30,
                         ),
                       ),
-                      const SizedBox(
-                        width: 12,
+                      SizedBox(
+                        width: 12.w,
                       ),
                       Expanded(
                         child: Column(
@@ -302,7 +301,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               ),
             ),
           ),
-          Flexible( child: FeedWidget(feedID: _selectedItem))
+          Flexible(child: FeedWidget(feedID: _selectedItem))
         ],
       ),
     );

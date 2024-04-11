@@ -8,5 +8,6 @@ class PrefConstants {
 }
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError('SharedPreferences provider is not implemented yet.');
+  throw UnimplementedError(
+      'SharedPreferences provider is not implemented yet.');
 });

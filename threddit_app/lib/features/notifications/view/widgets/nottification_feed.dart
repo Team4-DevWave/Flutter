@@ -42,7 +42,7 @@ class _NotificationFeedState extends State<NotificationFeed> {
             } else if (snapshot.hasData) {
               final countryData = snapshot.data!.result;
 
-              return (countryData.length != 6)
+              return (countryData.length == 6)
                   ? ListView.builder(
                       itemCount: countryData.length,
                       itemBuilder: (BuildContext context, int index) {

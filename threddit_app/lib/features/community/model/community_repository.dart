@@ -5,8 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/models/fetch_community.dart';
 
 class CommunityRepository {
-  final url = Uri.parse(
-      'https://8213654c-c3d4-4b7d-bd24-74946060a2df.mock.pstmn.io/getcommunity');
+  final url = Uri.parse('http://192.168.56.1:3000/communities');
 
   Future<void> createCommunity(
       String name, bool nsfw, String uid, String _type) async {
@@ -43,8 +42,8 @@ class CommunityRepository {
 
   Future<FetchCommunity> fetchCommunity(String id) async {
     //final url = Uri.parse('http://localhost:8000/api/v1/r/$subreddit/info');
-    final url = Uri.parse(
-        'https://8213654c-c3d4-4b7d-bd24-74946060a2df.mock.pstmn.io/getcommunity');
+    final url =
+        Uri.parse('http://192.168.56.1:3000/communities?subredditTitle=$id');
 
     try {
       final response = await http.get(url);
@@ -81,8 +80,7 @@ class CommunityRepository {
   }
 
   Future<void> updateCommunity(FetchCommunity community) async {
-    final String apiUrl =
-        'https://8213654c-c3d4-4b7d-bd24-74946060a2df.mock.pstmn.io/getcommunity';
+    final String apiUrl = 'http://192.168.100.249:3000/communities';
     final Map<String, dynamic> data = community.toMap();
 
     final response = await http.patch(
