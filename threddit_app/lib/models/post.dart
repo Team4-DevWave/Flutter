@@ -1,5 +1,3 @@
-
-
 class Post {
   final String title;
   final String? postBody;
@@ -42,28 +40,29 @@ class Post {
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
-  return Post(
-    title: json['title'] ?? '',
-    postBody: json['postBody'],
-    link: json['link'],
-    NSFW: json['NSFW'] ?? false,
-    spoiler: json['spoiler'] ?? false,
-    imageUrl: json['imageUrl'],
-    community: json['community'],
-    videoUrl: json['videoUrl'],
-    upvotes: List<String>.from(json['upvotes'] ?? []),
-    downvotes: List<String>.from(json['downvotes'] ?? []),
-    commentsID: List<String>.from(json['commentsID'] ?? []),
-    mentioned: List<String>.from(json['mentioned'] ?? []),
-    userID: json['uid'] ?? '',
-    postedTime: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),
-    id: json['_id'] ?? '',
-    numViews: json['numViews'] ?? 0,
-    locked: json['locked'] ?? false,
-    approved: json['approved'] ?? false,
-  );
-}
-
+    return Post(
+      title: json['title'] ?? '',
+      postBody: json['postBody'],
+      link: json['link'],
+      NSFW: json['NSFW'] ?? false,
+      spoiler: json['spoiler'] ?? false,
+      imageUrl: json['imageUrl'],
+      community: json['community'],
+      videoUrl: json['videoUrl'],
+      upvotes: List<String>.from(json['upvotes'] ?? []),
+      downvotes: List<String>.from(json['downvotes'] ?? []),
+      commentsID: List<String>.from(json['commentsID'] ?? []),
+      mentioned: List<String>.from(json['mentioned'] ?? []),
+      userID: json['uid'] ?? '',
+      postedTime: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+      id: json['_id'] ?? '',
+      numViews: json['numViews'] ?? 0,
+      locked: json['locked'] ?? false,
+      approved: json['approved'] ?? false,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -85,7 +84,23 @@ class Post {
       'numViews': numViews,
       'locked': locked,
       'approved': approved,
-
     };
+  }
+}
+
+class PostApiResponse {
+  final int status;
+  final List<Post> data;
+
+  PostApiResponse({
+    required this.status,
+    required this.data,
+  });
+
+  factory PostApiResponse.fromJson(Map<String, dynamic> json) {
+    return PostApiResponse(
+      status: json['status'],
+      data: (json['data'] as List).map((i) => Post.fromJson(i)).toList(),
+    );
   }
 }

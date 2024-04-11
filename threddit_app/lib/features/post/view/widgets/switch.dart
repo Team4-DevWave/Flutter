@@ -20,7 +20,7 @@ class _AppSwitchButtonState extends ConsumerState<AppSwitchButton> {
     PostData? post = ref.watch(postDataProvider);
     return Switch(
       key: widget.k,
-      value: widget.type == 1? post!.isSpoiler : post!.isNSFW,
+      value: widget.type == 1? post!.spoiler : post!.NSFW,
       onChanged: (value) => setState(() {
       if(widget.type == 1)
       {
@@ -29,7 +29,7 @@ class _AppSwitchButtonState extends ConsumerState<AppSwitchButton> {
       }
       else{
         ref
-          .read(postDataProvider.notifier).updateIsNsfw(value);
+          .read(postDataProvider.notifier).updateNFSW(value);
       }
       }),
       activeColor: AppColors.redditOrangeColor,

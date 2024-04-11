@@ -2,9 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/approve_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/approved_users_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
+import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
 import 'package:threddit_clone/models/fetch_community.dart';
+import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
+import 'package:threddit_clone/models/community.dart';
 import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
@@ -31,6 +42,8 @@ import 'package:threddit_clone/features/user_system/view/screens/update_email_sc
 import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
+import 'package:threddit_clone/models/post.dart';
 import '../features/user_system/view/screens/login_screen.dart';
 // import 'package:threddit_clone/models/post.dart';
 
@@ -67,6 +80,13 @@ class RouteClass {
   static const String confirmPostScreen = '/confirmpost';
   static const String communityModTools = '/communitymodtools';
   static const String communityInfo = '/communityinfo';
+  static const String settingsScreen = "/settings";
+  static const String textSize = '/text-size';
+  static const String bannedUsersScreen = '/banned-users';
+  static const String banScreen = '/ban';
+  static const String updateBanScreen = '/update-ban';
+  static const String approvedUsersScreen = '/approved-users';
+  static const String approveScreen = '/approve';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -83,8 +103,8 @@ class RouteClass {
     switch (settings.name) {
       case initRoute:
         return MaterialPageRoute(builder: (_) => const StartScreen());
-      case userProfileScreen:
-        return MaterialPageRoute(builder: (_) => const UserProfile());
+      // case userProfileScreen:
+      //   return MaterialPageRoute(builder: (_) => const UserProfile());
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
@@ -143,6 +163,36 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const MainScreenLayout());
       case confirmPasswordScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPasswordScreen());
+      case settingsScreen:
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
+      case communityModTools:
+        return MaterialPageRoute(builder: (_) => const CommunityModTools());
+      case textSize:
+        return MaterialPageRoute(builder: (_) => TextSizeScreen());
+      case bannedUsersScreen:
+        return MaterialPageRoute(builder: (_) => const BannedUsersScreen());
+      case banScreen:
+        return MaterialPageRoute(
+            builder: (_) => const BanScreen(), fullscreenDialog: true);
+
+      case approvedUsersScreen:
+        return MaterialPageRoute(builder: (_) => const ApprovedUsersScreen());
+      case approveScreen:
+        return MaterialPageRoute(
+            builder: (_) => const ApproveScreen(), fullscreenDialog: true);
+
+      case updateBanScreen:
+        List<String> input = settings.arguments as List<String>;
+        return MaterialPageRoute(
+            builder: (_) => UpdateBanScreen(user: input[0], reason: input[1]),
+            fullscreenDialog: true);
+      case communityInfo:
+        final args = settings.arguments as Map<String, dynamic>;
+        final community =
+            args['community'] as FetchCommunity; // Extract the community object
+        final uid = args['uid'] as String;
+        return MaterialPageRoute(
+            builder: (_) => CommunityInfo(community: community, uid: uid));
       case communityScreen:
         final args = settings.arguments as Map<String, dynamic>;
         final id = args['id'] as String; // Extract the community object

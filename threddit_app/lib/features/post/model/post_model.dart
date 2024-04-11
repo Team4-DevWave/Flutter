@@ -1,125 +1,130 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:collection/collection.dart';
-import 'package:image_picker/image_picker.dart';
+// // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
-///This model class holds the Post data
 class PostData {
-
   final String title;
-  final String? postBody;
-  final String? link;
-  final bool isNSFW;
-  final bool isSpoiler; 
-  final List<XFile>? images;
-  final String?community;
-  final XFile?video;
+  final String? text_body;
+  final String? url;
+  final bool NSFW;
+  final bool spoiler;
+  //final ByteData? image;
+  final String?image;
+  final String?video;
+  final String type;
+  final bool locked;
+  final String? community;
+  //final ByteData? video;
+  final String? imageURL;
+  final String? videoURL;
+
   PostData({
     required this.title,
-    this.postBody,
-    this.link,
-    required this.isNSFW,
-    required this.isSpoiler,
-    this.images,
+    this.text_body,
+    this.url,
+    required this.NSFW,
+    required this.spoiler,
+    this.image,
+    required this.type,
+    required this.locked,
     this.community,
     this.video,
+    this.imageURL,
+    this.videoURL,
   });
 
   PostData copyWith({
     String? title,
-    String? postBody,
-    String? link,
-    bool? isNSFW,
-    bool? isSpoiler,
-    List<XFile>? images,
+    String? text_body,
+    String? url,
+    bool? NSFW,
+    bool? spoiler,
+    String? image,
+    String? type,
+    bool? locked,
     String? community,
-    XFile? video,
+    String? video,
   }) {
     return PostData(
       title: title ?? this.title,
-      postBody: postBody ?? this.postBody,
-      link: link ?? this.link,
-      isNSFW: isNSFW ?? this.isNSFW,
-      isSpoiler: isSpoiler ?? this.isSpoiler,
-      images: images ?? this.images,
+      text_body: text_body ?? this.text_body,
+      url: url ?? this.url,
+      NSFW: NSFW ?? this.NSFW,
+      spoiler: spoiler ?? this.spoiler,
+      image: image ?? this.image,
+      type: type ?? this.type,
+      locked: locked ?? this.locked,
       community: community ?? this.community,
       video: video ?? this.video,
     );
   }
 
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'title': title,
+      'text_body': text_body,
+      'url': url,
+      'NSFW': NSFW,
+      'spoiler': spoiler,
+      'image': image,
+      'type': type,
+      'locked': locked,
+      'community': community,
+      'video': video,
+    };
+  }
 
-// Map<String, dynamic> xFileToMap(XFile file) {
-//   return {
-//     'path': file.path,
-//   };
-// }
+  factory PostData.fromMap(Map<String, dynamic> map) {
+    return PostData(
+      title: map['title'] as String,
+      text_body: map['text_body'] != null ? map['text_body'] as String : null,
+      url: map['url'] != null ? map['url'] as String : null,
+      NSFW: map['NSFW'] as bool,
+      spoiler: map['spoiler'] as bool,
+      imageURL: map['image'] != null ? map['image'] as String : null,
+      type: map['type'] as String,
+      locked: map['locked'] as bool,
+      community: map['community'] != null ? map['community'] as String : null,
+      videoURL: map['video'] != null ? map['video']as String : null,
+    );
+  }
 
-// XFile mapToXFile(Map<String, dynamic> map) {
-//   return XFile(map['path']);
-// }
+  String toJson() => json.encode(toMap());
 
+  factory PostData.fromJson(String source) => PostData.fromMap(json.decode(source) as Map<String, dynamic>);
 
-//   Map<String, dynamic> toMap() {
-//     return <String, dynamic>{
-//       'title': title,
-//       'postBody': postBody,
-//       'link': link,
-//       'isNSFW': isNSFW,
-//       'isSpoiler': isSpoiler,
-//       'images': images?.asMap()
-//         .map((index, img) => MapEntry('image$index', img.path))
-//         .values.toList(),
-//     };
-//   }
-
-//   factory PostData.fromMap(Map<String, dynamic> map) {
-//     return PostData(
-//       title: map['title'] as String,
-//       postBody: map['postBody'] != null ? map['postBody'] as String : null,
-//       link: map['link'] != null ? map['link'] as String : null,
-//       isNSFW: map['isNSFW'] as bool,
-//       isSpoiler: map['isSpoiler'] as bool,
-//       images: map['images'] != null
-//     ? List<XFile>.from((map['images'] as List<dynamic>)
-//         .map((x) => mapToXFile(x as Map<String, dynamic>))
-//         .toList())
-//     : null,
-//     );
-//   }
-
-  // String toJson() => json.encode(toMap());
-
-  // factory PostData.fromJson(String source) => PostData.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  // @override
-  // String toString() {
-  //   return 'PostData(title: $title, postBody: $postBody, link: $link, isNSFW: $isNSFW, isSpoiler: $isSpoiler, images: $images)';
-  // }
+  @override
+  String toString() {
+    return 'PostData(title: $title, text_body: $text_body, url: $url, NSFW: $NSFW, spoiler: $spoiler, image: $image, type: $type, locked: $locked, community: $community, video: $video)';
+  }
 
   @override
   bool operator ==(covariant PostData other) {
     if (identical(this, other)) return true;
-    final listEquals = const DeepCollectionEquality().equals;
   
     return 
       other.title == title &&
-      other.postBody == postBody &&
-      other.link == link &&
-      other.isNSFW == isNSFW &&
-      other.isSpoiler == isSpoiler &&
-      listEquals(other.images, images);
+      other.text_body == text_body &&
+      other.url == url &&
+      other.NSFW == NSFW &&
+      other.spoiler == spoiler &&
+      other.image == image &&
+      other.type == type &&
+      other.locked == locked &&
+      other.community == community &&
+      other.video == video;
   }
 
   @override
   int get hashCode {
     return title.hashCode ^
-      postBody.hashCode ^
-      link.hashCode ^
-      isNSFW.hashCode ^
-      isSpoiler.hashCode ^
-      images.hashCode;
+      text_body.hashCode ^
+      url.hashCode ^
+      NSFW.hashCode ^
+      spoiler.hashCode ^
+      image.hashCode ^
+      type.hashCode ^
+      locked.hashCode ^
+      community.hashCode ^
+      video.hashCode;
   }
-  
 }
-
-
-

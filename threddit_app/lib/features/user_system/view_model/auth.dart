@@ -36,20 +36,20 @@ class Auth extends StateNotifier<bool> {
 
   //   ///404 means that user mail was not found therfore this user in a new user
   //   if (response.statusCode == 200) {
-  //     UserModel? currentUser = ref.read(userProvider)!;
+  ///     UserModel? currentUser = ref.read(userProvider)!;
 
-  //     /// Create a new user with the updated email
-  //     UserModel updatedUser =
-  //         currentUser.copyWith(email: email, country: 'Egypt', isGoogle: false);
+  ///     /// Create a new user with the updated email
+  ///     UserModel updatedUser =
+  ///         currentUser.copyWith(email: email, country: 'Egypt', isGoogle: false);
 
-  //     /// Update the userProvider state with the new user
-  //     ref.read(userProvider.notifier).state = updatedUser;
-  //     ref.read(isNewProvider.notifier).update((state) => true);
-  //     state = false;
-  //   } else {
-  //     ref.read(isNewProvider.notifier).update((state) => false);
-  //   }
-  // }
+  ///     /// Update the userProvider state with the new user
+  ///     ref.read(userProvider.notifier).state = updatedUser;
+  ///     ref.read(isNewProvider.notifier).update((state) => true);
+  ///     state = false;
+  ///   } else {
+  ///     ref.read(isNewProvider.notifier).update((state) => false);
+  ///   }
+  /// }
 
   void saveEmail(String email) {
     UserModel? currentUser = ref.read(userProvider)!;
@@ -64,21 +64,22 @@ class Auth extends StateNotifier<bool> {
 
   FutureEmailCheck<bool> checkEmailAvailability(String email) async {
     state = true;
-    final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'token.json');
+    // final url = Uri.https(
+    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+    //     'token.json');
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+          Uri.parse('http://10.0.2.2:8000/api/v1/users/checkEmail/${email}'));
       state = false;
       //this should be 200 but will make it 400 to stop checking
       //200 -> used
       //400 -> notuser
       if (response.statusCode == 200) {
         // ref.read(isEmailUsedProvider.notifier).update((state) => true);
-        return right(true);
+        return right(false);
       } else {
         // ref.read(isEmailUsedProvider.notifier).update((state) => false);
-        return right(false);
+        return right(true);
       }
     } catch (e) {
       state = false;
@@ -91,11 +92,12 @@ class Auth extends StateNotifier<bool> {
   }
 
   FutureEmailCheck<bool> checkUsernameAvailability(String username) async {
-    final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'token.json');
+    // final url = Uri.https(
+    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+    //     'token.json');
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+          Uri.parse('http://10.0.2.2:8000/api/v1/users/check/${username}'));
 
       //this should be 200 but will make it 400 to stop checking
       //200 -> used
@@ -192,12 +194,10 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> forgotPassword() async {
     state = true;
     final UserModel? user = ref.watch(userProvider);
-    final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'forgotPassword.json');
+    print(user);
     try {
       final response = await http.post(
-        url,
+        Uri.parse('http://10.0.2.2:8000/api/v1/users/forgotPassword'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -208,12 +208,13 @@ class Auth extends StateNotifier<bool> {
           },
         ),
       );
-      if (response.statusCode == 200) {
+      print(response.statusCode);
+      if (response.statusCode == 200 || response.statusCode == 201) {
         // ref.watch(forgotPasswordSuccess.notifier).update((state) => true);
         return right(true);
       } else {
         // ref.watch(forgotPasswordSuccess.notifier).update((state) => false);
-        return right(true);
+        return right(false);
       }
     } catch (e) {
       state = false;
@@ -230,12 +231,10 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> forgotUsername() async {
     state = true;
     final UserModel? user = ref.watch(userProvider);
-    final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'forgotUsername.json');
+
     try {
       final response = await http.post(
-        url,
+        Uri.parse('http://10.0.2.2:8000/api/v1/users/forgotUsername'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -266,12 +265,11 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> login() async {
     state = true;
     final user = ref.watch(userProvider)!;
-    final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'login.json');
+    print(user);
+    // final url = Uri.http('localhost:8000/api/v1/users/login');
     try {
       final response = await http.post(
-        url,
+        Uri.parse("http://10.0.2.2:8000/api/v1/users/login"),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -283,15 +281,19 @@ class Auth extends StateNotifier<bool> {
           },
         ),
       );
+      print(response.statusCode);
       if (response.statusCode == 200) {
-        saveToken(response.body.toString());
+        saveToken(jsonDecode(response.body)['token']);
         return right(true);
       } else {
         return right(false);
       }
     } catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {
-        return left(Failure('Check your internet connection...'));
+        print(e);
+        return left(Failure(
+          'Check your internet connection...',
+        ));
       } else {
         return left(Failure(e.toString()));
       }
@@ -304,13 +306,14 @@ class Auth extends StateNotifier<bool> {
     state = true;
     final UserModel user = ref.watch(userProvider)!;
     //change the hit for the google sign up and also add the token if the user is google
-    final url = Uri.https(
-      'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-      'signUpWithGoogle.json',
-    );
+    // final url = Uri.https(
+    //   'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+    //   'signUpWithGoogle.json',
+    // );
     try {
+      print(user);
       final response = await http.post(
-        url,
+        Uri.parse('http://10.0.2.2:8000/api/v1/users/googleSignup'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -318,13 +321,14 @@ class Auth extends StateNotifier<bool> {
           {
             'token': user.token,
             'username': user.username,
-            'country': user.country,
+            'country': 'Egypt',
             'gender': user.gender,
             'interests': user.interests,
           },
         ),
       );
-      if (response.statusCode == 200) {
+      print(response.statusCode);
+      if (response.statusCode == 200 || response.statusCode == 201) {
         ref.watch(signUpSuccess.notifier).update((state) => true);
         return right(true);
       } else {
@@ -345,22 +349,15 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> loginWithGoogle() async {
     state = true;
     final user = ref.watch(userProvider)!;
-    final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'loginWithGoogle.json');
+    // final url = Uri.https(
+    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+    //     'loginWithGoogle.json');
     try {
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(
-          {
-            'token': user.token,
-          },
-        ),
+      final response = await http.get(
+        Uri.parse(
+            'http://10.0.2.2:8000/api/v1/users/googleLogin?token=${user.token}'),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         saveToken(response.body.toString());
         saveGoogleToken(response.body.toString());
         return right(true);
@@ -382,13 +379,14 @@ class Auth extends StateNotifier<bool> {
     state = true;
     final UserModel user = ref.watch(userProvider)!;
     //change the hit for the google sign up and also add the token if the user is google
-    final url = Uri.https(
-      'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-      'signup.json',
-    );
+    // final url = Uri.https(
+    //   'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+    //   'signup.json',
+    // );
     try {
+      print(user);
       final response = await http.post(
-        url,
+        Uri.parse('http://10.0.2.2:8000/api/v1/users/signup'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -404,7 +402,8 @@ class Auth extends StateNotifier<bool> {
           },
         ),
       );
-      if (response.statusCode == 200) {
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         ref.watch(signUpSuccess.notifier).update((state) => true);
         return right(true);
       } else {
@@ -473,6 +472,75 @@ class Auth extends StateNotifier<bool> {
     /// Update the userProvider state with the new user
     /// we are trying to log in by google
     ref.read(userProvider.notifier).state = updatedUser;
+    // final url = Uri.https(
+    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
+    //     'token.json');
+
+    final response = await http.get(
+      Uri.parse(
+          'http://10.0.2.2:8000/api/v1/users/googleLogin?token=${userToken}'),
+    );
+
+    //200 for exisiting users
+    //400 new users
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      saveToken(response.body.toString());
+      return right(true);
+    } else {
+      saveGoogleToken(response.body.toString());
+      return right(false);
+    }
+  }
+
+  FutureEmailCheck<bool> connectWithGoogle() async {
+    final _authService = AuthService();
+    final String? userToken;
+    final User? user;
+    if (Platform.isWindows) {
+      try {
+        user = await _authService.signInWithGoogle();
+        if (user != null) {
+          userToken = await user.getIdToken();
+        } else {
+          return left(Failure('Sign in with google failed'));
+        }
+      } catch (e) {
+        if (e is SocketException ||
+            e is TimeoutException ||
+            e is HttpException) {
+          return left(Failure('Check your internet connection...'));
+        } else {
+          return left(Failure(e.toString()));
+        }
+      }
+    } else {
+      try {
+        user =
+            await ref.read(authControllerProvider.notifier).signInWithGoogle();
+        if (user != null) {
+          userToken = await user.getIdToken();
+        } else {
+          return left(Failure('Sign in with google failed'));
+        }
+      } catch (e) {
+        if (e is SocketException ||
+            e is TimeoutException ||
+            e is HttpException) {
+          return left(Failure('Check your internet connection...'));
+        } else {
+          return left(Failure(e.toString()));
+        }
+      }
+    }
+
+    //After getting the token we will update the user and send the token to the backend
+    UserModel? currentUser = ref.read(userProvider)!;
+
+    /// Create a new user with the updated email
+    UserModel updatedUser = currentUser.copyWith(token: userToken);
+
+    /// Update the userProvider state with the new user
+    ref.read(userProvider.notifier).state = updatedUser;
     final url = Uri.https(
         'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
         'token.json');
@@ -491,7 +559,7 @@ class Auth extends StateNotifier<bool> {
 
     //200 for exisiting users
     //400 new users
-    if (response.statusCode == 400) {
+    if (response.statusCode == 200) {
       saveToken(response.body.toString());
       return right(true);
     } else {

@@ -17,7 +17,7 @@ class CommunitiesTiles extends ConsumerStatefulWidget {
 }
 
 class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
-  Future<List<String>> ?_userCommunitiesData;
+  Future<List<String>>? _userCommunitiesData;
   List<String>? _favouritesList;
   Map<String, bool>? _isFavouriteSub;
 
@@ -30,24 +30,23 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
 
   Future<void> _initializeData() async {
     // Fetch user communities data
-  _userCommunitiesData = UserCommunitiesAPI().getUserCommunities();
-  await _userCommunitiesData; // Wait for userFollowingData to be fetched
-  _isFavouriteSub = {};
-  _userCommunitiesData?.then((value) {
-    for (String user in value) {
-      _isFavouriteSub![user] = _favouritesList!.contains(user);
-    }
-    setState(() {}); // Trigger a rebuild after initializing data
-  });
+    _userCommunitiesData = UserCommunitiesAPI().getUserCommunities();
+    await _userCommunitiesData; // Wait for userFollowingData to be fetched
+    _isFavouriteSub = {};
+    _userCommunitiesData?.then((value) {
+      for (String user in value) {
+        _isFavouriteSub![user] = _favouritesList!.contains(user);
+      }
+      setState(() {}); // Trigger a rebuild after initializing data
+    });
   }
 
   Future<void> _getFavourites() async {
     prefs = await SharedPreferences.getInstance();
     _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
-    print("alo from get sub");
-    print(ref
+    ref
         .read(favouriteListProvider.notifier)
-        .update((state) => _favouritesList!));
+        .update((state) => _favouritesList!);
   }
 
   // Future<void> _fetchUserCommunitiesData() async {
@@ -73,10 +72,9 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
     if (prefs != null) {
       _favouritesList?.removeWhere((element) => element == toBeRemoved);
       prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      print("alo from remove sub");
-      print(ref
+      ref
           .read(favouriteListProvider.notifier)
-          .update((state) => _favouritesList!));
+          .update((state) => _favouritesList!);
     }
   }
 
@@ -85,10 +83,10 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
     if (prefs != null) {
       _favouritesList?.add(favourite);
       prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      print("alo from set sub");
-      print(ref
+
+      ref
           .read(favouriteListProvider.notifier)
-          .update((state) => _favouritesList!));
+          .update((state) => _favouritesList!);
     }
   }
 

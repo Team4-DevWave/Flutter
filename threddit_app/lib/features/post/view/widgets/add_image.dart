@@ -1,15 +1,15 @@
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
 class AddImageWidget extends ConsumerWidget {
   const AddImageWidget(
-      {super.key, required this.onPressed, required this.imagesList});
+      {super.key, required this.onPressed, required this.imagePath});
   final Function()? onPressed;
-  final List<XFile> imagesList;
+  final File imagePath;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,17 +18,7 @@ class AddImageWidget extends ConsumerWidget {
     return Stack(clipBehavior: Clip.hardEdge, children: [
       ConstrainedBox(
         constraints: BoxConstraints.loose(const Size.fromHeight(400)),
-        child: ListView.builder(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            scrollDirection: Axis.horizontal,
-            itemCount: imagesList.length,
-            itemBuilder: (context, index) {
-              return Image.file(
-                File(imagesList[index].path),
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-              );
-            }),
+        child: Image.file(imagePath)
       ),
       Positioned(
         top: 0,
@@ -44,4 +34,7 @@ class AddImageWidget extends ConsumerWidget {
       )
     ]);
   }
+}
+
+class ByteDate {
 }
