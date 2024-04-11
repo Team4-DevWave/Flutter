@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import "package:threddit_clone/features/user_system/model/token_storage.dart";
 
@@ -73,7 +74,14 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, RouteClass.blockUserScreen);
+                  Navigator.pushNamed(context, RouteClass.blockUserScreen)
+                      .then((value) {
+                    setState(() {
+                      ref
+                          .watch(settingsFetchProvider.notifier)
+                          .getMe(client: client, token: token!);
+                    });
+                  });
                 },
                 icon: const Icon(Icons.add))
           ],
@@ -95,23 +103,28 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                       return const Text("ERROR LOADING USER DATA");
                     } else {
                       final UserModelMe user = snapshot.data!;
-                      List<String> users = user.blockedUsers!;
-                      if (users.isEmpty) {
+                      final List<BlockedUsers>? users = user.blockedUsers;
+                      print(users);
+                      if (users!.isEmpty) {
                         return SizedBox();
                       } else {
                         return ListView.builder(
                             shrinkWrap: true,
-                            itemCount: 1,
+                            itemCount: users.length,
                             itemBuilder: (context, index) => ListTile(
-                                title: Text(users[index],
+                                title: Text(users[index].username,
                                     style: AppTextStyles.secondaryTextStyle),
                                 trailing: ElevatedButton(
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    await unblockUser(
+                                      client: client,
+                                      userToUnBlock: users[index].username,
+                                      token: token!,
+                                    );
                                     setState(() {
-                                      unblockUser(
-                                          client: client,
-                                          userToUnBlock: users[index],
-                                          token: token!);
+                                      ref
+                                          .watch(settingsFetchProvider.notifier)
+                                          .getMe(client: client, token: token!);
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(

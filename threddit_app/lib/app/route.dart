@@ -168,8 +168,10 @@ class RouteClass {
       case settingsScreen:
         return MaterialPageRoute(builder: (_) => SettingsScreen());
       case blockUserScreen:
-        return MaterialPageRoute( 
+        return MaterialPageRoute(
             builder: (_) => const BlockUserScreen(), fullscreenDialog: true);
+      case blockedScreen:
+        return MaterialPageRoute(builder: (_) => const BlockedScreen());
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
       case textSize:

@@ -166,6 +166,7 @@ void checkBlockResponse(
     required Future<int> statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
+    print("BLOCKED");
   } else {
     showAlert("User was not blocked/unblocked", context);
   }
@@ -252,14 +253,15 @@ Future<int> unblockUser(
   } else {
     url = urlAndroid;
   }
-  http.Response response = await client.post(
-    Uri.parse("$url/api/unblock-user"),
+  http.Response response = await client.delete(
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/me/block/$userToUnBlock"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
+  print(response.statusCode);
   return response.statusCode;
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -22,8 +23,7 @@ class _SafetyState extends ConsumerState<Safety> {
   final client = http.Client();
   String? token = "";
   void _blockedAccounts(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (ctx) => const BlockedScreen()));
+    Navigator.pushNamed(context, RouteClass.blockedScreen);
   }
 
   bool isFollowableEnabled = false;

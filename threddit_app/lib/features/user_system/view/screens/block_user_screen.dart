@@ -11,7 +11,8 @@ import 'package:http/http.dart' as http;
 
 class BlockUserScreen extends ConsumerStatefulWidget {
   const BlockUserScreen({super.key});
-  ConsumerState<ConsumerStatefulWidget> createState() => _BlockUserScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _BlockUserScreenState();
 }
 
 class _BlockUserScreenState extends ConsumerState<BlockUserScreen> {
@@ -43,19 +44,20 @@ class _BlockUserScreenState extends ConsumerState<BlockUserScreen> {
                 final String username = usernameForm.enteredEmail;
 
                 print(username);
-                int statusCode = await blockUser(
-                    client: client, userToBlock: username, token: token!);
-                print(statusCode);
-                setState(() {});
-                if (statusCode == 200) {
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Please type a user name")),
-                  );
-                }
+                await blockUser(
+                        client: client, userToBlock: username, token: token!)
+                    .then((value) {
+                  if (value == 200) {
+                    Navigator.pop(context);
+                  } else {
+                    print(value);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Please type a user name")),
+                    );
+                  }
+                });
               },
-              icon: Icon(Icons.add))
+              icon: const Icon(Icons.add))
         ],
         title: const Text(
           "Block a user",
