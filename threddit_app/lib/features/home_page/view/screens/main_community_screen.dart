@@ -12,8 +12,9 @@ class MainCommunityScreen extends ConsumerStatefulWidget {
 class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
   @override
   Widget build(BuildContext context) {
-    return SharePost(
-      post: posts[0],
-    );
+    return Text('');
+    //  SharePost(
+    //   post: posts[0],
+    // );
   }
 }

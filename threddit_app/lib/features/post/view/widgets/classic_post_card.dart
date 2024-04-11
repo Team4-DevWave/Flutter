@@ -21,9 +21,9 @@ class _PostClassicState extends ConsumerState<PostClassic> {
   @override
   void initState() {
     super.initState();
-    if (widget.post.videoUrl != null) {
+    if (widget.post.video != null) {
       _controller = VideoPlayerController.networkUrl(
-        Uri.parse(widget.post.videoUrl!),
+        Uri.parse(widget.post.video!),
       )..initialize().then((_) {
           setState(() {});
         });
@@ -146,7 +146,7 @@ class _PostClassicState extends ConsumerState<PostClassic> {
               ],
             ),
           ),
-          if (widget.post.videoUrl != null || widget.post.imageUrl != null)
+          if (widget.post.video != null || widget.post.image != null)
             Column(
               children: [
                 Padding(
@@ -154,8 +154,8 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                   child: SizedBox(
                     width: 90,
                     height: 90,
-                    child: widget.post.imageUrl != null
-                        ? Image(image: NetworkImage(widget.post.imageUrl!))
+                    child: widget.post.image != null
+                        ? Image(image: NetworkImage(widget.post.image!))
                         : _controller.value.isInitialized
                             ? GestureDetector(
                                 onTap: () {
