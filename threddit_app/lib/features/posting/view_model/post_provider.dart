@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_clone/models/post.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/models/votes.dart';
 

@@ -48,16 +48,11 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                 Container(
                     child: Row(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, RouteClass.communityScreen,
-                            arguments: ["1", "mod2"]);
-                      },
-                      child: Text(
+                    Text(
                         'r/${widget.dataOfPost.userID?.username}',
                         style: const TextStyle(color: Colors.white),
                       ),
-                    ),
+                    
                     SizedBox(
                       width: 7.w,
                     ),

@@ -20,7 +20,4 @@ class Votes {
   bool containsComment(String commentId) {
     return votedComments.contains(commentId);
   }
-
-  
 }
- 

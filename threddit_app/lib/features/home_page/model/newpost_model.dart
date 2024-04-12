@@ -17,8 +17,8 @@ class Post {
   final int numViews;
   final int commentsCount;
   final User? userID;
-  final Subreddit? subredditID;
-  final Votes? votes;
+  final SubredditInfo? subredditID;
+  final VotesList? votes;
   final Post? parentPost;
 
   Post({
@@ -60,10 +60,10 @@ class Post {
           ? User.fromJson(json['userID'] as Map<String, dynamic>)
           : null,
       subredditID: json['subredditID'] != null
-          ? Subreddit.fromJson(json['subredditID'] as Map<String, dynamic>)
+          ? SubredditInfo.fromJson(json['subredditID'] as Map<String, dynamic>)
           : null,
       votes: json['votes'] != null
-          ? Votes.fromJson(json['votes'] as Map<String, dynamic>)
+          ? VotesList.fromJson(json['votes'] as Map<String, dynamic>)
           : null,
       parentPost: json['parentPost'] != null
           ? Post.fromJson(json['parentPost'] as Map<String, dynamic>)
@@ -86,28 +86,28 @@ class User {
   }
 }
 
-class Subreddit {
+class SubredditInfo {
   final String id;
   final String name;
 
-  Subreddit({required this.id, required this.name});
+  SubredditInfo({required this.id, required this.name});
 
-  factory Subreddit.fromJson(Map<String, dynamic> json) {
-    return Subreddit(
+  factory SubredditInfo.fromJson(Map<String, dynamic> json) {
+    return SubredditInfo(
       id: json['_id'],
       name: json['name'],
     );
   }
 }
 
-class Votes {
+class VotesList {
   final int upvotes;
   final int downvotes;
 
-  Votes({required this.upvotes, required this.downvotes});
+  VotesList({required this.upvotes, required this.downvotes});
 
-  factory Votes.fromJson(Map<String, dynamic> json) {
-    return Votes(
+  factory VotesList.fromJson(Map<String, dynamic> json) {
+    return VotesList(
       upvotes: json['upvotes'],
       downvotes: json['downvotes'],
     );
