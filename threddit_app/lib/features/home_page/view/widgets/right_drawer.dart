@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
@@ -92,7 +91,7 @@ class RightDrawer extends ConsumerWidget{
                 title: "Settings",
                 onTap: () {
                   
-                  Navigator.pushNamed(context, RouteClass.settingsScreen);
+                  Navigator.pushNamed(context, RouteClass.communityModTools);
                 }),
           ],
         ),
