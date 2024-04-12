@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 
@@ -10,7 +11,7 @@ import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class FeedUnitShare extends StatefulWidget {
+class FeedUnitShare extends ConsumerStatefulWidget {
   final Post parentPost;
   final Post dataOfPost;
 
@@ -18,10 +19,10 @@ class FeedUnitShare extends StatefulWidget {
       {super.key, required this.dataOfPost, required this.parentPost});
 
   @override
-  State<FeedUnitShare> createState() => _FeedUnitShareState();
+  ConsumerState<FeedUnitShare> createState() => _FeedUnitShareState();
 }
 
-class _FeedUnitShareState extends State<FeedUnitShare> {
+class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
   late int numbberOfvotes;
   int choiceBottum = -1; // 1 upvote 2 downvote
 
@@ -160,21 +161,34 @@ class _FeedUnitShareState extends State<FeedUnitShare> {
                   ),
                 ],
               ),
-              IconButton(
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.backgroundColor),
                   onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      RouteClass.postScreen,
-                      arguments: {
-                        'currentpost': widget.dataOfPost,
-                        'uid': 'wewe',
-                      },
-                    );
+                    share(context, ref, widget.dataOfPost);
                   },
-                  icon: Icon(Icons.share, color: AppColors.whiteColor)),
-              SharePost(
-                post: widget.dataOfPost,
-              ),
+                  child: Text(
+                    'Share',
+                    style: AppTextStyles.primaryTextStyle,
+                  ),
+                ),
+              )
+              // IconButton(
+              //     onPressed: () {
+              //       Navigator.pushNamed(
+              //         context,
+              //         RouteClass.postScreen,
+              //         arguments: {
+              //           'currentpost': widget.dataOfPost,
+              //           'uid': 'wewe',
+              //         },
+              //       );
+              //     },
+              //     icon: Icon(Icons.share, color: AppColors.whiteColor)),
+              // SharePost(
+              //   post: widget.dataOfPost,
+              // ),
             ],
           ),
           const Divider(color: AppColors.whiteHideColor),

@@ -28,7 +28,6 @@ class _ConfirmPasswordScreenState extends ConsumerState<ConfirmPasswordScreen> {
 
   Future getUserToken() async {
     String? result = await getToken();
-    print(result);
     setState(() {
       token = result!;
     });
@@ -55,7 +54,6 @@ class _ConfirmPasswordScreenState extends ConsumerState<ConfirmPasswordScreen> {
                   return const CircularProgressIndicator();
                 }
                 if (snapshot.hasError) {
-                  print(snapshot.error);
                   return const Text("ERROR LOADING USER DATA");
                 } else {
                   final UserMock user = snapshot.data!;

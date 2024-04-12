@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
-import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:http/http.dart' as http;
 
 const List<String> genders = <String>['man', 'woman'];
@@ -61,7 +59,6 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
 
   Future getUserToken() async {
     String? result = await getToken();
-    print(result);
     setState(() {
       token = result!;
     });
@@ -86,7 +83,6 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                 return const CircularProgressIndicator();
               }
               if (snapshot.hasError) {
-                print(snapshot.error);
                 return const Text("ERROR LOADING USER DATA");
               } else {
                 final UserModelMe user = snapshot.data!;
@@ -121,7 +117,6 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
               return const CircularProgressIndicator();
             }
             if (snapshot.hasError) {
-              print(snapshot.error);
               return const Text("ERROR LOADING USER DATA");
             } else {
               final UserModelMe user = snapshot.data!;

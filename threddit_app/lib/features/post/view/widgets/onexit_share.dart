@@ -14,7 +14,8 @@ class ExitShare extends ConsumerWidget {
       for (int i = 0; i <= ref.watch(popCounter); i++) {
         Navigator.pop(context);
       }
-      ref.watch(popCounter.notifier).update((state) => 1);
+      ref.read(isFirstTimeEnter.notifier).update((state) => true);
+      ref.read(popCounter.notifier).update((state) => state = 1);
     }
 
     return IconButton(

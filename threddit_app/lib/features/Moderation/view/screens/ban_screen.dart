@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/Moderation/view/widgets/input_form.dart';
@@ -12,6 +11,7 @@ enum BanType { permenant, custom }
 
 class BanScreen extends ConsumerStatefulWidget {
   const BanScreen({super.key});
+  @override
   ConsumerState<ConsumerStatefulWidget> createState() => _BanScreenState();
 }
 
@@ -53,10 +53,8 @@ class _BanScreenState extends ConsumerState<BanScreen> {
                 final String message = messageForm.input;
                 final String modNote = modForm.input;
                 int validationValue = validateBan(username, ruleBroken, banLength);
-                print(validationValue);
                 switch (validationValue) {
                   case 0:
-                    print(username);
                     int statusCode = await ref
                         .watch(moderationApisProvider.notifier)
                         .banUser(
@@ -66,7 +64,6 @@ class _BanScreenState extends ConsumerState<BanScreen> {
                             length: banLength,
                             message: message,
                             modnote: modNote);
-                    print(statusCode);
                     setState(() {
                       ref
                           .watch(moderationApisProvider.notifier)
@@ -90,7 +87,7 @@ class _BanScreenState extends ConsumerState<BanScreen> {
                     );
                 }
               },
-              icon: Icon(Icons.add))
+              icon: const Icon(Icons.add))
         ],
         title: const Text(
           "Add a banned user",
@@ -173,9 +170,9 @@ class _BanScreenState extends ConsumerState<BanScreen> {
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
                     (Set<MaterialState> states) {
                       if (states.contains(MaterialState.selected)) {
-                        return Color.fromARGB(255, 139, 139, 139);
+                        return const Color.fromARGB(255, 139, 139, 139);
                       }
-                      return Color.fromARGB(255, 0, 0, 0);
+                      return const Color.fromARGB(255, 0, 0, 0);
                     },
                   ),
                 ),
@@ -213,7 +210,7 @@ class _BanScreenState extends ConsumerState<BanScreen> {
                   ],
                 );
               }
-              return SizedBox();
+              return const SizedBox();
             }),
             messageForm,
             modForm,

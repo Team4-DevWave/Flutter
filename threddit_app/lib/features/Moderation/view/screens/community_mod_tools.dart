@@ -17,6 +17,9 @@ void navigateTo(BuildContext context, String page) {
   else if (page == "approved") {
     Navigator.pushNamed(context, RouteClass.approvedUsersScreen);
   }
+  else if (page == "moderators"){
+    Navigator.pushNamed(context, RouteClass.moderatorsScreen);
+  }
 }
 
 class _CommunityModToolsState extends State<CommunityModTools> {
@@ -34,7 +37,7 @@ class _CommunityModToolsState extends State<CommunityModTools> {
                 title: const Text("Moderators"),
                 titleTextStyle: AppTextStyles.primaryTextStyle,
                 trailing: const Icon(Icons.navigate_next),
-                onTap: () => navigateTo(context, "approved")),
+                onTap: () => navigateTo(context, "moderators")),
             ListTile(
                 leading: const FaIcon(FontAwesomeIcons.check),
                 title: const Text("Approved users"),

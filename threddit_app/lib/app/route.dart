@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/cross_post.dart';
@@ -90,7 +93,12 @@ class RouteClass {
   static const String approvedUsersScreen = '/approved-users';
   static const String approveScreen = '/approve';
   static const String blockUserScreen = '/block-user';
+
   static const String editUser = '/edit-user';
+  static const String moderatorsScreen = '/moderators';
+  static const String addModeratorScreen = '/add-moderator';
+  static const String editModeratorScreen = '/edit-moderator';
+
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -242,6 +250,14 @@ class RouteClass {
             uid: data,
           ),
         );
+      case moderatorsScreen:
+        return MaterialPageRoute(builder: (_) => const ModeratorsScreen());
+      case addModeratorScreen:
+        return MaterialPageRoute(
+            builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);
+      case editModeratorScreen:
+        String user = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => EditModeratorScreen(moderator: user));
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }
