@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/cross_post.dart';
@@ -8,6 +11,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/approved_users_s
 import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
+import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
@@ -90,6 +94,12 @@ class RouteClass {
   static const String approveScreen = '/approve';
   static const String blockUserScreen = '/block-user';
 
+  static const String editUser = '/edit-user';
+  static const String moderatorsScreen = '/moderators';
+  static const String addModeratorScreen = '/add-moderator';
+  static const String editModeratorScreen = '/edit-moderator';
+
+
   /// Generates the appropriate route based on the provided [settings].
   ///
   /// The [settings] parameter contains the name of the route and optional arguments.
@@ -105,6 +115,8 @@ class RouteClass {
     switch (settings.name) {
       case initRoute:
         return MaterialPageRoute(builder: (_) => const StartScreen());
+      case userProfileScreen:
+        return MaterialPageRoute(builder: (_) => const UserProfile());
       case userProfileScreen:
         return MaterialPageRoute(builder: (_) => const UserProfile());
       case accountSettingScreen:
@@ -216,7 +228,8 @@ class RouteClass {
         );
       case confirmPostScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPost());
-
+      case editUser:
+        return MaterialPageRoute(builder: (_)=> const EditProfile());
       case postScreen:
         final args = settings.arguments as Map<String, dynamic>;
         final currentpost =
@@ -237,6 +250,14 @@ class RouteClass {
             uid: data,
           ),
         );
+      case moderatorsScreen:
+        return MaterialPageRoute(builder: (_) => const ModeratorsScreen());
+      case addModeratorScreen:
+        return MaterialPageRoute(
+            builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);
+      case editModeratorScreen:
+        String user = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => EditModeratorScreen(moderator: user));
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }

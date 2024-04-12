@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
@@ -46,7 +45,6 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
 
   Future getUserToken() async {
     String? result = await getToken();
-    print(result);
     setState(() {
       token = result!;
     });
@@ -76,7 +74,6 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     return const CircularProgressIndicator();
                   }
                   if (snapshot.hasError) {
-                    print(snapshot.error);
                     return const Text("ERROR LOADING USER DATA");
                   } else {
                     final UserModelMe user = snapshot.data!;
@@ -99,7 +96,6 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 alignment: Alignment.topRight,
                 child: TextButton(
                     onPressed: () {
-                      print("I am pressed");
                       return _forgetPassword();
                     },
                     child: const Text("Forgot password?")),

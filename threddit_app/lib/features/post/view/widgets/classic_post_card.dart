@@ -56,7 +56,7 @@ class _PostClassicState extends ConsumerState<PostClassic> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(5)),
+        borderRadius: BorderRadius.all(Radius.circular(5.r)),
         border: Border.all(color: AppColors.whiteHideColor),
         color: AppColors.backgroundColor,
       ),
@@ -64,18 +64,18 @@ class _PostClassicState extends ConsumerState<PostClassic> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            padding: EdgeInsets.symmetric(horizontal: 5.0.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                     children: widget.post.subredditID == null
                         ? [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0.w),
                               child: CircleAvatar(
-                                radius: 10,
-                                backgroundImage: AssetImage(
+                                radius: 10.r,
+                                backgroundImage: const AssetImage(
                                     'assets/images/Default_Avatar.png'),
                               ),
                             ),
@@ -88,26 +88,25 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                             SizedBox(
                               width: 10.w,
                             ),
-                            const Icon(
+                            Icon(
                               Icons.circle,
-                              size: 4,
-                              color: Color.fromARGB(98, 255, 255, 255),
+                              size: 5.sp,
+                              color: AppColors.whiteHideColor,
                             ),
                             SizedBox(width: 10.w),
                             Text(
                               '${hoursSincePost}h',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color.fromARGB(110, 255, 255, 255),
+                              style: TextStyle(
+                                fontSize: 12.spMin,
+                                color: AppColors.whiteHideColor,
                               ),
                             )
                           ]
                         : [
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: EdgeInsets.symmetric(horizontal: 8.0.w),
                               child: CircleAvatar(
-                                radius: 10,
+                                radius: 10.r,
                                 backgroundImage: NetworkImage(communityImage),
                               ),
                             ),
@@ -123,20 +122,20 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                             Icon(
                               Icons.circle,
                               size: 4.sp,
-                              color: Color.fromARGB(98, 255, 255, 255),
+                              color: AppColors.whiteHideColor,
                             ),
                             SizedBox(width: 10.w),
                             Text(
                               '${hoursSincePost}h',
                               style: TextStyle(
                                 fontSize: 12.spMin,
-                                color: Color.fromARGB(110, 255, 255, 255),
+                                color: AppColors.whiteHideColor,
                               ),
                             )
                           ]),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
+                      EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 5.h),
                   child: SizedBox(
                     width: 200.w,
                     child: Text(

@@ -17,10 +17,10 @@ class BannedUsersSearch extends SearchDelegate<BannedUser> {
         foregroundColor: AppColors.whiteGlowColor,
         titleTextStyle: AppTextStyles.primaryTextStyle,
         backgroundColor:
-            AppColors.backgroundColor, // Adjust color for dark mode
+            AppColors.backgroundColor, 
         iconTheme: theme.iconTheme.copyWith(
-            color: Color.fromARGB(
-                255, 138, 124, 124)), // Adjust icon color for dark mode
+            color: const Color.fromARGB(
+                255, 138, 124, 124)), 
       ),
     );
   }
@@ -42,7 +42,7 @@ class BannedUsersSearch extends SearchDelegate<BannedUser> {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, BannedUser(username: "", reason: ""));
+        close(context, const BannedUser(username: "", reason: ""));
       },
     );
   }

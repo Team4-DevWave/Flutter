@@ -5,7 +5,6 @@ import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import "package:threddit_clone/features/user_system/model/token_storage.dart";
 
@@ -55,7 +54,6 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
 
   Future getUserToken() async {
     String? result = await getToken();
-    print(result);
     setState(() {
       token = result!;
     });
@@ -99,14 +97,12 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                       return const CircularProgressIndicator();
                     }
                     if (snapshot.hasError) {
-                      print(snapshot.error);
                       return const Text("ERROR LOADING USER DATA");
                     } else {
                       final UserModelMe user = snapshot.data!;
                       final List<BlockedUsers>? users = user.blockedUsers;
-                      print(users);
                       if (users!.isEmpty) {
-                        return SizedBox();
+                        return const SizedBox();
                       } else {
                         return ListView.builder(
                             shrinkWrap: true,

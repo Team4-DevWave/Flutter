@@ -24,16 +24,12 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
   bool _isLoading = false;
 
   void onProfile(String username) {
-    ref
-        .watch(sharedPostProvider.notifier)
-        .setPostInAndInName('user profile', username);
+    ref.watch(sharedPostProvider.notifier).setDestination("");
     Navigator.pushReplacementNamed(context, RouteClass.crossPost);
   }
 
   void onCommunity(String community) {
-    ref
-        .watch(sharedPostProvider.notifier)
-        .setPostInAndInName('subreddit', community);
+    ref.watch(sharedPostProvider.notifier).setDestination(community);
     Navigator.pushReplacementNamed(context, RouteClass.crossPost);
   }
 
@@ -48,7 +44,6 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
     });
     final response =
         await ref.read(userCommunitisProvider.notifier).getUserCommunities();
-    print(response);
     response.fold(
       (failure) => showSnackBar(navigatorKey.currentContext!, failure.message),
       (list) => setState(() {
