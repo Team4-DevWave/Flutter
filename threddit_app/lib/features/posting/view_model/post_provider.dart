@@ -26,7 +26,6 @@ final toggleNSFW = FutureProvider.autoDispose.family<void, String>((ref, postId,
   repository.togglePostNSFW(postId);
 });
 final toggleSpoiler = FutureProvider.autoDispose.family<void, String>((ref, postId,) async {
-   print('i am here');
   final repository = ref.watch(postRepositoryProvider);
   repository.togglePostSpoiler(postId);
 });

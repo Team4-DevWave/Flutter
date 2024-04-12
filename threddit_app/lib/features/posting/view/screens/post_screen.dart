@@ -6,6 +6,7 @@ import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dar
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
+import 'package:threddit_clone/features/posting/view/widgets/shared_post_card.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
@@ -272,7 +273,14 @@ class _PostScreenState extends ConsumerState<PostScreen> {
             Expanded(
               child: ListView(
                 children: [
-                  PostCard(
+                  widget.currentPost.parentPost == null
+                      ? PostCard(
+                          post: widget.currentPost,
+                          uid: widget.uid,
+                          onCommentPressed: () {},
+                        )
+                      : 
+                  SharedPostCard(
                     post: widget.currentPost,
                     uid: widget.uid,
                     onCommentPressed: _openAddCommentOverlay,
