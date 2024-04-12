@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
+
+import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/models/votes.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -16,86 +19,99 @@ class CommentItem extends ConsumerStatefulWidget {
 
 class _CommentItemState extends ConsumerState<CommentItem> {
   late TextEditingController _commentController;
+  late AsyncValue<Votes> upvotes;
+  late AsyncValue<Votes> downvotes;
   @override
-   void initState() {
+  void initState() {
     super.initState();
+    upvotes = ref.read(getUserUpvotesProvider);
+    downvotes = ref.read(getUserDownvotesProvider);
     _commentController = TextEditingController(text: widget.comment.content);
   }
- 
+
   @override
   Widget build(BuildContext context) {
-    void upVoteComment(WidgetRef ref) async {
-      ref.read(commentVoteProvider(
-          (commentID: widget.comment.id, voteType: 1, uid: widget.uid)));
-      if (widget.comment.downvotes.contains(widget.uid)) {
-        widget.comment.downvotes.remove(widget.uid);
-      }
-      if (widget.comment.upvotes.contains(widget.uid))
-        widget.comment.upvotes.remove(widget.uid);
-      else
-        widget.comment.upvotes.add(widget.uid);
+    bool upvoteStatus = upvotes.maybeWhen(
+      data: (votes) => votes.containsComment(widget.comment.id),
+      orElse: () => false,
+    );
 
+    bool downvoteStatus = downvotes.maybeWhen(
+      data: (votes) => votes.containsComment(widget.comment.id),
+      orElse: () => false,
+    );
+    void upVoteComment(WidgetRef ref) async {
+      ref.read(
+          commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
       setState(() {});
     }
 
     void downVoteComment(WidgetRef ref) async {
-      ref.read(commentVoteProvider(
-          (commentID: widget.comment.id, voteType: -1, uid: widget.uid)));
-      if (widget.comment.upvotes.contains(widget.uid)) {
-        widget.comment.upvotes.remove(widget.uid);
-      }
-      if (widget.comment.downvotes.contains(widget.uid))
-        widget.comment.downvotes.remove(widget.uid);
-      else
-        widget.comment.downvotes.add(widget.uid);
+      ref.read(
+          commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
       setState(() {});
     }
-     // Function to delete the comment
-  void _deleteComment() {
-    ref.watch(deleteCommentProvider((postId: widget.comment.post , commentId: widget.comment.id, uid: widget.uid) ) );
-    print('Comment deleted!');
-  }
-    Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // Prevent user from dismissing dialog by tapping outside
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: AppColors.backgroundColor,
-          title: const Text('Confirm Delete',style: TextStyle(color: Colors.white),),
-          content: const SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Are you sure?',style: TextStyle(color: Colors.white),),
-                Text('You cannot restore comments that have been deleted.',style: TextStyle(color: Colors.white),),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                // Close the dialog and delete the comment
-                Navigator.of(context).pop();
-                _deleteComment(); // Call your delete comment function here
-              },
-              child: Text('Delete'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red,foregroundColor: Colors.white),
-            ),
-            TextButton(
-              onPressed: () {
-                // Close the dialog
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-              style:ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 43, 43, 43),foregroundColor: const Color.fromARGB(112, 255, 255, 255)) ,
-            ),
-          ],
-        );
-      },
-    );
-  }
 
- 
+    // Function to delete the comment
+    void _deleteComment() {
+      ref.watch(deleteCommentProvider(
+          (postId: widget.comment.post, commentId: widget.comment.id)));
+      print('Comment deleted!');
+    }
+
+    Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
+      print(widget.comment.user);
+      return showDialog<void>(
+        context: context,
+        barrierDismissible:
+            false, // Prevent user from dismissing dialog by tapping outside
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: AppColors.backgroundColor,
+            title: const Text(
+              'Confirm Delete',
+              style: TextStyle(color: Colors.white),
+            ),
+            content: const SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    'Are you sure?',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Text(
+                    'You cannot restore comments that have been deleted.',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  // Close the dialog and delete the comment
+                  Navigator.of(context).pop();
+                  _deleteComment(); // Call your delete comment function here
+                },
+                child: Text('Delete'),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, foregroundColor: Colors.white),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Close the dialog
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 43, 43, 43),
+                    foregroundColor: const Color.fromARGB(112, 255, 255, 255)),
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     final now = DateTime.now();
     final difference = now.difference(widget.comment.createdAt);
@@ -109,7 +125,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
             color: AppColors.backgroundColor,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -169,8 +186,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Save',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.save,
@@ -181,8 +198,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Copy text',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.copy,
@@ -193,8 +210,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Report',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.flag_outlined,
@@ -210,7 +227,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                     AppColors.backgroundColor,
                                                 builder: (context) {
                                                   return ReportBottomSheet(
-                                                    reportedID: widget.comment.id,
+                                                    reportedID:
+                                                        widget.comment.id,
                                                     userID: widget.uid,
                                                     type: "comment",
                                                   );
@@ -221,8 +239,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Block account',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.block,
@@ -233,8 +251,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Collapse thread',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.compare_arrows_rounded,
@@ -247,8 +265,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Save',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.save,
@@ -259,8 +277,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Copy text',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.copy,
@@ -271,8 +289,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Collapse thread',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.compare_arrows_rounded,
@@ -283,8 +301,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Edit',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.edit,
@@ -301,17 +319,18 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                   return SafeArea(
                                                     child: Padding(
                                                       padding: EdgeInsets.only(
-                                                        top:
-                                                            MediaQuery.of(context)
-                                                                .padding
-                                                                .top,
-                                                        bottom:
-                                                            MediaQuery.of(context)
-                                                                .viewInsets
-                                                                .bottom,
+                                                        top: MediaQuery.of(
+                                                                context)
+                                                            .padding
+                                                            .top,
+                                                        bottom: MediaQuery.of(
+                                                                context)
+                                                            .viewInsets
+                                                            .bottom,
                                                       ),
                                                       child: Container(
-                                                        padding: EdgeInsets.only(
+                                                        padding:
+                                                            EdgeInsets.only(
                                                           bottom: MediaQuery.of(
                                                                   context)
                                                               .viewInsets
@@ -320,7 +339,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                         child: Column(
                                                           children: [
                                                             SizedBox(
-                                                              height:300,
+                                                              height: 300,
                                                               child: TextField(
                                                                 controller:
                                                                     _commentController,
@@ -331,48 +350,79 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                                   hintText:
                                                                       'Add a comment',
                                                                   hintStyle: TextStyle(
-                                                                      color:
-                                                                          Colors.white),
+                                                                      color: Colors
+                                                                          .white),
                                                                   border:
-                                                                      InputBorder.none,
-                                                                      
+                                                                      InputBorder
+                                                                          .none,
                                                                 ),
                                                                 style: const TextStyle(
-                                                                    color: Colors.white),
-
+                                                                    color: Colors
+                                                                        .white),
                                                               ),
                                                             ),
                                                             Row(
-                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
                                                               children: [
-                                                                ElevatedButton(onPressed: (){
-                                                                  if(_commentController.text.isNotEmpty){
-                                                                  Navigator.pop(context);
-                                                                  Navigator.pop(context);
-                                                               ref.read(editCommentProvider((commentId: widget.comment.id , newContent: _commentController.text , postId:widget.comment.post , uid: widget.uid ) ) );
-                                                               
-                                                }
-                                                else
-                                                {
-                                                  showDialog(context: context, builder: (context){
-                                                    return AlertDialog(
-                                                      title: const Text("Error"),
-                                                      content: const Text("Comment cannot be empty"),
-                                                      actions: <Widget>[
-                                                        ElevatedButton(onPressed: (){
-                                                          Navigator.pop(context);
-                                                        },style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: const Text("Ok", style: TextStyle(color: Colors.white),)),
-                                                      ],
-                                                    );
-                                                  });
-                                                }
-                                                },style: ElevatedButton.styleFrom(backgroundColor: Colors.blue), child: const Text("Save", style: TextStyle(color: Colors.white),)),
-      
+                                                                ElevatedButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      if (_commentController
+                                                                          .text
+                                                                          .isNotEmpty) {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                        ref.read(
+                                                                            editCommentProvider((
+                                                                          commentId: widget
+                                                                              .comment
+                                                                              .id,
+                                                                          newContent:
+                                                                              _commentController.text
+                                                                        )));
+                                                                      } else {
+                                                                        showDialog(
+                                                                            context:
+                                                                                context,
+                                                                            builder:
+                                                                                (context) {
+                                                                              return AlertDialog(
+                                                                                title: const Text("Error"),
+                                                                                content: const Text("Comment cannot be empty"),
+                                                                                actions: <Widget>[
+                                                                                  ElevatedButton(
+                                                                                      onPressed: () {
+                                                                                        Navigator.pop(context);
+                                                                                      },
+                                                                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                                                                      child: const Text(
+                                                                                        "Ok",
+                                                                                        style: TextStyle(color: Colors.white),
+                                                                                      )),
+                                                                                ],
+                                                                              );
+                                                                            });
+                                                                      }
+                                                                    },
+                                                                    style: ElevatedButton.styleFrom(
+                                                                        backgroundColor:
+                                                                            Colors
+                                                                                .blue),
+                                                                    child:
+                                                                        const Text(
+                                                                      "Save",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    )),
                                                               ],
                                                             )
                                                           ],
                                                         ),
-                                                        
                                                       ),
                                                     ),
                                                   );
@@ -383,19 +433,18 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                           ListTile(
                                             title: const Text(
                                               'Delete',
-                                              style:
-                                                  TextStyle(color: Colors.white),
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                             leading: const Icon(
                                               Icons.delete,
                                               color: Colors.white,
                                             ),
-                                            onTap: (
-                                            ) {
+                                            onTap: () {
                                               Navigator.pop(context);
-                                              _showDeleteConfirmationDialog(context);
+                                              _showDeleteConfirmationDialog(
+                                                  context);
                                             },
-                                            
                                           )
                                         ],
                                 );
@@ -403,7 +452,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         },
                         icon: const Icon(Icons.more_horiz_outlined)),
                     IconButton(
-                        onPressed: () {}, icon: const Icon(Icons.reply_outlined)),
+                        onPressed: () {},
+                        icon: const Icon(Icons.reply_outlined)),
                     IconButton(
                       onPressed: () {
                         upVoteComment(ref);
@@ -412,12 +462,12 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_upward_outlined,
                         size: 30,
                       ),
-                      color: widget.comment.upvotes.contains(widget.uid)
+                      color: upvoteStatus
                           ? const Color.fromARGB(255, 217, 77, 67)
                           : Colors.white,
                     ),
                     Text(
-                      '${widget.comment.upvotes.length - widget.comment.downvotes.length == 0 ? "vote" : widget.comment.upvotes.length - widget.comment.downvotes.length}',
+                      '${widget.comment.votes.upvotes - widget.comment.votes.downvotes == 0 ? "vote" : widget.comment.votes.upvotes - widget.comment.votes.downvotes}',
                       style: AppTextStyles.primaryTextStyle
                           .copyWith(color: AppColors.whiteColor),
                     ),
@@ -429,7 +479,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_downward_outlined,
                         size: 30,
                       ),
-                      color: widget.comment.downvotes.contains(widget.uid)
+                      color: downvoteStatus
                           ? const Color.fromARGB(255, 97, 137, 212)
                           : Colors.white,
                     ),

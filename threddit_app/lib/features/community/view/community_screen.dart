@@ -36,8 +36,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               repeat: true,
             ),
           ),
-          error: (error, stack) => Text('Error: $error'),
-        ),
+          error: (error, stack) => const Scaffold(body:Text("community not found :( )",style: TextStyle(color:Colors.white, fontSize: 20),),),
+      ),
       ),
     );
   }
@@ -78,6 +78,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           ref.watch(joinCommunityProvider(widget.id));
           community.members.add(widget.uid);
           setState(() {});
+          community.members.add(widget.uid);
           return true;
         }
       }

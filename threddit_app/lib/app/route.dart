@@ -4,13 +4,14 @@ import 'package:threddit_clone/features/Moderation/view/screens/community_mod_to
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/post/view/cross_post.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approve_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approved_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
-import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
-import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
@@ -43,8 +44,9 @@ import 'package:threddit_clone/features/user_system/view/screens/update_email_sc
 import 'package:threddit_clone/features/user_system/view/screens/username_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/starting_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/login_screen.dart';
+import 'package:threddit_clone/features/post/view/choose_community.dart';
 
-import '../features/user_system/view/screens/login_screen.dart';
 // import 'package:threddit_clone/models/post.dart';
 
 class RouteClass {
@@ -80,6 +82,8 @@ class RouteClass {
   static const String confirmPostScreen = '/confirmpost';
   static const String communityModTools = '/communitymodtools';
   static const String communityInfo = '/communityinfo';
+  static const String chooseCommunity = '/choose_communtiy';
+  static const String crossPost = '/cross_post';
   static const String settingsScreen = "/settings";
   static const String textSize = '/text-size';
   static const String bannedUsersScreen = '/banned-users';
@@ -107,8 +111,8 @@ class RouteClass {
     switch (settings.name) {
       case initRoute:
         return MaterialPageRoute(builder: (_) => const StartScreen());
-      // case userProfileScreen:
-      //   return MaterialPageRoute(builder: (_) => const UserProfile());
+      case userProfileScreen:
+        return MaterialPageRoute(builder: (_) => const UserProfile());
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
@@ -123,6 +127,10 @@ class RouteClass {
 
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
+      case chooseCommunity:
+        return MaterialPageRoute(builder: (_) => const ChooseCommunity());
+      case crossPost:
+        return MaterialPageRoute(builder: (_) => const CrossPost());
       case loginScreen:
         return MaterialPageRoute(builder: (_) => const LogInScreen());
       case signUpScreen:
@@ -214,16 +222,19 @@ class RouteClass {
         );
       case confirmPostScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPost());
+
       case postScreen:
         final args = settings.arguments as Map<String, dynamic>;
         final currentpost =
             args['currentpost'] as Post; // Extract the community object
         final uid = args['uid'] as String;
+
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   currentPost: currentpost,
                   uid: uid,
                 ));
+
       case createCommunityScreen:
         //var data = settings.arguments as String;
         var data = 'User2';

@@ -1,36 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/communities_list.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class PostToScreen extends StatefulWidget {
+class PostToScreen extends ConsumerStatefulWidget {
   const PostToScreen({super.key});
   @override
-  State<PostToScreen> createState() => _PostToScreenState();
+  ConsumerState<PostToScreen> createState() => _PostToScreenState();
 }
 
-class _PostToScreenState extends State<PostToScreen> {
+class _PostToScreenState extends ConsumerState<PostToScreen> {
   late TextEditingController _communityText;
-  late Future<List<String>> searchResults;
+  late List<List<String>> searchResults;
 
   @override
   void initState() {
     ///fetches the data when the widget is intialized
     _communityText = TextEditingController();
-    searchResults = Future.value([]);
+    searchResults = [];
     super.initState();
   }
 
   @override
-  void dispose() {  
+  void dispose() {
     _communityText.dispose();
     super.dispose();
   }
 
-  void _onQueryChanged (String query){
+  Future<void> _onQueryChanged(String query) async {
+    final comm =
+        await ref.watch(userCommunitisProvider.notifier).searchResults(query);
     setState(() {
-     searchResults = UserCommunitiesAPI().searchResults(query);
+      comm.fold((l) => showSnackBar(navigatorKey.currentContext!, l.message),
+          (r) => searchResults = r);
     });
   }
 
@@ -73,7 +79,7 @@ class _PostToScreenState extends State<PostToScreen> {
                 _onQueryChanged(text);
               },
             ),
-           CommunityList(searchRes : searchResults),
+            CommunityList(searchRes: searchResults),
           ],
         ),
       ),

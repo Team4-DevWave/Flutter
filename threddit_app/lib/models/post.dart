@@ -1,106 +1,115 @@
-class Post {
-  final String title;
-  final String? postBody;
-  final String? link;
-  final bool NSFW;
-  final bool spoiler;
-  final String? imageUrl;
-  final String? community;
-  final String? videoUrl;
-  final List<String> upvotes;
-  final List<String> downvotes;
-  final List<String> commentsID;
-  final List<String> mentioned;
-  final String userID;
-  final DateTime postedTime;
-  final String id;
-  final int numViews;
-  final bool locked;
-  final bool approved;
+// // ignore_for_file: non_constant_identifier_names
+// class Vote {
+//   final int upvotes;
+//   final int downvotes;
 
-  Post({
-    required this.title,
-    this.postBody,
-    this.link,
-    required this.NSFW,
-    required this.spoiler,
-    this.imageUrl,
-    this.community,
-    this.videoUrl,
-    required this.upvotes,
-    required this.downvotes,
-    required this.commentsID,
-    required this.mentioned,
-    required this.userID,
-    required this.postedTime,
-    required this.id,
-    required this.numViews,
-    required this.locked,
-    required this.approved,
-  });
+//   Vote({
+//     required this.upvotes,
+//     required this.downvotes,
+//   });
 
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      title: json['title'] ?? '',
-      postBody: json['postBody'],
-      link: json['link'],
-      NSFW: json['NSFW'] ?? false,
-      spoiler: json['spoiler'] ?? false,
-      imageUrl: json['imageUrl'],
-      community: json['community'],
-      videoUrl: json['videoUrl'],
-      upvotes: List<String>.from(json['upvotes'] ?? []),
-      downvotes: List<String>.from(json['downvotes'] ?? []),
-      commentsID: List<String>.from(json['commentsID'] ?? []),
-      mentioned: List<String>.from(json['mentioned'] ?? []),
-      userID: json['uid'] ?? '',
-      postedTime: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : DateTime.now(),
-      id: json['_id'] ?? '',
-      numViews: json['numViews'] ?? 0,
-      locked: json['locked'] ?? false,
-      approved: json['approved'] ?? false,
-    );
-  }
+//   factory Vote.fromJson(Map<String, dynamic> json) {
+//     return Vote(
+//       upvotes: json['upvotes'] ?? 0,
+//       downvotes: json['downvotes'] ?? 0,
+//     );
+//   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'title': title,
-      'postBody': postBody,
-      'link': link,
-      'NSFW': NSFW,
-      'spoiler': spoiler,
-      'imageUrl': imageUrl,
-      'community': community,
-      'videoUrl': videoUrl,
-      'upvotes': upvotes,
-      'downvotes': downvotes,
-      'commentsID': commentsID,
-      'mentioned': mentioned,
-      'uid': userID,
-      'createdAt': postedTime.toIso8601String(),
-      '_id': id,
-      'numViews': numViews,
-      'locked': locked,
-      'approved': approved,
-    };
-  }
-}
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'upvotes': upvotes,
+//       'downvotes': downvotes,
+//     };
+//   }
+// }
 
-class PostApiResponse {
-  final int status;
-  final List<Post> data;
+// class Post {
+//   final String title;
+//   final String? textBody;
+//   final String? video;
+//   final String? image;
+//   final String? community;
+//   final bool spoiler;
+//   final bool nsfw;
+//   final bool locked;
+//   final List<String> commentsID;
+//   final String userID;
+//   final DateTime postedTime;
+//   final int numViews;
+//   final String id;
+//   final Vote votes;
 
-  PostApiResponse({
-    required this.status,
-    required this.data,
-  });
+//   Post({
+//     required this.title,
+//     this.textBody,
+//     this.community,
+//     this.video,
+//     this.image,
+//     required this.spoiler,
+//     required this.nsfw,
+//     required this.locked,
+//     required this.commentsID,
+//     required this.userID,
+//     required this.postedTime,
+//     required this.numViews,
+//     required this.id,
+//     required this.votes,
+//   });
 
-  factory PostApiResponse.fromJson(Map<String, dynamic> json) {
-    return PostApiResponse(
-      status: json['status'],
-      data: (json['data'] as List).map((i) => Post.fromJson(i)).toList(),
-    );
-  }
-}
+//   factory Post.fromJson(Map<String, dynamic> json) {
+//     return Post(
+//       title: json['title'] ?? '',
+//       textBody: json['text_body'] ?? '',
+//       video: json['video'],
+//       spoiler: json['spoiler'] ?? false,
+//       nsfw: json['nsfw'] ?? false,
+//       locked: json['locked'] ?? false,
+//       commentsID: List<String>.from(json['commentsID'] ?? []),
+//       userID: json['userID'] ?? '',
+//       postedTime: json['postedTime'] != null
+//           ? DateTime.parse(json['postedTime'])
+//           : DateTime.now(),
+//       numViews: json['numViews'] ?? 0,
+//       id: json['_id'] ?? '',
+//       votes: Vote.fromJson(json['votes']),
+//       community: json['community'],
+//     );
+//   }
+
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'title': title,
+//       'text_body': textBody,
+//       'video': video,
+//       'spoiler': spoiler,
+//       'nsfw': nsfw,
+//       'locked': locked,
+//       'commentsID': commentsID,
+//       'userID': userID,
+//       'postedTime': postedTime.toIso8601String(),
+//       'numViews': numViews,
+//       '_id': id,
+//       'votes': votes.toJson(),
+//       'community': community,
+//     };
+//   }
+
+//   static fromMap(Map<String, dynamic> map) {}
+// }
+
+// class PostApiResponse {
+//   final String status;
+//   final List<Post> data;
+
+//   PostApiResponse({
+//     required this.status,
+//     required this.data,
+//   });
+
+//   factory PostApiResponse.fromJson(Map<String, dynamic> json) {
+//     return PostApiResponse(
+//       status: json['status'],
+//       data: (json['data'] as List).map((i) => Post.fromJson(i)).toList(),
+//     );
+//   }
+// }

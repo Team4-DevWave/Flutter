@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:threddit_clone/models/post.dart';
 import 'package:video_player/video_player.dart';
 
 class PostCard extends ConsumerStatefulWidget {
@@ -23,9 +22,9 @@ class _PostCardState extends ConsumerState<PostCard> {
   late VideoPlayerController _controller;
   void initState() {
     super.initState();
-    if (widget.post.videoUrl != null) {
+    if (widget.post.video != null) {
       _controller = VideoPlayerController.networkUrl(
-        Uri.parse(widget.post.videoUrl!),
+        Uri.parse(widget.post.video!),
       )..initialize().then((_) {
           setState(() {});
         });
@@ -39,19 +38,10 @@ class _PostCardState extends ConsumerState<PostCard> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    void upVotePost(WidgetRef ref) async {
-      final upvoteFunction = ref.read(postUpvoteProvider(widget.post));
-      upvoteFunction(widget.uid);
-      setState(() {});
-    }
+  Widget build(BuildContext) {
+    void upVotePost(WidgetRef ref) async {}
 
-    void downVotePost(WidgetRef ref) async {
-      final downvoteFunction = ref.read(postDownvoteProvider(widget.post));
-      downvoteFunction(widget.uid);
-      setState(() {});
-    }
-
+    void downVotePost(WidgetRef ref) async {}
     final now = DateTime.now();
     final difference = now.difference(widget.post.postedTime);
     final hoursSincePost = difference.inHours;
@@ -78,11 +68,12 @@ class _PostCardState extends ConsumerState<PostCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('r/${widget.post.community}',
-                        style: AppTextStyles.primaryTextStyle.copyWith(
-                            fontSize: 12,
-                            color: const Color.fromARGB(98, 255, 255, 255),
-                            fontWeight: FontWeight.bold)),
+                    if (widget.post.subredditID != null)
+                      Text('r/${widget.post.subredditID?.name}',
+                          style: AppTextStyles.primaryTextStyle.copyWith(
+                              fontSize: 12,
+                              color: const Color.fromARGB(98, 255, 255, 255),
+                              fontWeight: FontWeight.bold)),
                     Row(
                       children: [
                         Text(
@@ -122,19 +113,19 @@ class _PostCardState extends ConsumerState<PostCard> {
                     fontSize: 18),
               ),
             ),
-            if (widget.post.postBody != null)
+            if (widget.post.textBody != null)
               Text(
-                widget.post.postBody!,
+                widget.post.textBody!,
                 style: AppTextStyles.primaryTextStyle.copyWith(
                     color: const Color.fromARGB(196, 255, 255, 255),
                     fontSize: 15),
               ),
-            if (widget.post.imageUrl != null)
+            if (widget.post.image != null)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Image.network(widget.post.imageUrl!),
+                child: Image.network(widget.post.image!),
               ),
-            if (widget.post.videoUrl != null)
+            if (widget.post.video != null)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: _controller.value.isInitialized
@@ -145,9 +136,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                           } else {
                             _controller.play();
                           }
-                          setState(() {
-                            
-                          });
+                          setState(() {});
                         },
                         child: AspectRatio(
                           aspectRatio: _controller.value.aspectRatio,
@@ -185,12 +174,10 @@ class _PostCardState extends ConsumerState<PostCard> {
                     Icons.arrow_upward_outlined,
                     size: 30,
                   ),
-                  color: widget.post.upvotes.contains(widget.uid)
-                      ? const Color.fromARGB(255, 217, 77, 67)
-                      : Colors.white,
+                  color: Colors.white,
                 ),
                 Text(
-                  '${widget.post.upvotes.length - widget.post.downvotes.length == 0 ? "vote" : widget.post.upvotes.length - widget.post.downvotes.length}',
+                  '${widget.post.votes!.upvotes - widget.post.votes!.downvotes == 0 ? "vote" : widget.post.votes!.upvotes - widget.post.votes!.downvotes}',
                   style: AppTextStyles.primaryTextStyle
                       .copyWith(color: AppColors.whiteColor),
                 ),
@@ -202,15 +189,13 @@ class _PostCardState extends ConsumerState<PostCard> {
                     Icons.arrow_downward_outlined,
                     size: 30,
                   ),
-                  color: widget.post.downvotes.contains(widget.uid)
-                      ? const Color.fromARGB(255, 97, 137, 212)
-                      : Colors.white,
+                  color: Colors.white,
                 ),
                 IconButton(
                     onPressed: widget.onCommentPressed,
                     icon: const Icon(Icons.comment)),
                 Text(
-                    '${widget.post.commentsID.isEmpty ? "comment" : widget.post.commentsID.length}',
+                    '${widget.post.commentsCount == 0 ? "comment" : widget.post.commentsCount}',
                     style: AppTextStyles.primaryTextStyle
                         .copyWith(color: AppColors.whiteColor)),
                 Expanded(
@@ -251,7 +236,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                             ),
                                             ListTile(
                                               title: Text(
-                                                widget.post.NSFW
+                                                widget.post.nsfw
                                                     ? 'UnMark NSFW'
                                                     : 'Mark NSFW',
                                                 style: TextStyle(
