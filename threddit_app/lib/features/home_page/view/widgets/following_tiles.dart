@@ -44,16 +44,10 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
   Future<void> _getFavourites() async {
     prefs = await SharedPreferences.getInstance();
     _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
-    print("alo from get");
-    print(ref
+    (ref
         .read(favouriteListProvider.notifier)
         .update((state) => _favouritesList!));
   }
-
-  // Future<void> _fetchFollowingData() async {
-  //   _userFollowingData = UserFollowingAPI().getUserFollowing();
-  //   await _userFollowingData;
-  // }
 
   Future<void> _updateIsFavouriteSub() async {
     if (_favouritesList != null) {
@@ -72,8 +66,7 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
     if (prefs != null) {
       _favouritesList?.removeWhere((element) => element == toBeRemoved);
       prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      print("alo from remove");
-      print(ref
+      (ref
           .read(favouriteListProvider.notifier)
           .update((state) => _favouritesList!));
     }

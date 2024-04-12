@@ -11,6 +11,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/approved_users_s
 import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
+import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
@@ -92,9 +93,12 @@ class RouteClass {
   static const String approvedUsersScreen = '/approved-users';
   static const String approveScreen = '/approve';
   static const String blockUserScreen = '/block-user';
+
+  static const String editUser = '/edit-user';
   static const String moderatorsScreen = '/moderators';
   static const String addModeratorScreen = '/add-moderator';
   static const String editModeratorScreen = '/edit-moderator';
+
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -111,6 +115,8 @@ class RouteClass {
     switch (settings.name) {
       case initRoute:
         return MaterialPageRoute(builder: (_) => const StartScreen());
+      case userProfileScreen:
+        return MaterialPageRoute(builder: (_) => const UserProfile());
       case userProfileScreen:
         return MaterialPageRoute(builder: (_) => const UserProfile());
       case accountSettingScreen:
@@ -222,7 +228,8 @@ class RouteClass {
         );
       case confirmPostScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPost());
-
+      case editUser:
+        return MaterialPageRoute(builder: (_)=> const EditProfile());
       case postScreen:
         final args = settings.arguments as Map<String, dynamic>;
         final currentpost =

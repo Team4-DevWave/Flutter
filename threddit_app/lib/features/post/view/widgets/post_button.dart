@@ -33,7 +33,10 @@ class PostButton extends ConsumerWidget {
         ///call function to send data to the backend
         final response = await ref.watch(createPost.notifier).submitPost(type);
         response.fold(
-            (l) => showSnackBar(navigatorKey.currentContext!, l.message), (r) {
+            (l) {
+              showSnackBar(navigatorKey.currentContext!, l.message);
+              ref.read(currentScreenProvider.notifier).updateCurrentScreen(0);
+              Navigator.pushReplacementNamed(context, RouteClass.appPostScreen);}, (r) {
           ///should route to the posted post page but it routes to the mainLayout for now
           ref.read(currentScreenProvider.notifier).updateCurrentScreen(0);
           Navigator.pushReplacementNamed(context, RouteClass.mainLayoutScreen);

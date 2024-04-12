@@ -35,6 +35,3 @@ class AddImageWidget extends ConsumerWidget {
     ]);
   }
 }
-
-class ByteDate {
-}
