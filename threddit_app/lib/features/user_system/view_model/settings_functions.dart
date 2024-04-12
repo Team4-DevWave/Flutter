@@ -97,7 +97,7 @@ Future<int> changeEmailFunction(
 
   String bodyEncoded = jsonEncode(body);
   http.Response response = await client.patch(
-    Uri.parse("$url:8000/api/v1/users/forgotUsername"),
+    Uri.parse("$url:8000/api/v1/users/me/settings/changeemail"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -142,7 +142,7 @@ Future<int> changeGenderFunction(
 /// Depending on the Status Code returns an alert to inform the User.
 void checkEmailUpdateResponse(
     {required BuildContext context,
-    required Future<int> statusCodeFuture}) async {
+    required int statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
     showAlert("Email was changed correctly!", context);
