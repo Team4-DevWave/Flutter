@@ -10,6 +10,23 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
 
+/// The selected code in the `post_feed_widget.dart` file is responsible for decorating a
+/// `Container` widget. The `BoxDecoration` class is used to provide a border and a
+/// circular border radius to the `Container`.
+
+/// The `border` property of `BoxDecoration` is set to a `Border` object that is created
+/// using the `Border.all` method. This method creates a uniform border around the
+/// `Container`. The color of the border is set to a semi-transparent white color, and
+/// the width of the border is set to `2.w`, which is a width relative to the screen
+/// width.
+
+/// The `borderRadius` property of `BoxDecoration` is set to a `BorderRadius` object
+/// that is created using the `BorderRadius.circular` method. This method creates a
+/// circular border radius with a radius of 15.
+
+/// The `padding` property of the `Container` is set to symmetric horizontal padding of
+/// `16.0` and vertical padding of `4.0`. This adds space around the child of the
+/// `Container`, separating the child from the border.
 class FeedUnit extends ConsumerStatefulWidget {
   final Post dataOfPost;
   // ignore: lines_longer_than_80_chars
@@ -21,6 +38,8 @@ class FeedUnit extends ConsumerStatefulWidget {
 
 class _FeedUnitState extends ConsumerState<FeedUnit> {
   late int numbberOfvotes;
+  final now = DateTime.now();
+
   int choiceBottum = -1; // 1 upvote 2 downvote
 
   @override
@@ -31,6 +50,8 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
 
   @override
   Widget build(BuildContext context) {
+    final difference = now.difference(widget.dataOfPost.postedTime);
+    final hoursSincePost = difference.inHours;
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(
@@ -64,7 +85,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                       width: 7.w,
                     ),
                     Text(
-                      widget.dataOfPost.postedTime.toString(),
+                      '${hoursSincePost}h ago',
                       style: TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],
@@ -129,28 +150,32 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     AddRadiusBoarder(
                       childWidget: Row(
                         children: [
-                          IconButton(
-                              onPressed: () {
-                                if (choiceBottum == -1 || choiceBottum == 2) {
-                                  setState(() {
-                                    if (numbberOfvotes ==
-                                        int.parse(widget.dataOfPost.numViews
-                                                .toString()) -
-                                            1) {
-                                      numbberOfvotes += 2;
-                                    } else {
-                                      numbberOfvotes++;
-                                    }
-                                    choiceBottum = 1;
-                                  });
-                                }
-                              },
-                              icon: Icon(
-                                Icons.arrow_upward,
-                                color: (choiceBottum == 1)
-                                    ? AppColors.redditOrangeColor
-                                    : AppColors.whiteColor,
-                              )),
+                          InkWell(
+                            onTap: () {
+                              if (choiceBottum == -1 || choiceBottum == 2) {
+                                setState(() {
+                                  if (numbberOfvotes ==
+                                      int.parse(widget.dataOfPost.numViews
+                                              .toString()) -
+                                          1) {
+                                    numbberOfvotes += 2;
+                                  } else {
+                                    numbberOfvotes++;
+                                  }
+                                  choiceBottum = 1;
+                                });
+                              }
+                            },
+                            child: Icon(
+                              Icons.arrow_upward,
+                              color: (choiceBottum == 1)
+                                  ? AppColors.redditOrangeColor
+                                  : AppColors.whiteColor,
+                            ),
+                          ),
+                          const VerticalDivider(
+                            thickness: 1,
+                          ),
                           Text(
                             numbberOfvotes.toString(),
                             style: AppTextStyles.secondaryTextStyle,
@@ -158,32 +183,46 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                           const VerticalDivider(
                             thickness: 1,
                           ),
-                          IconButton(
-                              onPressed: () {
-                                if (choiceBottum == -1 || choiceBottum == 1) {
-                                  setState(() {
-                                    if (numbberOfvotes ==
-                                        int.parse(widget.dataOfPost.numViews
-                                                .toString()) +
-                                            1) {
-                                      numbberOfvotes -= 2;
-                                    } else {
-                                      numbberOfvotes--;
-                                    }
-                                    choiceBottum = 2;
-                                  });
-                                }
-                              },
-                              icon: Icon(
-                                Icons.arrow_downward,
-                                color: (choiceBottum == 2)
-                                    ? AppColors.redditOrangeColor
-                                    : AppColors.whiteColor,
-                              )),
+                          InkWell(
+                            onTap: () {
+                              if (choiceBottum == -1 || choiceBottum == 1) {
+                                setState(() {
+                                  if (numbberOfvotes ==
+                                      int.parse(widget.dataOfPost.numViews
+                                              .toString()) +
+                                          1) {
+                                    numbberOfvotes -= 2;
+                                  } else {
+                                    numbberOfvotes--;
+                                  }
+                                  choiceBottum = 2;
+                                });
+                              }
+                            },
+                            child: Icon(
+                              Icons.arrow_downward,
+                              color: (choiceBottum == 2)
+                                  ? AppColors.redditOrangeColor
+                                  : AppColors.whiteColor,
+                            ),
+                          ),
                         ],
                       ),
                     ),
+                    SizedBox(
+                      width: 15.w,
+                    ),
                     Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: const Color.fromARGB(143, 255, 255, 255),
+                          width: 2.w,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            15), // Add this line to make the border circular
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
                       child: Row(
                         children: [
                           const Icon(

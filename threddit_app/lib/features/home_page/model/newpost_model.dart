@@ -135,17 +135,17 @@ class PostApiResponse {
   }
 }
 
-Future<PostApiResponse> fetchPosts() async {
+Future<PostApiResponse> fetchPosts(int pageNumber) async {
   String? token = await getToken();
-  print(token);
+
   final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/posts/best"),
+    Uri.parse("http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
   );
-  print(response.body);
+
   if (response.statusCode == 200) {
     return PostApiResponse.fromJson(jsonDecode(response.body));
   } else {
