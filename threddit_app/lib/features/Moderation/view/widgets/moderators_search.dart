@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/features/Moderation/model/banned_user.dart';
+import 'package:threddit_clone/features/Moderation/model/moderator.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class BannedUsersSearch extends SearchDelegate<BannedUser> {
-  final List<BannedUser> searchTerms;
+class ModeratorsSearch extends SearchDelegate<Moderator> {
+  final List<Moderator> searchTerms;
 
-  BannedUsersSearch({required this.searchTerms});
+  ModeratorsSearch({required this.searchTerms});
   @override
   TextStyle? get searchFieldStyle => AppTextStyles.primaryTextStyle;
   @override
@@ -17,10 +17,10 @@ class BannedUsersSearch extends SearchDelegate<BannedUser> {
         foregroundColor: AppColors.whiteGlowColor,
         titleTextStyle: AppTextStyles.primaryTextStyle,
         backgroundColor:
-            AppColors.backgroundColor, 
+            AppColors.backgroundColor, // Adjust color for dark mode
         iconTheme: theme.iconTheme.copyWith(
             color: const Color.fromARGB(
-                255, 138, 124, 124)), 
+                255, 138, 124, 124)), // Adjust icon color for dark mode
       ),
     );
   }
@@ -42,7 +42,8 @@ class BannedUsersSearch extends SearchDelegate<BannedUser> {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, const BannedUser(username: "", reason: ""));
+        close(context,
+            Moderator(username: "", permissions: {}, fullPermissions: false));
       },
     );
   }
@@ -59,13 +60,12 @@ class BannedUsersSearch extends SearchDelegate<BannedUser> {
     return ListView.builder(
       itemCount: matchQuery.length,
       itemBuilder: (context, index) {
-        final BannedUser result = matchQuery[index];
+        final Moderator result = matchQuery[index];
         return ListTile(
           title: Text(
             "u/${result.username}",
             style: AppTextStyles.primaryTextStyle,
           ),
-          subtitle: Text(result.reason),
         );
       },
     );
@@ -75,7 +75,7 @@ class BannedUsersSearch extends SearchDelegate<BannedUser> {
   Widget buildSuggestions(BuildContext context) {
     return ListView.builder(
       itemCount: 0,
-      itemBuilder: (context, index) => Container(), 
+      itemBuilder: (context, index) => Container(),
     );
   }
 }

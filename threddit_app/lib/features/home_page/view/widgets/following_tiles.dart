@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_following.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/models/data.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 

@@ -39,7 +39,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future getUserToken() async {
     String? result = await getToken();
-    print(result);
     setState(() {
       token = result!;
     });
@@ -76,7 +75,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(token);
     return Scaffold(
         appBar: AppBar(title: const Text("Settings")),
         body: ListView(children: [

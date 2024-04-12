@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 class ApproveScreen extends ConsumerStatefulWidget {
   const ApproveScreen({super.key});
+  @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ApproveScreenState();
 }
 
@@ -35,17 +36,14 @@ class _ApproveScreenState extends ConsumerState<ApproveScreen> {
               onPressed: () async {
                 final String username = usernameForm.enteredEmail;
                 int validationValue = validateApprove(username);
-                print(validationValue);
                 switch (validationValue) {
                   case 0:
-                    print(username);
                     int statusCode = await ref
                         .watch(moderationApisProvider.notifier)
                         .approveUser(
                           client: client,
                           username: username,
                         );
-                    print(statusCode);
                     setState(() {
                       ref
                           .watch(moderationApisProvider.notifier)
@@ -59,7 +57,7 @@ class _ApproveScreenState extends ConsumerState<ApproveScreen> {
                     );
                 }
               },
-              icon: Icon(Icons.add))
+              icon: const Icon(Icons.add))
         ],
         title: const Text(
           "Add an approved user",
