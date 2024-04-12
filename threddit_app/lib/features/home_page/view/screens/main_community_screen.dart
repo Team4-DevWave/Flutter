@@ -12,9 +12,11 @@ class MainCommunityScreen extends ConsumerStatefulWidget {
 class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
   @override
   Widget build(BuildContext context) {
-    return Text('');
-    //  SharePost(
-    //   post: posts[0],
-    // );
+    return Center(
+        child: ElevatedButton(
+            onPressed: () {
+              share(context, ref, posts[0]);
+            },
+            child: Text('Share')));
   }
 }

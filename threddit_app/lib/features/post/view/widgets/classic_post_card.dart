@@ -139,7 +139,7 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                       widget.post.title,
                       style: AppTextStyles.primaryTextStyle.copyWith(
                           color: const Color.fromARGB(238, 255, 255, 255),
-                          fontSize: 12),
+                          fontSize: 14),
                     ),
                   ),
                 ),

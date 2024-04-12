@@ -20,16 +20,6 @@ class SharePosts extends StateNotifier<bool> {
     final sharedPost = ref.watch(sharedPostProvider);
 
     //http://localhost:8000/api/v1/posts/[post_id]/share
-    /*
-    {
-      "postIn":"subreddit or user profile",
-      "postInName":"username or subreddit name",
-      "postID":"",
-      "NSFW":"false",
-      "spoiler":"false",
-      "postCommentNotifications":"true"
-    }
-    */
     //final token = await getToken();
 
     final url = Uri.https(
@@ -45,12 +35,10 @@ class SharePosts extends StateNotifier<bool> {
         body: json.encode(
           {
             "title": sharedPost.title,
-            "postIn": sharedPost.postIn,
-            "postInName": sharedPost.postInName,
-            "postID": sharedPost.post?.id,
-            "NSFW": sharedPost.NSFW,
+            "destination": sharedPost.destination,
+            "nsfw": sharedPost.nsfw,
             "spoiler": sharedPost.spoiler,
-            "postCommentNotifications": sharedPost.postCommentNotifications,
+            "postid": sharedPost.post!.id,
           },
         ),
       );

@@ -17,12 +17,12 @@ class CrossPost extends ConsumerStatefulWidget {
   const CrossPost({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CrossPostState();
+  ConsumerState<CrossPost> createState() => _CrossPostState();
 }
 
 class _CrossPostState extends ConsumerState<CrossPost> {
-  TextEditingController _titleController = TextEditingController();
-  late String postingIn;
+  String lastValue = '';
+  String? postingIn;
   bool isOn = false;
   bool isNSFW = false;
   bool isSpoiler = false;
@@ -58,46 +58,33 @@ class _CrossPostState extends ConsumerState<CrossPost> {
   }
 
   Future<void> onPost() async {
-    ref.watch(sharedPostProvider.notifier).setNSFW(isNSFW, isSpoiler);
-    ref.watch(sharedPostProvider.notifier).setTitle(_titleController.text);
-    final shared = ref.watch(sharedPostProvider);
+    ref.read(sharedPostProvider.notifier).setNSFW(isNSFW, isSpoiler);
+    ref.read(sharedPostProvider.notifier).setTitle(lastValue);
+    final shared = ref.read(sharedPostProvider);
     final message =
-        shared.postIn == 'user profile' ? 'your profile' : shared.postInName;
+        shared.destination == '' ? 'your profile' : shared.destination;
 
     //send shared post to backend and recieve the responsed from the provider
     //to show user a message
-    final response = await ref.watch(sharePostsProvider.notifier).sharePost();
+    final response = await ref.read(sharePostsProvider.notifier).sharePost();
     response.fold(
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
         (success) => showSnackBar(
             navigatorKey.currentContext!, 'Your post shared to $message'));
-  }
-
-  @override
-  void initState() {
-    _titleController = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    super.dispose();
+    //ref.watch(isFirstTimeEnter.notifier).update((state) => false);
   }
 
   @override
   Widget build(BuildContext context) {
-    final sharedPost = ref.watch(sharedPostProvider);
-    _titleController.text = sharedPost.post?.title ?? "";
+    lastValue = ref.read(sharedPostProvider).post?.title ?? "";
 
     _isLoading = ref.watch(sharePostsProvider);
-    ref.watch(sharedPostProvider.notifier).getPostIn()! == 'user profile'
+    ref.read(sharedPostProvider).destination == ''
         ? postingIn = 'My Profile'
-        : postingIn = ref.watch(sharedPostProvider.notifier).getPostInName()!;
+        : postingIn = ref.read(sharedPostProvider).destination;
 
-    isNotProfile =
-        (ref.watch(sharedPostProvider.notifier).getPostIn()! != 'user profile');
+    isNotProfile = (ref.read(sharedPostProvider).destination != '');
 
     return _isLoading
         ? const Loading()
@@ -135,7 +122,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                   ListTile(
                     onTap: () {
                       ref
-                          .watch(popCounter.notifier)
+                          .read(popCounter.notifier)
                           .update((state) => state = state + 1);
                       Navigator.pushNamed(context, RouteClass.chooseCommunity);
                     },
@@ -144,7 +131,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                     title: Row(
                       children: [
                         Text(
-                          postingIn,
+                          postingIn!,
                           style: AppTextStyles.primaryTextStyle.copyWith(
                             fontSize: 20.spMin,
                             color: AppColors.whiteColor,
@@ -171,12 +158,20 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                   ),
                   SizedBox(height: 10.h),
                   TextFormField(
-                    controller: _titleController,
-                    // initialValue: ref
-                    //     .watch(sharedPostProvider.notifier)
-                    //     .getShared()
-                    //     .post!
-                    //     .title,
+                    onChanged: (value) {
+                      ref
+                          .read(isFirstTimeEnter.notifier)
+                          .update((state) => false);
+                      ref.read(sharedPostProvider.notifier).setTitle(value);
+                      //ref.watch(isChanged.notifier).update((state) => true);
+                      lastValue = value;
+                    },
+                    initialValue: /*(*/ ref.read(
+                            isFirstTimeEnter) /* &&
+                            !ref.watch(isChanged))*/
+                        ? lastValue =
+                            ref.read(sharedPostProvider).post?.title ?? ""
+                        : lastValue = ref.read(sharedPostProvider).title ?? "",
                     style: AppTextStyles.primaryTextStyle
                         .copyWith(fontSize: 20.spMin),
                     decoration: InputDecoration(
@@ -192,7 +187,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                     cursorColor: AppColors.blueColor,
                   ),
                   SizedBox(height: 30.h),
-                  PostClassic(post: ref.watch(sharedPostProvider).post!),
+                  PostClassic(post: ref.read(sharedPostProvider).post!),
                 ],
               ),
             ),

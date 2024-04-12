@@ -1,77 +1,70 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first, non_constant_identifier_names
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:threddit_clone/models/post.dart';
 
 class SharedPost {
   final String? title;
-  final String? string;
   final Post? post;
+  final String? destination;
   final String? postIn;
   final String? postInName;
-  final bool NSFW;
+  final bool nsfw;
   final bool spoiler;
-  final bool postCommentNotifications;
   SharedPost({
     this.title,
-    this.string,
     this.post,
+    this.destination,
     required this.postIn,
     required this.postInName,
-    required this.NSFW,
+    required this.nsfw,
     required this.spoiler,
-    required this.postCommentNotifications,
   });
 
   SharedPost copyWith({
     String? title,
-    String? string,
     Post? post,
+    String? destination,
     String? postIn,
     String? postInName,
-    bool? NSFW,
+    bool? nsfw,
     bool? spoiler,
-    bool? postCommentNotifications,
   }) {
     return SharedPost(
       title: title ?? this.title,
-      string: string ?? this.string,
       post: post ?? this.post,
+      destination: destination ?? this.destination,
       postIn: postIn ?? this.postIn,
       postInName: postInName ?? this.postInName,
-      NSFW: NSFW ?? this.NSFW,
+      nsfw: nsfw ?? this.nsfw,
       spoiler: spoiler ?? this.spoiler,
-      postCommentNotifications:
-          postCommentNotifications ?? this.postCommentNotifications,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,
-      'string': string,
-      //  'post': post?.toMap(),
+      'destination': destination,
       'postIn': postIn,
       'postInName': postInName,
-      'NSFW': NSFW,
+      'nsfw': nsfw,
       'spoiler': spoiler,
-      'postCommentNotifications': postCommentNotifications,
     };
   }
 
   factory SharedPost.fromMap(Map<String, dynamic> map) {
     return SharedPost(
       title: map['title'] != null ? map['title'] as String : null,
-      string: map['string'] != null ? map['string'] as String : null,
       post: map['post'] != null
           ? Post.fromMap(map['post'] as Map<String, dynamic>)
           : null,
+      destination:
+          map['destination'] != null ? map['destination'] as String : null,
       postIn: map['postIn'] != null ? map['postIn'] as String : null,
       postInName:
           map['postInName'] != null ? map['postInName'] as String : null,
-      NSFW: map['NSFW'] as bool,
+      nsfw: map['nsfw'] as bool,
       spoiler: map['spoiler'] as bool,
-      postCommentNotifications: map['postCommentNotifications'] as bool,
     );
   }
 
@@ -82,7 +75,7 @@ class SharedPost {
 
   @override
   String toString() {
-    return 'SharedPost(title: $title, string: $string, post: $post, postIn: $postIn, postInName: $postInName, NSFW: $NSFW, spoiler: $spoiler, postCommentNotifications: $postCommentNotifications)';
+    return 'SharedPost(title: $title, post: $post, destination: $destination, postIn: $postIn, postInName: $postInName, nsfw: $nsfw, spoiler: $spoiler)';
   }
 
   @override
@@ -90,24 +83,22 @@ class SharedPost {
     if (identical(this, other)) return true;
 
     return other.title == title &&
-        other.string == string &&
         other.post == post &&
+        other.destination == destination &&
         other.postIn == postIn &&
         other.postInName == postInName &&
-        other.NSFW == NSFW &&
-        other.spoiler == spoiler &&
-        other.postCommentNotifications == postCommentNotifications;
+        other.nsfw == nsfw &&
+        other.spoiler == spoiler;
   }
 
   @override
   int get hashCode {
     return title.hashCode ^
-        string.hashCode ^
         post.hashCode ^
+        destination.hashCode ^
         postIn.hashCode ^
         postInName.hashCode ^
-        NSFW.hashCode ^
-        spoiler.hashCode ^
-        postCommentNotifications.hashCode;
+        nsfw.hashCode ^
+        spoiler.hashCode;
   }
 }
