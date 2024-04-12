@@ -34,7 +34,7 @@ class CommentRepository {
   }
 
   Stream<List<Comment>> getCommentsStream(String postId) {
-    return Stream.periodic(const Duration(seconds: 10), (_) {
+    return Stream.periodic(const Duration(seconds: 5), (_) {
       return fetchAllComments(postId);
     }).asyncMap((_) async => fetchAllComments(postId));
   }
@@ -44,14 +44,11 @@ class CommentRepository {
     final url =
         Uri.parse('http://10.0.2.2:8000/api/v1/posts/$postId/comments/');
     final headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       "Authorization": "Bearer $token",
     };
-    final body = jsonEncode({"content": content});
-
     try {
-      final response = await http.post(url, headers: headers, body: body);
-
+      final response = await http.post(url, body: jsonEncode({'content': content}), headers: headers,);
       if (response.statusCode == 201) {
         print('comment added successfully');
       } else {

@@ -58,6 +58,8 @@ class CommunityRepository {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final Map<String, dynamic> data = responseData['data'];
         final Map<String, dynamic> communityData = data['subreddit'];
+        print(communityData);
+        print(Subreddit.fromJson(communityData));
         return Subreddit.fromJson(communityData);
       } else {
         print(

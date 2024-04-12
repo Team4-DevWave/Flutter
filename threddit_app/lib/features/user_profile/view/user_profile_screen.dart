@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -12,7 +13,74 @@ class UserProfile extends ConsumerStatefulWidget {
   ConsumerState<UserProfile> createState() => _UserProfileState();
 }
 
-class _UserProfileState extends ConsumerState<UserProfile> {
+class _UserProfileState extends ConsumerState<UserProfile> with TickerProviderStateMixin {
+
+  TabController?_tabController;
+  @override
+  void initState() {
+    _tabController = TabController(length: 3, vsync: this);
+    super.initState();
+    //intitialize tab controller
+  }
+ 
+  
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
+
+  Widget buildPostTab() {
+    return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.warning_amber,
+                color: AppColors.whiteGlowColor,
+              ),
+              Text(
+                "Wow, such empty in Posts!",
+                style: AppTextStyles.primaryTextStyle,
+              ),
+            ],
+          );
+  }
+
+   Widget buildCommentsTab() {
+    return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.warning_amber,
+                color: AppColors.whiteGlowColor,
+              ),
+              Text(
+                "Wow, such empty in Comments!",
+                style: AppTextStyles.primaryTextStyle,
+              ),
+            ],
+          );
+  }
+
+   Widget buildAboutTab() {
+    return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.warning_amber,
+                color: AppColors.whiteGlowColor,
+              ),
+              Text(
+                "Wow, such empty in About!",
+                style: AppTextStyles.primaryTextStyle,
+              ),
+            ],
+          );
+  }
+  
   @override
   Widget build(BuildContext context) {
     final List<String> tabs = <String>['Posts', 'Comments', 'About'];
@@ -51,7 +119,9 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const CircleAvatar(
-                              radius: 35,
+                              radius: 50,
+                               backgroundImage:
+                          AssetImage('assets/images/Default_Avatar.png'),
                             ),
                             const SizedBox(
                               height: 10,
@@ -60,7 +130,9 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                               style: const ButtonStyle(
                                   backgroundColor: MaterialStatePropertyAll(
                                       AppColors.whiteHideColor)),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(context, RouteClass.editUser);
+                              },
                               child: Text(
                                 "Edit",
                                 style: AppTextStyles.buttonTextStyle.copyWith(
@@ -122,6 +194,7 @@ class _UserProfileState extends ConsumerState<UserProfile> {
                   pinned: true,
                   forceElevated: innerBoxIsScrolled,
                   bottom: TabBar(
+                      controller: _tabController,
                       indicatorColor: AppColors.redditOrangeColor,
                       labelStyle: AppTextStyles.buttonTextStyle,
                       tabs: tabs
@@ -133,53 +206,13 @@ class _UserProfileState extends ConsumerState<UserProfile> {
               )
             ];
           },
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          body: TabBarView(
+            controller: _tabController,
             children: [
-              const Icon(
-                Icons.warning_amber,
-                color: AppColors.whiteGlowColor,
-              ),
-              Text(
-                "Wow, such empty!",
-                style: AppTextStyles.primaryTextStyle,
-              ),
-            ],
-          ),
+            buildPostTab(),
+            buildCommentsTab(),
+            buildAboutTab()
+          ])
         )));
   }
 }
-    
-//     Scaffold(
-//       appBar: AppBar(
-//         title: const Text(""),
-//         actions: [
-//           const Align(
-//             alignment: Alignment.centerRight,
-//           ),
-//           IconButton(
-//             onPressed: () {
-//               //open search screen
-//             },
-//             icon: const Icon(
-//               Icons.search_outlined,
-//               color: AppColors.whiteGlowColor,
-//             ),
-//           ),
-//           IconButton(
-//             onPressed: () {
-//               //share profile modal bottom sheet
-//             },
-//             icon: const Icon(Icons.share),
-//           ),
-//         ],
-//       ),
-//       body: SingleChildScrollView(
-//         child: Container(
-//           //The first half of the screen (user info)
-//         ),
-//       ),
-//     );
-//   }
-// }
