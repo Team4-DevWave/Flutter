@@ -50,8 +50,14 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, RouteClass.communityScreen,
-                            arguments: ["1", "mod2"]);
+                        Navigator.pushNamed(
+                          context,
+                          RouteClass.postScreen,
+                          arguments: {
+                            'currentpost': widget.dataOfPost,
+                            'uid': 'wewe',
+                          },
+                        );
                       },
                       child: Text(
                         'r/${widget.dataOfPost.userID?.username}',

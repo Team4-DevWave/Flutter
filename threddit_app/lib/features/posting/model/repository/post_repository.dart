@@ -1,5 +1,5 @@
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/models/post.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;

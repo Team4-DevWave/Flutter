@@ -65,7 +65,14 @@ class _FeedUnitShareState extends State<FeedUnitShare> {
           ),
           GestureDetector(
             onTap: () {
-              //Navigator.pushNamed(context, RouteClass.postScreen,arguments: [])
+              Navigator.pushNamed(
+                context,
+                RouteClass.postScreen,
+                arguments: {
+                  'currentpost': widget.dataOfPost,
+                  'uid': 'wewe',
+                },
+              );
             },
             child: Padding(
               padding: const EdgeInsets.all(6.0),
@@ -153,9 +160,18 @@ class _FeedUnitShareState extends State<FeedUnitShare> {
                   ),
                 ],
               ),
-              // IconButton(
-              //     onPressed: () {},
-              //     icon: Icon(Icons.share, color: AppColors.whiteColor)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      RouteClass.postScreen,
+                      arguments: {
+                        'currentpost': widget.dataOfPost,
+                        'uid': 'wewe',
+                      },
+                    );
+                  },
+                  icon: Icon(Icons.share, color: AppColors.whiteColor)),
               SharePost(
                 post: widget.dataOfPost,
               ),

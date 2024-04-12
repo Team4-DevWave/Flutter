@@ -42,12 +42,7 @@ class _FeedUnitState extends State<FeedUnit> {
                   child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        RouteClass.postScreen,
-                      );
-                    },
+                    onTap: () {},
                     child: Text(
                       'r/${widget.dataOfPost.userID?.username}',
                       style: const TextStyle(color: Colors.white),
@@ -63,7 +58,13 @@ class _FeedUnitState extends State<FeedUnit> {
                 ],
               )),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, RouteClass.communityScreen,
+                      arguments: {
+                        'id': widget.dataOfPost.subredditID!.name,
+                        'uid': widget.dataOfPost.userID!.id
+                      });
+                },
                 child: const Icon(
                   Icons.more_vert,
                   color: AppColors.whiteHideColor,
