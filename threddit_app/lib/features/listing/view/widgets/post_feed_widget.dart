@@ -59,7 +59,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
           RouteClass.postScreen,
           arguments: {
             'currentpost': widget.dataOfPost,
-            'uid': 'wewe',
+            'uid': '65f780011b4a7f2cf036ed12',
           },
         );
       },

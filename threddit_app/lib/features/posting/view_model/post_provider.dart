@@ -20,3 +20,13 @@ final fetchpostProvider = FutureProvider.family<Post, String>((ref, id) async {
 
   return repository.fetchPost(id);
 });
+
+final toggleNSFW = FutureProvider.autoDispose.family<void, String>((ref, postId,) async {
+  final repository = ref.watch(postRepositoryProvider);
+  repository.togglePostNSFW(postId);
+});
+final toggleSpoiler = FutureProvider.autoDispose.family<void, String>((ref, postId,) async {
+   print('i am here');
+  final repository = ref.watch(postRepositoryProvider);
+  repository.togglePostSpoiler(postId);
+});

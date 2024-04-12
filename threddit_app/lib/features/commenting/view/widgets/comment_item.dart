@@ -118,6 +118,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     final hoursSincePost = difference.inHours;
 
     return SafeArea(
+      
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Container(
@@ -310,6 +311,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                             ),
                                             onTap: () {
                                               showModalBottomSheet(
+                                                
                                                 context: context,
                                                 isScrollControlled: true,
                                                 backgroundColor:
@@ -339,7 +341,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                         child: Column(
                                                           children: [
                                                             SizedBox(
-                                                              height: 300,
+                                                              height: 80,
                                                               child: TextField(
                                                                 controller:
                                                                     _commentController,
