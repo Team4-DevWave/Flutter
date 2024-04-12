@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
@@ -243,13 +244,14 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         endDrawer: const RightDrawer(),
         body: Column(
           children: [
-            PostCard(
-              post: widget.currentPost,
-              uid: widget.uid,
-              onCommentPressed: _openAddCommentOverlay,
-            ),
             Expanded(
-              child: Consumer(
+              child: ListView(children:[
+              PostCard(
+                    post: widget.currentPost,
+                    uid: widget.uid,
+                    onCommentPressed: _openAddCommentOverlay,
+                  ),
+                  Consumer(
                 builder: (context, watch, child) {
                   final AsyncValue<List<Comment>> postComments =
                       ref.watch(commentsProvider((widget.currentPost.id)));
@@ -261,10 +263,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                     data: (comments) {
                       return Column(
                         children: [
-                          Expanded(
-                            child: ListView(
-                              children: [
-                                const Padding(
+                           const Padding(
                                     padding: EdgeInsets.only(bottom: 8)),
                                 if (comments.isNotEmpty)
                                   ...comments
@@ -273,20 +272,19 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                             uid: widget.uid,
                                           ))
                                       .toList(),
-                              ],
-                            ),
-                          ),
-                          AddComment(
-                            postID: widget.currentPost.id,
-                            uid: widget.uid,
-                          )
                         ],
                       );
-                    },
+                    }
                   );
-                },
+                }
+                  )
+              ],
               ),
             ),
+            AddComment(
+              postID: widget.currentPost.id,
+              uid: widget.uid,
+            )
           ],
         ),
       ),

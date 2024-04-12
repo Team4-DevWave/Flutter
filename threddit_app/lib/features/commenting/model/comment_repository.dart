@@ -40,19 +40,15 @@ class CommentRepository {
   }
 
   Future<void> createComment(String postId, String content) async {
-    print(postId);
-    print(content);
     String? token = await getToken();
     final url =
         Uri.parse('http://10.0.2.2:8000/api/v1/posts/$postId/comments/');
     final headers = {
+      'Content-Type': 'application/json',
       "Authorization": "Bearer $token",
     };
-    final body = jsonEncode({"content": content});
-print(body);
     try {
-      final response = await http.post(url, headers: headers, body: body);
-
+      final response = await http.post(url, body: jsonEncode({'content': content}), headers: headers,);
       if (response.statusCode == 201) {
         print('comment added successfully');
       } else {
