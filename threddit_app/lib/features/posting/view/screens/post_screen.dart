@@ -248,42 +248,44 @@ class _PostScreenState extends ConsumerState<PostScreen> {
               uid: widget.uid,
               onCommentPressed: _openAddCommentOverlay,
             ),
-            Consumer(
-              builder: (context, watch, child) {
-                final AsyncValue<List<Comment>> postComments =
-                    ref.watch(commentsProvider((widget.currentPost.id)));
-                return postComments.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stackTrace) =>
-                      Center(child: Text('Error: $error')),
-                  data: (comments) {
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: ListView(
-                            children: [
-                              const Padding(
-                                  padding: EdgeInsets.only(bottom: 8)),
-                              if (comments.isNotEmpty)
-                                ...comments
-                                    .map((comment) => CommentItem(
-                                          comment: comment,
-                                          uid: widget.uid,
-                                        ))
-                                    .toList(),
-                            ],
+            Expanded(
+              child: Consumer(
+                builder: (context, watch, child) {
+                  final AsyncValue<List<Comment>> postComments =
+                      ref.watch(commentsProvider((widget.currentPost.id)));
+                  return postComments.when(
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (error, stackTrace) =>
+                        Center(child: Text('Error: $error')),
+                    data: (comments) {
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: ListView(
+                              children: [
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 8)),
+                                if (comments.isNotEmpty)
+                                  ...comments
+                                      .map((comment) => CommentItem(
+                                            comment: comment,
+                                            uid: widget.uid,
+                                          ))
+                                      .toList(),
+                              ],
+                            ),
                           ),
-                        ),
-                        AddComment(
-                          postID: widget.currentPost.id,
-                          uid: widget.uid,
-                        )
-                      ],
-                    );
-                  },
-                );
-              },
+                          AddComment(
+                            postID: widget.currentPost.id,
+                            uid: widget.uid,
+                          )
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
