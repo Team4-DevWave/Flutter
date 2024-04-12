@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
@@ -9,16 +10,16 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
 
-class FeedUnit extends StatefulWidget {
+class FeedUnit extends ConsumerStatefulWidget {
   final Post dataOfPost;
   // ignore: lines_longer_than_80_chars
   const FeedUnit(this.dataOfPost, {super.key});
 
   @override
-  State<FeedUnit> createState() => _FeedUnitState();
+  ConsumerState<FeedUnit> createState() => _FeedUnitState();
 }
 
-class _FeedUnitState extends State<FeedUnit> {
+class _FeedUnitState extends ConsumerState<FeedUnit> {
   late int numbberOfvotes;
   int choiceBottum = -1; // 1 upvote 2 downvote
 
@@ -188,9 +189,19 @@ class _FeedUnitState extends State<FeedUnit> {
                   ),
                 ],
               ),
-              SharePost(
-                post: widget.dataOfPost,
-              ),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.backgroundColor),
+                  onPressed: () {
+                    share(context, ref, widget.dataOfPost);
+                  },
+                  child: Text(
+                    'Share',
+                    style: AppTextStyles.primaryTextStyle,
+                  ),
+                ),
+              )
             ],
           ),
           const Divider(color: AppColors.whiteHideColor),
