@@ -86,7 +86,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                 return const Text("ERROR LOADING USER DATA");
               } else {
                 final UserModelMe user = snapshot.data!;
-                
+
                 return ListView(shrinkWrap: true, children: [
                   ListTile(
                     leading: const Icon(Icons.settings),
@@ -131,14 +131,23 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                   trailing: const Icon(Icons.navigate_next),
                   onTap: () {
                     showCountryPicker(
+
                         context: context,
                         onSelect: (Country country) {
-                          setState(() {
-                            selectedCountry = country;
-                            changeCountry(client: client, country: country.displayName, token: token!);
+                          changeCountry(
+                                  client: client,
+                                  country: country.name,
+                                  token: token!)
+                              .then((value) {
+                            if (value == 200) {
+                              setState(() {
+                                selectedCountry = country;
+                              });
+                            }
                           });
                         },
                         countryListTheme: CountryListThemeData(
+                          searchTextStyle: AppTextStyles.primaryTextStyle,
                             backgroundColor: AppColors.backgroundColor,
                             textStyle: AppTextStyles.primaryTextStyle));
                   },
