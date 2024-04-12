@@ -14,19 +14,18 @@ final createPost =
 
 String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
-
 class PostProvider extends StateNotifier<bool> {
   final Ref ref;
   PostProvider(this.ref) : super(false);
-
- 
 
   FutureEither<bool> submitPost(String type) async {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
 
     try {
-      final response = await http.post(Uri.parse('http://$local:8000/api/v1/homepage/submit/r/${post?.community}'),
+      final response = await http.post(
+          Uri.parse(
+              'http://$local:8000/api/v1/homepage/submit/r/${post?.community}'),
           headers: {
             'Content-Type': 'application/json',
             //check from sh3boly
@@ -41,13 +40,14 @@ class PostProvider extends StateNotifier<bool> {
             "locked": post?.locked,
             "text_body": post?.text_body,
             "image": post?.image,
-            "video" : post?.video
+            'postedTime': DateTime.now(),
+            "video": post?.video
           }));
+      print(response.statusCode);
       if (response.statusCode == 201) {
         return right(true);
-      }
-      else{
-        return  left(Failure("Error while submitting the post"));
+      } else {
+        return left(Failure("Error while submitting the post"));
       }
     } catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {

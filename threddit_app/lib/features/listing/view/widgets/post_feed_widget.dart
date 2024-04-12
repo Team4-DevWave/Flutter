@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -42,8 +43,10 @@ class _FeedUnitState extends State<FeedUnit> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, RouteClass.communityScreen,
-                          arguments: ["1", "mod2"]);
+                      Navigator.pushNamed(
+                        context,
+                        RouteClass.postScreen,
+                      );
                     },
                     child: Text(
                       'r/${widget.dataOfPost.userID?.username}',
@@ -185,7 +188,9 @@ class _FeedUnitState extends State<FeedUnit> {
                   ),
                 ],
               ),
-              const Icon(Icons.share, color: AppColors.whiteColor),
+              SharePost(
+                post: widget.dataOfPost,
+              ),
             ],
           ),
           const Divider(color: AppColors.whiteHideColor),

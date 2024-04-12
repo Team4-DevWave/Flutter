@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/model/shared_post_model.dart';
-import 'package:threddit_clone/models/post.dart';
 
 final sharedPostProvider = StateNotifierProvider<SharedNotifier, SharedPost>(
     (ref) => SharedNotifier());

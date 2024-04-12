@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:threddit_clone/models/post.dart';
+
 import 'package:threddit_clone/theme/theme.dart';
 import 'package:video_player/video_player.dart';
 
@@ -42,17 +44,19 @@ class _PostClassicState extends ConsumerState<PostClassic> {
     final difference = now.difference(widget.post.postedTime);
     final hoursSincePost = difference.inHours;
     String communityImage = '';
-    if (widget.post.community != null) {
-      final communityAsyncValue =
-          ref.watch(fetchcommunityProvider(widget.post.community!));
-      communityAsyncValue.whenData((community) {
-        communityImage = community.srLooks.icon!;
-      });
+    if (widget.post.subredditID != null) {
+      if (widget.post.subredditID?.name != null) {
+        final communityAsyncValue =
+            ref.watch(fetchcommunityProvider(widget.post.subredditID!.name));
+        communityAsyncValue.whenData((community) {
+          communityImage = community.srLooks.icon!;
+        });
+      }
     }
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(5)),
+        borderRadius: BorderRadius.all(Radius.circular(5.r)),
         border: Border.all(color: AppColors.whiteHideColor),
         color: AppColors.backgroundColor,
       ),
@@ -60,86 +64,85 @@ class _PostClassicState extends ConsumerState<PostClassic> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+            padding: EdgeInsets.symmetric(horizontal: 5.0.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                    children: widget.post.community == null
+                    children: widget.post.subredditID == null
                         ? [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0.w),
                               child: CircleAvatar(
-                                radius: 10,
-                                backgroundImage: AssetImage(
+                                radius: 10.r,
+                                backgroundImage: const AssetImage(
                                     'assets/images/Default_Avatar.png'),
                               ),
                             ),
                             Text(
                               'u/${widget.post.userID}',
                               style: AppTextStyles.primaryTextStyle.copyWith(
-                                  fontSize: 12,
+                                  fontSize: 12.spMin,
                                   color: AppColors.whiteHideColor),
                             ),
-                            const SizedBox(
-                              width: 10,
+                            SizedBox(
+                              width: 10.w,
                             ),
-                            const Icon(
+                            Icon(
                               Icons.circle,
-                              size: 4,
-                              color: Color.fromARGB(98, 255, 255, 255),
+                              size: 5.sp,
+                              color: AppColors.whiteHideColor,
                             ),
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10.w),
                             Text(
                               '${hoursSincePost}h',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color.fromARGB(110, 255, 255, 255),
+                              style: TextStyle(
+                                fontSize: 12.spMin,
+                                color: AppColors.whiteHideColor,
                               ),
                             )
                           ]
                         : [
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: EdgeInsets.symmetric(horizontal: 8.0.w),
                               child: CircleAvatar(
-                                radius: 10,
+                                radius: 10.r,
                                 backgroundImage: NetworkImage(communityImage),
                               ),
                             ),
                             Text(
-                              'r/${widget.post.community}',
+                              'r/${widget.post.subredditID!.name}',
                               style: AppTextStyles.primaryTextStyle.copyWith(
-                                  fontSize: 12,
+                                  fontSize: 12.spMin,
                                   color: AppColors.whiteHideColor),
                             ),
-                            const SizedBox(
-                              width: 10,
+                            SizedBox(
+                              width: 10.w,
                             ),
-                            const Icon(
+                            Icon(
                               Icons.circle,
-                              size: 4,
-                              color: Color.fromARGB(98, 255, 255, 255),
+                              size: 4.sp,
+                              color: AppColors.whiteHideColor,
                             ),
-                            const SizedBox(width: 10),
+                            SizedBox(width: 10.w),
                             Text(
                               '${hoursSincePost}h',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color.fromARGB(110, 255, 255, 255),
+                              style: TextStyle(
+                                fontSize: 12.spMin,
+                                color: AppColors.whiteHideColor,
                               ),
                             )
                           ]),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
+                      EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 5.h),
                   child: SizedBox(
-                    width: 250,
+                    width: 200.w,
                     child: Text(
                       widget.post.title,
                       style: AppTextStyles.primaryTextStyle.copyWith(
                           color: const Color.fromARGB(238, 255, 255, 255),
-                          fontSize: 14),
+                          fontSize: 15.spMin),
                     ),
                   ),
                 ),
@@ -152,8 +155,8 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0),
                   child: SizedBox(
-                    width: 90,
-                    height: 90,
+                    width: 90.w,
+                    height: 90.h,
                     child: widget.post.image != null
                         ? Image(image: NetworkImage(widget.post.image!))
                         : _controller.value.isInitialized
@@ -172,8 +175,8 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                                       VideoPlayer(_controller),
                                       Positioned(
                                         child: Container(
-                                          width: 50,
-                                          height: 50,
+                                          width: 50.w,
+                                          height: 50.h,
                                           decoration: BoxDecoration(
                                             color:
                                                 Colors.black.withOpacity(0.5),
@@ -184,7 +187,7 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                                                 ? Icons.pause
                                                 : Icons.play_arrow_rounded,
                                             color: Colors.white,
-                                            size: 32,
+                                            size: 32.sp,
                                           ),
                                         ),
                                       )

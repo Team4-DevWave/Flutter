@@ -12,7 +12,8 @@ class Post {
   final bool spoiler;
   final bool locked;
   final bool approved;
-  final String postedTime;
+  final DateTime postedTime;
+  final String? video;
   final int numViews;
   final int commentsCount;
   final User? userID;
@@ -31,6 +32,7 @@ class Post {
     required this.approved,
     required this.postedTime,
     required this.numViews,
+    this.video,
     this.userID,
     this.subredditID,
     this.votes,
@@ -48,7 +50,10 @@ class Post {
       spoiler: json['spoiler'],
       locked: json['locked'],
       approved: json['approved'],
-      postedTime: json['postedTime'],
+      video: json['video'],
+      postedTime: json['postedTime'] != null
+          ? DateTime.parse(json['postedTime'])
+          : DateTime.now(),
       numViews: json['numViews'],
       commentsCount: json['commentsCount'],
       userID: json['userID'] != null
