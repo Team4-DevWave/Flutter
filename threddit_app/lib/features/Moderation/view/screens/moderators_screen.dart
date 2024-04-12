@@ -53,7 +53,7 @@ class _ModeratorsScreenState extends ConsumerState<ModeratorsScreen> {
                               .getMods(client: client);
                         }));
               },
-              icon: Icon(Icons.add)),
+              icon: const Icon(Icons.add)),
         ],
       ),
       body: Column(
@@ -67,9 +67,9 @@ class _ModeratorsScreenState extends ConsumerState<ModeratorsScreen> {
                     backgroundColor: MaterialStateProperty.resolveWith<Color>(
                       (Set<MaterialState> states) {
                         if (states.contains(MaterialState.selected)) {
-                          return Color.fromARGB(255, 139, 139, 139);
+                          return const Color.fromARGB(255, 139, 139, 139);
                         }
-                        return Color.fromARGB(255, 0, 0, 0);
+                        return const Color.fromARGB(255, 0, 0, 0);
                       },
                     ),
                   ),
@@ -107,6 +107,7 @@ class _ModeratorsScreenState extends ConsumerState<ModeratorsScreen> {
                   return Center(child: Text(snapshot.error.toString()));
                 } else {
                   final moderators = snapshot.data!;
+
                   return Builder(builder: (context) {
                     if (view == ViewType.editable) {
                       return ListView.builder(
@@ -114,65 +115,9 @@ class _ModeratorsScreenState extends ConsumerState<ModeratorsScreen> {
                         itemCount: moderators.length,
                         itemBuilder: (context, index) {
                           final username = moderators[index].username;
-                          return ListTile(
-                            leading: const CircleAvatar(
-                              radius: 16,
-                              backgroundImage: AssetImage(
-                                  'assets/images/Default_Avatar.png'),
-                            ),
-                            title: Text("u/$username",
-                                style: AppTextStyles.primaryTextStyle),
-                            trailing: IconButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  backgroundColor: AppColors.backgroundColor,
-                                  context: context,
-                                  builder: (context) => Wrap(
-                                    children: [
-                                      ListTile(
-                                        leading: const Icon(Icons.person),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                        },
-                                        title: Text(
-                                          "View profile",
-                                          style: AppTextStyles.primaryTextStyle,
-                                        ),
-                                      ),
-                                      ListTile(
-                                        leading: const FaIcon(
-                                            FontAwesomeIcons.xmark),
-                                        onTap: () async {
-                                          setState(() {
-                                            ref
-                                                .watch(moderationApisProvider
-                                                    .notifier)
-                                                .unMod(
-                                                    client: client,
-                                                    username: username);
-                                            Navigator.pop(context);
-                                          });
-                                        },
-                                        title: Text(
-                                          "Remove",
-                                          style: AppTextStyles.primaryTextStyle,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.more_vert),
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: moderators.length,
-                          itemBuilder: (context, index) {
-                            final username = moderators[index].username;
+                          final fullPermissions =
+                              moderators[index].fullPermissions;
+                          if (fullPermissions != true) {
                             return ListTile(
                               leading: const CircleAvatar(
                                 radius: 16,
@@ -181,6 +126,105 @@ class _ModeratorsScreenState extends ConsumerState<ModeratorsScreen> {
                               ),
                               title: Text("u/$username",
                                   style: AppTextStyles.primaryTextStyle),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    backgroundColor: AppColors.backgroundColor,
+                                    context: context,
+                                    builder: (context) => Wrap(
+                                      children: [
+                                        ListTile(
+                                          leading: const Icon(Icons.edit),
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                                    context,
+                                                    RouteClass
+                                                        .editModeratorScreen,
+                                                    arguments: username)
+                                                .then((value) {
+                                              setState(() {
+                                                ref
+                                                    .watch(
+                                                        moderationApisProvider
+                                                            .notifier)
+                                                    .getMods(
+                                                      client: client,
+                                                    );
+                                              });
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          title: Text(
+                                            "Edit permissions",
+                                            style:
+                                                AppTextStyles.primaryTextStyle,
+                                          ),
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.person),
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          title: Text(
+                                            "View profile",
+                                            style:
+                                                AppTextStyles.primaryTextStyle,
+                                          ),
+                                        ),
+                                        ListTile(
+                                          leading: const FaIcon(
+                                              FontAwesomeIcons.xmark),
+                                          onTap: () async {
+                                            setState(() {
+                                              ref
+                                                  .watch(moderationApisProvider
+                                                      .notifier)
+                                                  .unMod(
+                                                      client: client,
+                                                      username: username);
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          title: Text(
+                                            "Remove",
+                                            style:
+                                                AppTextStyles.primaryTextStyle,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.more_vert),
+                              ),
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        },
+                      );
+                    } else {
+                      return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: moderators.length,
+                          itemBuilder: (context, index) {
+                            final username = moderators[index].username;
+                            final fullPermissions =
+                                moderators[index].fullPermissions;
+                            return ListTile(
+                              leading: const CircleAvatar(
+                                radius: 16,
+                                backgroundImage: AssetImage(
+                                    'assets/images/Default_Avatar.png'),
+                              ),
+                              title: Text("u/$username",
+                                  style: AppTextStyles.primaryTextStyle),
+                              subtitle: fullPermissions
+                                  ? Text(
+                                      "full permissions",
+                                      style: AppTextStyles.secondaryTextStyle,
+                                    )
+                                  : const SizedBox(),
                             );
                           });
                     }

@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 class BannedUsersScreen extends ConsumerStatefulWidget {
   const BannedUsersScreen({super.key});
+  @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _BannedUsersScreenState();
 }
@@ -29,7 +30,6 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
   String bannedOption = "";
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: const Text("Banned users"),
@@ -43,7 +43,7 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
                             .watch(moderationApisProvider.notifier)
                             .getBannedUsers(client: client)));
               },
-              icon: Icon(Icons.search)),
+              icon: const Icon(Icons.search)),
           IconButton(
               onPressed: () {
                 Navigator.pushNamed(context, RouteClass.banScreen)
@@ -53,16 +53,16 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
                               .getBannedUsers(client: client);
                         }));
               },
-              icon: Icon(Icons.add)),
+              icon: const Icon(Icons.add)),
         ],
       ),
       body: FutureBuilder(
         future: fetchBannedUsers(),
         builder: (context, snapshot) {
           {
-            if (snapshot.connectionState == ConnectionState.waiting)
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            else if (snapshot.hasError) {
+            } else if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             } else {
               final bannedUsers = snapshot.data!;
@@ -70,7 +70,6 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
                 itemCount: bannedUsers.length,
                 itemBuilder: (context, index) {
                   final username = bannedUsers[index].getUsername;
-                  print(username);
                   return ListTile(
                     leading: const CircleAvatar(
                       radius: 16,
@@ -139,7 +138,7 @@ class _BannedUsersScreenState extends ConsumerState<BannedUsersScreen> {
                           ),
                         );
                       },
-                      icon: Icon(Icons.more_vert),
+                      icon: const Icon(Icons.more_vert),
                     ),
                   );
                 },

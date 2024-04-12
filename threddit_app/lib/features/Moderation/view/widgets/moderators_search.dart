@@ -19,7 +19,7 @@ class ModeratorsSearch extends SearchDelegate<Moderator> {
         backgroundColor:
             AppColors.backgroundColor, // Adjust color for dark mode
         iconTheme: theme.iconTheme.copyWith(
-            color: Color.fromARGB(
+            color: const Color.fromARGB(
                 255, 138, 124, 124)), // Adjust icon color for dark mode
       ),
     );
@@ -42,7 +42,8 @@ class ModeratorsSearch extends SearchDelegate<Moderator> {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, Moderator(username: "", permissions: {}));
+        close(context,
+            Moderator(username: "", permissions: {}, fullPermissions: false));
       },
     );
   }
@@ -74,7 +75,7 @@ class ModeratorsSearch extends SearchDelegate<Moderator> {
   Widget buildSuggestions(BuildContext context) {
     return ListView.builder(
       itemCount: 0,
-      itemBuilder: (context, index) => Container(), 
+      itemBuilder: (context, index) => Container(),
     );
   }
 }

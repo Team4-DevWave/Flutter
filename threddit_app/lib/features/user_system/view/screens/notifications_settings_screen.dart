@@ -30,7 +30,6 @@ class _NotificationsSettingsScreenState
   }
   Future getUserToken() async {
     String? result = await getToken();
-    print(result);
     setState(() {
       token = result!;
     });
@@ -58,7 +57,7 @@ class _NotificationsSettingsScreenState
         child: SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SettingsTitle(title: "MESSAGES"),
+            const SettingsTitle(title: "MESSAGES"),
             FutureBuilder<bool>(
               future: isNotificationEnabled(),
               builder: (context, snapshot) {
@@ -111,7 +110,7 @@ class _NotificationsSettingsScreenState
                 }
               },
             ),
-            SettingsTitle(title: "ACTIVITY"),
+            const SettingsTitle(title: "ACTIVITY"),
             FutureBuilder<bool>(
               future: isNotificationEnabled(),
               builder: (context, snapshot) {

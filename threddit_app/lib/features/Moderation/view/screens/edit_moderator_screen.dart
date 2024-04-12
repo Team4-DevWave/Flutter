@@ -18,27 +18,15 @@ Map<String, bool?> modPermissions = {
   'chatOperator': false,
 };
 
-
-class AddModeratorScreen extends ConsumerStatefulWidget {
-  const AddModeratorScreen({super.key});
+class EditModeratorScreen extends ConsumerStatefulWidget {
+  final String moderator;
+  const EditModeratorScreen({super.key, required this.moderator});
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _AddModeratorScreenState();
+      _EditModeratorScreenState();
 }
 
-/// Validator function
-/// Checks for the necessary checks and if not true returns a number
-/// 3 for name is empty
-/// 0 if all checks pass
-int validateAddModerator(String name) {
-  if (name == "") {
-    return 3;
-  } else {
-    return 0;
-  }
-}
-
-class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
+class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
   final EmailForm usernameForm = EmailForm("username");
   final client = http.Client();
   void setAllPermissions(bool? value) {
@@ -48,12 +36,13 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
       });
     });
   }
-  void checkPermissions(){
-    if(modPermissions.values.every((value) => value == true)){
+
+  void checkPermissions() {
+    if (modPermissions.values.every((value) => value == true)) {
       setState(() {
         fullPermissions = true;
       });
-    }else{
+    } else {
       setState(() {
         fullPermissions = false;
       });
@@ -68,36 +57,25 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
           IconButton(
               onPressed: () async {
                 final String username = usernameForm.enteredEmail;
-                int validationValue = validateAddModerator(username);
-    
-                switch (validationValue) {
-                  case 0:
-                 
-                    int statusCode = await ref
-                        .watch(moderationApisProvider.notifier)
-                        .modUser(
+
+                int statusCode =
+                    await ref.watch(moderationApisProvider.notifier).editMod(
                           client: client,
                           username: username,
                           permissions: modPermissions,
                           fullPermissions: fullPermissions,
                         );
-                    setState(() {
-                      ref
-                          .watch(moderationApisProvider.notifier)
-                          .getMods(client: client);
-                    });
-                    Navigator.pop(context);
-
-                  case 3:
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please type a user name")),
-                    );
-                }
+                setState(() {
+                  ref
+                      .watch(moderationApisProvider.notifier)
+                      .getMods(client: client);
+                });
+                Navigator.pop(context);
               },
-              icon: const Icon(Icons.add))
+              icon: const Icon(Icons.update))
         ],
         title: const Text(
-          "Add a moderator user",
+          "Edit permissions",
         ),
       ),
       body: SingleChildScrollView(
@@ -109,7 +87,12 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
               padding: EdgeInsets.only(left: 5.w),
               child: Text("Username", style: AppTextStyles.primaryTextStyle),
             ),
-            usernameForm,
+            ListTile(
+              title: Text(
+                "u/${widget.moderator}",
+                style: AppTextStyles.primaryTextStyle,
+              ),
+            ),
             Container(
               padding: EdgeInsets.only(left: 5.w, top: 10.h),
               child: Text("Permissions", style: AppTextStyles.primaryTextStyle),

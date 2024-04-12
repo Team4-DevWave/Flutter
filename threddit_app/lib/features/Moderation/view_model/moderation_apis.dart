@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/Moderation/model/approved_user.dart';
 import 'package:threddit_clone/features/Moderation/model/banned_user.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/Moderation/model/moderator.dart';
-
 const String urlAndroid = "http://10.0.2.2:3001";
 const String urlWindows = "http://localhost:3001";
 final moderationApisProvider =
@@ -19,10 +17,12 @@ class ModerationApis extends StateNotifier<bool> {
     required http.Client client,
     required username,
     required permissions,
+    fullPermissions,
   }) async {
     Map<String, dynamic> body = {
       "username": username,
       "permissions": permissions,
+      "fullPermissions": fullPermissions,
     };
     final String url;
     if (Platform.isWindows) {
@@ -30,11 +30,9 @@ class ModerationApis extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    print(body);
 
     String bodyEncoded = jsonEncode(body);
 
-    print(body);
     final response = await client.post(
       Uri.parse('$url/api/add-moderator'),
       headers: {
@@ -48,10 +46,11 @@ class ModerationApis extends StateNotifier<bool> {
   Future<int> editMod(
       {required http.Client client,
       required username,
-      required permissions}) async {
+      required permissions, fullPermissions}) async {
     Map<String, dynamic> body = {
       "username": username,
       "permissions": permissions,
+      "fullPermissions": fullPermissions,
     };
     final String url;
     if (Platform.isWindows) {
@@ -59,11 +58,9 @@ class ModerationApis extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    print(body);
 
     String bodyEncoded = jsonEncode(body);
 
-    print(body);
     final response = await client.patch(
       Uri.parse('$url/api/edit-moderator'),
       headers: {
@@ -88,7 +85,6 @@ class ModerationApis extends StateNotifier<bool> {
 
     String bodyEncoded = jsonEncode(body);
 
-    print(body);
     final response = await client.delete(
       Uri.parse('$url/api/remove-moderator'),
       headers: {
@@ -96,7 +92,6 @@ class ModerationApis extends StateNotifier<bool> {
       },
       body: bodyEncoded,
     );
-    print(response.statusCode);
     return response.statusCode;
   }
 
@@ -139,11 +134,9 @@ class ModerationApis extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    print(body);
 
     String bodyEncoded = jsonEncode(body);
 
-    print(body);
     final response = await client.post(
       Uri.parse('$url/api/ban'),
       headers: {
@@ -174,11 +167,9 @@ class ModerationApis extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    print(body);
 
     String bodyEncoded = jsonEncode(body);
 
-    print(body);
     final response = await client.patch(
       Uri.parse('$url/api/ban'),
       headers: {
@@ -203,7 +194,6 @@ class ModerationApis extends StateNotifier<bool> {
 
     String bodyEncoded = jsonEncode(body);
 
-    print(body);
     final response = await client.delete(
       Uri.parse('$url/api/unban'),
       headers: {
@@ -211,7 +201,6 @@ class ModerationApis extends StateNotifier<bool> {
       },
       body: bodyEncoded,
     );
-    print(response.statusCode);
     return response.statusCode;
   }
 
@@ -247,11 +236,9 @@ class ModerationApis extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    print(body);
 
     String bodyEncoded = jsonEncode(body);
 
-    print(body);
     final response = await client.post(
       Uri.parse('$url/api/approve'),
       headers: {
@@ -276,7 +263,6 @@ class ModerationApis extends StateNotifier<bool> {
 
     String bodyEncoded = jsonEncode(body);
 
-    print(body);
     final response = await client.delete(
       Uri.parse('$url/api/remove'),
       headers: {
@@ -284,7 +270,6 @@ class ModerationApis extends StateNotifier<bool> {
       },
       body: bodyEncoded,
     );
-    print(response.statusCode);
     return response.statusCode;
   }
 

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/widgets.dart';
@@ -44,7 +46,6 @@ Future<int> changePasswordFunction(
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
 
   return response.statusCode;
 }
@@ -95,7 +96,6 @@ Future<int> changeEmailFunction(
   }
 
   String bodyEncoded = jsonEncode(body);
-  print(bodyEncoded);
   http.Response response = await client.patch(
     Uri.parse("$url:8000/api/v1/users/forgotUsername"),
     headers: {
@@ -104,7 +104,6 @@ Future<int> changeEmailFunction(
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
   return response.statusCode;
 }
 
@@ -171,7 +170,6 @@ void checkBlockResponse(
     required Future<int> statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
-    print("BLOCKED");
   } else {
     showAlert("User was not blocked/unblocked", context);
   }
@@ -242,7 +240,6 @@ Future<int> unblockUser(
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
   return response.statusCode;
 }
 
@@ -343,7 +340,6 @@ class SettingsFetch extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
-    print(response.body);
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
 
@@ -362,8 +358,6 @@ class SettingsFetch extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
-    print(response.statusCode);
-    print(UserSettings.fromJson(jsonDecode(response.body)));
     return UserSettings.fromJson(jsonDecode(response.body));
   }
 
@@ -383,7 +377,6 @@ class SettingsFetch extends StateNotifier<bool> {
       },
     );
     Map<String, dynamic> userData = jsonDecode(response.body);
-    final body = jsonDecode(response.body);
     final bool isNotificationEnabled = userData['notification'];
     return isNotificationEnabled;
   }
@@ -404,7 +397,6 @@ class SettingsFetch extends StateNotifier<bool> {
       },
     );
     Map<String, dynamic> userData = jsonDecode(response.body);
-    final body = jsonDecode(response.body);
     final bool isFollowableEnabled = userData['isFollowable'];
     return isFollowableEnabled;
   }
@@ -429,14 +421,13 @@ Future<int> changeSetting(
     url = urlAndroid;
   }
   http.Response response = await client.patch(
-    Uri.parse("${url}:8000/api/v1/users/me/settings"),
+    Uri.parse("$url:8000/api/v1/users/me/settings"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
   return response.statusCode;
 }
 
@@ -455,13 +446,12 @@ Future<int> changeCountry(
     url = urlAndroid;
   }
   http.Response response = await client.patch(
-    Uri.parse("${url}:8000/api/v1/users/me/settings/changecountry"),
+    Uri.parse("$url:8000/api/v1/users/me/settings/changecountry"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
     body: bodyEncoded,
   );
-  print(response.statusCode);
   return response.statusCode;
 }
