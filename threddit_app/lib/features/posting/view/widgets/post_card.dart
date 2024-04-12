@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
-import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
-import 'package:threddit_clone/models/votes.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';

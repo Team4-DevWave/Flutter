@@ -9,7 +9,6 @@ class Subreddit {
   final SubredditLooks srLooks;
   final SubredditUserManagement userManagement;
   final List<dynamic> postsToBeApproved;
-  final List<dynamic> posts;
   final List<dynamic> rules;
   final List<dynamic> invitedUsers;
   int version;
@@ -24,7 +23,6 @@ class Subreddit {
     required this.srLooks,
     required this.userManagement,
     required this.postsToBeApproved,
-    required this.posts,
     required this.rules,
     required this.invitedUsers,
     required this.version,
@@ -43,7 +41,6 @@ class Subreddit {
       srLooks: SubredditLooks.fromJson(json['srLooks']),
       userManagement: SubredditUserManagement.fromJson(json['userManagement']),
       postsToBeApproved: List<dynamic>.from(json['postsToBeApproved']),
-      posts: List<dynamic>.from(json['posts']),
       rules: List<dynamic>.from(json['rules']),
       invitedUsers: List<dynamic>.from(json['invitedUsers']),
       version: json['__v'],
@@ -63,7 +60,6 @@ class Subreddit {
       'srLooks': srLooks.toJson(),
       'userManagement': userManagement.toJson(),
       'postsToBeApproved': postsToBeApproved,
-      'posts': posts,
       'rules': rules,
       'invitedUsers': invitedUsers,
       '__v': version,
