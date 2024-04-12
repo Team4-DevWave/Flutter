@@ -13,7 +13,7 @@ class Post {
    bool locked;
   final bool approved;
   final DateTime postedTime;
-  final String? video;
+  String? video;
   final int numViews;
    int commentsCount;
   final User? userID;

@@ -1,6 +1,6 @@
 class Vote {
-  final int upvotes;
-  final int downvotes;
+   int upvotes;
+ int downvotes;
 
   Vote({
     required this.upvotes,
@@ -26,7 +26,7 @@ class Comment {
   final String user;
   final String content;
   final DateTime createdAt;
-  final Vote votes;
+   Vote votes;
   final String post;
   final bool hidden;
   final bool saved;
