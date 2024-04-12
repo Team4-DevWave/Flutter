@@ -1,5 +1,6 @@
 // // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:io';
 
 class PostData {
   final String title;
@@ -13,6 +14,8 @@ class PostData {
   final String type;
   final bool locked;
   final String? community;
+  final File? imagePath;
+  final File? videoPath;
   //final ByteData? video;
   final String? imageURL;
   final String? videoURL;
@@ -21,6 +24,8 @@ class PostData {
     required this.title,
     this.text_body,
     this.url,
+    this.imagePath,
+    this.videoPath,
     required this.NSFW,
     required this.spoiler,
     this.image,
@@ -43,6 +48,8 @@ class PostData {
     bool? locked,
     String? community,
     String? video,
+    File? imagePath,
+    File? videoPath
   }) {
     return PostData(
       title: title ?? this.title,
@@ -55,6 +62,8 @@ class PostData {
       locked: locked ?? this.locked,
       community: community ?? this.community,
       video: video ?? this.video,
+      imagePath: imagePath ?? this.imagePath,
+      videoPath: videoPath ?? this.videoPath
     );
   }
 
