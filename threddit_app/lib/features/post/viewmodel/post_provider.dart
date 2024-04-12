@@ -8,8 +8,8 @@ class PostNotifier extends StateNotifier<PostData> {
   PostNotifier()
       : super(PostData(
             title: "",
-            image: "",
-            video: "",
+            image: null,
+            video: null,
             text_body: "",
             url: "",
             community: "",

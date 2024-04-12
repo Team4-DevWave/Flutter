@@ -110,7 +110,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     if (intialData?.video != null) {
       video = intialData?.video;
       videoFile = intialData?.videoPath;
-      isVideo = true;
+      isVideo = true; 
     }
     _bodytextController = TextEditingController(text: intialData?.text_body);
     if (intialData?.url != "") {
@@ -214,8 +214,10 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
               )
             else if (isLink)
               PostButton(titleController: _titleController, type: "link")
-            else
+            else if (isVideo)
               PostButton(titleController: _titleController, type: "video")
+            else
+            PostButton(titleController: _titleController, type: "text")
           ]),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

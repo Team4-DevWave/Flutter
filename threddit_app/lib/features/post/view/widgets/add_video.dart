@@ -23,7 +23,7 @@ class _AddVideoWidgetState extends ConsumerState<AddVideoWidget> {
   @override
   void initState() {
     /// the video controller contains the path of the video
-    _videoController = VideoPlayerController.file((widget.videoPath));
+    _videoController = VideoPlayerController.file(widget.videoPath);
     ///intializing the _video object
     _intializeVideoPlayer = _videoController.initialize();
     super.initState();
