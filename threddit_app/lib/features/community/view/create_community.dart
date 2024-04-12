@@ -55,7 +55,13 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
             nsfw: is18plus,
             type: communityType.toLowerCase(),
            )));
-    createCommunityFuture;
+    await createCommunityFuture;
+    Navigator.pop(context);
+    Navigator.pushNamed(context, RouteClass.communityScreen,
+                      arguments: {
+                        'id': _communityNameController.text,
+                        'uid': "ayah"
+                      });
   }
 
   @override

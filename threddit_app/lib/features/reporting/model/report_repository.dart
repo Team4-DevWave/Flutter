@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 class ReportRepository {
   Future<void> submitReport({
@@ -10,8 +11,8 @@ class ReportRepository {
     required String ruleReason,
     required String userID,
   }) async {
-    //final url = Uri.parse('http://localhost:8000/api/v1/report');
-    final url = Uri.parse('http://192.168.100.249:3000/reports');
+    final url = Uri.parse('http://10.0.2.2:8000:8000/api/v1/report');
+    String? token = await getToken();
     final body = jsonEncode({
       'reportedID': reportedID,
       'type': type,
@@ -19,16 +20,20 @@ class ReportRepository {
       'rule_reason': ruleReason,
       'userID': userID,
     });
+     final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token", 
+    };
 
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers:headers,
       body: body,
     );
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
-      // Handle successful response, if needed
+      
     } else {
       throw Exception('Failed to submit report');
     }
