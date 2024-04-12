@@ -38,12 +38,30 @@ class PostRepository {
         "Content-Type": "application/json",
         "Authorization": "Bearer $jwtToken",
       };
-      final response = await http.post(Uri.parse(url), headers: headers);
+      final response = await http.patch(Uri.parse(url), headers: headers);
       if (response.statusCode == 200) {
         print('Post NSFW status toggled successfully');
       }
     } catch (e) {
       print('Error toggling post NSFW status: $e');
+    }
+  }
+
+  Future<void> togglePostSpoiler(String postId) async {
+    try {
+      
+      String? jwtToken = await getToken();
+      String url = 'http://10.0.2.2:8000/api/v1/posts/$postId/spoiler';
+      final headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $jwtToken",
+      };
+      final response = await http.patch(Uri.parse(url), headers: headers);
+      if (response.statusCode == 200) {
+        print('Post spoiler status toggled successfully');
+      }
+    } catch (e) {
+      print('Error toggling post spoiler status: $e');
     }
   }
 
