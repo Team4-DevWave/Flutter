@@ -21,11 +21,14 @@ class PostProvider extends StateNotifier<bool> {
   FutureEither<bool> submitPost(String type) async {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
+    //get username
+    final whereTo = post?.community == "My Profile" ? 'u/username' : 'r/${post?.community}' ;
+
 
     try {
       final response = await http.post(
           Uri.parse(
-              'http://$local:8000/api/v1/homepage/submit/r/${post?.community}'),
+              'http://$local:8000/api/v1/homepage/submit/$whereTo'),
           headers: {
             'Content-Type': 'application/json',
             //check from sh3boly

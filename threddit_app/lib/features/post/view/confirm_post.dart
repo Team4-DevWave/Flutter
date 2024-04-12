@@ -53,6 +53,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       image = base64Encode(imageBytes);
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
+      ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
     });
   }
 
@@ -66,6 +67,8 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       video = base64Encode(videoBytes);
       isVideo = true;
       ref.read(postDataProvider.notifier).updateVideo(video!);
+      ref.read(postDataProvider.notifier).updateVideoPath(videoFile!);
+
     });
   }
 
@@ -96,20 +99,17 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     final intialData = ref.watch(postDataProvider);
     _titleController = TextEditingController(text: intialData?.title ?? '');
     if (intialData?.image != null) {
       image = intialData?.image!;
+      imageFile = intialData?.imagePath;
       isImage = true;
     }
     if (intialData?.video != null) {
       video = intialData?.video;
+      videoFile = intialData?.videoPath;
       isVideo = true;
     }
     _bodytextController = TextEditingController(text: intialData?.text_body);
@@ -129,9 +129,22 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   void resetAll() {
     _titleController = TextEditingController(text: "");
     _bodytextController = TextEditingController(text: "");
-    image = null;
     ref.read(postDataProvider.notifier).resetAll();
   }
+
+  
+    String whereToPost() {
+      final postProvider = ref.read(postDataProvider.notifier);
+      final currentCommunity = ref.read(postDataProvider)!.community;
+
+      if (currentCommunity!.isEmpty) {
+        postProvider.updateCommunityName("My Profile");
+        return "My Profile"; // Return updated value directly
+      } else {
+        return currentCommunity;
+      }
+    }
+
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +163,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
         return const SizedBox();
       }
       return AddVideoWidget(
-          onPressed: _removeVideo, videoPath: videoFile!.path);
+          onPressed: _removeVideo, videoPath: videoFile!);
     }
 
     Widget buildLink() {
@@ -226,7 +239,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                               },
                               splashColor: AppColors.realWhiteColor,
                               child: Text(
-                                post!.community.toString(),
+                                whereToPost(),
                                 style: AppTextStyles.boldTextStyle,
                               ),
                             ),
@@ -266,7 +279,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24)),
                           onChanged: (value) => {
-                            if (post.title != value)
+                            if (post!.title != value)
                               {
                                 ref
                                     .read(postDataProvider.notifier)
@@ -312,7 +325,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                 labelStyle: TextStyle(
                                     color: AppColors.whiteColor, fontSize: 16)),
                             onChanged: (value) => {
-                                  if (post.text_body != value)
+                                  if (post!.text_body != value)
                                     {
                                       ref
                                           .read(postDataProvider.notifier)
