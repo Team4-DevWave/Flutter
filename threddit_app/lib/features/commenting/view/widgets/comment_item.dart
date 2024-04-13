@@ -92,12 +92,12 @@ void upVoteComment(WidgetRef ref) async {
     
 
     // Function to delete the comment
-    void _deleteComment() {
+    void deleteComment() {
       ref.watch(deleteCommentProvider(
           (postId: widget.comment.post, commentId: widget.comment.id)));
     }
 
-    Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
+    Future<void> showDeleteConfirmationDialog(BuildContext context) async {
       print(widget.comment.user);
       return showDialog<void>(
         context: context,
@@ -129,21 +129,21 @@ void upVoteComment(WidgetRef ref) async {
                 onPressed: () {
                   // Close the dialog and delete the comment
                   Navigator.of(context).pop();
-                  _deleteComment(); // Call your delete comment function here
+                  deleteComment(); // Call your delete comment function here
                 },
-                child: Text('Delete'),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red, foregroundColor: Colors.white),
+                child: const Text('Delete'),
               ),
               TextButton(
                 onPressed: () {
                   // Close the dialog
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 43, 43, 43),
                     foregroundColor: const Color.fromARGB(112, 255, 255, 255)),
+                child: const Text('Cancel'),
               ),
             ],
           );
@@ -482,7 +482,7 @@ void upVoteComment(WidgetRef ref) async {
                                             ),
                                             onTap: () {
                                               Navigator.pop(context);
-                                              _showDeleteConfirmationDialog(
+                                              showDeleteConfirmationDialog(
                                                   context);
                                             },
                                           )

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
@@ -53,7 +52,7 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
                                           widget.post.spoiler
                                               ? 'UnMark Spoiler'
                                               : "Mark Spoiler",
-                                          style: TextStyle(color: Colors.white),
+                                          style: const TextStyle(color: Colors.white),
                                         ),
                                         leading: const Icon(
                                             Icons.warning_amber_rounded),
@@ -67,7 +66,7 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
                                           widget.post.nsfw
                                               ? 'UnMark NSFW'
                                               : "Mark NSFW",
-                                          style: TextStyle(color: Colors.white),
+                                          style: const TextStyle(color: Colors.white),
                                         ),
                                         leading: const Icon(Icons.eighteen_mp),
                                         onTap: () {

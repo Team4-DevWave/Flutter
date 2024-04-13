@@ -11,6 +11,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/approved_users_s
 import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
+import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
 import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
@@ -97,6 +98,7 @@ class RouteClass {
   static const String moderatorsScreen = '/moderators';
   static const String addModeratorScreen = '/add-moderator';
   static const String editModeratorScreen = '/edit-moderator';
+  static const String historyScreen = '/history';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -130,6 +132,7 @@ class RouteClass {
 
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
+
       case chooseCommunity:
         return MaterialPageRoute(builder: (_) => const ChooseCommunity());
       case crossPost:
@@ -151,7 +154,7 @@ class RouteClass {
       case notificationsScreen:
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case notificationsSettingsScreen:
-        return MaterialPageRoute(builder: (_) => NotificationsSettingsScreen());
+        return MaterialPageRoute(builder: (_) => const NotificationsSettingsScreen());
       case postToScreen:
         return MaterialPageRoute(builder: (_) => const PostToScreen());
       case accountSettingsScreen:
@@ -179,7 +182,7 @@ class RouteClass {
       case confirmPasswordScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPasswordScreen());
       case settingsScreen:
-        return MaterialPageRoute(builder: (_) => SettingsScreen());
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case blockUserScreen:
         return MaterialPageRoute(
             builder: (_) => const BlockUserScreen(), fullscreenDialog: true);
@@ -188,7 +191,7 @@ class RouteClass {
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
       case textSize:
-        return MaterialPageRoute(builder: (_) => TextSizeScreen());
+        return MaterialPageRoute(builder: (_) => const TextSizeScreen());
       case bannedUsersScreen:
         return MaterialPageRoute(builder: (_) => const BannedUsersScreen());
       case banScreen:
@@ -240,10 +243,16 @@ class RouteClass {
                 ));
 
       case createCommunityScreen:
-        //var data = settings.arguments as String;
-        var data = 'User2';
+        var data = settings.arguments as String;
         return MaterialPageRoute(
           builder: (_) => CreateCommunity(
+            uid: data,
+          ),
+        );
+      case historyScreen:
+        var data = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) =>HistoryScreen(
             uid: data,
           ),
         );

@@ -12,7 +12,7 @@ class _NotificationsScreen extends State<NotificationsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: NotificationFeed(
+      body: const NotificationFeed(
         userID: "hello world",
       ),
     );

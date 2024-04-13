@@ -4,8 +4,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 
 class CommunityInfo extends ConsumerWidget {
-  const CommunityInfo({Key? key, required this.community, required this.uid})
-      : super(key: key);
+  const CommunityInfo({super.key, required this.community, required this.uid});
 
   final Subreddit community;
   final String uid;
@@ -22,7 +21,7 @@ class CommunityInfo extends ConsumerWidget {
               slivers: [
                 SliverToBoxAdapter(
                   child: Container(
-                    padding: EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
                         const Row(
@@ -120,7 +119,7 @@ class CommunityInfo extends ConsumerWidget {
           AppBar(
             backgroundColor: Colors.transparent,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               style: ButtonStyle(
                 iconColor: MaterialStateProperty.all<Color>(Colors.white),
                 backgroundColor: MaterialStateProperty.all<Color>(
@@ -133,19 +132,19 @@ class CommunityInfo extends ConsumerWidget {
             ),
             title: Text(
               'r/${community.name}',
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: const TextStyle(fontSize: 18, color: Colors.white),
             ),
             actions: [
               community.moderators.contains(uid)
                   ? TextButton(
                       onPressed: () {Navigator.pushNamed(context, RouteClass.communityModTools);},
-                      child: const Text('Mod Tools'),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color.fromARGB(223, 49, 49, 49)),
                         foregroundColor:
                             MaterialStateProperty.all<Color>(Colors.white),
                       ),
+                      child: const Text('Mod Tools'),
                     )
                   : Row(
                       children: [

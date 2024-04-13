@@ -9,7 +9,7 @@ class BreakCommunityRules extends ConsumerStatefulWidget {
   _BreakCommunityRulesState createState() => _BreakCommunityRulesState();
 }
 class _BreakCommunityRulesState extends ConsumerState<BreakCommunityRules> {
-  List<String> _communityRules=[];
+  final List<String> _communityRules=[];
   @override
   Widget build(BuildContext context) {
     if (widget.type =='post')

@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 /// Notification screen has the options renders the options that the user
 /// can use to turn on/off the notifcations he wants/doesn't want.
 class NotificationsSettingsScreen extends ConsumerStatefulWidget {
-  NotificationsSettingsScreen({super.key});
+  const NotificationsSettingsScreen({super.key});
 
   @override
   ConsumerState<NotificationsSettingsScreen> createState() =>

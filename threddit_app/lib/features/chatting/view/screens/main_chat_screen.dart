@@ -59,7 +59,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> {
             ),
           ],
         ),
-        drawer:const LeftDrawer(),
+        drawer: const LeftDrawer(),
         endDrawer: const RightDrawer(),
         body: Consumer(
           builder: (context, watch, child) {

@@ -14,7 +14,7 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
-      child: Container(
+      child: SizedBox(
           height: 50.h,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +32,7 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
                         height: 35.h,
                       ),
                     ),
-                    Positioned(
+                    const Positioned(
                       bottom: -5,
                       right: -5,
                       child: Icon(Icons.add,

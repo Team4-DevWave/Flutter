@@ -57,7 +57,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
 
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
-      ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
     });
   }
 
@@ -71,7 +70,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       video = base64Encode(videoBytes);
       isVideo = true;
       ref.read(postDataProvider.notifier).updateVideo(video!);
-      ref.read(postDataProvider.notifier).updateVideoPath(videoFile!);
     });
   }
 
@@ -103,34 +101,32 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
 
   void intializeData() {
     final intialData = ref.watch(postDataProvider);
-      _titleController = TextEditingController(text: intialData?.title ?? '');
-      if (intialData?.image != null) {
-        image = intialData?.image!;
-        imageFile = intialData?.imagePath;
-        isImage = true;
-      }
-      if (intialData?.video != null) {
-        video = intialData?.video;
-        videoFile = intialData?.videoPath;
-        isVideo = true;
-      }
-      _bodytextController = TextEditingController(text: intialData?.text_body);
-      if (intialData?.url != null) {
-        isLink = true;
-      }
-      if(intialData?.community == null)
-      {
-        whereTo = 'My Profile';
-      }
-      else
-      {
-        whereTo = intialData?.community;
-      }
+    _titleController = TextEditingController(text: intialData?.title ?? '');
+    if (intialData?.image != null) {
+      image = intialData?.image!;
+      imageFile = intialData?.imagePath;
+      isImage = true;
+    }
+    if (intialData?.video != null) {
+      video = intialData?.video;
+      videoFile = intialData?.videoPath;
+      isVideo = true;
+    }
+    _bodytextController = TextEditingController(text: intialData?.text_body);
+    if (intialData?.url != null) {
+      isLink = true;
+    }
+    if (intialData?.community == null) {
+      whereTo = 'My Profile';
+    } else {
+      whereTo = intialData?.community;
+    }
   }
 
   @override
   void didChangeDependencies() {
     intializeData();
+
     super.didChangeDependencies();
   }
 
@@ -142,25 +138,21 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   }
 
   void resetAll() {
-    _titleController = TextEditingController(text: '');
-    _bodytextController = TextEditingController(text: '');
-    _removeLink();
+    _titleController = TextEditingController(text: "");
+    _bodytextController = TextEditingController(text: "");
     ref.read(postDataProvider.notifier).resetAll();
   }
 
-  void onTitleChanged(String value) {
-    final post = ref.watch(postDataProvider);
-    if (post!.title != value) {
-      ref.watch(postDataProvider.notifier).updateTitle(value);
-    }
-  }
+  String whereToPost() {
+    final postProvider = ref.read(postDataProvider.notifier);
+    final currentCommunity = ref.read(postDataProvider)!.community;
 
-  void onBodyChanged(String value) {
-    final post = ref.watch(postDataProvider);
-    if (post!.text_body != value) {
-      ref.watch(postDataProvider.notifier).updateBodyText(value);
+    if (currentCommunity!.isEmpty) {
+      postProvider.updateCommunityName("My Profile");
+      return "My Profile"; // Return updated value directly
+    } else {
+      return currentCommunity;
     }
-    postBody = value;
   }
 
   @override
@@ -179,6 +171,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       if (video == null || isLink || isImage) {
         return const SizedBox();
       }
+
       return AddVideoWidget(onPressed: _removeVideo, videoPath: videoFile!);
     }
 
@@ -229,7 +222,9 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                 type: "image/video",
               )
             else if (isLink)
-              PostButton(titleController: _titleController, type: "url")
+              PostButton(titleController: _titleController, type: "link")
+            else if (isVideo)
+              PostButton(titleController: _titleController, type: "video")
             else
               PostButton(titleController: _titleController, type: "text")
           ]),
@@ -255,7 +250,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                               },
                               splashColor: AppColors.realWhiteColor,
                               child: Text(
-                                whereTo!,
+                                whereToPost(),
                                 style: AppTextStyles.boldTextStyle,
                               ),
                             ),
@@ -294,8 +289,13 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                   color: AppColors.whiteColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24)),
-                          onChanged: (value) async => {
-                            await Future.microtask(() => onTitleChanged(value))
+                          onChanged: (value) => {
+                            if (post!.title != value)
+                              {
+                                ref
+                                    .watch(postDataProvider.notifier)
+                                    .updateTitle(value)
+                              },
                           },
                         ),
                       ),
@@ -335,8 +335,17 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                 focusedBorder: InputBorder.none,
                                 labelStyle: TextStyle(
                                     color: AppColors.whiteColor, fontSize: 16)),
-                            onChanged: (value) async => await Future.microtask(
-                                () => onBodyChanged(value))),
+                            onChanged: (value) => {
+                                  if (post!.text_body != value)
+                                    {
+                                      ref
+                                          .watch(postDataProvider.notifier)
+                                          .updateBodyText(value)
+                                    },
+                                  setState(() {
+                                    postBody = value;
+                                  })
+                                }),
                       ),
                     ]),
               ),

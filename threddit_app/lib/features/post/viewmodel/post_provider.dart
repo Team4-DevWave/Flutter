@@ -8,9 +8,11 @@ class PostNotifier extends StateNotifier<PostData> {
   PostNotifier()
       : super(PostData(
             title: "",
+            image: null,
+            video: null,
             text_body: "",
-            url: null,
-            community: null,
+            url: "",
+            community: "",
             NSFW: false,
             spoiler: false,
             type: "",
@@ -42,7 +44,7 @@ class PostNotifier extends StateNotifier<PostData> {
 
   void updateVideo(String newVideo) => state = state.copyWith(video: newVideo);
 
-  void removeLink() => state = state.copyWith(url: null);
+  void removeLink() => state = state.copyWith(url: '');
 
   void removeImages() => state = state.copyWith(image: null);
 
@@ -59,8 +61,8 @@ class PostNotifier extends StateNotifier<PostData> {
         image: null,
         video: null,
         text_body: "",
-        url: null,
-        community: null,
+        url: "",
+        community: "",
         NSFW: false,
         spoiler: false,
         type: "",

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -46,15 +46,14 @@ class _NotificationFeedState extends State<NotificationFeed> {
                   ? ListView.builder(
                       itemCount: countryData.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return NotificationFeedUnit();
+                        return const NotificationFeedUnit();
                       },
                     )
-                  : NoNotification();
+                  : const NoNotification();
             } else {
               return const Text('No data available.');
             }
           },
         ));
-    ;
   }
 }

@@ -17,7 +17,7 @@ class NoNotification extends StatelessWidget {
             child: Image(
                 height: 150.h,
                 width: 150.w,
-                image: AssetImage('assets/images/snoovatar-full-hi.png'))),
+                image: const AssetImage('assets/images/snoovatar-full-hi.png'))),
         SizedBox(
           height: 10.h,
         ),

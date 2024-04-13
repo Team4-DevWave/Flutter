@@ -14,7 +14,7 @@ class ContactSettings extends StatefulWidget {
 class _ContactSettingState extends State<ContactSettings> {
   void _enterNotifcationSettings(BuildContext context) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (ctx) => NotificationsSettingsScreen()));
+        MaterialPageRoute(builder: (ctx) => const NotificationsSettingsScreen()));
   }
 
   @override

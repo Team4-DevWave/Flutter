@@ -22,12 +22,13 @@ class PostProvider extends StateNotifier<bool> {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
     //get username
-    final whereTo = post?.community == null ? 'u/username' : 'r/${post?.community}' ;
 
+    final whereTo =
+        post?.community == null ? 'u/username' : 'r/${post?.community}';
 
     try {
       final response = await http.post(
-          Uri.parse('http://$local:8000/api/v1/posts/submit/$whereTo'),
+          Uri.parse('http://$local:8000/api/v1/homepage/submit/$whereTo'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -46,7 +47,8 @@ class PostProvider extends StateNotifier<bool> {
       if (response.statusCode == 201) {
         return right(true);
       } else {
-        return left(Failure("Can't submit post, please discard or try again later"));
+        return left(
+            Failure("Can't submit post, please discard or try again later"));
       }
     } catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {

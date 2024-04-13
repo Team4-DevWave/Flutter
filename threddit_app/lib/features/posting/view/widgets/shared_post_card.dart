@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
@@ -14,16 +13,16 @@ class SharedPostCard extends ConsumerStatefulWidget {
       {super.key,
       required this.post,
       required this.uid,
-      required this.onCommentPressed});
+     });
   final Post post;
   final String uid;
-  final VoidCallback onCommentPressed;
   @override
   _SharedPostCardState createState() => _SharedPostCardState();
 }
 
 class _SharedPostCardState extends ConsumerState<SharedPostCard> {
   late VideoPlayerController _controller;
+  @override
   void initState() {
     super.initState();
     if (widget.post.video != null) {
@@ -56,7 +55,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
       widget.post.spoiler = !widget.post.spoiler;
       setstate() {
       }
-      await ref.read(toggleSpoiler(widget.post.id));
+      ref.read(toggleSpoiler(widget.post.id));
       Navigator.pop(context);
       
     }
@@ -187,7 +186,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                          if(widget.post.subredditID!=null)
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal:8.w),
-                          child: Icon(Icons.circle,size:5,color:Color.fromARGB(82, 255, 255, 255,)),
+                          child: const Icon(Icons.circle,size:5,color:Color.fromARGB(82, 255, 255, 255,)),
                         ),
                       Text(
                           'u/${widget.post.parentPost!.userID?.username}',
@@ -199,7 +198,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                       ),
                       Text(
                        '${hoursSinceParentPost}h',
-                        style: TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
+                        style: const TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
                       ),
                     ],
                   )),
@@ -316,13 +315,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                   ),
                   color: Colors.white,
                 ),
-                IconButton(
-                    onPressed: widget.onCommentPressed,
-                    icon: const Icon(Icons.comment)),
-                Text(
-                    '${widget.post.commentsCount == 0 ? "comment" : widget.post.commentsCount}',
-                    style: AppTextStyles.primaryTextStyle
-                        .copyWith(color: AppColors.whiteColor)),
+                
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -343,7 +336,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                                                 widget.post.spoiler
                                                     ? 'UnMark Spoiler'
                                                     : 'Mark Spoiler',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     color: Colors.white),
                                               ),
                                               leading: const Icon(
@@ -366,7 +359,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                                                 widget.post.nsfw
                                                     ? 'UnMark NSFW'
                                                     : 'Mark NSFW',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     color: Colors.white),
                                               ),
                                               leading: const Icon(Icons.copy),
@@ -423,7 +416,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                                 icon: const Icon(Icons.add_moderator_sharp)),
                             IconButton(
                               onPressed: () {},
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.insights,
                                 color: Colors.purple,
                               ),
@@ -432,11 +425,11 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                         : [
                             ElevatedButton.icon(
                               onPressed: () {},
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.ios_share_rounded,
                                 color: Colors.white,
                               ),
-                              label: Text("Share"),
+                              label: const Text("Share"),
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   foregroundColor: Colors.white),

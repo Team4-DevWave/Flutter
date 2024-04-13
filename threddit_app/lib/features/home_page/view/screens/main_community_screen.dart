@@ -10,7 +10,7 @@ class MainCommunityScreen extends ConsumerStatefulWidget {
 class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
   @override
   Widget build(BuildContext context) {
-    return Center();
+    return const Center();
     // child: ElevatedButton(
     //     onPressed: () {
     //       share(context, ref, posts[0]);
