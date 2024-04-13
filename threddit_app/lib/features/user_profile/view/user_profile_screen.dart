@@ -103,7 +103,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername('moaz', _currentPage);
+      fetchPostsByUsername('admin', _currentPage);
     }
   }
 

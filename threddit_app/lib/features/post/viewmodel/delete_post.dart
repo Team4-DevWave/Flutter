@@ -28,7 +28,11 @@ class DeletePost extends StateNotifier<bool> {
           'Authorization': 'Bearer $token',
         },
       );
+      // print("Deleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeet");
+      print(response.body);
       if (response.statusCode == 204) {
+        print("Deleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeet");
+
         return right(true);
       } else if (response.statusCode == 500) {
         return left(Failure('Post not found, may be deleted before'));

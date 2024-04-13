@@ -53,6 +53,8 @@ class _FeedWidgetState extends State<FeedWidget> {
 
   Future<void> getUserID() async {
     userId = await getUserId();
+    print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+    print(userId);
   }
 
   Future _fetchPosts() async {
