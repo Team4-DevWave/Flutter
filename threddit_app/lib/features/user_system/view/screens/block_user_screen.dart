@@ -21,19 +21,6 @@ class _BlockUserScreenState extends ConsumerState<BlockUserScreen> {
   final EmailForm usernameForm = EmailForm("username");
   final client = http.Client();
 
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
-
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,8 +30,8 @@ class _BlockUserScreenState extends ConsumerState<BlockUserScreen> {
               onPressed: () async {
                 final String username = usernameForm.enteredEmail;
 
-                await blockUser(
-                        client: client, userToBlock: username, token: token!)
+                await blockUser(context: context,
+                        userToBlock: username)
                     .then((value) {
                   if (value == 200) {
                     Navigator.pop(context);

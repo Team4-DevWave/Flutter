@@ -19,7 +19,6 @@ import 'package:threddit_clone/features/user_system/view/screens/forgot_password
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
-import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
