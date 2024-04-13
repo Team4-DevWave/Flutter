@@ -22,7 +22,7 @@ class PostProvider extends StateNotifier<bool> {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
     //get username
-    final whereTo = post?.community == "My Profile" ? 'u/username' : 'r/${post?.community}' ;
+    final whereTo = post?.community == null ? 'u/username' : 'r/${post?.community}' ;
 
 
     try {
@@ -50,7 +50,7 @@ class PostProvider extends StateNotifier<bool> {
       if (response.statusCode == 201) {
         return right(true);
       } else {
-        return left(Failure("Error while submitting the post"));
+        return left(Failure("Can't submit post, please discard or try again later"));
       }
     } catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {

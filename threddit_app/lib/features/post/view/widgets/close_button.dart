@@ -55,10 +55,10 @@ class ClosedButton extends ConsumerWidget {
                         onPressed: () {
                           firstScreen
                               ? ref
-                                  .read(currentScreenProvider.notifier)
+                                  .watch(currentScreenProvider.notifier)
                                   .returnToPrevious()
                               : ref
-                                  .read(currentScreenProvider.notifier)
+                                  .watch(currentScreenProvider.notifier)
                                   .updateCurrentScreen(0);
                           Navigator.pushReplacementNamed(
                               context, RouteClass.mainLayoutScreen);
@@ -77,12 +77,13 @@ class ClosedButton extends ConsumerWidget {
                 });
           } else {
             firstScreen
-                ? ref.read(currentScreenProvider.notifier).returnToPrevious()
+                ? ref.watch(currentScreenProvider.notifier).returnToPrevious()
                 : ref
-                    .read(currentScreenProvider.notifier)
+                    .watch(currentScreenProvider.notifier)
                     .updateCurrentScreen(0);
             Navigator.pushReplacementNamed(
                 context, RouteClass.mainLayoutScreen);
+                resetAll();
           }
         },
         icon: const Icon(Icons.close));

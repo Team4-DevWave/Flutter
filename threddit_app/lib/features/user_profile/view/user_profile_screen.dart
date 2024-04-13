@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -127,143 +126,132 @@ class _UserProfileState extends ConsumerState<UserProfile>
         length: tabs.length,
         child: Scaffold(
             body: NestedScrollView(
-                floatHeaderSlivers: true,
-                headerSliverBuilder: (context, innerBoxIsScrolled) {
-                  return <Widget>[
-                    SliverOverlapAbsorber(
-                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                          context),
-                      sliver: SliverAppBar(
-                        title: Text(
-                          "u/Me",
-                          style: AppTextStyles.secondaryTextStyle,
-                        ),
-                        flexibleSpace: FlexibleSpaceBar(
-                          collapseMode: CollapseMode.parallax,
-                          background: Container(
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                              colors: const [
-                                Color.fromARGB(255, 0, 99, 145),
-                                Color.fromARGB(255, 2, 55, 99),
-                                Color.fromARGB(221, 14, 13, 13),
-                                Colors.black,
-                              ],
-                              stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            )),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 10.w, vertical: 75.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 45.spMin,
-                                    backgroundImage: const AssetImage(
-                                        'assets/images/Default_Avatar.png'),
-                                  ),
-                                  SizedBox(
-                                    height: 5.h,
-                                  ),
-                                  ElevatedButton(
-                                    style: const ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStatePropertyAll(
-                                                AppColors.whiteHideColor)),
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, RouteClass.editUser);
-                                    },
-                                    child: Text(
-                                      "Edit",
-                                      style: AppTextStyles.buttonTextStyle
-                                          .copyWith(
-                                              backgroundColor:
-                                                  Colors.transparent),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5.h,
-                                  ),
-                                  Text(
-                                    //to be replaced with the username from the user provider
-                                    "u/userName",
-                                    style: AppTextStyles.primaryTextStyle
-                                        .copyWith(fontSize: 20.spMin),
-                                  ),
-                                  SizedBox(
-                                    height: 5.h,
-                                  ),
-                                  Text(
-                                    "Followers",
-                                    style: AppTextStyles.primaryTextStyle,
-                                  ),
-                                  SizedBox(
-                                    height: 5.h,
-                                  ),
-                                  Text(
-                                    "karma",
-                                    style: AppTextStyles.secondaryTextStyle,
-                                  )
-                                ],
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return <Widget>[
+              SliverOverlapAbsorber(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  title: Text(
+                    "u/Me",
+                    style: AppTextStyles.secondaryTextStyle,
+                  ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    background: Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                        colors: const [
+                          Color.fromARGB(255, 0, 99, 145),
+                          Color.fromARGB(255, 2, 55, 99),
+                          Color.fromARGB(221, 14, 13, 13),
+                          Colors.black,
+                        ],
+                        stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      )),
+                      child: Padding(
+                        padding:  EdgeInsets.symmetric(horizontal:10.w, vertical: 75.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                           CircleAvatar(
+                              radius: 45.spMin,
+                               backgroundImage:
+                          const AssetImage('assets/images/Default_Avatar.png'),
+                            ),
+                           SizedBox(
+                              height: 5.h,
+                            ),
+                            ElevatedButton(
+                              style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      AppColors.whiteHideColor)),
+                              onPressed: () {
+                                Navigator.pushNamed(context, RouteClass.editUser);
+                              },
+                              child: Text(
+                                "Edit",
+                                style: AppTextStyles.buttonTextStyle.copyWith(
+                                    backgroundColor: Colors.transparent),
                               ),
                             ),
-                          ),
+                           SizedBox(
+                              height: 5.h,
+                            ),
+                            Text(
+                              //to be replaced with the username from the user provider
+                              "u/userName",
+                              style: AppTextStyles.primaryTextStyle
+                                  .copyWith(fontSize: 20.spMin),
+                            ),
+                           SizedBox(
+                              height: 5.h,
+                            ),
+                            Text(
+                              "Followers",
+                              style: AppTextStyles.primaryTextStyle,
+                            ),
+                           SizedBox(
+                              height: 5 .h,
+                            ),
+                            Text(
+                              "karma",
+                              style: AppTextStyles.secondaryTextStyle,
+                            )
+                          ],
                         ),
-                        expandedHeight: 340.h,
-                        actions: [
-                          const Align(
-                            alignment: Alignment.centerRight,
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, RouteClass.confirmPostScreen);
-                              },
-                              icon: const Icon(
-                                Icons.add,
-                                color: AppColors.whiteGlowColor,
-                              )),
-                          IconButton(
-                            onPressed: () {
-                              //open search screen
-                            },
-                            icon: const Icon(
-                              Icons.search_outlined,
-                              color: AppColors.whiteGlowColor,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              //share profile modal bottom sheet
-                            },
-                            icon: const Icon(
-                              Icons.share,
-                              color: AppColors.whiteGlowColor,
-                            ),
-                          ),
-                        ],
-                        pinned: true,
-                        forceElevated: innerBoxIsScrolled,
-                        bottom: TabBar(
-                            controller: _tabController,
-                            indicatorColor: AppColors.redditOrangeColor,
-                            labelStyle: AppTextStyles.buttonTextStyle,
-                            tabs: tabs
-                                .map((name) => Tab(
-                                      text: name,
-                                    ))
-                                .toList()),
                       ),
-                    )
-                  ];
-                },
-                body: TabBarView(controller: _tabController, children: [
-                  buildPostTab(),
-                  buildCommentsTab(),
-                  buildAboutTab()
-                ]))));
+                    ),
+                  ),
+                  expandedHeight: 340.h,
+                  actions: [
+                    const Align(
+                      alignment: Alignment.centerRight,
+                    ),
+                    IconButton(onPressed: (){
+                      Navigator.pushNamed(context, RouteClass.confirmPostScreen);
+                    }, icon: const Icon(Icons.add, color: AppColors.whiteGlowColor,)),
+                    IconButton(
+                      onPressed: () {
+                        //open search screen
+                      },
+                      icon: const Icon(
+                        Icons.search_outlined,
+                        color: AppColors.whiteGlowColor,
+                      ),
+                    ),
+                    
+                  ],
+                  pinned: true,
+                  forceElevated: innerBoxIsScrolled,
+                  bottom: TabBar(
+                      controller: _tabController,
+                      indicatorColor: AppColors.redditOrangeColor,
+                      labelStyle: AppTextStyles.buttonTextStyle,
+                      tabs: tabs
+                          .map((name) => Tab(
+                                text: name,
+                              ))
+                          .toList()),
+                ),
+              )
+            ];
+          },
+          body: Stack(
+            children:[ Positioned.fill(
+              top: 100.h,
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                buildPostTab(),
+                buildCommentsTab(),
+                buildAboutTab()
+              ]),
+            ),]
+          )
+        )));
   }
 }
