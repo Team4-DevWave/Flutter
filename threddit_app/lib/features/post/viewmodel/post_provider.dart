@@ -1,9 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/post/model/post_model.dart';
 
 class PostNotifier extends StateNotifier<PostData> {
   //link returned to null here and in reset all
-  PostNotifier() : super(PostData(title: "", url: "", NSFW: false, spoiler: false, type: "",  locked: false));
+  PostNotifier()
+      : super(PostData(
+            title: "",
+            url: "",
+            NSFW: false,
+            spoiler: false,
+            type: "",
+            locked: false));
 
   void updateTitle(String newTitle) => state = state.copyWith(title: newTitle);
 
@@ -12,8 +21,7 @@ class PostNotifier extends StateNotifier<PostData> {
   void updateIsSpoiler(bool spoiler) =>
       state = state.copyWith(spoiler: spoiler);
 
-  void updateImages(String newImage) =>
-      state = state.copyWith(image: newImage);
+  void updateImages(String newImage) => state = state.copyWith(image: newImage);
 
   void updateBodyText(String newBody) =>
       state = state.copyWith(text_body: newBody);
@@ -27,8 +35,7 @@ class PostNotifier extends StateNotifier<PostData> {
 
   void updateVideo(String newVideo) => state = state.copyWith(video: newVideo);
 
-  void removeLink() =>
-    state = state.copyWith(url: '');
+  void removeLink() => state = state.copyWith(url: '');
 
   void removeImages() => state = state.copyWith(image: null);
 
@@ -40,7 +47,13 @@ class PostNotifier extends StateNotifier<PostData> {
       state = state.copyWith(NSFW: false, spoiler: false);
 
   void resetAll() {
-    state =PostData(title: "", url: "", NSFW: false, spoiler: false, type: "",  locked: false);
+    state = PostData(
+        title: "",
+        url: "",
+        NSFW: false,
+        spoiler: false,
+        type: "",
+        locked: false);
   }
 }
 

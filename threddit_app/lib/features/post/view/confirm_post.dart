@@ -46,11 +46,16 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   Future<void> _pickImage() async {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
+
     if (pickedImage == null) return;
+
     imageFile = File(pickedImage.path);
+
     Uint8List imageBytes = await imageFile!.readAsBytes();
+
     setState(() {
       image = base64Encode(imageBytes);
+
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
     });
@@ -142,6 +147,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       if (image == null || isLink || isVideo) {
         return const SizedBox();
       }
+
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
 
@@ -200,9 +206,11 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                 type: "image",
               )
             else if (isLink)
-              PostButton(titleController: _titleController, type: "link")
-            else
+              PostButton(titleController: _titleController, type: "url")
+            else if (isVideo)
               PostButton(titleController: _titleController, type: "video")
+            else
+              PostButton(titleController: _titleController, type: "text")
           ]),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

@@ -21,11 +21,11 @@ class PostProvider extends StateNotifier<bool> {
   FutureEither<bool> submitPost(String type) async {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
-
+    print(type);
     try {
       final response = await http.post(
           Uri.parse(
-              'http://$local:8000/api/v1/homepage/submit/r/${post?.community}'),
+              'http://$local:8000/api/v1/posts/submit/r/${post?.community}'),
           headers: {
             'Content-Type': 'application/json',
             //check from sh3boly
@@ -38,12 +38,12 @@ class PostProvider extends StateNotifier<bool> {
             "spoiler": post?.spoiler,
             "nsfw": post?.NSFW,
             "locked": post?.locked,
-            "text_body": post?.text_body,
-            "image": post?.image,
-            'postedTime': DateTime.now(),
-            "video": post?.video
+            "text_body": post?.text_body ?? "",
+            "image": post?.image ?? "",
+            "video": post?.video ?? ""
           }));
-      print(response.statusCode);
+      print(response.body);
+
       if (response.statusCode == 201) {
         return right(true);
       } else {

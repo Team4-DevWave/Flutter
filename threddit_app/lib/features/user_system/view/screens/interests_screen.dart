@@ -40,8 +40,8 @@ class _InterestsState extends ConsumerState<Interests> {
     final isGoogleAuthenticated = ref.watch(userProvider)!.isGoogle;
 
     final isSignedUp = isGoogleAuthenticated
-        ? await ref.watch(authProvider.notifier).signUp()
-        : await ref.watch(authProvider.notifier).signUpWithGoogle();
+        ? await ref.watch(authProvider.notifier).signUpWithGoogle()
+        : await ref.watch(authProvider.notifier).signUp();
 
     isSignedUp.fold((failure) {
       showSnackBar(navigatorKey.currentContext!, failure.message);

@@ -22,7 +22,7 @@ void share(BuildContext context, WidgetRef ref, Post post) {
       backgroundColor: AppColors.backgroundColor,
       builder: (context) {
         return Container(
-          height: 120.h,
+          height: 150.h,
           padding: EdgeInsets.fromLTRB(10.w, 10.h, 5.w, 5.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
