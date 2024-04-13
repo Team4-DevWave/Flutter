@@ -36,12 +36,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   String? video;
   File? videoFile;
   File? imageFile;
-  String? image;
-  String? video;
-  File? videoFile;
-  File? imageFile;
 
-  Future<void> _pickImage() async {
   Future<void> _pickImage() async {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
@@ -72,19 +67,14 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   }
 
   Future<void> _removeImage() async {
-  Future<void> _removeImage() async {
     setState(() {
       image = null;
-      isImage = false;
       isImage = false;
     });
   }
 
   Future<void> _removeVideo() async {
-  Future<void> _removeVideo() async {
     setState(() {
-      video = null;
-      isVideo = false;
       video = null;
       isVideo = false;
     });
@@ -102,7 +92,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
-  void resetAll() {
   void resetAll() {
     _titleController = TextEditingController(text: "");
     _bodytextController = TextEditingController(text: "");
@@ -150,18 +139,12 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
     Widget buildVideoContent() {
       if (video == null || isLink || isImage) {
-    Widget buildVideoContent() {
-      if (video == null || isLink || isImage) {
         return const SizedBox();
       }
       return AddVideoWidget(onPressed: _removeVideo, videoPath: videoFile!);
     }
 
     Widget buildLink() {
-      if (isLink) {
-        return AddLinkWidget(
-          removeLink: _removeLink,
-        );
       if (isLink) {
         return AddLinkWidget(
           removeLink: _removeLink,
@@ -173,13 +156,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: ClosedButton(
-            resetAll: resetAll,
-            firstScreen: true,
-            titleController: _titleController,
-            isImage: isImage,
-            isLink: isLink,
-            isVideo: isVideo),
         leading: ClosedButton(
             resetAll: resetAll,
             firstScreen: true,
@@ -262,33 +238,21 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
           children: [
             IconButton(
               onPressed: (!isLink && !isVideo) ? _pickImage : () {},
-              onPressed: (!isLink && !isVideo) ? _pickImage : () {},
               icon: const Icon(Icons.image),
-              color: isLink || isImage || isVideo
-                  ? AppColors.whiteHideColor
-                  : AppColors.whiteGlowColor,
               color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isLink && !isImage) ? _pickVideo : () {},
               onPressed: (!isLink && !isImage) ? _pickVideo : () {},
               icon: const Icon(Icons.video_library_outlined),
               color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
-              color: isLink || isImage || isVideo
-                  ? AppColors.whiteHideColor
-                  : AppColors.whiteGlowColor,
             ),
             IconButton(
               onPressed: (!isImage && !isVideo) ? _addLink : () {},
-              onPressed: (!isImage && !isVideo) ? _addLink : () {},
               icon: const Icon(Icons.link),
-              color: isLink || isImage || isVideo
-                  ? AppColors.whiteHideColor
-                  : AppColors.whiteGlowColor,
               color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
