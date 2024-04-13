@@ -117,7 +117,6 @@ Future<int> changeGenderFunction({
   required String gender,
 }) async {
   Map<String, dynamic> body = {
-    'user_id': 1,
     'gender': gender,
   };
   String? token = await getToken();
@@ -129,8 +128,8 @@ Future<int> changeGenderFunction({
   }
   String bodyEncoded = jsonEncode(body);
 
-  http.Response response = await http.post(
-    Uri.parse("$url:3001/api/change-gender"),
+  http.Response response = await http.patch(
+    Uri.parse("$url:8000/api/v1/users/me/changeGender"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
