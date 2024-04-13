@@ -7,6 +7,8 @@ import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/posting/view/widgets/shared_post_card.dart';
+import 'package:threddit_clone/features/posting/view_model/bottom_sheet_owner.dart';
+import 'package:threddit_clone/features/posting/view_model/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
@@ -91,166 +93,9 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                               children: widget.currentPost.userID!.id !=
                                       widget.uid
                                   ? [
-                                      ListTile(
-                                          title: const Text(
-                                            'More actions...',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          }),
-                                      ListTile(
-                                        title: const Text(
-                                          'Subscribe to post',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading:
-                                            const Icon(Icons.notifications),
-                                        onTap: () {},
-                                      ),
-                                      ListTile(
-                                        title: const Text(
-                                          'Save',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading: const Icon(Icons.save),
-                                        onTap: () {},
-                                      ),
-                                      ListTile(
-                                        title: const Text(
-                                          'Copy text',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading: const Icon(Icons.copy),
-                                        onTap: () {},
-                                      ),
-                                      ListTile(
-                                        title: const Text(
-                                          'Report',
-                                          style:
-                                              TextStyle(color: Colors.orange),
-                                        ),
-                                        leading: const Icon(
-                                          Icons.flag_outlined,
-                                          color: Colors.orange,
-                                        ),
-                                        onTap: () {
-                                          Navigator.pop(context);
-                                          showModalBottomSheet(
-                                            useSafeArea: true,
-                                            isScrollControlled: true,
-                                            context: context,
-                                            backgroundColor:
-                                                AppColors.backgroundColor,
-                                            builder: (context) {
-                                              return ReportBottomSheet(
-                                                userID: widget.uid,
-                                                reportedID:
-                                                    widget.currentPost.id,
-                                                type: "post",
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      ListTile(
-                                        title: const Text(
-                                          'Block account',
-                                          style:
-                                              TextStyle(color: Colors.orange),
-                                        ),
-                                        leading: const Icon(
-                                          Icons.block,
-                                          color: Colors.orange,
-                                        ),
-                                        onTap: () {},
-                                      ),
-                                      ListTile(
-                                        title: const Text(
-                                          'Hide',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading: const Icon(Icons.hide_source),
-                                        onTap: () {},
-                                      )
+                                      OptionsBotttomSheet(post: widget.currentPost, toggleSPOILER: toggleSPOILER, toggleNsfw: toggleNsfw, uid:widget.uid)
                                     ]
-                                  : <Widget>[
-                                      ListTile(
-                                          title: const Text(
-                                            'More actions...',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          onTap: () {
-                                            Navigator.pop(context);
-                                          }),
-                                      ListTile(
-                                        title: const Text(
-                                          'Save',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading: const Icon(Icons.save),
-                                        onTap: () {},
-                                      ),
-                                      ListTile(
-                                        title: const Text(
-                                          'Copy text',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading: const Icon(Icons.copy),
-                                        onTap: () {},
-                                      ),
-                                      ListTile(
-                                        title: Text(
-                                          widget.currentPost.spoiler
-                                              ? 'UnMark Spoiler'
-                                              : "Mark Spoiler",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading: const Icon(
-                                            Icons.warning_amber_rounded),
-                                        onTap: () {
-                                           
-                                          toggleSPOILER();
-                                        },
-                                      ),
-                                      ListTile(
-                                        title: Text(
-                                          widget.currentPost.nsfw
-                                              ? 'UnMark NSFW'
-                                              : "Mark NSFW",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading: const Icon(Icons.eighteen_mp),
-                                        onTap: () {
-                                          toggleNsfw();
-                                        },
-                                      ),
-                                      ListTile(
-                                        title: const Text(
-                                          "Delete post",
-                                          style:
-                                              TextStyle(color: Colors.orange),
-                                        ),
-                                        leading: const Icon(
-                                          Icons.delete_outline,
-                                          color: Colors.orange,
-                                        ),
-                                        onTap: () {},
-                                      ),
-                                      ListTile(
-                                        title: const Text(
-                                          "Crosspost to community",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        leading:
-                                            const Icon(Icons.share_outlined),
-                                        onTap: () {},
-                                      ),
-                                    ],
+                                  : [ModeratorBotttomSheet(post:widget.currentPost, toggleSPOILER: toggleSPOILER, toggleNsfw: toggleNsfw)]
                             );
                           });
                     },

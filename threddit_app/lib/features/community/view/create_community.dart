@@ -85,7 +85,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
     Navigator.pushNamed(context, RouteClass.communityScreen,
                       arguments: {
                         'id': _communityNameController.text,
-                        'uid': "6617fe34a0a16be5fbadc423"
+                        'uid': "6617c330949400c2df6dc0d1"
                       });
       } else if (communityCreationResult == 409) {
         // Community already exists
