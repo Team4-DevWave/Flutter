@@ -9,6 +9,8 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedpost.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
+import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
+import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -41,6 +43,20 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
     isSpam = await ref.watch(moderationApisProvider.notifier).getSpam();
   }
 
+  void toggleNsfw() async {
+    ref.read(toggleNSFW(widget.dataOfPost.id));
+    widget.dataOfPost.nsfw = !widget.dataOfPost.nsfw;
+    Navigator.pop(context);
+    setstate() {}
+  }
+
+  void toggleSPOILER() async {
+    ref.read(toggleSpoiler(widget.dataOfPost.id));
+    widget.dataOfPost.spoiler = !widget.dataOfPost.spoiler;
+    Navigator.pop(context);
+    setstate() {}
+  }
+
   @override
   Widget build(BuildContext context) {
     getModOptions();
@@ -63,22 +79,92 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  child: Text(
-                    'r/${widget.parentPost.userID!.username}',
-                    style: const TextStyle(color: Colors.white),
+                Row(
+                  children: [
+                    Container(
+                      child: Text(
+                        'r/${widget.parentPost.userID!.username}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 7.w,
+                    ),
+                    Text(
+                      '${hoursSincePost}h ago',
+                      style: const TextStyle(color: AppColors.whiteHideColor),
+                    ),
+                  ],
+                ),
+                InkWell(
+                  onTap: () {
+                    showBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              OptionsBotttomSheet(
+                                  post: widget.dataOfPost,
+                                  toggleSPOILER: toggleSPOILER,
+                                  toggleNsfw: toggleNsfw,
+                                  uid: widget.uid)
+                            ],
+                          );
+                        },
+                        backgroundColor: AppColors.backgroundColor);
+                  },
+                  child: const Icon(
+                    Icons.more_vert,
+                    color: AppColors.whiteHideColor,
                   ),
-                ),
-                SizedBox(
-                  width: 7.w,
-                ),
-                Text(
-                  '${hoursSincePost}h ago',
-                  style: const TextStyle(color: AppColors.whiteHideColor),
-                ),
+                )
               ],
             ),
+            if (widget.dataOfPost.nsfw || widget.dataOfPost.spoiler)
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (widget.dataOfPost.nsfw)
+                      Row(
+                        children: [
+                          Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.pink,
+                                  border: Border.all(
+                                      color: AppColors.backgroundColor),
+                                  borderRadius: BorderRadius.circular(
+                                      35) // Adjust the radius as needed
+                                  ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: const Text("NSFW",
+                                  style: TextStyle(color: Colors.white))),
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                        ],
+                      ),
+                    if (widget.dataOfPost.spoiler)
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.purple,
+                            border:
+                                Border.all(color: AppColors.backgroundColor),
+                            borderRadius: BorderRadius.circular(
+                                35) // Adjust the radius as needed
+                            ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: const Text("SPOILER",
+                            style: TextStyle(color: Colors.white)),
+                      ),
+                  ],
+                ),
+              ),
             Text(
               widget.parentPost.title,
               style: AppTextStyles.boldTextStyle,

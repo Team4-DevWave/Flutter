@@ -128,8 +128,8 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                 child: (widget.dataOfPost.image != null &&
                         widget.dataOfPost.image != '')
                     ? Image(
-                        height: 250.h,
-                        width: 360.w,
+                        height: 125.h,
+                        width: 200.w,
                         fit: BoxFit.fitWidth,
                         image: NetworkImage(widget.dataOfPost.image.toString()),
                       )
