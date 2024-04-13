@@ -139,32 +139,33 @@ class _UserProfileState extends ConsumerState<UserProfile>
                           style: AppTextStyles.secondaryTextStyle,
                         ),
                         flexibleSpace: FlexibleSpaceBar(
+                          collapseMode: CollapseMode.parallax,
                           background: Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                              colors: [
+                              colors: const [
                                 Color.fromARGB(255, 0, 99, 145),
                                 Color.fromARGB(255, 2, 55, 99),
                                 Color.fromARGB(221, 14, 13, 13),
                                 Colors.black,
                               ],
-                              stops: [0.0, 0.25, 0.6, 1.0],
+                              stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                             )),
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(10, 120, 50, 5),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w, vertical: 75.h),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: AssetImage(
+                                  CircleAvatar(
+                                    radius: 45.spMin,
+                                    backgroundImage: const AssetImage(
                                         'assets/images/Default_Avatar.png'),
                                   ),
-                                  const SizedBox(
-                                    height: 10,
+                                  SizedBox(
+                                    height: 5.h,
                                   ),
                                   ElevatedButton(
                                     style: const ButtonStyle(
@@ -183,24 +184,24 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                                   Colors.transparent),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    height: 10,
+                                  SizedBox(
+                                    height: 5.h,
                                   ),
                                   Text(
                                     //to be replaced with the username from the user provider
                                     "u/userName",
                                     style: AppTextStyles.primaryTextStyle
-                                        .copyWith(fontSize: 20),
+                                        .copyWith(fontSize: 20.spMin),
                                   ),
-                                  const SizedBox(
-                                    height: 10,
+                                  SizedBox(
+                                    height: 5.h,
                                   ),
                                   Text(
                                     "Followers",
                                     style: AppTextStyles.primaryTextStyle,
                                   ),
-                                  const SizedBox(
-                                    height: 10,
+                                  SizedBox(
+                                    height: 5.h,
                                   ),
                                   Text(
                                     "karma",
@@ -211,11 +212,20 @@ class _UserProfileState extends ConsumerState<UserProfile>
                             ),
                           ),
                         ),
-                        expandedHeight: 300.h,
+                        expandedHeight: 340.h,
                         actions: [
                           const Align(
                             alignment: Alignment.centerRight,
                           ),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, RouteClass.confirmPostScreen);
+                              },
+                              icon: const Icon(
+                                Icons.add,
+                                color: AppColors.whiteGlowColor,
+                              )),
                           IconButton(
                             onPressed: () {
                               //open search screen

@@ -10,7 +10,7 @@ class AddVideoWidget extends ConsumerStatefulWidget {
   const AddVideoWidget(
       {super.key, required this.onPressed, required this.videoPath});
   final Function()? onPressed;
-  final String videoPath; 
+  final File videoPath; 
 
   @override
   ConsumerState<AddVideoWidget> createState() => _AddVideoWidgetState();
@@ -23,7 +23,7 @@ class _AddVideoWidgetState extends ConsumerState<AddVideoWidget> {
   @override
   void initState() {
     /// the video controller contains the path of the video
-    _videoController = VideoPlayerController.file(File(widget.videoPath));
+    _videoController = VideoPlayerController.file(widget.videoPath);
     ///intializing the _video object
     _intializeVideoPlayer = _videoController.initialize();
     super.initState();

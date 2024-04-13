@@ -13,7 +13,6 @@ class AddImageWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    //i want to make sure if the backend takes a list of images or just one image?
 
     return Stack(clipBehavior: Clip.hardEdge, children: [
       ConstrainedBox(

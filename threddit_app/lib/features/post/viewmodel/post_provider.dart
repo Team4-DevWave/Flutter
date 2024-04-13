@@ -1,9 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/post/model/post_model.dart';
 
 class PostNotifier extends StateNotifier<PostData> {
   //link returned to null here and in reset all
-  PostNotifier() : super(PostData(title: "", url: "", NSFW: false, spoiler: false, type: "",  locked: false));
+  PostNotifier()
+      : super(PostData(
+            title: "",
+            image: null,
+            video: null,
+            text_body: "",
+            url: "",
+            community: "",
+            NSFW: false,
+            spoiler: false,
+            type: "",
+            locked: false));
 
   void updateTitle(String newTitle) => state = state.copyWith(title: newTitle);
 
@@ -12,8 +25,12 @@ class PostNotifier extends StateNotifier<PostData> {
   void updateIsSpoiler(bool spoiler) =>
       state = state.copyWith(spoiler: spoiler);
 
-  void updateImages(String newImage) =>
-      state = state.copyWith(image: newImage);
+  void updateImagePath(File imgePath) =>
+      state = state.copyWith(imagePath: imgePath);
+  void updateVideoPath(File videoPath) =>
+      state = state.copyWith(videoPath: videoPath);
+
+  void updateImages(String newImage) => state = state.copyWith(image: newImage);
 
   void updateBodyText(String newBody) =>
       state = state.copyWith(text_body: newBody);
@@ -27,12 +44,11 @@ class PostNotifier extends StateNotifier<PostData> {
 
   void updateVideo(String newVideo) => state = state.copyWith(video: newVideo);
 
-  void removeLink() =>
-    state = state.copyWith(url: '');
+  void removeLink() => state = state.copyWith(url: '');
 
   void removeImages() => state = state.copyWith(image: null);
 
-  void removeBody() => state = state.copyWith(text_body: null);
+  void removeBody() => state = state.copyWith(text_body: "");
 
   void removeVideo() => state = state.copyWith(video: null);
 
@@ -40,7 +56,17 @@ class PostNotifier extends StateNotifier<PostData> {
       state = state.copyWith(NSFW: false, spoiler: false);
 
   void resetAll() {
-    state =PostData(title: "", url: "", NSFW: false, spoiler: false, type: "",  locked: false);
+    state = PostData(
+        title: "",
+        image: null,
+        video: null,
+        text_body: "",
+        url: "",
+        community: "",
+        NSFW: false,
+        spoiler: false,
+        type: "",
+        locked: false);
   }
 }
 
