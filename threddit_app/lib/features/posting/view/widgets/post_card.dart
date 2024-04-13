@@ -187,50 +187,54 @@ class _PostCardState extends ConsumerState<PostCard> {
                     color: const Color.fromARGB(196, 255, 255, 255),
                     fontSize: 15),
               ),
-            if (widget.post.image != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Image.network(widget.post.image!),
-              ),
-            if (widget.post.video != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: _controller.value.isInitialized
-                    ? GestureDetector(
-                        onTap: () {
-                          if (_controller.value.isPlaying) {
-                            _controller.pause();
-                          } else {
-                            _controller.play();
-                          }
-                          setState(() {});
-                        },
-                        child: AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
-                          child: Stack(alignment: Alignment.center, children: [
-                            VideoPlayer(_controller),
-                            Positioned(
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.5),
-                                  shape: BoxShape.circle,
+            (widget.post.image != null)
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Image.network(widget.post.image!),
+                  )
+                : (widget.post.video != null)
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: _controller.value.isInitialized
+                            ? GestureDetector(
+                                onTap: () {
+                                  if (_controller.value.isPlaying) {
+                                    _controller.pause();
+                                  } else {
+                                    _controller.play();
+                                  }
+                                  setState(() {});
+                                },
+                                child: AspectRatio(
+                                  aspectRatio: _controller.value.aspectRatio,
+                                  child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        VideoPlayer(_controller),
+                                        Positioned(
+                                          child: Container(
+                                            width: 50,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              _controller.value.isPlaying
+                                                  ? Icons.pause
+                                                  : Icons.play_arrow_rounded,
+                                              color: Colors.white,
+                                              size: 32,
+                                            ),
+                                          ),
+                                        )
+                                      ]),
                                 ),
-                                child: Icon(
-                                  _controller.value.isPlaying
-                                      ? Icons.pause
-                                      : Icons.play_arrow_rounded,
-                                  color: Colors.white,
-                                  size: 32,
-                                ),
-                              ),
-                            )
-                          ]),
-                        ),
+                              )
+                            : const CircularProgressIndicator(),
                       )
-                    : const CircularProgressIndicator(),
-              ),
+                    : SizedBox(),
             Row(
               children: [
                 IconButton(

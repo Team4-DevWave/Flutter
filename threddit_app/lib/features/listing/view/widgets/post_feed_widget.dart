@@ -155,20 +155,25 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   if (widget.dataOfPost.nsfw)
-                    Container(
-                        decoration: BoxDecoration(
-                            color: Colors.pink,
-                            border:
-                                Border.all(color: AppColors.backgroundColor),
-                            borderRadius: BorderRadius.circular(
-                                35) // Adjust the radius as needed
-                            ),
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: const Text("NSFW",
-                            style: TextStyle(color: Colors.white))),
-                  SizedBox(
-                    width: 10.w,
-                  ),
+                    Row(
+                      children: [
+                        Container(
+                            decoration: BoxDecoration(
+                                color: Colors.pink,
+                                border: Border.all(
+                                    color: AppColors.backgroundColor),
+                                borderRadius: BorderRadius.circular(
+                                    35) // Adjust the radius as needed
+                                ),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: const Text("NSFW",
+                                style: TextStyle(color: Colors.white))),
+                        SizedBox(
+                          width: 10.w,
+                        ),
+                      ],
+                    ),
                   if (widget.dataOfPost.spoiler)
                     Container(
                       decoration: BoxDecoration(
@@ -195,7 +200,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                   style: AppTextStyles.boldTextStyle,
                 ),
                 Text(
-                  widget.dataOfPost.textBody.toString(),
+                  widget.dataOfPost.textBody ?? '',
                   style: AppTextStyles.secondaryTextStyle,
                 ),
               ],
