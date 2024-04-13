@@ -6,16 +6,16 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 class Post {
   final String id;
   final String title;
-  final String? textBody;
+   String? textBody;
   final String? image;
-  final bool nsfw;
-  final bool spoiler;
-  final bool locked;
+   bool nsfw;
+   bool spoiler;
+   bool locked;
   final bool approved;
   final DateTime postedTime;
-  final String? video;
+  String? video;
   final int numViews;
-  final int commentsCount;
+   int commentsCount;
   final User? userID;
   final SubredditInfo? subredditID;
   final VotesList? votes;
@@ -135,17 +135,17 @@ class PostApiResponse {
   }
 }
 
-Future<PostApiResponse> fetchPosts() async {
+Future<PostApiResponse> fetchPosts(int pageNumber) async {
   String? token = await getToken();
-  print(token);
+
   final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/posts/best"),
+    Uri.parse("http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
   );
-  print(response.body);
+
   if (response.statusCode == 200) {
     return PostApiResponse.fromJson(jsonDecode(response.body));
   } else {

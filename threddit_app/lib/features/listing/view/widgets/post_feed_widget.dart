@@ -5,11 +5,31 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
+import 'package:threddit_clone/features/posting/view_model/options_bottom%20sheet.dart';
+import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
+import 'package:video_player/video_player.dart';
 
+/// The selected code in the `post_feed_widget.dart` file is responsible for decorating a
+/// `Container` widget. The `BoxDecoration` class is used to provide a border and a
+/// circular border radius to the `Container`.
+
+/// The `border` property of `BoxDecoration` is set to a `Border` object that is created
+/// using the `Border.all` method. This method creates a uniform border around the
+/// `Container`. The color of the border is set to a semi-transparent white color, and
+/// the width of the border is set to `2.w`, which is a width relative to the screen
+/// width.
+
+/// The `borderRadius` property of `BoxDecoration` is set to a `BorderRadius` object
+/// that is created using the `BorderRadius.circular` method. This method creates a
+/// circular border radius with a radius of 15.
+
+/// The `padding` property of the `Container` is set to symmetric horizontal padding of
+/// `16.0` and vertical padding of `4.0`. This adds space around the child of the
+/// `Container`, separating the child from the border.
 class FeedUnit extends ConsumerStatefulWidget {
   final Post dataOfPost;
   // ignore: lines_longer_than_80_chars
@@ -21,16 +41,42 @@ class FeedUnit extends ConsumerStatefulWidget {
 
 class _FeedUnitState extends ConsumerState<FeedUnit> {
   late int numbberOfvotes;
+  final now = DateTime.now();
+  late VideoPlayerController _controller;
   int choiceBottum = -1; // 1 upvote 2 downvote
 
   @override
   void initState() {
     super.initState();
     numbberOfvotes = int.parse(widget.dataOfPost.numViews.toString());
+    if (widget.dataOfPost.video != null) {
+      _controller = VideoPlayerController.networkUrl(
+        Uri.parse(widget.dataOfPost.video!),
+      )..initialize().then((_) {
+          setState(() {});
+        });
+    }
+  }
+
+  void toggleNsfw() async {
+    await ref.read(toggleNSFW(widget.dataOfPost.id));
+    widget.dataOfPost.nsfw = !widget.dataOfPost.nsfw;
+    Navigator.pop(context);
+    setstate() {}
+  }
+
+  void toggleSPOILER() async {
+    await ref.read(toggleSpoiler(widget.dataOfPost.id));
+    widget.dataOfPost.spoiler = !widget.dataOfPost.spoiler;
+    Navigator.pop(context);
+    setstate() {}
   }
 
   @override
   Widget build(BuildContext context) {
+    final difference = now.difference(widget.dataOfPost.postedTime);
+    final hoursSincePost = difference.inHours;
+
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(
@@ -38,7 +84,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
           RouteClass.postScreen,
           arguments: {
             'currentpost': widget.dataOfPost,
-            'uid': 'wewe',
+            'uid': '65f780011b4a7f2cf036ed12',
           },
         );
       },
@@ -64,18 +110,28 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                       width: 7.w,
                     ),
                     Text(
-                      widget.dataOfPost.postedTime.toString(),
+                      '${hoursSincePost}h ago',
                       style: TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],
                 )),
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, RouteClass.communityScreen,
-                        arguments: {
-                          'id': widget.dataOfPost.subredditID!.name,
-                          'uid': widget.dataOfPost.userID!.id
-                        });
+                    showBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              OptionsBotttomSheet(
+                                  post: widget.dataOfPost,
+                                  toggleSPOILER: toggleSPOILER,
+                                  toggleNsfw: toggleNsfw,
+                                  uid: '65f780011b4a7f2cf036ed12')
+                            ],
+                          );
+                        },
+                        backgroundColor: AppColors.backgroundColor);
                   },
                   child: const Icon(
                     Icons.more_vert,
@@ -118,7 +174,32 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                             //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                             ),
                       )
-                    : const SizedBox(),
+                    : (widget.dataOfPost.video != null)
+                        ? AspectRatio(
+                            aspectRatio: _controller.value.aspectRatio,
+                            child:
+                                Stack(alignment: Alignment.center, children: [
+                              VideoPlayer(_controller),
+                              Positioned(
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    _controller.value.isPlaying
+                                        ? Icons.pause
+                                        : Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                    size: 32,
+                                  ),
+                                ),
+                              )
+                            ]),
+                          )
+                        : const SizedBox(),
               ),
             ),
             Row(
@@ -129,28 +210,32 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     AddRadiusBoarder(
                       childWidget: Row(
                         children: [
-                          IconButton(
-                              onPressed: () {
-                                if (choiceBottum == -1 || choiceBottum == 2) {
-                                  setState(() {
-                                    if (numbberOfvotes ==
-                                        int.parse(widget.dataOfPost.numViews
-                                                .toString()) -
-                                            1) {
-                                      numbberOfvotes += 2;
-                                    } else {
-                                      numbberOfvotes++;
-                                    }
-                                    choiceBottum = 1;
-                                  });
-                                }
-                              },
-                              icon: Icon(
-                                Icons.arrow_upward,
-                                color: (choiceBottum == 1)
-                                    ? AppColors.redditOrangeColor
-                                    : AppColors.whiteColor,
-                              )),
+                          InkWell(
+                            onTap: () {
+                              if (choiceBottum == -1 || choiceBottum == 2) {
+                                setState(() {
+                                  if (numbberOfvotes ==
+                                      int.parse(widget.dataOfPost.numViews
+                                              .toString()) -
+                                          1) {
+                                    numbberOfvotes += 2;
+                                  } else {
+                                    numbberOfvotes++;
+                                  }
+                                  choiceBottum = 1;
+                                });
+                              }
+                            },
+                            child: Icon(
+                              Icons.arrow_upward,
+                              color: (choiceBottum == 1)
+                                  ? AppColors.redditOrangeColor
+                                  : AppColors.whiteColor,
+                            ),
+                          ),
+                          const VerticalDivider(
+                            thickness: 1,
+                          ),
                           Text(
                             numbberOfvotes.toString(),
                             style: AppTextStyles.secondaryTextStyle,
@@ -158,32 +243,46 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                           const VerticalDivider(
                             thickness: 1,
                           ),
-                          IconButton(
-                              onPressed: () {
-                                if (choiceBottum == -1 || choiceBottum == 1) {
-                                  setState(() {
-                                    if (numbberOfvotes ==
-                                        int.parse(widget.dataOfPost.numViews
-                                                .toString()) +
-                                            1) {
-                                      numbberOfvotes -= 2;
-                                    } else {
-                                      numbberOfvotes--;
-                                    }
-                                    choiceBottum = 2;
-                                  });
-                                }
-                              },
-                              icon: Icon(
-                                Icons.arrow_downward,
-                                color: (choiceBottum == 2)
-                                    ? AppColors.redditOrangeColor
-                                    : AppColors.whiteColor,
-                              )),
+                          InkWell(
+                            onTap: () {
+                              if (choiceBottum == -1 || choiceBottum == 1) {
+                                setState(() {
+                                  if (numbberOfvotes ==
+                                      int.parse(widget.dataOfPost.numViews
+                                              .toString()) +
+                                          1) {
+                                    numbberOfvotes -= 2;
+                                  } else {
+                                    numbberOfvotes--;
+                                  }
+                                  choiceBottum = 2;
+                                });
+                              }
+                            },
+                            child: Icon(
+                              Icons.arrow_downward,
+                              color: (choiceBottum == 2)
+                                  ? AppColors.redditOrangeColor
+                                  : AppColors.whiteColor,
+                            ),
+                          ),
                         ],
                       ),
                     ),
+                    SizedBox(
+                      width: 15.w,
+                    ),
                     Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: const Color.fromARGB(143, 255, 255, 255),
+                          width: 2.w,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            15), // Add this line to make the border circular
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
                       child: Row(
                         children: [
                           const Icon(

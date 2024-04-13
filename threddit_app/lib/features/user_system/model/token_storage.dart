@@ -9,6 +9,26 @@ Future<void> saveToken(String token) async {
   await prefs?.setString(PrefConstants.authToken, token);
 }
 
+Future<void> saveUserName(String username) async {
+  prefs = await SharedPreferences.getInstance();
+  await prefs?.setString(PrefConstants.userName, username);
+}
+
+Future<void> saveUserId(String userid) async {
+  prefs = await SharedPreferences.getInstance();
+  await prefs?.setString(PrefConstants.userId, userid);
+}
+
+Future<String?> getUserName() async {
+  prefs = await SharedPreferences.getInstance();
+  return prefs?.getString(PrefConstants.userName);
+}
+
+Future<String?> getUserId() async {
+  prefs = await SharedPreferences.getInstance();
+  return prefs?.getString(PrefConstants.userId);
+}
+
 Future<void> saveGoogleToken(String token) async {
   prefs = await SharedPreferences.getInstance();
   await prefs?.setString(PrefConstants.googleToken, token);

@@ -22,13 +22,13 @@ class NextButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isValid = (titleController.text.trim().isNotEmpty &&
-        (ref.watch(validLink) || ref.watch(postDataProvider)!.url == ""));
+        (ref.watch(validLink) || ref.watch(postDataProvider)!.url == null));
     return ElevatedButton(
       onPressed: isValid
           ? () {
             //there is a problem that we don't know if there is actually a link or not
             //so we need correctly know if there is a link then this part is done
-              Navigator.pushNamed(context, RouteClass.postToScreen);
+              Navigator.pushReplacementNamed(context, RouteClass.postToScreen);
             }
           : null,
       //the button is greyed out at first until the user enters a title

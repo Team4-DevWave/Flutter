@@ -25,7 +25,7 @@ class FeedUnitShare extends ConsumerStatefulWidget {
 class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
   late int numbberOfvotes;
   int choiceBottum = -1; // 1 upvote 2 downvote
-
+  final now = DateTime.now();
   @override
   void initState() {
     super.initState();
@@ -34,62 +34,74 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
 
   @override
   Widget build(BuildContext context) {
+    final difference = now.difference(widget.dataOfPost.postedTime);
+    final hoursSincePost = difference.inHours;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                child: Text(
-                  'r/${widget.parentPost.userID!.username}',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              SizedBox(
-                width: 7.w,
-              ),
-              Text(
-                widget.dataOfPost.postedTime.toString().substring(0, 10),
-                style: TextStyle(color: AppColors.whiteHideColor),
-              ),
-            ],
-          ),
-          Text(
-            widget.parentPost.title,
-            style: AppTextStyles.boldTextStyle,
-          ),
-          Text(
-            widget.parentPost.textBody ?? '',
-            style: AppTextStyles.secondaryTextStyle,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                RouteClass.postScreen,
-                arguments: {
-                  'currentpost': widget.dataOfPost,
-                  'uid': 'wewe',
-                },
-              );
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            RouteClass.postScreen,
+            arguments: {
+              'currentpost': widget.parentPost,
+              'uid': '65f780011b4a7f2cf036ed12',
             },
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: FeedUnitSharedPost(widget.dataOfPost),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  child: Text(
+                    'r/${widget.parentPost.userID!.username}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SizedBox(
+                  width: 7.w,
+                ),
+                Text(
+                  '${hoursSincePost}h ago',
+                  style: TextStyle(color: AppColors.whiteHideColor),
+                ),
+              ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  AddRadiusBoarder(
-                    childWidget: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
+            Text(
+              widget.parentPost.title,
+              style: AppTextStyles.boldTextStyle,
+            ),
+            Text(
+              widget.parentPost.textBody ?? '',
+              style: AppTextStyles.secondaryTextStyle,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(6.0),
+              child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      RouteClass.postScreen,
+                      arguments: {
+                        'currentpost': widget.parentPost.parentPost!,
+                        'uid': '65f780011b4a7f2cf036ed12',
+                      },
+                    );
+                  },
+                  child: FeedUnitSharedPost(widget.dataOfPost)),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    AddRadiusBoarder(
+                      childWidget: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
                               if (choiceBottum == -1 || choiceBottum == 2) {
                                 setState(() {
                                   if (numbberOfvotes ==
@@ -104,21 +116,25 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                                 });
                               }
                             },
-                            icon: Icon(
+                            child: Icon(
                               Icons.arrow_upward,
                               color: (choiceBottum == 1)
                                   ? AppColors.redditOrangeColor
                                   : AppColors.whiteColor,
-                            )),
-                        Text(
-                          numbberOfvotes.toString(),
-                          style: AppTextStyles.secondaryTextStyle,
-                        ),
-                        const VerticalDivider(
-                          thickness: 1,
-                        ),
-                        IconButton(
-                            onPressed: () {
+                            ),
+                          ),
+                          const VerticalDivider(
+                            thickness: 1,
+                          ),
+                          Text(
+                            numbberOfvotes.toString(),
+                            style: AppTextStyles.secondaryTextStyle,
+                          ),
+                          const VerticalDivider(
+                            thickness: 1,
+                          ),
+                          InkWell(
+                            onTap: () {
                               if (choiceBottum == -1 || choiceBottum == 1) {
                                 setState(() {
                                   if (numbberOfvotes ==
@@ -133,66 +149,66 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                                 });
                               }
                             },
-                            icon: Icon(
+                            child: Icon(
                               Icons.arrow_downward,
                               color: (choiceBottum == 2)
                                   ? AppColors.redditOrangeColor
                                   : AppColors.whiteColor,
-                            )),
-                      ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.comment,
-                          color: AppColors.whiteColor,
-                        ),
-                        SizedBox(
-                          width: 5.w,
-                        ),
-                        Text(
-                          widget.dataOfPost.commentsCount.toString(),
-                          style: const TextStyle(color: AppColors.whiteColor),
-                        ),
-                      ],
+                    SizedBox(
+                      width: 15.w,
                     ),
-                  ),
-                ],
-              ),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.backgroundColor),
-                  onPressed: () {
-                    share(context, ref, widget.dataOfPost);
-                  },
-                  child: Text(
-                    'Share',
-                    style: AppTextStyles.primaryTextStyle,
-                  ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: const Color.fromARGB(143, 255, 255, 255),
+                          width: 2.w,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            15), // Add this line to make the border circular
+                      ),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.comment,
+                            color: AppColors.whiteColor,
+                          ),
+                          SizedBox(
+                            width: 5.w,
+                          ),
+                          Text(
+                            widget.dataOfPost.commentsCount.toString(),
+                            style: const TextStyle(color: AppColors.whiteColor),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              )
-              // IconButton(
-              //     onPressed: () {
-              //       Navigator.pushNamed(
-              //         context,
-              //         RouteClass.postScreen,
-              //         arguments: {
-              //           'currentpost': widget.dataOfPost,
-              //           'uid': 'wewe',
-              //         },
-              //       );
-              //     },
-              //     icon: Icon(Icons.share, color: AppColors.whiteColor)),
-              // SharePost(
-              //   post: widget.dataOfPost,
-              // ),
-            ],
-          ),
-          const Divider(color: AppColors.whiteHideColor),
-        ],
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.backgroundColor),
+                    onPressed: () {
+                      share(context, ref, widget.dataOfPost);
+                    },
+                    child: Text(
+                      'Share',
+                      style: AppTextStyles.primaryTextStyle,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            const Divider(color: AppColors.whiteHideColor),
+          ],
+        ),
       ),
     );
   }

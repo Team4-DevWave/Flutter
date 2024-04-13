@@ -44,7 +44,8 @@ class _BlockUserScreenState extends ConsumerState<BlockUserScreen> {
                 final String username = usernameForm.enteredEmail;
 
                 await blockUser(
-                        client: client, userToBlock: username, token: token!)
+                  context: context,
+                         userToBlock: username)
                     .then((value) {
                   if (value == 200) {
                     Navigator.pop(context);

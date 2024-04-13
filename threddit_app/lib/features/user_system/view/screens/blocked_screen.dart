@@ -6,7 +6,6 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/text_styles.dart';
-import "package:threddit_clone/features/user_system/model/token_storage.dart";
 
 /// A placeholder screen that should show the accounts blocked by a user.
 class BlockedScreen extends ConsumerStatefulWidget {
@@ -23,11 +22,11 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getMe(client: client, token: token!);
+          .getMe();
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
+        .getMe();
   }
 
   void block(query) async {
@@ -52,19 +51,6 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
     // });
   }
 
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
-
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +63,7 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                     setState(() {
                       ref
                           .watch(settingsFetchProvider.notifier)
-                          .getMe(client: client, token: token!);
+                          .getMe();
                     });
                   });
                 },
@@ -120,7 +106,7 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                     setState(() {
                                       ref
                                           .watch(settingsFetchProvider.notifier)
-                                          .getMe(client: client, token: token!);
+                                          .getMe();
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -153,9 +139,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                     token: token!);
                               } else {
                                 blockUser(
-                                    client: client,
+                                    context: context,
                                     userToBlock: username,
-                                    token: token!);
+                                   );
                               }
                               setState(() {
                                 usernames[index] = usernames[index].copyWith(

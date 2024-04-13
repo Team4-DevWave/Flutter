@@ -45,17 +45,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<UserModelMe> fetchUser(http.Client client) async {
-    final userModel = ref
-        .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
+    final userModel = ref.watch(settingsFetchProvider.notifier).getMe();
     user = await userModel;
     return userModel;
   }
 
   Future<UserSettings> fetchSettings(http.Client client) async {
-    final userSettings = ref
-        .watch(settingsFetchProvider.notifier)
-        .getSettings(client: client, token: token!);
+    final userSettings =
+        ref.watch(settingsFetchProvider.notifier).getSettings();
     settings = await userSettings;
     return userSettings;
   }
@@ -127,11 +124,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           setState(() {
                             pickedView = value!;
                             changeSetting(
-                                settingsName: "globalContentView",
-                                settingsType: "feedSettings",
-                                client: client,
-                                change: pickedView,
-                                token: token!);
+                              settingsName: "globalContentView",
+                              settingsType: "feedSettings",
+                              change: pickedView,
+                            );
                           });
                         },
                         value: settings.feedSettings.globalContentView,

@@ -34,24 +34,11 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getMe(client: client, token: token!);
+          .getMe();
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
-  }
-
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
-
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
+        .getMe();
   }
 
   @override
@@ -97,7 +84,7 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
               },
             ),
             newEmailForm,
-            currentPasswordForm,
+            //currentPasswordForm,
             Container(
               alignment: Alignment.topRight,
               child: TextButton(
@@ -105,20 +92,20 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
             ),
             const Spacer(),
             SaveChanges(
-              saveChanges: () {
+              saveChanges: () async {
                 final String newEmail = newEmailForm.enteredEmail;
-                final String currentPassword =
-                    currentPasswordForm.enteredPassword;
-                final statusCode = changeEmailFunction(
-                    client: client,
-                    newEmail: newEmail,
-                    token: token!);
-                checkEmailUpdateResponse(
-                    context: context, statusCodeFuture: statusCode);
-                setState(() {
-                  ref
-                      .watch(settingsFetchProvider.notifier)
-                      .getUserInfo(client: client, token: token!);
+                //final String currentPassword =
+                currentPasswordForm.enteredPassword;
+                changeEmailFunction(
+                        newEmail: newEmail,)
+                    .then((value) {
+                  checkEmailUpdateResponse(
+                      context: context, statusCodeFuture: value);
+                  setState(() {
+                    ref
+                        .watch(settingsFetchProvider.notifier)
+                        .getMe();
+                  });
                 });
               },
             ),

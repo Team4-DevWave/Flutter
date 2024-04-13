@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
-import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
 
-class PostCard extends ConsumerStatefulWidget {
-  const PostCard(
+class SharedPostCard extends ConsumerStatefulWidget {
+  const SharedPostCard(
       {super.key,
       required this.post,
       required this.uid,
@@ -18,10 +19,10 @@ class PostCard extends ConsumerStatefulWidget {
   final String uid;
   final VoidCallback onCommentPressed;
   @override
-  _PostCardState createState() => _PostCardState();
+  _SharedPostCardState createState() => _SharedPostCardState();
 }
 
-class _PostCardState extends ConsumerState<PostCard> {
+class _SharedPostCardState extends ConsumerState<SharedPostCard> {
   late VideoPlayerController _controller;
   void initState() {
     super.initState();
@@ -44,24 +45,29 @@ class _PostCardState extends ConsumerState<PostCard> {
   Widget build(BuildContext) {
     void toggleNsfw() {
       widget.post.nsfw = !widget.post.nsfw;
-      setstate() {}
-      ref.read(toggleNSFW(widget.post.id));
+      setstate() {
+      }
+       ref.read(toggleNSFW(widget.post.id));
       Navigator.pop(context);
+      
     }
 
     void toggleSPOILER() async {
       widget.post.spoiler = !widget.post.spoiler;
-      setstate() {}
+      setstate() {
+      }
       await ref.read(toggleSpoiler(widget.post.id));
       Navigator.pop(context);
+      
     }
-
     void upVotePost(WidgetRef ref) async {}
 
     void downVotePost(WidgetRef ref) async {}
     final now = DateTime.now();
     final difference = now.difference(widget.post.postedTime);
     final hoursSincePost = difference.inHours;
+    final differenceParent =now.difference(widget.post.parentPost!.postedTime);
+    final hoursSinceParentPost = differenceParent.inHours;
 
     return Container(
       decoration: const BoxDecoration(
@@ -86,27 +92,16 @@ class _PostCardState extends ConsumerState<PostCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (widget.post.subredditID != null)
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            RouteClass.communityScreen,
-                            arguments: {
-                              'id': widget.post.subredditID!.name,
-                              'uid': widget.uid
-                            },
-                          );
-                        },
-                        child: Text('r/${widget.post.subredditID?.name}',
-                            style: AppTextStyles.primaryTextStyle.copyWith(
-                                fontSize: 12,
-                                color: const Color.fromARGB(98, 255, 255, 255),
-                                fontWeight: FontWeight.bold)),
-                      ),
+                      Text('r/${widget.post.subredditID?.name}',
+                          style: AppTextStyles.primaryTextStyle.copyWith(
+                              fontSize: 12,
+                              color: const Color.fromARGB(98, 255, 255, 255),
+                              fontWeight: FontWeight.bold)),
+                              
                     Row(
                       children: [
                         Text(
-                          'u/${widget.post.userID!.username}',
+                          'u/${widget.post.userID!.id}',
                           style: AppTextStyles.primaryTextStyle.copyWith(
                               fontSize: 12,
                               color: const Color.fromARGB(206, 20, 113, 190)),
@@ -133,28 +128,17 @@ class _PostCardState extends ConsumerState<PostCard> {
                 ),
               ],
             ),
-            if (widget.post.nsfw || widget.post.spoiler)
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    if (widget.post.nsfw)
-                      const Text("NSFW",
-                          style: TextStyle(
-                              backgroundColor: Colors.pink,
-                              color: Colors.white)),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    if (widget.post.spoiler)
-                      const Text("SPOILER",
-                          style: TextStyle(
-                              backgroundColor: Colors.purple,
-                              color: Colors.white)),
-                  ],
-                ),
-              ),
+            if(widget.post.nsfw || widget.post.spoiler)
+            Padding(
+              padding: const EdgeInsets.only(top:10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                if(widget.post.nsfw) const Text("NSFW",style:TextStyle(backgroundColor: Colors.pink, color: Colors.white)),
+                const SizedBox(width: 10,),
+                if(widget.post.spoiler) const Text("SPOILER",style:TextStyle(backgroundColor: Colors.purple, color: Colors.white)),
+              ],),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 13.0),
               child: Text(
@@ -164,57 +148,147 @@ class _PostCardState extends ConsumerState<PostCard> {
                     fontSize: 18),
               ),
             ),
-            if (widget.post.textBody != null)
-              Text(
-                widget.post.textBody!,
-                style: AppTextStyles.primaryTextStyle.copyWith(
-                    color: const Color.fromARGB(196, 255, 255, 255),
-                    fontSize: 15),
-              ),
-            if (widget.post.image != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Image.network(widget.post.image!),
-              ),
-            if (widget.post.video != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: _controller.value.isInitialized
-                    ? GestureDetector(
-                        onTap: () {
-                          if (_controller.value.isPlaying) {
-                            _controller.pause();
-                          } else {
-                            _controller.play();
-                          }
-                          setState(() {});
-                        },
-                        child: AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
-                          child: Stack(alignment: Alignment.center, children: [
-                            VideoPlayer(_controller),
-                            Positioned(
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.5),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  _controller.value.isPlaying
-                                      ? Icons.pause
-                                      : Icons.play_arrow_rounded,
-                                  color: Colors.white,
-                                  size: 32,
-                                ),
-                              ),
-                            )
-                          ]),
+            if(widget.post.parentPost != null)
+            GestureDetector(
+              onTap: (){Navigator.pushNamed(
+          context,
+          RouteClass.postScreen,
+          arguments: {
+            'currentpost': widget.post.parentPost!,
+            'uid': widget.uid,
+          },
+        );},
+              child: Container(
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20), 
+                      border: Border.all(
+                        color: const Color.fromARGB(108, 255, 255, 255), // Specify the border color
+                        width: 0.4, 
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      if(widget.post.subredditID!=null)
+                      Text(
+                          'r/${widget.post.parentPost!.subredditID?.name}',
+                          style: const TextStyle(color: Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
                         ),
-                      )
-                    : CircularProgressIndicator(),
+                         if(widget.post.subredditID!=null)
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal:8.w),
+                          child: Icon(Icons.circle,size:5,color:Color.fromARGB(82, 255, 255, 255,)),
+                        ),
+                      Text(
+                          'u/${widget.post.parentPost!.userID?.username}',
+                          style: const TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
+                        ),
+                      
+                      SizedBox(
+                        width: 7.w,
+                      ),
+                      Text(
+                       '${hoursSinceParentPost}h',
+                        style: TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
+                      ),
+                    ],
+                  )),
+                ],
               ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 8.0, right: 8.0, top: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.post.parentPost!.title,
+                      style: AppTextStyles.boldTextStyle,
+                    ),
+                  ],
+                ),
+              ),
+                         if (widget.post.parentPost!.image != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Image.network(widget.post.image!),
+                ),
+              if (widget.post.parentPost!.video != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: _controller.value.isInitialized
+                      ? GestureDetector(
+                          onTap: () {
+                            if (_controller.value.isPlaying) {
+                              _controller.pause();
+                            } else {
+                              _controller.play();
+                            }
+                            setState(() {});
+                          },
+                          child: AspectRatio(
+                            aspectRatio: _controller.value.aspectRatio,
+                            child: Stack(alignment: Alignment.center, children: [
+                              VideoPlayer(_controller),
+                              Positioned(
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    _controller.value.isPlaying
+                                        ? Icons.pause
+                                        : Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                    size: 32,
+                                  ),
+                                ),
+                              )
+                            ]),
+                          ),
+                        )
+                      : const CircularProgressIndicator(),
+                ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "${widget.post.parentPost!.votes!.upvotes- widget.post.parentPost!.votes!.downvotes} points",
+                        style: const TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
+                      ),
+                       Padding(
+                          padding: EdgeInsets.symmetric(horizontal:8.w),
+                          child: const Icon(Icons.circle,size:5, color:Color.fromARGB(82, 255, 255, 255,) ,),
+                        ),
+                      Text("${widget.post.parentPost!.commentsCount} comments",
+                          style: const TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12)),
+                    ],
+                  ),
+                ],
+              ),
+                        ],
+                      ),
+                    ),
+                  ),
+            ),
             Row(
               children: [
                 IconButton(
@@ -357,9 +431,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                           ]
                         : [
                             ElevatedButton.icon(
-                              onPressed: () {
-                                share(context, ref, widget.post);
-                              },
+                              onPressed: () {},
                               icon: Icon(
                                 Icons.ios_share_rounded,
                                 color: Colors.white,

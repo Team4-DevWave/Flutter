@@ -1,9 +1,13 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
+import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
+import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -13,74 +17,108 @@ class UserProfile extends ConsumerStatefulWidget {
   ConsumerState<UserProfile> createState() => _UserProfileState();
 }
 
-class _UserProfileState extends ConsumerState<UserProfile> with TickerProviderStateMixin {
-
-  TabController?_tabController;
+class _UserProfileState extends ConsumerState<UserProfile>
+    with TickerProviderStateMixin {
+  final _scrollController = ScrollController();
+  final _posts = <Post>[];
+  int _currentPage = 1;
+  TabController? _tabController;
   @override
   void initState() {
+    _fetchPosts();
+    _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
     //intitialize tab controller
   }
- 
-  
+
   @override
   void dispose() {
     _tabController?.dispose();
     super.dispose();
   }
 
+  Future _fetchPosts() async {
+    final response = await fetchPostsByUsername('moaz', _currentPage);
+
+    setState(() {
+      _posts.addAll(response.posts);
+      _currentPage++;
+    });
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      fetchPostsByUsername('moaz', _currentPage);
+    }
+  }
+
   Widget buildPostTab() {
-    return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.warning_amber,
-                color: AppColors.whiteGlowColor,
-              ),
-              Text(
-                "Wow, such empty in Posts!",
-                style: AppTextStyles.primaryTextStyle,
-              ),
-            ],
+    return _posts.isEmpty
+        ? Center(
+            child: Lottie.asset(
+            'assets/animation/loading.json',
+            repeat: true,
+          ))
+        : ListView.builder(
+            controller: _scrollController,
+            itemCount: _posts.length + 1,
+            itemBuilder: (context, index) {
+              if (index < _posts.length) {
+                return _posts[index].parentPost != null
+                    ? FeedUnitShare(
+                        dataOfPost: _posts[index].parentPost!,
+                        parentPost: _posts[index])
+                    : FeedUnit(_posts[index]);
+              } else {
+                return SizedBox(
+                  height: 75.h,
+                  width: 75.w,
+                  child: Lottie.asset(
+                    'assets/animation/loading.json',
+                    repeat: true,
+                  ),
+                );
+              }
+            },
           );
   }
 
-   Widget buildCommentsTab() {
+  Widget buildCommentsTab() {
     return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.warning_amber,
-                color: AppColors.whiteGlowColor,
-              ),
-              Text(
-                "Wow, such empty in Comments!",
-                style: AppTextStyles.primaryTextStyle,
-              ),
-            ],
-          );
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.warning_amber,
+          color: AppColors.whiteGlowColor,
+        ),
+        Text(
+          "Wow, such empty in Comments!",
+          style: AppTextStyles.primaryTextStyle,
+        ),
+      ],
+    );
   }
 
-   Widget buildAboutTab() {
+  Widget buildAboutTab() {
     return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.warning_amber,
-                color: AppColors.whiteGlowColor,
-              ),
-              Text(
-                "Wow, such empty in About!",
-                style: AppTextStyles.primaryTextStyle,
-              ),
-            ],
-          );
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.warning_amber,
+          color: AppColors.whiteGlowColor,
+        ),
+        Text(
+          "Wow, such empty in About!",
+          style: AppTextStyles.primaryTextStyle,
+        ),
+      ],
+    );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final List<String> tabs = <String>['Posts', 'Comments', 'About'];
@@ -185,15 +223,7 @@ class _UserProfileState extends ConsumerState<UserProfile> with TickerProviderSt
                         color: AppColors.whiteGlowColor,
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        //share profile modal bottom sheet
-                      },
-                      icon: const Icon(
-                        Icons.share,
-                        color: AppColors.whiteGlowColor,
-                      ),
-                    ),
+                    
                   ],
                   pinned: true,
                   forceElevated: innerBoxIsScrolled,
@@ -210,13 +240,18 @@ class _UserProfileState extends ConsumerState<UserProfile> with TickerProviderSt
               )
             ];
           },
-          body: TabBarView(
-            controller: _tabController,
-            children: [
-            buildPostTab(),
-            buildCommentsTab(),
-            buildAboutTab()
-          ])
+          body: Stack(
+            children:[ Positioned.fill(
+              top: 100.h,
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                buildPostTab(),
+                buildCommentsTab(),
+                buildAboutTab()
+              ]),
+            ),]
+          )
         )));
   }
 }

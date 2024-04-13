@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
@@ -16,11 +17,23 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String feedID = 'Best';
+  String? userId;
   final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
+  @override
+  void initState() {
+    // TODO: implement  initState
+    super.initState();
+  }
 
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
   }
+
+  // Future<void> getUserName() async {
+  //   userId = await getUserID();
+  //   print("RRRRRRRRRRRRRRRRRRRRRRRRR");
+  //   print(userId);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +65,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               tabs.map<DropdownMenuEntry<String>>((String string) {
             return DropdownMenuEntry(value: string, label: string);
           }).toList(),
-          width: 150,
+          width: 150.w,
           initialSelection: tabs[0],
           onSelected: (String? value) {
             setState(() {
+              print("RRRRRRRRRRRRRRRRRRRRRRRRR");
+              print(userId);
               feedID = value!;
             });
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

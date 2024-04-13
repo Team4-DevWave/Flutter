@@ -19,7 +19,6 @@ import 'package:threddit_clone/features/user_system/view/screens/forgot_password
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
-import 'package:threddit_clone/models/post.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
@@ -99,7 +98,6 @@ class RouteClass {
   static const String addModeratorScreen = '/add-moderator';
   static const String editModeratorScreen = '/edit-moderator';
 
-
   /// Generates the appropriate route based on the provided [settings].
   ///
   /// The [settings] parameter contains the name of the route and optional arguments.
@@ -117,8 +115,7 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const StartScreen());
       case userProfileScreen:
         return MaterialPageRoute(builder: (_) => const UserProfile());
-      case userProfileScreen:
-        return MaterialPageRoute(builder: (_) => const UserProfile());
+
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
@@ -229,7 +226,7 @@ class RouteClass {
       case confirmPostScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPost());
       case editUser:
-        return MaterialPageRoute(builder: (_)=> const EditProfile());
+        return MaterialPageRoute(builder: (_) => const EditProfile());
       case postScreen:
         final args = settings.arguments as Map<String, dynamic>;
         final currentpost =
@@ -257,7 +254,8 @@ class RouteClass {
             builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);
       case editModeratorScreen:
         String user = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => EditModeratorScreen(moderator: user));
+        return MaterialPageRoute(
+            builder: (_) => EditModeratorScreen(moderator: user));
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }
