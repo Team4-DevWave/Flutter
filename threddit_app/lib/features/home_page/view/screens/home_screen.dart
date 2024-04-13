@@ -5,7 +5,6 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -31,7 +30,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> getUserName() async {
-    userId = await getUserID();
+    //userId = await getUserID();
     print("RRRRRRRRRRRRRRRRRRRRRRRRR");
     print(userId);
   }
