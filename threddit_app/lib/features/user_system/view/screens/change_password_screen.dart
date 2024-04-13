@@ -40,7 +40,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   Future<UserModelMe> fetchUser() async {
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
+        .getMe();
   }
 
   Future getUserToken() async {
@@ -96,7 +96,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 alignment: Alignment.topRight,
                 child: TextButton(
                     onPressed: () {
-                      return _forgetPassword();
+                        return _forgetPassword();
                     },
                     child: const Text("Forgot password?")),
               ),
@@ -114,11 +114,11 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                         "Password length must be greater than 8", context);
                   } else {
                     final statusCode = changePasswordFunction(
-                        client: client,
+                        
                         currentPassword: currentPassword,
                         newPassword: newPassword,
                         confirmedPassword: confirmedPassword,
-                        token: token!);
+                        );
                     checkPasswordChangeResponse(
                         context: context, statusCodeFuture: statusCode);
                   }

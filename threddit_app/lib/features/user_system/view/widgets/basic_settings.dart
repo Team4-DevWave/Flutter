@@ -39,7 +39,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
           .then((value) => setState(() {
                 ref
                     .watch(settingsFetchProvider.notifier)
-                    .getUserInfo(client: client, token: token!);
+                    .getMe();
               }));
     } else if (settingName == "password") {
       Navigator.pushNamed(context, RouteClass.changePasswordScreen);
@@ -50,11 +50,11 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getMe(client: client, token: token!);
+          .getMe();
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
+        .getMe();
   }
 
   Future getUserToken() async {

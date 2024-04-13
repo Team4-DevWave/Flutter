@@ -34,24 +34,11 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getMe(client: client, token: token!);
+          .getMe();
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
-  }
-
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
-
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
+        .getMe();
   }
 
   @override
@@ -110,14 +97,14 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
                 //final String currentPassword =
                 currentPasswordForm.enteredPassword;
                 changeEmailFunction(
-                        client: client, newEmail: newEmail, token: token!)
+                        newEmail: newEmail,)
                     .then((value) {
                   checkEmailUpdateResponse(
                       context: context, statusCodeFuture: value);
                   setState(() {
                     ref
                         .watch(settingsFetchProvider.notifier)
-                        .getMe(client: client, token: token!);
+                        .getMe();
                   });
                 });
               },
