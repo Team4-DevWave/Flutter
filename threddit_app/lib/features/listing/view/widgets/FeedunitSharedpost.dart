@@ -85,7 +85,7 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                     ),
                     Text(
                       '${hoursSincePost}h ago',
-                      style: TextStyle(color: AppColors.whiteHideColor),
+                      style: const TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],
                 )),

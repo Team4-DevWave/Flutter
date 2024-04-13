@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +7,7 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -23,13 +23,19 @@ class _UserProfileState extends ConsumerState<UserProfile>
   final _posts = <Post>[];
   int _currentPage = 1;
   TabController? _tabController;
+  String? uid;
   @override
   void initState() {
     _fetchPosts();
     _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
+    setUserid();
     super.initState();
     //intitialize tab controller
+  }
+
+  Future<void> setUserid() async {
+    uid = await getUserId();
   }
 
   @override
@@ -69,8 +75,9 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 return _posts[index].parentPost != null
                     ? FeedUnitShare(
                         dataOfPost: _posts[index].parentPost!,
-                        parentPost: _posts[index])
-                    : FeedUnit(_posts[index]);
+                        parentPost: _posts[index],
+                        uid!)
+                    : FeedUnit(_posts[index], uid!);
               } else {
                 return SizedBox(
                   height: 75.h,
@@ -126,132 +133,139 @@ class _UserProfileState extends ConsumerState<UserProfile>
         length: tabs.length,
         child: Scaffold(
             body: NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              SliverOverlapAbsorber(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverAppBar(
-                  title: Text(
-                    "u/Me",
-                    style: AppTextStyles.secondaryTextStyle,
-                  ),
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: Container(
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        colors: const [
-                          Color.fromARGB(255, 0, 99, 145),
-                          Color.fromARGB(255, 2, 55, 99),
-                          Color.fromARGB(221, 14, 13, 13),
-                          Colors.black,
-                        ],
-                        stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      )),
-                      child: Padding(
-                        padding:  EdgeInsets.symmetric(horizontal:10.w, vertical: 75.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                           CircleAvatar(
-                              radius: 45.spMin,
-                               backgroundImage:
-                          const AssetImage('assets/images/Default_Avatar.png'),
-                            ),
-                           SizedBox(
-                              height: 5.h,
-                            ),
-                            ElevatedButton(
-                              style: const ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(
-                                      AppColors.whiteHideColor)),
-                              onPressed: () {
-                                Navigator.pushNamed(context, RouteClass.editUser);
-                              },
-                              child: Text(
-                                "Edit",
-                                style: AppTextStyles.buttonTextStyle.copyWith(
-                                    backgroundColor: Colors.transparent),
+                floatHeaderSlivers: true,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverOverlapAbsorber(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context),
+                      sliver: SliverAppBar(
+                        title: Text(
+                          "u/Me",
+                          style: AppTextStyles.secondaryTextStyle,
+                        ),
+                        flexibleSpace: FlexibleSpaceBar(
+                          collapseMode: CollapseMode.parallax,
+                          background: Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                              colors: const [
+                                Color.fromARGB(255, 0, 99, 145),
+                                Color.fromARGB(255, 2, 55, 99),
+                                Color.fromARGB(221, 14, 13, 13),
+                                Colors.black,
+                              ],
+                              stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w, vertical: 75.h),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 45.spMin,
+                                    backgroundImage: const AssetImage(
+                                        'assets/images/Default_Avatar.png'),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  ElevatedButton(
+                                    style: const ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                AppColors.whiteHideColor)),
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, RouteClass.editUser);
+                                    },
+                                    child: Text(
+                                      "Edit",
+                                      style: AppTextStyles.buttonTextStyle
+                                          .copyWith(
+                                              backgroundColor:
+                                                  Colors.transparent),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Text(
+                                    //to be replaced with the username from the user provider
+                                    "u/userName",
+                                    style: AppTextStyles.primaryTextStyle
+                                        .copyWith(fontSize: 20.spMin),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Text(
+                                    "Followers",
+                                    style: AppTextStyles.primaryTextStyle,
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Text(
+                                    "karma",
+                                    style: AppTextStyles.secondaryTextStyle,
+                                  )
+                                ],
                               ),
                             ),
-                           SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              //to be replaced with the username from the user provider
-                              "u/userName",
-                              style: AppTextStyles.primaryTextStyle
-                                  .copyWith(fontSize: 20.spMin),
-                            ),
-                           SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              "Followers",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                           SizedBox(
-                              height: 5 .h,
-                            ),
-                            Text(
-                              "karma",
-                              style: AppTextStyles.secondaryTextStyle,
-                            )
-                          ],
+                          ),
                         ),
+                        expandedHeight: 340.h,
+                        actions: [
+                          const Align(
+                            alignment: Alignment.centerRight,
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, RouteClass.confirmPostScreen);
+                              },
+                              icon: const Icon(
+                                Icons.add,
+                                color: AppColors.whiteGlowColor,
+                              )),
+                          IconButton(
+                            onPressed: () {
+                              //open search screen
+                            },
+                            icon: const Icon(
+                              Icons.search_outlined,
+                              color: AppColors.whiteGlowColor,
+                            ),
+                          ),
+                        ],
+                        pinned: true,
+                        forceElevated: innerBoxIsScrolled,
+                        bottom: TabBar(
+                            controller: _tabController,
+                            indicatorColor: AppColors.redditOrangeColor,
+                            labelStyle: AppTextStyles.buttonTextStyle,
+                            tabs: tabs
+                                .map((name) => Tab(
+                                      text: name,
+                                    ))
+                                .toList()),
                       ),
-                    ),
+                    )
+                  ];
+                },
+                body: Stack(children: [
+                  Positioned.fill(
+                    top: 100.h,
+                    child: TabBarView(controller: _tabController, children: [
+                      buildPostTab(),
+                      buildCommentsTab(),
+                      buildAboutTab()
+                    ]),
                   ),
-                  expandedHeight: 340.h,
-                  actions: [
-                    const Align(
-                      alignment: Alignment.centerRight,
-                    ),
-                    IconButton(onPressed: (){
-                      Navigator.pushNamed(context, RouteClass.confirmPostScreen);
-                    }, icon: const Icon(Icons.add, color: AppColors.whiteGlowColor,)),
-                    IconButton(
-                      onPressed: () {
-                        //open search screen
-                      },
-                      icon: const Icon(
-                        Icons.search_outlined,
-                        color: AppColors.whiteGlowColor,
-                      ),
-                    ),
-                    
-                  ],
-                  pinned: true,
-                  forceElevated: innerBoxIsScrolled,
-                  bottom: TabBar(
-                      controller: _tabController,
-                      indicatorColor: AppColors.redditOrangeColor,
-                      labelStyle: AppTextStyles.buttonTextStyle,
-                      tabs: tabs
-                          .map((name) => Tab(
-                                text: name,
-                              ))
-                          .toList()),
-                ),
-              )
-            ];
-          },
-          body: Stack(
-            children:[ Positioned.fill(
-              top: 100.h,
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                buildPostTab(),
-                buildCommentsTab(),
-                buildAboutTab()
-              ]),
-            ),]
-          )
-        )));
+                ]))));
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,8 +34,9 @@ import 'package:video_player/video_player.dart';
 /// `Container`, separating the child from the border.
 class FeedUnit extends ConsumerStatefulWidget {
   final Post dataOfPost;
+  final String uid;
   // ignore: lines_longer_than_80_chars
-  const FeedUnit(this.dataOfPost, {super.key});
+  const FeedUnit(this.dataOfPost, this.uid, {super.key});
 
   @override
   ConsumerState<FeedUnit> createState() => _FeedUnitState();
@@ -69,14 +69,14 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
   }
 
   void toggleNsfw() async {
-    await ref.read(toggleNSFW(widget.dataOfPost.id));
+    ref.read(toggleNSFW(widget.dataOfPost.id));
     widget.dataOfPost.nsfw = !widget.dataOfPost.nsfw;
     Navigator.pop(context);
     setstate() {}
   }
 
   void toggleSPOILER() async {
-    await ref.read(toggleSpoiler(widget.dataOfPost.id));
+    ref.read(toggleSpoiler(widget.dataOfPost.id));
     widget.dataOfPost.spoiler = !widget.dataOfPost.spoiler;
     Navigator.pop(context);
     setstate() {}
@@ -94,7 +94,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
           RouteClass.postScreen,
           arguments: {
             'currentpost': widget.dataOfPost,
-            'uid': '65f780011b4a7f2cf036ed12',
+            'uid': widget.uid,
           },
         );
       },
@@ -121,7 +121,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     ),
                     Text(
                       '${hoursSincePost}h ago',
-                      style: TextStyle(color: AppColors.whiteHideColor),
+                      style: const TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],
                 )),
@@ -137,7 +137,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                                   post: widget.dataOfPost,
                                   toggleSPOILER: toggleSPOILER,
                                   toggleNsfw: toggleNsfw,
-                                  uid: '65f780011b4a7f2cf036ed12')
+                                  uid: widget.uid)
                             ],
                           );
                         },
@@ -180,9 +180,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                         height: 250.h,
                         width: 360.w,
                         fit: BoxFit.fitWidth,
-                        image: NetworkImage(widget.dataOfPost.image.toString()
-                           
-                            ),
+                        image: NetworkImage(widget.dataOfPost.image.toString()),
                       )
                     : (widget.dataOfPost.video != null)
                         ? AspectRatio(
@@ -291,8 +289,8 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                         borderRadius: BorderRadius.circular(
                             15), // Add this line to make the border circular
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 4.0),
                       child: Row(
                         children: [
                           const Icon(

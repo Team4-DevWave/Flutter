@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
@@ -47,7 +45,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
   Widget build(BuildContext context) {
      
     void toggleNsfw() async {
-      await ref.read(toggleNSFW(widget.currentPost.id));
+      ref.read(toggleNSFW(widget.currentPost.id));
       widget.currentPost.nsfw = !widget.currentPost.nsfw;
       Navigator.pop(context);
       setstate() {
@@ -56,7 +54,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
     }
 
     void toggleSPOILER() async {
-      await ref.read(toggleSpoiler(widget.currentPost.id));
+      ref.read(toggleSpoiler(widget.currentPost.id));
       widget.currentPost.spoiler = !widget.currentPost.spoiler;
       Navigator.pop(context);
       setstate() {
@@ -150,7 +148,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                           comment: comment,
                                           uid: widget.uid,
                                         ))
-                                    .toList(),
+                                    ,
                             ],
                           );
                         });

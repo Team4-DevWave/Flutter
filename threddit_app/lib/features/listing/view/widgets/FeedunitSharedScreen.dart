@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
@@ -16,8 +15,8 @@ import 'package:threddit_clone/theme/text_styles.dart';
 class FeedUnitShare extends ConsumerStatefulWidget {
   final Post parentPost;
   final Post dataOfPost;
-
-  const FeedUnitShare(
+  final String uid;
+  const FeedUnitShare(this.uid,
       {super.key, required this.dataOfPost, required this.parentPost});
 
   @override
@@ -56,7 +55,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
             RouteClass.postScreen,
             arguments: {
               'currentpost': widget.parentPost,
-              'uid': '65f780011b4a7f2cf036ed12',
+              'uid': widget.uid,
             },
           );
         },
@@ -68,7 +67,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                 Container(
                   child: Text(
                     'r/${widget.parentPost.userID!.username}',
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
                 SizedBox(
@@ -76,7 +75,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                 ),
                 Text(
                   '${hoursSincePost}h ago',
-                  style: TextStyle(color: AppColors.whiteHideColor),
+                  style: const TextStyle(color: AppColors.whiteHideColor),
                 ),
               ],
             ),
@@ -97,7 +96,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                       RouteClass.postScreen,
                       arguments: {
                         'currentpost': widget.parentPost.parentPost!,
-                        'uid': '65f780011b4a7f2cf036ed12',
+                        'uid': widget.uid,
                       },
                     );
                   },
@@ -182,8 +181,8 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                         borderRadius: BorderRadius.circular(
                             15), // Add this line to make the border circular
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 4.0),
                       child: Row(
                         children: [
                           const Icon(
@@ -205,7 +204,8 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        getModOptions().then((value) => moderation(context, ref, isSpam, isLocked));
+                        getModOptions().then((value) =>
+                            moderation(context, ref, isSpam, isLocked));
                       });
                     },
                     icon: const Icon(

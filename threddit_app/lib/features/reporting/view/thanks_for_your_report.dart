@@ -17,7 +17,7 @@ class _ThanksForReportState extends ConsumerState<ThanksForReport> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
           const Row(
@@ -46,7 +46,7 @@ class _ThanksForReportState extends ConsumerState<ThanksForReport> {
             'Thanks again for your report and for looking out for yourself and your fellow redditors. Your reporting helps make Reddit a better, safer, and more welcomin place for everyone; and it means a lot to us.',
             style: TextStyle(color: Colors.white, fontSize: 17),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           FilledButton(
@@ -54,9 +54,9 @@ class _ThanksForReportState extends ConsumerState<ThanksForReport> {
               Navigator.of(context).pop();
               await ref.read(reportSubmissionProvider(widget.report).future);
             },
-            child: Text('Done'),
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blue)),
+            child: const Text('Done'),
           )
         ],
       ),

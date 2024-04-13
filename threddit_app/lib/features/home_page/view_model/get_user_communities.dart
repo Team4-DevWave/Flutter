@@ -17,15 +17,11 @@ final userCommunitisProvider =
 class UserCommunities extends StateNotifier<bool> {
   Ref ref;
   UserCommunities(this.ref) : super(false);
- final String communitiesURL =
-     "https://c461e240-480f-4854-a607-619e661e3370.mock.pstmn.io/communities";
-
 
   // static String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
   final String communitiesURL =
       "http://${AppConstants.local}:8000/api/v1/r/user_subreddits";
-
 
   ///The function returns the names of the user's communities
   FutureEither<List<List<String>>> getUserCommunities() async {

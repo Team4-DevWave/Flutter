@@ -184,7 +184,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           height: 33.h,
                           child: FilledButton(
                             onPressed: () async {
-                              await getUserState(community);
+                              getUserState(community);
                             },
                             style: const ButtonStyle(
                                 backgroundColor:
@@ -196,7 +196,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                   : isCurrentUser
                                       ? 'Joined'
                                       : 'Join',
-                              style: TextStyle(fontSize: 13),
+                              style: const TextStyle(fontSize: 13),
                             ),
                           ),
                         ),
@@ -212,7 +212,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     style: const TextStyle(color: Colors.white),
                   ):const Text(
                     '',
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,

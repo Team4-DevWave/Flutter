@@ -146,7 +146,7 @@ Future<int> changeGenderFunction(
 /// Depending on the Status Code returns an alert to inform the User.
 void checkEmailUpdateResponse(
     {required BuildContext context, required int statusCodeFuture}) async {
-  int statusCode = await statusCodeFuture;
+  int statusCode = statusCodeFuture;
   if (statusCode == 200) {
     showAlert("Email was changed correctly!", context);
   } else {
@@ -172,7 +172,7 @@ void checkPasswordChangeResponse({
 
 void checkBlockResponse(
     {required BuildContext context, required int statusCodeFuture}) async {
-  int statusCode = await statusCodeFuture;
+  int statusCode = statusCodeFuture;
   if (statusCode == 200) {
   } else {
     showAlert("User was not blocked/unblocked", context);

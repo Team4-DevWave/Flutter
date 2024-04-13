@@ -43,7 +43,7 @@ class _SubmitButtonState extends ConsumerState<SubmitButton> {
       },
       style:
           ButtonStyle(backgroundColor: MaterialStateProperty.all(iscontainingreason?Colors.blue:const Color.fromARGB(255, 13, 38, 81))),
-      child: Text('Submit'),
+      child: const Text('Submit'),
     );
   }
 }

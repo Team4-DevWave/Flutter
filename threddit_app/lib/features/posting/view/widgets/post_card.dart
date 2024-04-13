@@ -22,6 +22,7 @@ class PostCard extends ConsumerStatefulWidget {
 
 class _PostCardState extends ConsumerState<PostCard> {
   late VideoPlayerController _controller;
+  @override
   void initState() {
     super.initState();
     if (widget.post.video != null) {
@@ -51,7 +52,7 @@ class _PostCardState extends ConsumerState<PostCard> {
     void toggleSPOILER() async {
       widget.post.spoiler = !widget.post.spoiler;
       setstate() {}
-      await ref.read(toggleSpoiler(widget.post.id));
+      ref.read(toggleSpoiler(widget.post.id));
       Navigator.pop(context);
     }
 
@@ -212,7 +213,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                           ]),
                         ),
                       )
-                    : CircularProgressIndicator(),
+                    : const CircularProgressIndicator(),
               ),
             Row(
               children: [
@@ -262,7 +263,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                                 widget.post.spoiler
                                                     ? 'UnMark Spoiler'
                                                     : 'Mark Spoiler',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     color: Colors.white),
                                               ),
                                               leading: const Icon(
@@ -285,7 +286,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                                 widget.post.nsfw
                                                     ? 'UnMark NSFW'
                                                     : 'Mark NSFW',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     color: Colors.white),
                                               ),
                                               leading: const Icon(Icons.copy),
@@ -342,7 +343,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                 icon: const Icon(Icons.add_moderator_sharp)),
                             IconButton(
                               onPressed: () {},
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.insights,
                                 color: Colors.purple,
                               ),
@@ -353,11 +354,11 @@ class _PostCardState extends ConsumerState<PostCard> {
                               onPressed: () {
                                 share(context, ref, widget.post);
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.ios_share_rounded,
                                 color: Colors.white,
                               ),
-                              label: Text("Share"),
+                              label: const Text("Share"),
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   foregroundColor: Colors.white),

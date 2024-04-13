@@ -154,7 +154,7 @@ class RouteClass {
       case notificationsScreen:
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case notificationsSettingsScreen:
-        return MaterialPageRoute(builder: (_) => NotificationsSettingsScreen());
+        return MaterialPageRoute(builder: (_) => const NotificationsSettingsScreen());
       case postToScreen:
         return MaterialPageRoute(builder: (_) => const PostToScreen());
       case accountSettingsScreen:
@@ -182,7 +182,7 @@ class RouteClass {
       case confirmPasswordScreen:
         return MaterialPageRoute(builder: (_) => const ConfirmPasswordScreen());
       case settingsScreen:
-        return MaterialPageRoute(builder: (_) => SettingsScreen());
+        return MaterialPageRoute(builder: (_) => const SettingsScreen());
       case blockUserScreen:
         return MaterialPageRoute(
             builder: (_) => const BlockUserScreen(), fullscreenDialog: true);
@@ -191,7 +191,7 @@ class RouteClass {
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
       case textSize:
-        return MaterialPageRoute(builder: (_) => TextSizeScreen());
+        return MaterialPageRoute(builder: (_) => const TextSizeScreen());
       case bannedUsersScreen:
         return MaterialPageRoute(builder: (_) => const BannedUsersScreen());
       case banScreen:
