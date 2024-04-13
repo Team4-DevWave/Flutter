@@ -209,15 +209,13 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
             isVideo: isVideo,
           ),
           actions: [
-            if (isImage)
+            if (isImage || isVideo)
               PostButton(
                 titleController: _titleController,
-                type: "image",
+                type: "image/video",
               )
             else if (isLink)
               PostButton(titleController: _titleController, type: "url")
-            else if (isVideo)
-              PostButton(titleController: _titleController, type: "video")
             else
               PostButton(titleController: _titleController, type: "text")
           ]),
