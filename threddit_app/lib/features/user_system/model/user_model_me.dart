@@ -9,14 +9,18 @@ class UserModelMe {
   final String? gender;
   final List<String>? interests;
   final List<String>? followedUsers;
-  final List<BlockedUsers>? blockedUsers; // Adjusted type here
+  final List<BlockedUsers>? blockedUsers;
   final List<String>? joinedSubreddits;
   final List<String>? followedPosts;
   final List<String>? viewedPosts;
   final List<String>? hiddenPosts;
-  final List<String>? comments;
   final List<String>? posts;
   final Karma? karma;
+  final SavedPostsAndComments? savedPostsAndComments;
+  final Votes? upvotes;
+  final Votes? downvotes;
+  final int? v; // Version
+  final String? settings;
 
   UserModelMe({
     this.id,
@@ -34,9 +38,13 @@ class UserModelMe {
     this.followedPosts,
     this.viewedPosts,
     this.hiddenPosts,
-    this.comments,
     this.posts,
     this.karma,
+    this.savedPostsAndComments,
+    this.upvotes,
+    this.downvotes,
+    this.v,
+    this.settings,
   });
 
   factory UserModelMe.fromJson(Map<String, dynamic> json) {
@@ -54,19 +62,38 @@ class UserModelMe {
           : null,
       country: user['country'] as String?,
       gender: user['gender'] as String?,
-      interests: user['interests']?.cast<String>(),
-      followedUsers: user['followedUsers']?.cast<String>(),
-      blockedUsers: (user['blockedUsers'] as List<dynamic>?)?.map((blockedUser) =>
-          BlockedUsers.fromJson(blockedUser as Map<String, dynamic>)).toList(),
-      joinedSubreddits: user['joinedSubreddits']?.cast<String>(),
-      followedPosts: user['followedPosts']?.cast<String>(),
-      viewedPosts: user['viewedPosts']?.cast<String>(),
-      hiddenPosts: user['hiddenPosts']?.cast<String>(),
-      comments: user['comments']?.cast<String>(),
-      posts: user['posts']?.cast<String>(),
-      karma: user['karma'] != null
-          ? Karma.fromJson(user['karma'] as Map<String, dynamic>)
-          : null,
+      interests: (user['interests'] as List<dynamic>?)
+          ?.map((interest) => interest as String)
+          .toList(),
+      followedUsers: (user['followedUsers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      blockedUsers: (user['blockedUsers'] as List<dynamic>?)
+          ?.map((blockedUser) =>
+              BlockedUsers.fromJson(blockedUser as Map<String, dynamic>))
+          .toList(),
+      joinedSubreddits: (user['joinedSubreddits'] as List<dynamic>?)
+          ?.map((subreddit) => subreddit as String)
+          .toList(),
+      followedPosts: (user['followedPosts'] as List<dynamic>?)
+          ?.map((post) => post as String)
+          .toList(),
+      viewedPosts: (user['viewedPosts'] as List<dynamic>?)
+          ?.map((post) => post as String)
+          .toList(),
+      hiddenPosts: (user['hiddenPosts'] as List<dynamic>?)
+          ?.map((post) => post as String)
+          .toList(),
+      posts: (user['posts'] as List<dynamic>?)
+          ?.map((post) => post as String)
+          .toList(),
+      karma: Karma.fromJson(user['karma'] as Map<String, dynamic>),
+      savedPostsAndComments: SavedPostsAndComments.fromJson(
+          user['savedPostsAndComments'] as Map<String, dynamic>),
+      upvotes: Votes.fromJson(user['upvotes'] as Map<String, dynamic>),
+      downvotes: Votes.fromJson(user['downvotes'] as Map<String, dynamic>),
+      v: user['__v'] as int?,
+      settings: user['settings'] as String?,
     );
   }
 }
@@ -85,9 +112,45 @@ class Karma {
   }
 }
 
+class SavedPostsAndComments {
+  final List<String> comments;
+  final List<String> posts;
+
+  SavedPostsAndComments({required this.comments, required this.posts});
+
+  factory SavedPostsAndComments.fromJson(Map<String, dynamic> json) {
+    return SavedPostsAndComments(
+      comments: (json['comments'] as List<dynamic>)
+          .map((comment) => comment as String)
+          .toList(),
+      posts: (json['posts'] as List<dynamic>)
+          .map((post) => post as String)
+          .toList(),
+    );
+  }
+}
+
+class Votes {
+  final List<String> comments;
+  final List<String> posts;
+
+  Votes({required this.comments, required this.posts});
+
+  factory Votes.fromJson(Map<String, dynamic> json) {
+    return Votes(
+      comments: (json['comments'] as List<dynamic>)
+          .map((comment) => comment as String)
+          .toList(),
+      posts: (json['posts'] as List<dynamic>)
+          .map((post) => post as String)
+          .toList(),
+    );
+  }
+}
+
 class BlockedUsers {
-  final String id; // Adjusted to non-nullable
-  final String username; // Adjusted to non-nullable
+  final String id;
+  final String username;
 
   BlockedUsers({required this.id, required this.username});
 
