@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 class UserSettings {
   final UserProfile userProfile;
   final SafetyAndPrivacy safetyAndPrivacy;
@@ -91,6 +94,21 @@ class UserProfile {
       socialLinks: socialLinks ?? this.socialLinks,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'displayName': displayName,
+      'about': about,
+      'nsfw': nsfw,
+      'allowFollowers': allowFollowers,
+      'contentVisibility': contentVisibility,
+      'activeCommunitiesVisibility': activeCommunitiesVisibility,
+      'profilePicture': profilePicture,
+      'socialLinks': socialLinks,
+    };
+  }
+  String toJson() => json.encode(toMap());
+
 }
 
 class SafetyAndPrivacy {

@@ -1,1 +1,39 @@
-// to be impelmented
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:fpdart/fpdart.dart';
+import 'package:threddit_clone/features/user_system/model/failure.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/type_defs.dart';
+import 'package:http/http.dart' as http;
+import 'package:threddit_clone/features/user_system/model/user_settings.dart';
+
+
+FutureEither<bool> updateUserData(UserProfile user) async {
+String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+
+final token = await getToken();
+final  url = "http://$local:8000/api/v1/users/me/settings";
+final headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          };
+        
+  try{
+    final response = await http.patch(Uri.parse(url), headers: headers, body: jsonEncode(user.toJson()));
+    if(response.statusCode == 200)
+    {
+      return right(true);
+    }
+    else{
+      return left(Failure("Can't submit changes, please try again later"));
+    }
+  }
+  catch(e){
+    if (e is SocketException || e is TimeoutException || e is HttpException) {
+        return left(Failure('Check your internet connection...'));
+      } else {
+        return left(Failure(e.toString()));
+      }
+  }
+}
