@@ -47,7 +47,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<UserModelMe> fetchUser(http.Client client) async {
     final userModel = ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
+        .getMe();
     user = await userModel;
     return userModel;
   }
@@ -55,7 +55,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Future<UserSettings> fetchSettings(http.Client client) async {
     final userSettings = ref
         .watch(settingsFetchProvider.notifier)
-        .getSettings(client: client, token: token!);
+        .getSettings();
     settings = await userSettings;
     return userSettings;
   }

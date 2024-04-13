@@ -28,22 +28,12 @@ class _SafetyState extends ConsumerState<Safety> {
 
   @override
   void initState() {
-    getUserToken().then((value) => ref
-            .read(settingsFetchProvider.notifier)
-            .getSettings(client: client, token: token!)
-            .then((value) {
-          setState(() {
-            isFollowableEnabled = value.userProfile.allowFollowers;
-          });
-        }));
-    super.initState();
-  }
-
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
+    ref.read(settingsFetchProvider.notifier).getSettings().then((value) {
+      setState(() {
+        isFollowableEnabled = value.userProfile.allowFollowers;
+      });
     });
+    super.initState();
   }
 
   @override
