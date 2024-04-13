@@ -44,7 +44,7 @@ class FeedUnitSharedPost extends StatefulWidget {
 class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
   late int numbberOfvotes;
   int choiceBottum = -1; // 1 upvote 2 downvote
-
+  final now = DateTime.now();
   @override
   void initState() {
     super.initState();
@@ -53,6 +53,8 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
 
   @override
   Widget build(BuildContext context) {
+    final difference = now.difference(widget.dataOfPost.postedTime);
+    final hoursSincePost = difference.inHours;
     return Container(
       padding: const EdgeInsets.all(6.0),
       decoration: BoxDecoration(
@@ -82,7 +84,7 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                       width: 7.w,
                     ),
                     Text(
-                      widget.dataOfPost.postedTime.toString(),
+                      '${hoursSincePost}h ago',
                       style: TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],

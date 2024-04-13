@@ -9,6 +9,7 @@ import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
+import 'package:video_player/video_player.dart';
 
 /// The selected code in the `post_feed_widget.dart` file is responsible for decorating a
 /// `Container` widget. The `BoxDecoration` class is used to provide a border and a
@@ -39,19 +40,27 @@ class FeedUnit extends ConsumerStatefulWidget {
 class _FeedUnitState extends ConsumerState<FeedUnit> {
   late int numbberOfvotes;
   final now = DateTime.now();
-
+  late VideoPlayerController _controller;
   int choiceBottum = -1; // 1 upvote 2 downvote
 
   @override
   void initState() {
     super.initState();
     numbberOfvotes = int.parse(widget.dataOfPost.numViews.toString());
+    if (widget.dataOfPost.video != null) {
+      _controller = VideoPlayerController.networkUrl(
+        Uri.parse(widget.dataOfPost.video!),
+      )..initialize().then((_) {
+          setState(() {});
+        });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final difference = now.difference(widget.dataOfPost.postedTime);
     final hoursSincePost = difference.inHours;
+
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(
@@ -139,7 +148,32 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                             //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                             ),
                       )
-                    : const SizedBox(),
+                    : (widget.dataOfPost.video != null)
+                        ? AspectRatio(
+                            aspectRatio: _controller.value.aspectRatio,
+                            child:
+                                Stack(alignment: Alignment.center, children: [
+                              VideoPlayer(_controller),
+                              Positioned(
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    _controller.value.isPlaying
+                                        ? Icons.pause
+                                        : Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                    size: 32,
+                                  ),
+                                ),
+                              )
+                            ]),
+                          )
+                        : const SizedBox(),
               ),
             ),
             Row(
