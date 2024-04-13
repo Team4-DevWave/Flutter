@@ -13,10 +13,9 @@ class PostCard extends ConsumerStatefulWidget {
       {super.key,
       required this.post,
       required this.uid,
-      required this.onCommentPressed});
+      });
   final Post post;
   final String uid;
-  final VoidCallback onCommentPressed;
   @override
   _PostCardState createState() => _PostCardState();
 }
@@ -242,13 +241,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                   ),
                   color: Colors.white,
                 ),
-                IconButton(
-                    onPressed: widget.onCommentPressed,
-                    icon: const Icon(Icons.comment)),
-                Text(
-                    '${widget.post.commentsCount == 0 ? "comment" : widget.post.commentsCount}',
-                    style: AppTextStyles.primaryTextStyle
-                        .copyWith(color: AppColors.whiteColor)),
+                
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
