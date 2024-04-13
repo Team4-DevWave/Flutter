@@ -23,7 +23,9 @@ const String urlWindows = "http://localhost";
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status Code
 Future<int> changePasswordFunction(
-    {required String currentPassword,
+    {required http.Client client,
+    required String token,
+    required String currentPassword,
     required String newPassword,
     required String confirmedPassword}) async {
   Map<String, dynamic> body = {
@@ -31,7 +33,6 @@ Future<int> changePasswordFunction(
     'newPassword': newPassword,
     'passwordConfirm': confirmedPassword,
   };
-  String? token = await getToken();
   String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
@@ -39,7 +40,7 @@ Future<int> changePasswordFunction(
   } else {
     url = urlAndroid;
   }
-  http.Response response = await http.patch(
+  http.Response response = await client.patch(
     Uri.parse("$url:8000/api/v1/users/me/settings/changepassword"),
     headers: {
       'Authorization': 'Bearer $token',
@@ -82,10 +83,10 @@ Future<int> confirmPasswordFunction(
 /// Recieves the client, current password, the new email as parameters,
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status Code
-Future<int> changeEmailFunction({
-  required String newEmail,
-}) async {
-  String? token = await getToken();
+Future<int> changeEmailFunction(
+    {required http.Client client,
+    required String newEmail,
+    required String token}) async {
   Map<String, dynamic> body = {
     'email': newEmail,
   };
@@ -97,7 +98,7 @@ Future<int> changeEmailFunction({
   }
 
   String bodyEncoded = jsonEncode(body);
-  http.Response response = await http.patch(
+  http.Response response = await client.patch(
     Uri.parse("$url:8000/api/v1/users/me/settings/changeemail"),
     headers: {
       'Content-Type': 'application/json',
@@ -142,7 +143,8 @@ Future<int> changeGenderFunction(
 /// API Call for checking the Email Update Response,
 /// Depending on the Status Code returns an alert to inform the User.
 void checkEmailUpdateResponse(
-    {required BuildContext context, required int statusCodeFuture}) async {
+    {required BuildContext context,
+    required int statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
     showAlert("Email was changed correctly!", context);
@@ -169,20 +171,21 @@ void checkPasswordChangeResponse({
 }
 
 void checkBlockResponse(
-    {required BuildContext context, required int statusCodeFuture}) async {
+    {required BuildContext context,
+    required int statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
-    showAlert("User was blocked successfully", context);
   } else {
-    showAlert("User was not blocked", context);
+    showAlert("User was not blocked/unblocked", context);
   }
 }
 
-Future<int> blockUser({
-  required String userToBlock,
-  required BuildContext context,
-}) async {
-  String? token = await getToken();
+Future<int> blockUser(
+    {
+    required String userToBlock,
+    required BuildContext context,
+    }) async {
+      String? token =await getToken();
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
@@ -191,13 +194,14 @@ Future<int> blockUser({
   }
   http.Response response = await http.post(
     Uri.parse("$url:8000/api/v1/users/me/block/$userToBlock"),
+    
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
   );
-  checkBlockResponse(context: context, statusCodeFuture: response.statusCode);
-  Navigator.pop(context);
+checkBlockResponse(context: context, statusCodeFuture: response.statusCode);
+Navigator.pop(context);
   return response.statusCode;
 }
 
@@ -226,22 +230,11 @@ Future<int> notificationOn(
   return response.statusCode;
 }
 
-void checkunBlockResponse(
-    {required BuildContext context, required int statusCodeFuture}) async {
-  int statusCode = await statusCodeFuture;
-  if (statusCode == 200) {
-    showAlert("User was unblocked successfully", context);
-  } else {
-    showAlert("User was not unblocked", context);
-  }
-}
-
-Future<int> unblockUser({
-  required String userToUnBlock,
-  required BuildContext context,
-}) async {
+Future<int> unblockUser(
+    {required http.Client client,
+    required String userToUnBlock,
+    required String token}) async {
   Map<String, dynamic> body = {'blockUsername': userToUnBlock};
-  String? token = await getToken();
   String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
@@ -249,7 +242,7 @@ Future<int> unblockUser({
   } else {
     url = urlAndroid;
   }
-  http.Response response = await http.delete(
+  http.Response response = await client.delete(
     Uri.parse("$url:8000/api/v1/users/me/block/$userToUnBlock"),
     headers: {
       'Content-Type': 'application/json',
@@ -257,7 +250,6 @@ Future<int> unblockUser({
     },
     body: bodyEncoded,
   );
-  checkunBlockResponse(context: context, statusCodeFuture: response.statusCode);
   return response.statusCode;
 }
 
@@ -325,15 +317,15 @@ class SettingsFetch extends StateNotifier<bool> {
     return users;
   }
 
-  Future<UserMock> getBlockedUsers() async {
-    String? token = await getToken();
+  Future<UserMock> getBlockedUsers(
+      {required http.Client client, required String token}) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-    http.Response response = await http.get(
+    http.Response response = await client.get(
       Uri.parse("$url:3001/api/user-info?user_id=2"),
       headers: {
         'Content-Type': 'application/json',
@@ -343,15 +335,15 @@ class SettingsFetch extends StateNotifier<bool> {
     return UserMock.fromJson(jsonDecode(response.body));
   }
 
-  Future<UserModelMe> getMe() async {
-    final String? token = await getToken();
+  Future<UserModelMe> getMe(
+      {required http.Client client, required String token}) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-    http.Response response = await http.get(
+    http.Response response = await client.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
       headers: {
         'Content-Type': 'application/json',
@@ -361,15 +353,15 @@ class SettingsFetch extends StateNotifier<bool> {
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
 
-  Future<UserSettings> getSettings() async {
-    String? token = await getToken();
+  Future<UserSettings> getSettings(
+      {required http.Client client, required String token}) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-    http.Response response = await http.get(
+    http.Response response = await client.get(
       Uri.parse("$url:8000/api/v1/users/me/settings"),
       headers: {
         'Content-Type': 'application/json',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -356,7 +357,9 @@ class _PostCardState extends ConsumerState<PostCard> {
                           ]
                         : [
                             ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                share(context, ref, widget.post);
+                              },
                               icon: Icon(
                                 Icons.ios_share_rounded,
                                 color: Colors.white,
