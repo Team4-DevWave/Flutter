@@ -8,7 +8,7 @@ import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart'
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
-import 'package:threddit_clone/features/posting/view_model/options_bottom%20sheet.dart';
+import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
@@ -181,7 +181,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                         width: 360.w,
                         fit: BoxFit.fitWidth,
                         image: NetworkImage(widget.dataOfPost.image.toString()
-                            //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                           
                             ),
                       )
                     : (widget.dataOfPost.video != null)

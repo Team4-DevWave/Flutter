@@ -58,7 +58,10 @@ class RightDrawer extends ConsumerWidget {
               ),
               title: "Create a community",
               onTap: () {
-                Navigator.pushNamed(context, RouteClass.createCommunityScreen);
+                Navigator.pushNamed(context, RouteClass.createCommunityScreen,
+                    arguments: 
+                       "user2",
+                    );
               }),
           RightDrawerButtons(
               icon: const Icon(
@@ -73,7 +76,10 @@ class RightDrawer extends ConsumerWidget {
                 color: AppColors.whiteColor,
               ),
               title: "History",
-              onTap: () {}),
+              onTap: () {
+                Navigator.pushNamed(context, RouteClass.historyScreen,
+                    arguments: "user2");
+              }),
           RightDrawerButtons(
             icon: const Icon(
               Icons.logout_rounded,

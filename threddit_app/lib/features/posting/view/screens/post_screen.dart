@@ -7,10 +7,10 @@ import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/posting/view/widgets/shared_post_card.dart';
-import 'package:threddit_clone/features/posting/view_model/bottom_sheet_owner.dart';
-import 'package:threddit_clone/features/posting/view_model/options_bottom%20sheet.dart';
+import 'package:threddit_clone/features/posting/view/widgets/bottom_sheet_owner.dart';
+import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
+import 'package:threddit_clone/features/posting/view_model/history_manager.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
-import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -29,6 +29,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
   @override
   void initState() {
     super.initState();
+    HistoryManager.addPostToHistory(widget.currentPost);
   }
 
   void _openAddCommentOverlay() {
@@ -44,8 +45,8 @@ class _PostScreenState extends ConsumerState<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void toggleNsfw() async {
      
+    void toggleNsfw() async {
       await ref.read(toggleNSFW(widget.currentPost.id));
       widget.currentPost.nsfw = !widget.currentPost.nsfw;
       Navigator.pop(context);
@@ -122,13 +123,13 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                       ? PostCard(
                           post: widget.currentPost,
                           uid: widget.uid,
-                          onCommentPressed: () {},
+                          
                         )
                       : 
                   SharedPostCard(
                     post: widget.currentPost,
                     uid: widget.uid,
-                    onCommentPressed: _openAddCommentOverlay,
+                    
                   ),
                   Consumer(builder: (context, watch, child) {
                     final AsyncValue<List<Comment>> postComments =
