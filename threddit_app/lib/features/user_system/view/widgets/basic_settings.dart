@@ -9,7 +9,7 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:http/http.dart' as http;
 
-const List<String> genders = <String>['man', 'woman'];
+const List<String> genders = <String>['man', 'woman', "I prefer not to say"];
 
 /// The class responsible for the Basic Settings part of the Account Settings
 /// which Includes:

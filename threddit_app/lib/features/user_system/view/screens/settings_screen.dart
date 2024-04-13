@@ -33,24 +33,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late UserModelMe user;
   @override
   void initState() {
-    getUserToken();
     super.initState();
   }
 
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
 
-  Future<UserModelMe> fetchUser(http.Client client) async {
+  Future<UserModelMe> fetchUser() async {
     final userModel = ref.watch(settingsFetchProvider.notifier).getMe();
     user = await userModel;
     return userModel;
   }
 
-  Future<UserSettings> fetchSettings(http.Client client) async {
+  Future<UserSettings> fetchSettings() async {
     final userSettings =
         ref.watch(settingsFetchProvider.notifier).getSettings();
     settings = await userSettings;
@@ -77,7 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         body: ListView(children: [
           const SettingsTitle(title: "GENERAL"),
           FutureBuilder(
-            future: fetchUser(client),
+            future: fetchUser(),
             builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
@@ -101,7 +94,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SettingsTitle(title: "VIEW OPTIONS"),
           FutureBuilder(
-              future: fetchSettings(client),
+              future: fetchSettings(),
               builder:
                   (BuildContext ctx, AsyncSnapshot<UserSettings> snapshot) {
                 while (snapshot.connectionState == ConnectionState.waiting) {

@@ -97,7 +97,11 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   if (newPassword.length < 8 || confirmedPassword.length < 8) {
                     showAlert(
                         "Password length must be greater than 8", context);
-                  } else {
+                  } else if (newPassword == currentPassword){
+                    showAlert(
+                        "Passwords must not be the same", context);
+                  }
+                  else {
                     final statusCode = changePasswordFunction(
                       currentPassword: currentPassword,
                       newPassword: newPassword,

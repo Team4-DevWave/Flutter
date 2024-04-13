@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 /// A placeholder screen that should show the accounts blocked by a user.
@@ -20,13 +21,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
   List<UserMock> usernames = [];
   Future<UserModelMe> fetchBlockedUser() async {
     setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getMe();
+      ref.watch(settingsFetchProvider.notifier).getMe();
     });
-    return ref
-        .watch(settingsFetchProvider.notifier)
-        .getMe();
+    return ref.watch(settingsFetchProvider.notifier).getMe();
   }
 
   void block(query) async {
@@ -61,9 +58,7 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                   Navigator.pushNamed(context, RouteClass.blockUserScreen)
                       .then((value) {
                     setState(() {
-                      ref
-                          .watch(settingsFetchProvider.notifier)
-                          .getMe();
+                      ref.watch(settingsFetchProvider.notifier).getMe();
                     });
                   });
                 },
@@ -101,7 +96,7 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                     await unblockUser(
                                       client: client,
                                       userToUnBlock: users[index].username,
-                                      token: token!,
+                                      context: context,
                                     );
                                     setState(() {
                                       ref
@@ -110,11 +105,12 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                      shape: const StadiumBorder(),
-                                      textStyle: AppTextStyles.buttonTextStyle,
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 0, 140, 255)),
-                                  child: const Text("Unblock"),
+                                    shape: const StadiumBorder(),
+                                    textStyle: AppTextStyles.buttonTextStyle,
+                                    backgroundColor:
+                                        AppColors.redditOrangeColor,
+                                  ),
+                                  child:  Text("Unblock", style: AppTextStyles.primaryTextStyle,),
                                 )));
                       }
                     }
@@ -134,14 +130,15 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                               final username = usernames[index].getUsername;
                               if (usernames[index].getBlocked) {
                                 unblockUser(
-                                    client: client,
-                                    userToUnBlock: username,
-                                    token: token!);
+                                  context: context,
+                                  client: client,
+                                  userToUnBlock: username,
+                                );
                               } else {
                                 blockUser(
-                                    context: context,
-                                    userToBlock: username,
-                                   );
+                                  context: context,
+                                  userToBlock: username,
+                                );
                               }
                               setState(() {
                                 usernames[index] = usernames[index].copyWith(

@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -23,9 +24,7 @@ const String urlWindows = "http://localhost";
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status Code
 Future<int> changePasswordFunction(
-    {
-    
-    required String currentPassword,
+    {required String currentPassword,
     required String newPassword,
     required String confirmedPassword}) async {
   Map<String, dynamic> body = {
@@ -114,10 +113,9 @@ Future<int> changeEmailFunction({
 /// Recieves the client and the changed Gender as paramters,
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status code.
-Future<int> changeGenderFunction(
-    {
-    required String gender,
-    }) async {
+Future<int> changeGenderFunction({
+  required String gender,
+}) async {
   Map<String, dynamic> body = {
     'user_id': 1,
     'gender': gender,
@@ -230,10 +228,9 @@ Future<int> notificationOn(
 Future<int> unblockUser(
     {required http.Client client,
     required String userToUnBlock,
-    required String token}) async {
-  Map<String, dynamic> body = {'blockUsername': userToUnBlock};
-  String bodyEncoded = jsonEncode(body);
+    required BuildContext context}) async {
   final String url;
+  String? token = await getToken();
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -245,8 +242,12 @@ Future<int> unblockUser(
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
-    body: bodyEncoded,
   );
+  if (response.statusCode == 204) {
+    showAlert("User was unblocked succesfully", context);
+  } else {
+    showAlert("User was not unblocked", context);
+  }
   return response.statusCode;
 }
 
@@ -314,8 +315,7 @@ class SettingsFetch extends StateNotifier<bool> {
     return users;
   }
 
-  Future<UserMock> getBlockedUsers(
-      ) async {
+  Future<UserMock> getBlockedUsers() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
@@ -333,8 +333,7 @@ class SettingsFetch extends StateNotifier<bool> {
     return UserMock.fromJson(jsonDecode(response.body));
   }
 
-  Future<UserModelMe> getMe(
-      ) async {
+  Future<UserModelMe> getMe() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
@@ -352,8 +351,7 @@ class SettingsFetch extends StateNotifier<bool> {
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
 
-  Future<UserSettings> getSettings(
-      ) async {
+  Future<UserSettings> getSettings() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
@@ -391,8 +389,7 @@ class SettingsFetch extends StateNotifier<bool> {
     return isNotificationEnabled;
   }
 
-  Future<bool> getFollowableSetting(
-      ) async {
+  Future<bool> getFollowableSetting() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
@@ -413,18 +410,17 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 }
 
-Future<int> changeSetting(
-    {
-    required change,
-    required String settingsName,
-    required String settingsType,
-    }) async {
+Future<int> changeSetting({
+  required change,
+  required String settingsName,
+  required String settingsType,
+}) async {
   Map<String, dynamic> body = {
     settingsType: {
       settingsName: change,
     }
   };
-  String? token =await getToken();
+  String? token = await getToken();
   String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
@@ -443,10 +439,9 @@ Future<int> changeSetting(
   return response.statusCode;
 }
 
-Future<int> changeCountry(
-    {
-    required String country,
-    }) async {
+Future<int> changeCountry({
+  required String country,
+}) async {
   Map<String, dynamic> body = {
     "country": country,
   };
