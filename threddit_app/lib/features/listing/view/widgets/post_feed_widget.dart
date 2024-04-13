@@ -1,8 +1,11 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart';
+import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/posting/view_model/options_bottom%20sheet.dart';
@@ -40,6 +43,8 @@ class FeedUnit extends ConsumerStatefulWidget {
 }
 
 class _FeedUnitState extends ConsumerState<FeedUnit> {
+  late bool isSpam;
+  late bool isLocked;
   late int numbberOfvotes;
   final now = DateTime.now();
   late VideoPlayerController _controller;
@@ -56,6 +61,11 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
           setState(() {});
         });
     }
+  }
+
+  Future getModOptions() async {
+    isLocked = await ref.watch(moderationApisProvider.notifier).getLocked();
+    isSpam = await ref.watch(moderationApisProvider.notifier).getSpam();
   }
 
   void toggleNsfw() async {
@@ -76,7 +86,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
   Widget build(BuildContext context) {
     final difference = now.difference(widget.dataOfPost.postedTime);
     final hoursSincePost = difference.inHours;
-
+    getModOptions();
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(
@@ -301,18 +311,23 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     ),
                   ],
                 ),
-                Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.backgroundColor),
+                IconButton(
                     onPressed: () {
-                      share(context, ref, widget.dataOfPost);
+                      setState(() {
+                        getModOptions().then((value) =>
+                            moderation(context, ref, isSpam, isLocked));
+                      });
                     },
-                    child: Text(
-                      'Share',
-                      style: AppTextStyles.primaryTextStyle,
-                    ),
-                  ),
+                    icon: const Icon(
+                      Icons.shield,
+                      color: AppColors.realWhiteColor,
+                    )),
+                IconButton(
+                  icon:
+                      const Icon(Icons.share, color: AppColors.realWhiteColor),
+                  onPressed: () {
+                    share(context, ref, widget.dataOfPost);
+                  },
                 )
               ],
             ),

@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/Moderation/model/approved_user.dart';
 import 'package:threddit_clone/features/Moderation/model/banned_user.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/Moderation/model/moderator.dart';
+
 const String urlAndroid = "http://10.0.2.2:3001";
 const String urlWindows = "http://localhost:3001";
 final moderationApisProvider =
@@ -46,7 +47,8 @@ class ModerationApis extends StateNotifier<bool> {
   Future<int> editMod(
       {required http.Client client,
       required username,
-      required permissions, fullPermissions}) async {
+      required permissions,
+      fullPermissions}) async {
     Map<String, dynamic> body = {
       "username": username,
       "permissions": permissions,
@@ -291,5 +293,91 @@ class ModerationApis extends StateNotifier<bool> {
     } else {
       throw Exception('Failed to fetch banned users');
     }
+  }
+
+  Future<int> markSpam({required spam}) async {
+    Map<String, dynamic> body = {
+      "spam": spam,
+      "postID": "6619e1896966b3824f0c9de7"
+    };
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
+
+    String bodyEncoded = jsonEncode(body);
+
+    final response = await http.patch(
+      Uri.parse('$url/api/mark-spam'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: bodyEncoded,
+    );
+    print(response.statusCode);
+    return response.statusCode;
+  }
+
+  Future<int> lock({required lock}) async {
+    Map<String, dynamic> body = {
+      "locked": lock,
+      "postID": "6619e1896966b3824f0c9de7"
+    };
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
+
+    String bodyEncoded = jsonEncode(body);
+
+    final response = await http.patch(
+      Uri.parse('$url/api/lock'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: bodyEncoded,
+    );
+    print(response.statusCode);
+    print(response.body);
+    return response.statusCode;
+  }
+
+  Future<bool> getLocked() async {
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
+
+    final response = await http.get(
+      Uri.parse('$url/api/locked'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    return jsonDecode(response.body);
+  }
+
+  Future<bool> getSpam() async {
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
+    final response = await http.get(
+      Uri.parse('$url/api/mark-spam'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    return jsonDecode(response.body);
   }
 }
