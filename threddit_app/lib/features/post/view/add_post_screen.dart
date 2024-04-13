@@ -32,7 +32,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
-
   String? image;
   String? video;
   File? videoFile;
@@ -49,6 +48,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       image = base64Encode(imageBytes);
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
+      ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
     });
   }
 
@@ -62,6 +62,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       video = base64Encode(videoBytes);
       isVideo = true;
       ref.read(postDataProvider.notifier).updateVideo(video!);
+      ref.read(postDataProvider.notifier).updateVideoPath(videoFile!);
     });
   }
 
@@ -130,7 +131,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   Widget build(BuildContext context) {
     Widget buildImageContent() {
       if (image == null || isLink || isVideo) {
-        print(image);
         return const SizedBox();
       }
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
