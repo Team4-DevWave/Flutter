@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart';
+import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedpost.dart';
@@ -24,16 +26,25 @@ class FeedUnitShare extends ConsumerStatefulWidget {
 
 class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
   late int numbberOfvotes;
+  late bool isLocked;
+  late bool isSpam;
   int choiceBottum = -1; // 1 upvote 2 downvote
   final now = DateTime.now();
   @override
   void initState() {
     super.initState();
+
     numbberOfvotes = int.parse(widget.parentPost.numViews.toString());
+  }
+
+  Future getModOptions() async {
+    isLocked = await ref.watch(moderationApisProvider.notifier).getLocked();
+    isSpam = await ref.watch(moderationApisProvider.notifier).getSpam();
   }
 
   @override
   Widget build(BuildContext context) {
+    getModOptions();
     final difference = now.difference(widget.dataOfPost.postedTime);
     final hoursSincePost = difference.inHours;
     return Padding(
@@ -191,18 +202,22 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                     ),
                   ],
                 ),
-                Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.backgroundColor),
+                IconButton(
                     onPressed: () {
-                      share(context, ref, widget.dataOfPost);
+                      setState(() {
+                        getModOptions().then((value) => moderation(context, ref, isSpam, isLocked));
+                      });
                     },
-                    child: Text(
-                      'Share',
-                      style: AppTextStyles.primaryTextStyle,
-                    ),
-                  ),
+                    icon: const Icon(
+                      Icons.shield,
+                      color: AppColors.realWhiteColor,
+                    )),
+                IconButton(
+                  icon:
+                      const Icon(Icons.share, color: AppColors.realWhiteColor),
+                  onPressed: () {
+                    share(context, ref, widget.dataOfPost);
+                  },
                 )
               ],
             ),
