@@ -53,7 +53,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   }
 
   Future _fetchPosts() async {
-    final response = await fetchPostsByUsername('moaz', _currentPage);
+    final response = await fetchPostsByUsername('admin', _currentPage);
 
     setState(() {
       _posts.addAll(response.posts);
@@ -64,7 +64,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername('moaz', _currentPage);
+      fetchPostsByUsername('admin', _currentPage);
     }
   }
 

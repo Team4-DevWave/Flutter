@@ -4,6 +4,7 @@ import 'package:threddit_clone/features/home_page/view/screens/main_community_sc
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
+import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
@@ -25,6 +26,16 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
     const CommunityScreen(id: "he7", uid: 'user2'),
     const NotificationsScreen()
   ];
+
+  Future<void> _setData() async {
+    await ref.read(settingsFetchProvider.notifier).getMe();
+  }
+
+  @override
+  void initState() {
+    _setData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

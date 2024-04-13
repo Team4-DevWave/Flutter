@@ -11,6 +11,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/password_textfo
 import 'package:threddit_clone/features/user_system/view/widgets/register_appbar.dart';
 import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/navigate_signup.dart';
+import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -44,14 +45,14 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
     final isLoggedIn = await ref.read(authProvider.notifier).login();
     isLoggedIn.fold((failure) {
       showSnackBar(navigatorKey.currentContext!, failure.message);
-    }, (loggedIn) {
+    }, (loggedIn) async {
       final valueEntered = ref.watch(enteredValue);
       isLoading = false;
 
       if (loggedIn) {
         showSnackBar(navigatorKey.currentContext!,
             'Logged you in as ${ref.watch(userProvider)!.username}');
-
+        await ref.read(settingsFetchProvider.notifier).getMe();
         Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
             RouteClass.mainLayoutScreen, (Route<dynamic> route) => false);
       } else {

@@ -28,6 +28,8 @@ class SavePost extends StateNotifier<bool> {
           'Authorization': 'Bearer $token',
         },
       );
+      print('STATUS');
+      print(response.statusCode);
       if (response.statusCode == 200) {
         return right(true);
       } else if (response.statusCode == 404) {
@@ -83,6 +85,10 @@ class SavePost extends StateNotifier<bool> {
     return response.fold((l) {
       return left(Failure('Error retriving saved'));
     }, (listSaved) {
+      print("UNSSSSSSSSSSSSSSAVE");
+      print(listSaved);
+
+      print(postid);
       return right(listSaved.contains(postid));
     });
   }
