@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
@@ -41,21 +40,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   Future<UserModelMe> fetchUser() async {
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
-  }
-
-  Future getUserToken() async {
-    String? result = await getToken();
-    print(result);
-    setState(() {
-      token = result!;
-    });
-  }
-
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
+        .getMe();
   }
 
   @override
@@ -76,7 +61,6 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     return const CircularProgressIndicator();
                   }
                   if (snapshot.hasError) {
-                    print(snapshot.error);
                     return const Text("ERROR LOADING USER DATA");
                   } else {
                     final UserModelMe user = snapshot.data!;
@@ -99,8 +83,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 alignment: Alignment.topRight,
                 child: TextButton(
                     onPressed: () {
-                      print("I am pressed");
-                      return _forgetPassword();
+                        return _forgetPassword();
                     },
                     child: const Text("Forgot password?")),
               ),
@@ -118,13 +101,14 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                         "Password length must be greater than 8", context);
                   } else {
                     final statusCode = changePasswordFunction(
-                        client: client,
+                        
                         currentPassword: currentPassword,
                         newPassword: newPassword,
                         confirmedPassword: confirmedPassword,
-                        token: token!);
+                        );
                     checkPasswordChangeResponse(
-                        context: context, statusCodeFuture: statusCode);
+                        context: context, statusCodeFuture: statusCode, ref: ref);
+                        
                   }
                 },
               ),

@@ -11,6 +11,7 @@ final enableResizeProvider = StateProvider<bool>((ref) {
 });
 
 class TextSizeScreen extends ConsumerStatefulWidget {
+  const TextSizeScreen({super.key});
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TextSizeScreenState();
 }
@@ -58,7 +59,7 @@ class _TextSizeScreenState extends ConsumerState<TextSizeScreen> {
                 future: getStatus(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
@@ -95,7 +96,7 @@ class _TextSizeScreenState extends ConsumerState<TextSizeScreen> {
                 future: getValue(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {

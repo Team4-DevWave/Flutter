@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
-import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:http/http.dart' as http;
 
 const List<String> genders = <String>['man', 'woman'];
@@ -41,7 +39,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
           .then((value) => setState(() {
                 ref
                     .watch(settingsFetchProvider.notifier)
-                    .getUserInfo(client: client, token: token!);
+                    .getMe();
               }));
     } else if (settingName == "password") {
       Navigator.pushNamed(context, RouteClass.changePasswordScreen);
@@ -52,26 +50,15 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getMe(client: client, token: token!);
+          .getMe();
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
+        .getMe();
   }
 
-  Future getUserToken() async {
-    String? result = await getToken();
-    print(result);
-    setState(() {
-      token = result!;
-    });
-  }
+ 
 
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +73,10 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                 return const CircularProgressIndicator();
               }
               if (snapshot.hasError) {
-                print(snapshot.error);
                 return const Text("ERROR LOADING USER DATA");
               } else {
                 final UserModelMe user = snapshot.data!;
-                
+
                 return ListView(shrinkWrap: true, children: [
                   ListTile(
                     leading: const Icon(Icons.settings),
@@ -121,7 +107,6 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
               return const CircularProgressIndicator();
             }
             if (snapshot.hasError) {
-              print(snapshot.error);
               return const Text("ERROR LOADING USER DATA");
             } else {
               final UserModelMe user = snapshot.data!;
@@ -136,14 +121,23 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                   trailing: const Icon(Icons.navigate_next),
                   onTap: () {
                     showCountryPicker(
+
                         context: context,
                         onSelect: (Country country) {
-                          setState(() {
-                            selectedCountry = country;
-                            changeCountry(client: client, country: country.displayName, token: token!);
+                          changeCountry(
+                                 
+                                  country: country.name,
+                                  )
+                              .then((value) {
+                            if (value == 200) {
+                              setState(() {
+                                selectedCountry = country;
+                              });
+                            }
                           });
                         },
                         countryListTheme: CountryListThemeData(
+                          searchTextStyle: AppTextStyles.primaryTextStyle,
                             backgroundColor: AppColors.backgroundColor,
                             textStyle: AppTextStyles.primaryTextStyle));
                   },

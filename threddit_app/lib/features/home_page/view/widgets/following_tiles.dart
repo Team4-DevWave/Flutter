@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_following.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/models/data.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -46,16 +44,10 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
   Future<void> _getFavourites() async {
     prefs = await SharedPreferences.getInstance();
     _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
-    print("alo from get");
-    print(ref
+    (ref
         .read(favouriteListProvider.notifier)
         .update((state) => _favouritesList!));
   }
-
-  // Future<void> _fetchFollowingData() async {
-  //   _userFollowingData = UserFollowingAPI().getUserFollowing();
-  //   await _userFollowingData;
-  // }
 
   Future<void> _updateIsFavouriteSub() async {
     if (_favouritesList != null) {
@@ -74,8 +66,7 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
     if (prefs != null) {
       _favouritesList?.removeWhere((element) => element == toBeRemoved);
       prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      print("alo from remove");
-      print(ref
+      (ref
           .read(favouriteListProvider.notifier)
           .update((state) => _favouritesList!));
     }

@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/app/route.dart';
+
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// The `FeedUnitSharedPost.dart` file defines a stateful widget `FeedUnitSharedPost`
+/// that is used to display a single post in a feed. This widget takes a `Post` object
+/// as a parameter and displays its details. The `Post` object is passed to the widget
+/// through its constructor. The state for this widget is managed by the
+/// `_FeedUnitSharedPostState` class.
+
+/// Upon initialization of the `_FeedUnitSharedPostState` class, the number of votes for
+/// the post is set to the number of views of the post. This is done in the `initState`
+/// method, which is a lifecycle method in Flutter that is called exactly once and then
+/// never again.
+
+/// The `build` method of the `_FeedUnitSharedPostState` class returns a `Container`
+/// widget that displays the details of the post. The details include the username, post
+/// time, title, body text, image (if any), number of views, and number of comments. The
+/// `Container` widget is decorated with a border and a circular border radius for
+/// aesthetic purposes.
+
+/// The `choiceBottum` variable is used to track the user's voting choice for the post.
+/// A value of 1 represents an upvote, while a value of 2 represents a downvote. This
+/// variable is initialized to -1, indicating that the user has not yet made a voting
+/// choice.
+
+/// The `FeedUnitSharedPost` widget is designed to be flexible and reusable, allowing it
+/// to be used in any part of the application that requires displaying a post.
+
 class FeedUnitSharedPost extends StatefulWidget {
   final Post dataOfPost;
-  // ignore: lines_longer_than_80_chars
+
   const FeedUnitSharedPost(this.dataOfPost, {super.key});
 
   @override
@@ -19,7 +44,7 @@ class FeedUnitSharedPost extends StatefulWidget {
 class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
   late int numbberOfvotes;
   int choiceBottum = -1; // 1 upvote 2 downvote
-
+  final now = DateTime.now();
   @override
   void initState() {
     super.initState();
@@ -28,13 +53,16 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
 
   @override
   Widget build(BuildContext context) {
+    final difference = now.difference(widget.dataOfPost.postedTime);
+    final hoursSincePost = difference.inHours;
     return Container(
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(6.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10), // Add this line
         border: Border.all(
-          color: AppColors.whiteGlowColor, // Specify the border color
-          width: 1, // Specify the border thickness
+          color: const Color.fromARGB(
+              131, 255, 255, 255), // Specify the border color
+          width: 1.w, // Specify the border thickness
         ),
       ),
       child: Padding(
@@ -49,15 +77,14 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                     child: Row(
                   children: [
                     Text(
-                        'r/${widget.dataOfPost.userID?.username}',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    
+                      'r/${widget.dataOfPost.userID?.username}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
                     SizedBox(
                       width: 7.w,
                     ),
                     Text(
-                      widget.dataOfPost.postedTime.toString(),
+                      '${hoursSincePost}h ago',
                       style: TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],

@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/app/route.dart';
@@ -13,9 +14,10 @@ class CommunityModTools extends StatefulWidget {
 void navigateTo(BuildContext context, String page) {
   if (page == "banned") {
     Navigator.pushNamed(context, RouteClass.bannedUsersScreen);
-  }
-  else if (page == "approved") {
+  } else if (page == "approved") {
     Navigator.pushNamed(context, RouteClass.approvedUsersScreen);
+  } else if (page == "moderators") {
+    Navigator.pushNamed(context, RouteClass.moderatorsScreen);
   }
 }
 
@@ -28,13 +30,27 @@ class _CommunityModToolsState extends State<CommunityModTools> {
         //body: Text('This is the mod tools screen', style: TextStyle(color: Colors.white),),
         body: ListView(
           children: [
+            const SettingsTitle(title: "GENERAL"),
+            ListTile(
+                leading: const Icon(Icons.edit),
+                title: const Text("Description"),
+                titleTextStyle: AppTextStyles.primaryTextStyle,
+                trailing: const Icon(Icons.navigate_next),
+                onTap: () => ()),
+            ListTile(
+                leading: const FaIcon(FontAwesomeIcons.lock),
+                title: const Text("Description"),
+                titleTextStyle: AppTextStyles.primaryTextStyle,
+                trailing: const Icon(Icons.navigate_next),
+                onTap: () => ()),
+            SizedBox(height: 10.h),
             const SettingsTitle(title: "USER MANAGEMENT"),
             ListTile(
                 leading: const FaIcon(FontAwesomeIcons.shield),
                 title: const Text("Moderators"),
                 titleTextStyle: AppTextStyles.primaryTextStyle,
                 trailing: const Icon(Icons.navigate_next),
-                onTap: () => navigateTo(context, "approved")),
+                onTap: () => navigateTo(context, "moderators")),
             ListTile(
                 leading: const FaIcon(FontAwesomeIcons.check),
                 title: const Text("Approved users"),
@@ -47,7 +63,6 @@ class _CommunityModToolsState extends State<CommunityModTools> {
                 titleTextStyle: AppTextStyles.primaryTextStyle,
                 trailing: const Icon(Icons.navigate_next),
                 onTap: () => navigateTo(context, "banned")),
-            
           ],
         ));
   }

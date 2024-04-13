@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
-import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -35,25 +34,11 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
     setState(() {
       ref
           .watch(settingsFetchProvider.notifier)
-          .getMe(client: client, token: token!);
+          .getMe();
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getMe(client: client, token: token!);
-  }
-
-  Future getUserToken() async {
-    String? result = await getToken();
-    print(result);
-    setState(() {
-      token = result!;
-    });
-  }
-
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
+        .getMe();
   }
 
   @override
@@ -74,7 +59,6 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
                   return const CircularProgressIndicator();
                 }
                 if (snapshot.hasError) {
-                  print(snapshot.error);
                   return const Text("ERROR LOADING USER DATA");
                 } else {
                   final UserModelMe user = snapshot.data!;
@@ -100,7 +84,7 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
               },
             ),
             newEmailForm,
-            currentPasswordForm,
+            //currentPasswordForm,
             Container(
               alignment: Alignment.topRight,
               child: TextButton(
@@ -108,20 +92,20 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
             ),
             const Spacer(),
             SaveChanges(
-              saveChanges: () {
+              saveChanges: () async {
                 final String newEmail = newEmailForm.enteredEmail;
-                final String currentPassword =
-                    currentPasswordForm.enteredPassword;
-                final statusCode = changeEmailFunction(
-                    client: client,
-                    newEmail: newEmail,
-                    token: token!);
-                checkEmailUpdateResponse(
-                    context: context, statusCodeFuture: statusCode);
-                setState(() {
-                  ref
-                      .watch(settingsFetchProvider.notifier)
-                      .getUserInfo(client: client, token: token!);
+                //final String currentPassword =
+                currentPasswordForm.enteredPassword;
+                changeEmailFunction(
+                        newEmail: newEmail,)
+                    .then((value) {
+                  checkEmailUpdateResponse(
+                      context: context, statusCodeFuture: value);
+                  setState(() {
+                    ref
+                        .watch(settingsFetchProvider.notifier)
+                        .getMe();
+                  });
                 });
               },
             ),

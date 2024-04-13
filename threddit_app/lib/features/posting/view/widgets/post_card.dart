@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
+import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
@@ -39,6 +42,20 @@ class _PostCardState extends ConsumerState<PostCard> {
 
   @override
   Widget build(BuildContext) {
+    void toggleNsfw() {
+      widget.post.nsfw = !widget.post.nsfw;
+      setstate() {}
+      ref.read(toggleNSFW(widget.post.id));
+      Navigator.pop(context);
+    }
+
+    void toggleSPOILER() async {
+      widget.post.spoiler = !widget.post.spoiler;
+      setstate() {}
+      await ref.read(toggleSpoiler(widget.post.id));
+      Navigator.pop(context);
+    }
+
     void upVotePost(WidgetRef ref) async {}
 
     void downVotePost(WidgetRef ref) async {}
@@ -69,15 +86,27 @@ class _PostCardState extends ConsumerState<PostCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (widget.post.subredditID != null)
-                      Text('r/${widget.post.subredditID?.name}',
-                          style: AppTextStyles.primaryTextStyle.copyWith(
-                              fontSize: 12,
-                              color: const Color.fromARGB(98, 255, 255, 255),
-                              fontWeight: FontWeight.bold)),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            RouteClass.communityScreen,
+                            arguments: {
+                              'id': widget.post.subredditID!.name,
+                              'uid': widget.uid
+                            },
+                          );
+                        },
+                        child: Text('r/${widget.post.subredditID?.name}',
+                            style: AppTextStyles.primaryTextStyle.copyWith(
+                                fontSize: 12,
+                                color: const Color.fromARGB(98, 255, 255, 255),
+                                fontWeight: FontWeight.bold)),
+                      ),
                     Row(
                       children: [
                         Text(
-                          'u/${widget.post.userID}',
+                          'u/${widget.post.userID!.username}',
                           style: AppTextStyles.primaryTextStyle.copyWith(
                               fontSize: 12,
                               color: const Color.fromARGB(206, 20, 113, 190)),
@@ -104,6 +133,28 @@ class _PostCardState extends ConsumerState<PostCard> {
                 ),
               ],
             ),
+            if (widget.post.nsfw || widget.post.spoiler)
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (widget.post.nsfw)
+                      const Text("NSFW",
+                          style: TextStyle(
+                              backgroundColor: Colors.pink,
+                              color: Colors.white)),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    if (widget.post.spoiler)
+                      const Text("SPOILER",
+                          style: TextStyle(
+                              backgroundColor: Colors.purple,
+                              color: Colors.white)),
+                  ],
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 13.0),
               child: Text(
@@ -201,7 +252,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: widget.uid == widget.post.userID
+                    children: widget.uid == widget.post.userID!.id
                         ? [
                             IconButton(
                                 onPressed: () {
@@ -223,7 +274,9 @@ class _PostCardState extends ConsumerState<PostCard> {
                                               ),
                                               leading: const Icon(
                                                   Icons.warning_rounded),
-                                              onTap: () {},
+                                              onTap: () {
+                                                toggleSPOILER();
+                                              },
                                             ),
                                             ListTile(
                                               title: const Text(
@@ -243,7 +296,9 @@ class _PostCardState extends ConsumerState<PostCard> {
                                                     color: Colors.white),
                                               ),
                                               leading: const Icon(Icons.copy),
-                                              onTap: () {},
+                                              onTap: () {
+                                                toggleNsfw();
+                                              },
                                             ),
                                             ListTile(
                                               title: const Text(
@@ -302,7 +357,9 @@ class _PostCardState extends ConsumerState<PostCard> {
                           ]
                         : [
                             ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                share(context, ref, widget.post);
+                              },
                               icon: Icon(
                                 Icons.ios_share_rounded,
                                 color: Colors.white,

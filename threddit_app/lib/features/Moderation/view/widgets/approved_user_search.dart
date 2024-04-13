@@ -16,11 +16,9 @@ class ApprovedUsersSearch extends SearchDelegate<ApprovedUser> {
       appBarTheme: AppBarTheme(
         foregroundColor: AppColors.whiteGlowColor,
         titleTextStyle: AppTextStyles.primaryTextStyle,
-        backgroundColor:
-            AppColors.backgroundColor, // Adjust color for dark mode
-        iconTheme: theme.iconTheme.copyWith(
-            color: Color.fromARGB(
-                255, 138, 124, 124)), // Adjust icon color for dark mode
+        backgroundColor: AppColors.backgroundColor,
+        iconTheme: theme.iconTheme
+            .copyWith(color: const Color.fromARGB(255, 138, 124, 124)),
       ),
     );
   }
@@ -42,7 +40,7 @@ class ApprovedUsersSearch extends SearchDelegate<ApprovedUser> {
     return IconButton(
       icon: const Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, ApprovedUser(username: ""));
+        close(context, const ApprovedUser(username: ""));
       },
     );
   }

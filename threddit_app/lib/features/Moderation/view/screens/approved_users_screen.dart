@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 class ApprovedUsersScreen extends ConsumerStatefulWidget {
   const ApprovedUsersScreen({super.key});
+  @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _ApprovedUsersScreenState();
 }
@@ -53,7 +54,7 @@ class _ApprovedUsersScreenState extends ConsumerState<ApprovedUsersScreen> {
                               .getApprovedUsers(client: client);
                         }));
               },
-              icon: Icon(Icons.add)),
+              icon: const Icon(Icons.add)),
         ],
       ),
       body: FutureBuilder(
@@ -70,7 +71,6 @@ class _ApprovedUsersScreenState extends ConsumerState<ApprovedUsersScreen> {
                 itemCount: approvedUsers.length,
                 itemBuilder: (context, index) {
                   final username = approvedUsers[index].getUsername;
-                  print(username);
                   return ListTile(
                     leading: const CircleAvatar(
                     radius: 16,
