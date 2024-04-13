@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScree
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -29,6 +30,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     user = ref.read(userModelProvider)!;
   }
 
+  String? uid;
   @override
   void initState() {
     _getUserData();
