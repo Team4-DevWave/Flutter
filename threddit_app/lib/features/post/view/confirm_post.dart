@@ -164,7 +164,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       if (image == null || isLink || isVideo) {
         return const SizedBox();
       }
-
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
 
