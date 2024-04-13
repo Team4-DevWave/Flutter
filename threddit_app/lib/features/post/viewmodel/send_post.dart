@@ -24,7 +24,7 @@ class PostProvider extends StateNotifier<bool> {
     //get username
 
     final whereTo =
-        post?.community == "My Profile" ? 'u/username' : 'r/${post?.community}';
+        post?.community == null ? 'u/username' : 'r/${post?.community}';
 
     try {
       final response = await http.post(
@@ -44,7 +44,6 @@ class PostProvider extends StateNotifier<bool> {
             "image": post?.image ?? "",
             "video": post?.video ?? ""
           }));
-      print(response.body);
       if (response.statusCode == 201) {
         return right(true);
       } else {

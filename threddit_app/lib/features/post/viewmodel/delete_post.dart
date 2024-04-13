@@ -1,51 +1,39 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
-import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:http/http.dart' as http;
 
-final sharePostsProvider =
-    StateNotifierProvider<SharePosts, bool>((ref) => SharePosts(ref));
+final deletePostProvider =
+    StateNotifierProvider<DeletePost, bool>((ref) => DeletePost(ref));
 
-class SharePosts extends StateNotifier<bool> {
+class DeletePost extends StateNotifier<bool> {
   Ref ref;
-  SharePosts(this.ref) : super(false);
+  DeletePost(this.ref) : super(false);
 
-  FutureEither<bool> sharePost() async {
-    state = true;
-    final sharedPost = ref.watch(sharedPostProvider);
-
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/share');
+  FutureEither<bool> deletePostRequest(String postid) async {
+    final url = Uri.parse(
+        'http://${AppConstants.local}:8000/api/v1/posts/$postid/delete');
     final token = await getToken();
-
     try {
-      final response = await http.post(
+      final response = await http.delete(
         url,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: json.encode(
-          {
-            "title": sharedPost.title,
-            "destination": sharedPost.destination,
-            "nsfw": sharedPost.nsfw,
-            "spoiler": sharedPost.spoiler,
-            "postid": sharedPost.post!.id,
-          },
-        ),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 204) {
         return right(true);
+      } else if (response.statusCode == 500) {
+        return left(Failure('Post not found, may be deleted before'));
       } else {
-        return left(Failure('Something went wrong while sharing the post'));
+        return left(Failure('something went wrong while deleting your post'));
       }
     } catch (e) {
       state = false;
@@ -54,8 +42,6 @@ class SharePosts extends StateNotifier<bool> {
       } else {
         return left(Failure(e.toString()));
       }
-    } finally {
-      state = false;
     }
   }
 }

@@ -1,3 +1,9 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final userModelProvider = StateProvider<UserModelMe?>(
+  (ref) => UserModelMe(),
+);
+
 class UserModelMe {
   final String? id;
   final String? username;

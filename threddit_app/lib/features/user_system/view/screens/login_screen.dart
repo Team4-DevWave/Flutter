@@ -51,6 +51,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
       if (loggedIn) {
         showSnackBar(navigatorKey.currentContext!,
             'Logged you in as ${ref.watch(userProvider)!.username}');
+
         Navigator.pushNamedAndRemoveUntil(navigatorKey.currentContext!,
             RouteClass.mainLayoutScreen, (Route<dynamic> route) => false);
       } else {

@@ -23,9 +23,7 @@ const String urlWindows = "http://localhost";
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status Code
 Future<int> changePasswordFunction(
-    {
-    
-    required String currentPassword,
+    {required String currentPassword,
     required String newPassword,
     required String confirmedPassword}) async {
   Map<String, dynamic> body = {
@@ -114,10 +112,9 @@ Future<int> changeEmailFunction({
 /// Recieves the client and the changed Gender as paramters,
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status code.
-Future<int> changeGenderFunction(
-    {
-    required String gender,
-    }) async {
+Future<int> changeGenderFunction({
+  required String gender,
+}) async {
   Map<String, dynamic> body = {
     'user_id': 1,
     'gender': gender,
@@ -314,8 +311,7 @@ class SettingsFetch extends StateNotifier<bool> {
     return users;
   }
 
-  Future<UserMock> getBlockedUsers(
-      ) async {
+  Future<UserMock> getBlockedUsers() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
@@ -333,14 +329,14 @@ class SettingsFetch extends StateNotifier<bool> {
     return UserMock.fromJson(jsonDecode(response.body));
   }
 
-  Future<UserModelMe> getMe(
-      ) async {
+  Future<UserModelMe> getMe() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
+    UserModelMe user = ref.watch(userModelProvider)!;
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
@@ -349,11 +345,12 @@ class SettingsFetch extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
+    user = UserModelMe.fromJson(jsonDecode(response.body));
+    ref.watch(userModelProvider.notifier).update((state) => user);
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
 
-  Future<UserSettings> getSettings(
-      ) async {
+  Future<UserSettings> getSettings() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
@@ -391,8 +388,7 @@ class SettingsFetch extends StateNotifier<bool> {
     return isNotificationEnabled;
   }
 
-  Future<bool> getFollowableSetting(
-      ) async {
+  Future<bool> getFollowableSetting() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
@@ -413,18 +409,17 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 }
 
-Future<int> changeSetting(
-    {
-    required change,
-    required String settingsName,
-    required String settingsType,
-    }) async {
+Future<int> changeSetting({
+  required change,
+  required String settingsName,
+  required String settingsType,
+}) async {
   Map<String, dynamic> body = {
     settingsType: {
       settingsName: change,
     }
   };
-  String? token =await getToken();
+  String? token = await getToken();
   String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
@@ -443,10 +438,9 @@ Future<int> changeSetting(
   return response.statusCode;
 }
 
-Future<int> changeCountry(
-    {
-    required String country,
-    }) async {
+Future<int> changeCountry({
+  required String country,
+}) async {
   Map<String, dynamic> body = {
     "country": country,
   };
