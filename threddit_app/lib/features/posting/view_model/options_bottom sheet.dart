@@ -115,7 +115,7 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
                                         ),
                                         onTap: () {
                                           blockUser( userToBlock: widget.post.userID!.username,context: context,);
-                                          //Navigator.pop(context);
+                                         
                                         },
                                       ),
                                       ListTile(
