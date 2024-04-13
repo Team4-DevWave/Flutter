@@ -107,8 +107,8 @@ class UserProfile {
       'socialLinks': socialLinks,
     };
   }
-
   String toJson() => json.encode(toMap());
+
 }
 
 class SafetyAndPrivacy {

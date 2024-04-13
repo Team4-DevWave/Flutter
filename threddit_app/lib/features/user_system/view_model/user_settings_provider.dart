@@ -20,8 +20,7 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
             activeCommunitiesVisibility: true,
             profilePicture: "",
             socialLinks: []));
-
-  ///this function sends the current state of the user data
+  ///this function sends the current state of the user data 
   ///if the request is successfull, the data will be updated in the provider
   FutureEither<bool> updateUserData() async {
     String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
@@ -35,8 +34,8 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
     final jsonBody = state.toJson();
 
     try {
-      final response =
-          await http.patch(Uri.parse(url), headers: headers, body: jsonBody);
+      final response = await http.patch(Uri.parse(url),
+          headers: headers, body:jsonBody);
       if (response.statusCode == 200) {
         final updatedProfile = UserProfile.fromJson(json.decode(response.body));
         state = updatedProfile;

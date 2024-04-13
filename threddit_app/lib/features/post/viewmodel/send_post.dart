@@ -28,7 +28,6 @@ class PostProvider extends StateNotifier<bool> {
 
     final whereTo =
         post?.community == null ? 'u/$user' : 'r/${post?.community}';
-    //get username
 
     try {
       final response = await http.post(
@@ -67,11 +66,13 @@ class PostProvider extends StateNotifier<bool> {
           throw Exception(
               'Failed to fetch post. Status code: ${response.statusCode}');
         }
-      } else {
+      }
+     else {
         return left(
             Failure("Can't submit post, please discard or try again later"));
       }
-    } catch (e) {
+      }
+    catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {
         return left(Failure('Check your internet connection...'));
       } else {
@@ -80,3 +81,4 @@ class PostProvider extends StateNotifier<bool> {
     }
   }
 }
+
