@@ -46,11 +46,16 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   Future<void> _pickImage() async {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
+
     if (pickedImage == null) return;
+
     imageFile = File(pickedImage.path);
+
     Uint8List imageBytes = await imageFile!.readAsBytes();
+
     setState(() {
       image = base64Encode(imageBytes);
+
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
       ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
@@ -68,7 +73,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       isVideo = true;
       ref.read(postDataProvider.notifier).updateVideo(video!);
       ref.read(postDataProvider.notifier).updateVideoPath(videoFile!);
-
     });
   }
 
@@ -110,7 +114,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     if (intialData?.video != null) {
       video = intialData?.video;
       videoFile = intialData?.videoPath;
-      isVideo = true; 
+      isVideo = true;
     }
     _bodytextController = TextEditingController(text: intialData?.text_body);
     if (intialData?.url != "") {
@@ -132,19 +136,17 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     ref.read(postDataProvider.notifier).resetAll();
   }
 
-  
-    String whereToPost() {
-      final postProvider = ref.read(postDataProvider.notifier);
-      final currentCommunity = ref.read(postDataProvider)!.community;
+  String whereToPost() {
+    final postProvider = ref.read(postDataProvider.notifier);
+    final currentCommunity = ref.read(postDataProvider)!.community;
 
-      if (currentCommunity!.isEmpty) {
-        postProvider.updateCommunityName("My Profile");
-        return "My Profile"; // Return updated value directly
-      } else {
-        return currentCommunity;
-      }
+    if (currentCommunity!.isEmpty) {
+      postProvider.updateCommunityName("My Profile");
+      return "My Profile"; // Return updated value directly
+    } else {
+      return currentCommunity;
     }
-
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +157,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       if (image == null || isLink || isVideo) {
         return const SizedBox();
       }
+
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
 
@@ -162,8 +165,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       if (video == null || isLink || isImage) {
         return const SizedBox();
       }
-      return AddVideoWidget(
-          onPressed: _removeVideo, videoPath: videoFile!);
+      return AddVideoWidget(onPressed: _removeVideo, videoPath: videoFile!);
     }
 
     Widget buildLink() {
@@ -207,17 +209,15 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
             isVideo: isVideo,
           ),
           actions: [
-            if (isImage)
+            if (isImage || isVideo)
               PostButton(
                 titleController: _titleController,
-                type: "image",
+                type: "image/video",
               )
             else if (isLink)
-              PostButton(titleController: _titleController, type: "link")
-            else if (isVideo)
-              PostButton(titleController: _titleController, type: "video")
+              PostButton(titleController: _titleController, type: "url")
             else
-            PostButton(titleController: _titleController, type: "text")
+              PostButton(titleController: _titleController, type: "text")
           ]),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

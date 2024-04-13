@@ -43,8 +43,10 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
         (list) {
-      _userCommunitiesData = list;
-      isLoading = false;
+      setState(() {
+        _userCommunitiesData = list;
+        isLoading = false;
+      });
     });
     // Wait for userFollowingData to be fetched
     _isFavouriteSub = {};

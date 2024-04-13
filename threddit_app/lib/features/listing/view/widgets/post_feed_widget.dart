@@ -8,6 +8,8 @@ import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart'
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
+import 'package:threddit_clone/features/posting/view_model/options_bottom%20sheet.dart';
+import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -64,6 +66,19 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
   Future getModOptions() async {
     isLocked = await ref.watch(moderationApisProvider.notifier).getLocked();
     isSpam = await ref.watch(moderationApisProvider.notifier).getSpam();
+
+  void toggleNsfw() async {
+    await ref.read(toggleNSFW(widget.dataOfPost.id));
+    widget.dataOfPost.nsfw = !widget.dataOfPost.nsfw;
+    Navigator.pop(context);
+    setstate() {}
+  }
+
+  void toggleSPOILER() async {
+    await ref.read(toggleSpoiler(widget.dataOfPost.id));
+    widget.dataOfPost.spoiler = !widget.dataOfPost.spoiler;
+    Navigator.pop(context);
+    setstate() {}
   }
 
   @override
@@ -111,11 +126,21 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                 )),
                 InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, RouteClass.communityScreen,
-                        arguments: {
-                          'id': widget.dataOfPost.subredditID!.name,
-                          'uid': widget.dataOfPost.userID!.id
-                        });
+                    showBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              OptionsBotttomSheet(
+                                  post: widget.dataOfPost,
+                                  toggleSPOILER: toggleSPOILER,
+                                  toggleNsfw: toggleNsfw,
+                                  uid: '65f780011b4a7f2cf036ed12')
+                            ],
+                          );
+                        },
+                        backgroundColor: AppColors.backgroundColor);
                   },
                   child: const Icon(
                     Icons.more_vert,

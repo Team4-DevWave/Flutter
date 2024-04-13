@@ -9,7 +9,6 @@ import 'package:threddit_clone/features/home_page/view_model/favourites_provider
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-
 class LeftDrawer extends ConsumerStatefulWidget {
   const LeftDrawer({super.key});
 

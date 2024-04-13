@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -24,7 +23,6 @@ class AddPostScreen extends ConsumerStatefulWidget {
 }
 
 class _AddPostScreenState extends ConsumerState<AddPostScreen> {
-
   late String postTitle;
   late String postBody;
   late TextEditingController _titleController;
@@ -33,19 +31,19 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   bool isLink = false;
   bool isVideo = false;
 
-
   ///add image picker data
   final ImagePicker picker = ImagePicker();
-  String?image;
-  String?video;
-  File?videoFile;
-  File?imageFile;
+  String? image;
+  String? video;
+  File? videoFile;
+  File? imageFile;
 
-    Future<void> _pickImage() async {
+  Future<void> _pickImage() async {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage == null) return;
     imageFile = File(pickedImage.path);
+
     Uint8List imageBytes = await imageFile!.readAsBytes();
     setState(() {
       image = base64Encode(imageBytes);
@@ -69,18 +67,17 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
-
-  Future<void> _removeImage()async{
+  Future<void> _removeImage() async {
     setState(() {
       image = null;
-      isImage=false;
+      isImage = false;
     });
   }
 
-  Future<void> _removeVideo()async{
+  Future<void> _removeVideo() async {
     setState(() {
-      video = "";
-      isVideo= false;
+      video = null;
+      isVideo = false;
     });
   }
 
@@ -96,12 +93,11 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
-   void resetAll(){
+  void resetAll() {
     _titleController = TextEditingController(text: "");
     _bodytextController = TextEditingController(text: "");
     ref.read(postDataProvider.notifier).resetAll();
   }
-
 
   @override
   void initState() {
@@ -130,17 +126,18 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
 
-    Widget buildVideoContent(){
-      if(video == null || isLink || isImage){
+    Widget buildVideoContent() {
+      if (video == null || isLink || isImage) {
         return const SizedBox();
       }
       return AddVideoWidget(onPressed: _removeVideo, videoPath: videoFile!);
     }
 
     Widget buildLink() {
-      if(isLink)
-      {
-        return AddLinkWidget(removeLink: _removeLink,);
+      if (isLink) {
+        return AddLinkWidget(
+          removeLink: _removeLink,
+        );
       }
       return const SizedBox();
     }
@@ -148,7 +145,13 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: ClosedButton(resetAll: resetAll, firstScreen: true, titleController: _titleController, isImage: isImage, isLink: isLink, isVideo: isVideo),
+        leading: ClosedButton(
+            resetAll: resetAll,
+            firstScreen: true,
+            titleController: _titleController,
+            isImage: isImage,
+            isLink: isLink,
+            isVideo: isVideo),
         actions: [
           NextButton(titleController: _titleController),
         ],
@@ -158,72 +161,81 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
           Expanded(
             flex: 3,
             child: SingleChildScrollView(
-              child:
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TextField(
-                    onTapOutside: (event) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
-                    controller: _titleController,
-                    style: const TextStyle(
-                        fontSize: 24, color: AppColors.whiteGlowColor),
-                    cursorColor: AppColors.redditOrangeColor,
-                    cursorWidth: 1.5,
-                    decoration: const InputDecoration(
-                        labelText: 'Title',
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        labelStyle: TextStyle(
-                            color: AppColors.whiteColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24)),
-                    onChanged: (value) => {
-                      if(post?.title != value){
-                        ref.read(postDataProvider.notifier).updateTitle(value),
-                      },
-                      setState(() {
-                        postTitle = value;
-                      })
-                    },
-                  ),
-                ),
-                buildImageContent(),
-                buildLink(),
-                buildVideoContent(),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
-                  child: TextField(
-                      onTapOutside: (event) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                      },
-                      keyboardType: TextInputType.text,
-                      maxLines: null,
-                      controller: _bodytextController,
-                      style: const TextStyle(
-                          fontSize: 16, color: AppColors.whiteGlowColor),
-                      cursorColor: AppColors.redditOrangeColor,
-                      cursorWidth: 1.5,
-                      decoration: const InputDecoration(
-                          labelText: 'body text (optional)',
-                          floatingLabelAlignment: FloatingLabelAlignment.start,
-                          floatingLabelBehavior: FloatingLabelBehavior.never,
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          labelStyle:
-                              TextStyle(color: AppColors.whiteColor, fontSize: 16)),
-                      onChanged: (value) => {
-                        if(post?.text_body != value){
-                        ref.read(postDataProvider.notifier).updateBodyText(value)
-                      },
-                      setState(() {
-                        postBody = value;
-                      })
-                          }),
-                ),
-              ]),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: TextField(
+                        onTapOutside: (event) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        controller: _titleController,
+                        style: const TextStyle(
+                            fontSize: 24, color: AppColors.whiteGlowColor),
+                        cursorColor: AppColors.redditOrangeColor,
+                        cursorWidth: 1.5,
+                        decoration: const InputDecoration(
+                            labelText: 'Title',
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            labelStyle: TextStyle(
+                                color: AppColors.whiteColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24)),
+                        onChanged: (value) => {
+                          if (post?.title != value)
+                            {
+                              ref
+                                  .read(postDataProvider.notifier)
+                                  .updateTitle(value),
+                            },
+                          setState(() {
+                            postTitle = value;
+                          })
+                        },
+                      ),
+                    ),
+                    buildImageContent(),
+                    buildLink(),
+                    buildVideoContent(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
+                      child: TextField(
+                          onTapOutside: (event) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
+                          keyboardType: TextInputType.text,
+                          maxLines: null,
+                          controller: _bodytextController,
+                          style: const TextStyle(
+                              fontSize: 16, color: AppColors.whiteGlowColor),
+                          cursorColor: AppColors.redditOrangeColor,
+                          cursorWidth: 1.5,
+                          decoration: const InputDecoration(
+                              labelText: 'body text (optional)',
+                              floatingLabelAlignment:
+                                  FloatingLabelAlignment.start,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              labelStyle: TextStyle(
+                                  color: AppColors.whiteColor, fontSize: 16)),
+                          onChanged: (value) => {
+                                if (post?.text_body != value)
+                                  {
+                                    ref
+                                        .read(postDataProvider.notifier)
+                                        .updateBodyText(value)
+                                  },
+                                setState(() {
+                                  postBody = value;
+                                })
+                              }),
+                    ),
+                  ]),
             ),
           ),
         ],
@@ -234,19 +246,25 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         child: Row(
           children: [
             IconButton(
-              onPressed: (!isLink && !isVideo) ? _pickImage : (){},
+              onPressed: (!isLink && !isVideo) ? _pickImage : () {},
               icon: const Icon(Icons.image),
-              color:  isLink || isImage || isVideo?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
+              color: isLink || isImage || isVideo
+                  ? AppColors.whiteHideColor
+                  : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isLink && !isImage) ? _pickVideo : (){},
+              onPressed: (!isLink && !isImage) ? _pickVideo : () {},
               icon: const Icon(Icons.video_library_outlined),
-              color: isLink || isImage || isVideo?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
+              color: isLink || isImage || isVideo
+                  ? AppColors.whiteHideColor
+                  : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isImage && !isVideo)? _addLink : (){},
+              onPressed: (!isImage && !isVideo) ? _addLink : () {},
               icon: const Icon(Icons.link),
-              color:  isLink || isImage || isVideo?  AppColors.whiteHideColor : AppColors.whiteGlowColor,
+              color: isLink || isImage || isVideo
+                  ? AppColors.whiteHideColor
+                  : AppColors.whiteGlowColor,
             ),
           ],
         ),
