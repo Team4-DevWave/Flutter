@@ -21,6 +21,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   late TextEditingController _commentController;
   late AsyncValue<Votes> upvotes;
   late AsyncValue<Votes> downvotes;
+  bool upVoted=false;
+  bool downVoted=false;
   @override
   void initState() {
     super.initState();
@@ -28,35 +30,71 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     downvotes = ref.read(getUserDownvotesProvider);
     _commentController = TextEditingController(text: widget.comment.content);
   }
-
-  @override
-  Widget build(BuildContext context) {
-    bool upvoteStatus = upvotes.maybeWhen(
-      data: (votes) => votes.containsComment(widget.comment.id),
-      orElse: () => false,
-    );
-
-    bool downvoteStatus = downvotes.maybeWhen(
-      data: (votes) => votes.containsComment(widget.comment.id),
-      orElse: () => false,
-    );
-    void upVoteComment(WidgetRef ref) async {
+void upVoteComment(WidgetRef ref) async {
       ref.read(
           commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
+          if(upVoted)
+          {
+            widget.comment.votes.upvotes--;
+
+          }
+          else{
+            widget.comment.votes.upvotes++;
+            if(downVoted)
+            {
+              widget.comment.votes.downvotes--;
+            
+            }
+          }
+          upVoted=!upVoted;
+          downVoted=false;
       setState(() {});
     }
 
     void downVoteComment(WidgetRef ref) async {
       ref.read(
           commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
+          if(downVoted)
+          {
+            widget.comment.votes.downvotes--;
+
+          }
+          else{
+            widget.comment.votes.downvotes++;
+            if(upVoted)
+            {
+              widget.comment.votes.upvotes--;
+            
+            }
+          }
+          downVoted=!downVoted;
+          upVoted=false;
+
       setState(() {});
     }
+  @override
+  Widget build(BuildContext context) {
+    bool upvoteStatus = upvotes.maybeWhen(
+      data: (votes) { 
+        upVoted=true;
+        return votes.containsComment(widget.comment.id);},
+      orElse: () {
+        
+        return false;},
+    );
+
+    bool downvoteStatus = downvotes.maybeWhen(
+      data: (votes) => votes.containsComment(widget.comment.id),
+      orElse: () {
+        downVoted=false;
+        return false;},
+    );
+    
 
     // Function to delete the comment
     void _deleteComment() {
       ref.watch(deleteCommentProvider(
           (postId: widget.comment.post, commentId: widget.comment.id)));
-      print('Comment deleted!');
     }
 
     Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
@@ -118,6 +156,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     final hoursSincePost = difference.inHours;
 
     return SafeArea(
+      
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Container(
@@ -310,6 +349,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                             ),
                                             onTap: () {
                                               showModalBottomSheet(
+                                                
                                                 context: context,
                                                 isScrollControlled: true,
                                                 backgroundColor:
@@ -339,7 +379,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                         child: Column(
                                                           children: [
                                                             SizedBox(
-                                                              height: 300,
+                                                              height: 80,
                                                               child: TextField(
                                                                 controller:
                                                                     _commentController,
@@ -462,8 +502,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_upward_outlined,
                         size: 30,
                       ),
-                      color: upvoteStatus
-                          ? const Color.fromARGB(255, 217, 77, 67)
+                      color: upVoted
+                          ? Colors.red
                           : Colors.white,
                     ),
                     Text(
@@ -479,7 +519,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_downward_outlined,
                         size: 30,
                       ),
-                      color: downvoteStatus
+                      color: downVoted
                           ? const Color.fromARGB(255, 97, 137, 212)
                           : Colors.white,
                     ),

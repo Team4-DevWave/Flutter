@@ -9,6 +9,7 @@ class CommentRepository {
   var uuid = Uuid();
 
   Future<List<Comment>> fetchAllComments(String postId) async {
+    print(postId);
     final url =
         Uri.parse('http://10.0.2.2:8000/api/v1/posts/$postId/comments/');
     String? token = await getToken();

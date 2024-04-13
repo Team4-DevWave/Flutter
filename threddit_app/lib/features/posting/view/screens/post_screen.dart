@@ -6,6 +6,8 @@ import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dar
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
+import 'package:threddit_clone/features/posting/view/widgets/shared_post_card.dart';
+import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
 import 'package:threddit_clone/models/comment.dart';
@@ -40,6 +42,24 @@ class _PostScreenState extends ConsumerState<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    void toggleNsfw() async {
+     
+      await ref.read(toggleNSFW(widget.currentPost.id));
+      widget.currentPost.nsfw = !widget.currentPost.nsfw;
+      Navigator.pop(context);
+      setstate() {
+        
+      }
+    }
+
+    void toggleSPOILER() async {
+      await ref.read(toggleSpoiler(widget.currentPost.id));
+      widget.currentPost.spoiler = !widget.currentPost.spoiler;
+      Navigator.pop(context);
+      setstate() {
+      }
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(199, 10, 10, 10),
@@ -68,7 +88,8 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                           builder: (context) {
                             return Column(
                               mainAxisSize: MainAxisSize.min,
-                              children: widget.currentPost.userID != widget.uid
+                              children: widget.currentPost.userID!.id !=
+                                      widget.uid
                                   ? [
                                       ListTile(
                                           title: const Text(
@@ -191,7 +212,10 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                         ),
                                         leading: const Icon(
                                             Icons.warning_amber_rounded),
-                                        onTap: () {},
+                                        onTap: () {
+                                           
+                                          toggleSPOILER();
+                                        },
                                       ),
                                       ListTile(
                                         title: Text(
@@ -201,7 +225,9 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                           style: TextStyle(color: Colors.white),
                                         ),
                                         leading: const Icon(Icons.eighteen_mp),
-                                        onTap: () {},
+                                        onTap: () {
+                                          toggleNsfw();
+                                        },
                                       ),
                                       ListTile(
                                         title: const Text(
@@ -245,40 +271,45 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         body: Column(
           children: [
             Expanded(
-              child: ListView(children:[
-              PostCard(
+              child: ListView(
+                children: [
+                  widget.currentPost.parentPost == null
+                      ? PostCard(
+                          post: widget.currentPost,
+                          uid: widget.uid,
+                          onCommentPressed: () {},
+                        )
+                      : 
+                  SharedPostCard(
                     post: widget.currentPost,
                     uid: widget.uid,
                     onCommentPressed: _openAddCommentOverlay,
                   ),
-                  Consumer(
-                builder: (context, watch, child) {
-                  final AsyncValue<List<Comment>> postComments =
-                      ref.watch(commentsProvider((widget.currentPost.id)));
-                  return postComments.when(
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
-                    error: (error, stackTrace) =>
-                        Center(child: Text('Error: $error')),
-                    data: (comments) {
-                      return Column(
-                        children: [
-                           const Padding(
-                                    padding: EdgeInsets.only(bottom: 8)),
-                                if (comments.isNotEmpty)
-                                  ...comments
-                                      .map((comment) => CommentItem(
-                                            comment: comment,
-                                            uid: widget.uid,
-                                          ))
-                                      .toList(),
-                        ],
-                      );
-                    }
-                  );
-                }
-                  )
-              ],
+                  Consumer(builder: (context, watch, child) {
+                    final AsyncValue<List<Comment>> postComments =
+                        ref.watch(commentsProvider((widget.currentPost.id)));
+                    return postComments.when(
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        error: (error, stackTrace) =>
+                            Center(child: Text('Error: $error')),
+                        data: (comments) {
+                          return Column(
+                            children: [
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 8)),
+                              if (comments.isNotEmpty)
+                                ...comments
+                                    .map((comment) => CommentItem(
+                                          comment: comment,
+                                          uid: widget.uid,
+                                        ))
+                                    .toList(),
+                            ],
+                          );
+                        });
+                  })
+                ],
               ),
             ),
             AddComment(
