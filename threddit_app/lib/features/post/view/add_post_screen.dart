@@ -36,8 +36,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
-  // ByteData? image;
-  // ByteData? video;
   String?image;
   String?video;
   File?videoFile;
@@ -53,6 +51,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       image = base64Encode(imageBytes);
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
+      ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
     });
   }
 
@@ -66,6 +65,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       video = base64Encode(videoBytes);
       isVideo = true;
       ref.read(postDataProvider.notifier).updateVideo(video!);
+      ref.read(postDataProvider.notifier).updateVideoPath(videoFile!);
     });
   }
 
@@ -79,11 +79,11 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
   Future<void> _removeVideo()async{
     setState(() {
-      video = null;
+      video = "";
       isVideo= false;
     });
-
   }
+
   Future<void> _addLink() async {
     setState(() {
       isLink = true;
@@ -119,12 +119,12 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final ref = this.ref;
     PostData? post = ref.watch(postDataProvider);
 
     Widget buildImageContent() {
       if (image == null || isLink || isVideo) {
+        print(image);
         return const SizedBox();
       }
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
@@ -134,7 +134,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       if(video == null || isLink || isImage){
         return const SizedBox();
       }
-      return AddVideoWidget(onPressed: _removeVideo, videoPath: videoFile!.path);
+      return AddVideoWidget(onPressed: _removeVideo, videoPath: videoFile!);
     }
 
     Widget buildLink() {
