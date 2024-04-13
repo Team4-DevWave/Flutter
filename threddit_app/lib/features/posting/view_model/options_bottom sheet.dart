@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
-import 'package:threddit_clone/features/post/view/widgets/delete_post.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
@@ -63,9 +62,7 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
             style: TextStyle(color: Colors.white),
           ),
           leading: const Icon(Icons.save),
-          onTap: () {
-            delete(context, ref, widget.uid);
-          },
+          onTap: () {},
         ),
         ListTile(
           title: const Text(

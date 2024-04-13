@@ -49,7 +49,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       image = base64Encode(imageBytes);
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
-      ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
     });
   }
 
@@ -63,7 +62,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       video = base64Encode(videoBytes);
       isVideo = true;
       ref.read(postDataProvider.notifier).updateVideo(video!);
-      ref.read(postDataProvider.notifier).updateVideoPath(videoFile!);
     });
   }
 

@@ -58,7 +58,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
 
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
-      ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
     });
   }
 
@@ -72,7 +71,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       video = base64Encode(videoBytes);
       isVideo = true;
       ref.read(postDataProvider.notifier).updateVideo(video!);
-      ref.read(postDataProvider.notifier).updateVideoPath(videoFile!);
     });
   }
 
