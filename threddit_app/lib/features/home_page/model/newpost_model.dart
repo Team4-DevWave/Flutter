@@ -6,16 +6,16 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 class Post {
   final String id;
   final String title;
-   String? textBody;
+  String? textBody;
   String? image;
-   bool nsfw;
-   bool spoiler;
-   bool locked;
+  bool nsfw;
+  bool spoiler;
+  bool locked;
   final bool approved;
   final DateTime postedTime;
   String? video;
   final int numViews;
-   int commentsCount;
+  int commentsCount;
   final User? userID;
   final SubredditInfo? subredditID;
   final VotesList? votes;
@@ -91,8 +91,6 @@ class Post {
     };
   }
 }
-
-
 
 class User {
   final String id;

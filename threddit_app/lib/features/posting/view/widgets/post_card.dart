@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
@@ -9,11 +10,11 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
 
 class PostCard extends ConsumerStatefulWidget {
-  const PostCard(
-      {super.key,
-      required this.post,
-      required this.uid,
-      });
+  const PostCard({
+    super.key,
+    required this.post,
+    required this.uid,
+  });
   final Post post;
   final String uid;
   @override
@@ -140,18 +141,33 @@ class _PostCardState extends ConsumerState<PostCard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (widget.post.nsfw)
-                      const Text("NSFW",
-                          style: TextStyle(
-                              backgroundColor: Colors.pink,
-                              color: Colors.white)),
-                    const SizedBox(
-                      width: 10,
+                      Container(
+                          decoration: BoxDecoration(
+                              color: Colors.pink,
+                              border:
+                                  Border.all(color: AppColors.backgroundColor),
+                              borderRadius: BorderRadius.circular(
+                                  35) // Adjust the radius as needed
+                              ),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: const Text("NSFW",
+                              style: TextStyle(color: Colors.white))),
+                    SizedBox(
+                      width: 10.w,
                     ),
                     if (widget.post.spoiler)
-                      const Text("SPOILER",
-                          style: TextStyle(
-                              backgroundColor: Colors.purple,
-                              color: Colors.white)),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.purple,
+                            border:
+                                Border.all(color: AppColors.backgroundColor),
+                            borderRadius: BorderRadius.circular(
+                                35) // Adjust the radius as needed
+                            ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: const Text("SPOILER",
+                            style: TextStyle(color: Colors.white)),
+                      ),
                   ],
                 ),
               ),
@@ -242,7 +258,6 @@ class _PostCardState extends ConsumerState<PostCard> {
                   ),
                   color: Colors.white,
                 ),
-                
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,

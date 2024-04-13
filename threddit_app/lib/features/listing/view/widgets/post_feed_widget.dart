@@ -87,251 +87,284 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
     final difference = now.difference(widget.dataOfPost.postedTime);
     final hoursSincePost = difference.inHours;
     getModOptions();
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          RouteClass.postScreen,
-          arguments: {
-            'currentpost': widget.dataOfPost,
-            'uid': widget.uid,
-          },
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.all(5.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                    child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: Text(
-                        'r/${widget.dataOfPost.userID?.username}',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 7.w,
-                    ),
-                    Text(
-                      '${hoursSincePost}h ago',
-                      style: const TextStyle(color: AppColors.whiteHideColor),
-                    ),
-                  ],
-                )),
-                InkWell(
-                  onTap: () {
-                    showBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              OptionsBotttomSheet(
-                                  post: widget.dataOfPost,
-                                  toggleSPOILER: toggleSPOILER,
-                                  toggleNsfw: toggleNsfw,
-                                  uid: widget.uid)
-                            ],
-                          );
-                        },
-                        backgroundColor: AppColors.backgroundColor);
-                  },
-                  child: const Icon(
-                    Icons.more_vert,
-                    color: AppColors.whiteHideColor,
-                  ),
-                )
-              ],
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: const EdgeInsets.all(5.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  child: Row(
                 children: [
-                  Text(
-                    widget.dataOfPost.title,
-                    style: AppTextStyles.boldTextStyle,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        RouteClass.postScreen,
+                        arguments: {
+                          'currentpost': widget.dataOfPost,
+                          'uid': widget.uid,
+                        },
+                      );
+                    },
+                    child: Text(
+                      'r/${widget.dataOfPost.userID?.username}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 7.w,
                   ),
                   Text(
-                    widget.dataOfPost.textBody.toString(),
-                    style: AppTextStyles.secondaryTextStyle,
+                    '${hoursSincePost}h ago',
+                    style: const TextStyle(color: AppColors.whiteHideColor),
                   ),
+                ],
+              )),
+              InkWell(
+                onTap: () {
+                  showBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            OptionsBotttomSheet(
+                                post: widget.dataOfPost,
+                                toggleSPOILER: toggleSPOILER,
+                                toggleNsfw: toggleNsfw,
+                                uid: widget.uid)
+                          ],
+                        );
+                      },
+                      backgroundColor: AppColors.backgroundColor);
+                },
+                child: const Icon(
+                  Icons.more_vert,
+                  color: AppColors.whiteHideColor,
+                ),
+              )
+            ],
+          ),
+          if (widget.dataOfPost.nsfw || widget.dataOfPost.spoiler)
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  if (widget.dataOfPost.nsfw)
+                    Container(
+                        decoration: BoxDecoration(
+                            color: Colors.pink,
+                            border:
+                                Border.all(color: AppColors.backgroundColor),
+                            borderRadius: BorderRadius.circular(
+                                35) // Adjust the radius as needed
+                            ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: const Text("NSFW",
+                            style: TextStyle(color: Colors.white))),
+                  SizedBox(
+                    width: 10.w,
+                  ),
+                  if (widget.dataOfPost.spoiler)
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.purple,
+                          border: Border.all(color: AppColors.backgroundColor),
+                          borderRadius: BorderRadius.circular(
+                              35) // Adjust the radius as needed
+                          ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: const Text("SPOILER",
+                          style: TextStyle(color: Colors.white)),
+                    ),
                 ],
               ),
             ),
-            Center(
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.backgroundColor),
-                    borderRadius:
-                        BorderRadius.circular(35) // Adjust the radius as needed
-                    ),
-                child: (widget.dataOfPost.image != null)
-                    ? Image(
-                        height: 250.h,
-                        width: 360.w,
-                        fit: BoxFit.fitWidth,
-                        image: NetworkImage(widget.dataOfPost.image.toString()),
-                      )
-                    : (widget.dataOfPost.video != null)
-                        ? AspectRatio(
-                            aspectRatio: _controller.value.aspectRatio,
-                            child:
-                                Stack(alignment: Alignment.center, children: [
-                              VideoPlayer(_controller),
-                              Positioned(
-                                child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    _controller.value.isPlaying
-                                        ? Icons.pause
-                                        : Icons.play_arrow_rounded,
-                                    color: Colors.white,
-                                    size: 32,
-                                  ),
-                                ),
-                              )
-                            ]),
-                          )
-                        : const SizedBox(),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Padding(
+            padding: const EdgeInsets.only(
+                left: 8.0, right: 8.0, bottom: 8.0, top: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    AddRadiusBoarder(
-                      childWidget: Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              if (choiceBottum == -1 || choiceBottum == 2) {
-                                setState(() {
-                                  if (numbberOfvotes ==
-                                      int.parse(widget.dataOfPost.numViews
-                                              .toString()) -
-                                          1) {
-                                    numbberOfvotes += 2;
-                                  } else {
-                                    numbberOfvotes++;
-                                  }
-                                  choiceBottum = 1;
-                                });
-                              }
-                            },
-                            child: Icon(
-                              Icons.arrow_upward,
-                              color: (choiceBottum == 1)
-                                  ? AppColors.redditOrangeColor
-                                  : AppColors.whiteColor,
-                            ),
-                          ),
-                          const VerticalDivider(
-                            thickness: 1,
-                          ),
-                          Text(
-                            numbberOfvotes.toString(),
-                            style: AppTextStyles.secondaryTextStyle,
-                          ),
-                          const VerticalDivider(
-                            thickness: 1,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              if (choiceBottum == -1 || choiceBottum == 1) {
-                                setState(() {
-                                  if (numbberOfvotes ==
-                                      int.parse(widget.dataOfPost.numViews
-                                              .toString()) +
-                                          1) {
-                                    numbberOfvotes -= 2;
-                                  } else {
-                                    numbberOfvotes--;
-                                  }
-                                  choiceBottum = 2;
-                                });
-                              }
-                            },
-                            child: Icon(
-                              Icons.arrow_downward,
-                              color: (choiceBottum == 2)
-                                  ? AppColors.redditOrangeColor
-                                  : AppColors.whiteColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15.w,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color.fromARGB(143, 255, 255, 255),
-                          width: 2.w,
-                        ),
-                        borderRadius: BorderRadius.circular(
-                            15), // Add this line to make the border circular
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 4.0),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.comment,
-                            color: AppColors.whiteColor,
-                          ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          Text(
-                            widget.dataOfPost.commentsCount.toString(),
-                            style: const TextStyle(color: AppColors.whiteColor),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                Text(
+                  widget.dataOfPost.title,
+                  style: AppTextStyles.boldTextStyle,
                 ),
-                IconButton(
-                    onPressed: () {
-                      setState(() {
-                        getModOptions().then((value) =>
-                            moderation(context, ref, isSpam, isLocked));
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.shield,
-                      color: AppColors.realWhiteColor,
-                    )),
-                IconButton(
-                  icon:
-                      const Icon(Icons.share, color: AppColors.realWhiteColor),
-                  onPressed: () {
-                    share(context, ref, widget.dataOfPost);
-                  },
-                )
+                Text(
+                  widget.dataOfPost.textBody.toString(),
+                  style: AppTextStyles.secondaryTextStyle,
+                ),
               ],
             ),
-            const Divider(color: AppColors.whiteHideColor),
-          ],
-        ),
+          ),
+          Center(
+            child: Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.backgroundColor),
+                  borderRadius:
+                      BorderRadius.circular(35) // Adjust the radius as needed
+                  ),
+              child: (widget.dataOfPost.image != null &&
+                      widget.dataOfPost.image != '')
+                  ? Image(
+                      height: 250.h,
+                      width: 360.w,
+                      fit: BoxFit.fitWidth,
+                      image: NetworkImage(widget.dataOfPost.image.toString()),
+                    )
+                  : (widget.dataOfPost.video != null &&
+                          widget.dataOfPost.video != '')
+                      ? AspectRatio(
+                          aspectRatio: _controller.value.aspectRatio,
+                          child: Stack(alignment: Alignment.center, children: [
+                            VideoPlayer(_controller),
+                            Positioned(
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.5),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  _controller.value.isPlaying
+                                      ? Icons.pause
+                                      : Icons.play_arrow_rounded,
+                                  color: Colors.white,
+                                  size: 32,
+                                ),
+                              ),
+                            )
+                          ]),
+                        )
+                      : const SizedBox(),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  AddRadiusBoarder(
+                    childWidget: Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            if (choiceBottum == -1 || choiceBottum == 2) {
+                              setState(() {
+                                if (numbberOfvotes ==
+                                    int.parse(widget.dataOfPost.numViews
+                                            .toString()) -
+                                        1) {
+                                  numbberOfvotes += 2;
+                                } else {
+                                  numbberOfvotes++;
+                                }
+                                choiceBottum = 1;
+                              });
+                            }
+                          },
+                          child: Icon(
+                            Icons.arrow_upward,
+                            color: (choiceBottum == 1)
+                                ? AppColors.redditOrangeColor
+                                : AppColors.whiteColor,
+                          ),
+                        ),
+                        const VerticalDivider(
+                          thickness: 1,
+                        ),
+                        Text(
+                          numbberOfvotes.toString(),
+                          style: AppTextStyles.secondaryTextStyle,
+                        ),
+                        const VerticalDivider(
+                          thickness: 1,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (choiceBottum == -1 || choiceBottum == 1) {
+                              setState(() {
+                                if (numbberOfvotes ==
+                                    int.parse(widget.dataOfPost.numViews
+                                            .toString()) +
+                                        1) {
+                                  numbberOfvotes -= 2;
+                                } else {
+                                  numbberOfvotes--;
+                                }
+                                choiceBottum = 2;
+                              });
+                            }
+                          },
+                          child: Icon(
+                            Icons.arrow_downward,
+                            color: (choiceBottum == 2)
+                                ? AppColors.redditOrangeColor
+                                : AppColors.whiteColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15.w,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: const Color.fromARGB(143, 255, 255, 255),
+                        width: 2.w,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                          15), // Add this line to make the border circular
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 4.0),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.comment,
+                          color: AppColors.whiteColor,
+                        ),
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        Text(
+                          widget.dataOfPost.commentsCount.toString(),
+                          style: const TextStyle(color: AppColors.whiteColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      getModOptions().then((value) =>
+                          moderation(context, ref, isSpam, isLocked));
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.shield,
+                    color: AppColors.realWhiteColor,
+                  )),
+              IconButton(
+                icon: const Icon(Icons.share, color: AppColors.realWhiteColor),
+                onPressed: () {
+                  share(context, ref, widget.dataOfPost);
+                },
+              )
+            ],
+          ),
+          const Divider(color: AppColors.whiteHideColor),
+        ],
       ),
     );
   }
