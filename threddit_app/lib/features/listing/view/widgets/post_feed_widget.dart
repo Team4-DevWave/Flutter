@@ -66,6 +66,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
   Future getModOptions() async {
     isLocked = await ref.watch(moderationApisProvider.notifier).getLocked();
     isSpam = await ref.watch(moderationApisProvider.notifier).getSpam();
+  }
 
   void toggleNsfw() async {
     await ref.read(toggleNSFW(widget.dataOfPost.id));
@@ -312,13 +313,10 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                 ),
                 IconButton(
                     onPressed: () {
-                      setState(()  {
-                        getModOptions().then((value) => moderation(context, ref, isSpam, isLocked));
-                        
+                      setState(() {
+                        getModOptions().then((value) =>
+                            moderation(context, ref, isSpam, isLocked));
                       });
-                    
-                      
-                        
                     },
                     icon: const Icon(
                       Icons.shield,
