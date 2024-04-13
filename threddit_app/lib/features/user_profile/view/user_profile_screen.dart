@@ -54,10 +54,8 @@ class _UserProfileState extends ConsumerState<UserProfile>
   }
 
   Future _fetchPosts() async {
-    print('USSSSSSSSSSSSSSER');
-    print(user!.username ?? ' no name');
     final response =
-        await fetchPostsByUsername(user!.username ?? 'moaz', _currentPage);
+        await fetchPostsByUsername(user!.username ?? '', _currentPage);
 
     setState(() {
       _posts.addAll(response.posts);
@@ -86,7 +84,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
             itemCount: _comments.length,
             itemBuilder: (context, index) {
               return Container(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
                     Text(
@@ -103,40 +101,8 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername('admin', _currentPage);
+      fetchPostsByUsername(user?.username ?? '', _currentPage);
     }
-  }
-
-  Widget buildPostTab() {
-    return _posts.isEmpty
-        ? Center(
-            child: Lottie.asset(
-            'assets/animation/loading.json',
-            repeat: true,
-          ))
-        : ListView.builder(
-            controller: _scrollController,
-            itemCount: _posts.length + 1,
-            itemBuilder: (context, index) {
-              if (index < _posts.length) {
-                return _posts[index].parentPost != null
-                    ? FeedUnitShare(
-                        dataOfPost: _posts[index].parentPost!,
-                        parentPost: _posts[index],
-                        uid!)
-                    : FeedUnit(_posts[index], uid!);
-              } else {
-                return SizedBox(
-                  height: 75.h,
-                  width: 75.w,
-                  child: Lottie.asset(
-                    'assets/animation/loading.json',
-                    repeat: true,
-                  ),
-                );
-              }
-            },
-          );
   }
 
   Widget buildAboutTab() {
@@ -300,7 +266,44 @@ class _UserProfileState extends ConsumerState<UserProfile>
                   Positioned.fill(
                     top: 100.h,
                     child: TabBarView(controller: _tabController, children: [
-                      buildPostTab(),
+                      _posts.isEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.warning_amber,
+                                  color: AppColors.whiteGlowColor,
+                                ),
+                                Text(
+                                  "Wow, such empty in Posts!",
+                                  style: AppTextStyles.primaryTextStyle,
+                                ),
+                              ],
+                            )
+                          : ListView.builder(
+                              controller: _scrollController,
+                              itemCount: _posts.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index < _posts.length) {
+                                  return _posts[index].parentPost != null
+                                      ? FeedUnitShare(
+                                          dataOfPost: _posts[index].parentPost!,
+                                          parentPost: _posts[index],
+                                          uid!)
+                                      : FeedUnit(_posts[index], uid!);
+                                } else {
+                                  return SizedBox(
+                                    height: 75.h,
+                                    width: 75.w,
+                                    child: Lottie.asset(
+                                      'assets/animation/loading.json',
+                                      repeat: true,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
                       buildCommentsTab(),
                       buildAboutTab()
                     ]),

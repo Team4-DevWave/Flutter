@@ -77,10 +77,11 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               ),
               title: "Create a community",
               onTap: () {
-                Navigator.pushNamed(context, RouteClass.createCommunityScreen,
-                    arguments: 
-                       "user2",
-                    );
+                Navigator.pushNamed(
+                  context,
+                  RouteClass.createCommunityScreen,
+                  arguments: user?.id,
+                );
               }),
           RightDrawerButtons(
               icon: const Icon(

@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+
 final sliderProvider = StateProvider<double>((ref) {
   return 1.0;
 });
@@ -104,7 +105,7 @@ class _TextSizeScreenState extends ConsumerState<TextSizeScreen> {
                       children: [
                         const Spacer(),
                         Container(
-                          padding: const EdgeInsetsDirectional.only(bottom: 10),
+                          padding: EdgeInsetsDirectional.all(10.w),
                           alignment: Alignment.bottomCenter,
                           child: Slider(
                             min: 1,

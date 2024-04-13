@@ -177,7 +177,6 @@ class Auth extends StateNotifier<bool> {
           },
         ),
       );
-
       if (response.statusCode == 200 || response.statusCode == 201) {
         return right(true);
       } else if (response.statusCode == 400) {
@@ -281,7 +280,6 @@ class Auth extends StateNotifier<bool> {
     state = true;
     final UserModel user = ref.watch(userProvider)!;
     try {
-      print(user);
       final response = await http.post(
         Uri.parse('http://${AppConstants.local}:8000/api/v1/users/signup'),
         headers: {

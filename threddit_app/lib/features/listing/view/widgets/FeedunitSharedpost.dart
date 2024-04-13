@@ -128,8 +128,8 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                 child: (widget.dataOfPost.image != null &&
                         widget.dataOfPost.image != '')
                     ? Image(
-                        height: 125.h,
-                        width: 200.w,
+                        height: 200.h,
+                        width: 300.w,
                         fit: BoxFit.fitWidth,
                         image: NetworkImage(widget.dataOfPost.image.toString()),
                       )
@@ -142,8 +142,8 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                               VideoPlayer(_controller),
                               Positioned(
                                 child: Container(
-                                  width: 50,
-                                  height: 50,
+                                  width: 125.h,
+                                  height: 200.w,
                                   decoration: BoxDecoration(
                                     color: Colors.black.withOpacity(0.5),
                                     shape: BoxShape.circle,
@@ -153,7 +153,7 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                                         ? Icons.pause
                                         : Icons.play_arrow_rounded,
                                     color: Colors.white,
-                                    size: 32,
+                                    size: 32.sp,
                                   ),
                                 ),
                               )

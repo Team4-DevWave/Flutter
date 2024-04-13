@@ -83,7 +83,13 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     onPressed: () {
                       return _forgetPassword();
                     },
-                    child: const Text("Forgot password?")),
+                    child: Text(
+                      "Forgot password?",
+                      style: AppTextStyles.primaryTextStyle.copyWith(
+                        color: AppColors.redditOrangeColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )),
               ),
               confirmPasswordForm,
               const Spacer(),
@@ -97,6 +103,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                   if (newPassword.length < 8 || confirmedPassword.length < 8) {
                     showAlert(
                         "Password length must be greater than 8", context);
+                  } else if (newPassword == currentPassword) {
+                    showAlert("Passwords must not be the same", context);
                   } else {
                     final statusCode = changePasswordFunction(
                       currentPassword: currentPassword,

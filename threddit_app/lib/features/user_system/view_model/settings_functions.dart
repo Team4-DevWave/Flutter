@@ -116,7 +116,6 @@ Future<int> changeGenderFunction({
   required String gender,
 }) async {
   Map<String, dynamic> body = {
-    'user_id': 1,
     'gender': gender,
   };
   String? token = await getToken();
@@ -128,8 +127,8 @@ Future<int> changeGenderFunction({
   }
   String bodyEncoded = jsonEncode(body);
 
-  http.Response response = await http.post(
-    Uri.parse("$url:3001/api/change-gender"),
+  http.Response response = await http.patch(
+    Uri.parse("$url:8000/api/v1/users/me/changeGender"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -161,6 +160,7 @@ void checkPasswordChangeResponse({
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
     ref.watch(authControllerProvider.notifier).logout();
+
     showAlert("Password was changed correctly! Please log in again!", context);
   } else {
     showAlert("Password was incorrect.", context);
@@ -227,10 +227,9 @@ Future<int> notificationOn(
 Future<int> unblockUser(
     {required http.Client client,
     required String userToUnBlock,
-    required String token}) async {
-  Map<String, dynamic> body = {'blockUsername': userToUnBlock};
-  String bodyEncoded = jsonEncode(body);
+    required BuildContext context}) async {
   final String url;
+  String? token = await getToken();
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
@@ -242,8 +241,12 @@ Future<int> unblockUser(
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
-    body: bodyEncoded,
   );
+  if (response.statusCode == 204) {
+    showAlert("User was unblocked succesfully", context);
+  } else {
+    showAlert("User was not unblocked", context);
+  }
   return response.statusCode;
 }
 
@@ -336,7 +339,7 @@ class SettingsFetch extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    UserModelMe user = ref.watch(userModelProvider)!;
+    UserModelMe user = ref.read(userModelProvider)!;
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
@@ -346,7 +349,8 @@ class SettingsFetch extends StateNotifier<bool> {
       },
     );
     user = UserModelMe.fromJson(jsonDecode(response.body));
-    ref.watch(userModelProvider.notifier).update((state) => user);
+    print(user);
+    ref.read(userModelProvider.notifier).update((state) => user);
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
 

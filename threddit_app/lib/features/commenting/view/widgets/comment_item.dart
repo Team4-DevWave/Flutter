@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
@@ -21,8 +22,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   late TextEditingController _commentController;
   late AsyncValue<Votes> upvotes;
   late AsyncValue<Votes> downvotes;
-  bool upVoted=false;
-  bool downVoted=false;
+  bool upVoted = false;
+  bool downVoted = false;
   @override
   void initState() {
     super.initState();
@@ -30,66 +31,57 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     downvotes = ref.read(getUserDownvotesProvider);
     _commentController = TextEditingController(text: widget.comment.content);
   }
-void upVoteComment(WidgetRef ref) async {
-      ref.read(
-          commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
-          if(upVoted)
-          {
-            widget.comment.votes.upvotes--;
 
-          }
-          else{
-            widget.comment.votes.upvotes++;
-            if(downVoted)
-            {
-              widget.comment.votes.downvotes--;
-            
-            }
-          }
-          upVoted=!upVoted;
-          downVoted=false;
-      setState(() {});
+  void upVoteComment(WidgetRef ref) async {
+    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
+    if (upVoted) {
+      widget.comment.votes.upvotes--;
+    } else {
+      widget.comment.votes.upvotes++;
+      if (downVoted) {
+        widget.comment.votes.downvotes--;
+      }
     }
+    upVoted = !upVoted;
+    downVoted = false;
+    setState(() {});
+  }
 
-    void downVoteComment(WidgetRef ref) async {
-      ref.read(
-          commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
-          if(downVoted)
-          {
-            widget.comment.votes.downvotes--;
-
-          }
-          else{
-            widget.comment.votes.downvotes++;
-            if(upVoted)
-            {
-              widget.comment.votes.upvotes--;
-            
-            }
-          }
-          downVoted=!downVoted;
-          upVoted=false;
-
-      setState(() {});
+  void downVoteComment(WidgetRef ref) async {
+    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
+    if (downVoted) {
+      widget.comment.votes.downvotes--;
+    } else {
+      widget.comment.votes.downvotes++;
+      if (upVoted) {
+        widget.comment.votes.upvotes--;
+      }
     }
+    downVoted = !downVoted;
+    upVoted = false;
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     bool upvoteStatus = upvotes.maybeWhen(
-      data: (votes) { 
-        upVoted=true;
-        return votes.containsComment(widget.comment.id);},
+      data: (votes) {
+        upVoted = true;
+        return votes.containsComment(widget.comment.id);
+      },
       orElse: () {
-        
-        return false;},
+        return false;
+      },
     );
 
     bool downvoteStatus = downvotes.maybeWhen(
       data: (votes) => votes.containsComment(widget.comment.id),
       orElse: () {
-        downVoted=false;
-        return false;},
+        downVoted = false;
+        return false;
+      },
     );
-    
 
     // Function to delete the comment
     void deleteComment() {
@@ -98,7 +90,6 @@ void upVoteComment(WidgetRef ref) async {
     }
 
     Future<void> showDeleteConfirmationDialog(BuildContext context) async {
-      print(widget.comment.user);
       return showDialog<void>(
         context: context,
         barrierDismissible:
@@ -156,7 +147,6 @@ void upVoteComment(WidgetRef ref) async {
     final hoursSincePost = difference.inHours;
 
     return SafeArea(
-      
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Container(
@@ -185,13 +175,13 @@ void upVoteComment(WidgetRef ref) async {
                         color: const Color.fromARGB(114, 255, 255, 255),
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    SizedBox(width: 5.w),
                     const Icon(
                       Icons.circle,
                       size: 4,
                       color: Color.fromARGB(98, 255, 255, 255),
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10.w),
                     Text(
                       '${hoursSincePost}h',
                       style: const TextStyle(
@@ -349,7 +339,6 @@ void upVoteComment(WidgetRef ref) async {
                                             ),
                                             onTap: () {
                                               showModalBottomSheet(
-                                                
                                                 context: context,
                                                 isScrollControlled: true,
                                                 backgroundColor:
@@ -502,9 +491,7 @@ void upVoteComment(WidgetRef ref) async {
                         Icons.arrow_upward_outlined,
                         size: 30,
                       ),
-                      color: upVoted
-                          ? Colors.red
-                          : Colors.white,
+                      color: upVoted ? Colors.red : Colors.white,
                     ),
                     Text(
                       '${widget.comment.votes.upvotes - widget.comment.votes.downvotes == 0 ? "vote" : widget.comment.votes.upvotes - widget.comment.votes.downvotes}',

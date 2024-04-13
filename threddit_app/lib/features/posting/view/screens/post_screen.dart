@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
@@ -43,22 +44,18 @@ class _PostScreenState extends ConsumerState<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
-     
     void toggleNsfw() async {
       ref.read(toggleNSFW(widget.currentPost.id));
       widget.currentPost.nsfw = !widget.currentPost.nsfw;
       Navigator.pop(context);
-      setstate() {
-        
-      }
+      setstate() {}
     }
 
     void toggleSPOILER() async {
       ref.read(toggleSpoiler(widget.currentPost.id));
       widget.currentPost.spoiler = !widget.currentPost.spoiler;
       Navigator.pop(context);
-      setstate() {
-      }
+      setstate() {}
     }
 
     return SafeArea(
@@ -88,14 +85,22 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                           backgroundColor: AppColors.backgroundColor,
                           builder: (context) {
                             return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: widget.currentPost.userID!.id !=
-                                      widget.uid
-                                  ? [
-                                      OptionsBotttomSheet(post: widget.currentPost, toggleSPOILER: toggleSPOILER, toggleNsfw: toggleNsfw, uid:widget.uid)
-                                    ]
-                                  : [ModeratorBotttomSheet(post:widget.currentPost, toggleSPOILER: toggleSPOILER, toggleNsfw: toggleNsfw)]
-                            );
+                                mainAxisSize: MainAxisSize.min,
+                                children:
+                                    widget.currentPost.userID!.id != widget.uid
+                                        ? [
+                                            OptionsBotttomSheet(
+                                                post: widget.currentPost,
+                                                toggleSPOILER: toggleSPOILER,
+                                                toggleNsfw: toggleNsfw,
+                                                uid: widget.uid)
+                                          ]
+                                        : [
+                                            ModeratorBotttomSheet(
+                                                post: widget.currentPost,
+                                                toggleSPOILER: toggleSPOILER,
+                                                toggleNsfw: toggleNsfw)
+                                          ]);
                           });
                     },
                     icon: const Icon(Icons.more_horiz)),
@@ -106,7 +111,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                     onPressed: () => Scaffold.of(context).openEndDrawer(),
                   ),
                 ),
-                const SizedBox(width: 5)
+                SizedBox(width: 5.w)
               ],
             ),
           ],
@@ -121,14 +126,11 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                       ? PostCard(
                           post: widget.currentPost,
                           uid: widget.uid,
-                          
                         )
-                      : 
-                  SharedPostCard(
-                    post: widget.currentPost,
-                    uid: widget.uid,
-                    
-                  ),
+                      : SharedPostCard(
+                          post: widget.currentPost,
+                          uid: widget.uid,
+                        ),
                   Consumer(builder: (context, watch, child) {
                     final AsyncValue<List<Comment>> postComments =
                         ref.watch(commentsProvider((widget.currentPost.id)));
@@ -143,12 +145,10 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 8)),
                               if (comments.isNotEmpty)
-                                ...comments
-                                    .map((comment) => CommentItem(
-                                          comment: comment,
-                                          uid: widget.uid,
-                                        ))
-                                    ,
+                                ...comments.map((comment) => CommentItem(
+                                      comment: comment,
+                                      uid: widget.uid,
+                                    )),
                             ],
                           );
                         });

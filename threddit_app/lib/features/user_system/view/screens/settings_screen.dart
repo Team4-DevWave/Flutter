@@ -33,21 +33,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late UserModelMe user;
   @override
   void initState() {
-    getUserToken();
     super.initState();
   }
 
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
-
-  Future<UserModelMe> fetchUser(http.Client client) async {
+  Future<void> fetchUser(http.Client client) async {
     final userModel = ref.watch(settingsFetchProvider.notifier).getMe();
+
     user = await userModel;
-    return userModel;
   }
 
   Future<UserSettings> fetchSettings(http.Client client) async {
@@ -78,7 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const SettingsTitle(title: "GENERAL"),
           FutureBuilder(
             future: fetchUser(client),
-            builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
+            builder: (BuildContext ctx, AsyncSnapshot<void> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
               }

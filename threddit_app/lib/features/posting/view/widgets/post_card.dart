@@ -187,12 +187,12 @@ class _PostCardState extends ConsumerState<PostCard> {
                     color: const Color.fromARGB(196, 255, 255, 255),
                     fontSize: 15),
               ),
-            (widget.post.image != null)
+            (widget.post.image != null && widget.post.image != '')
                 ? Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Image.network(widget.post.image!),
                   )
-                : (widget.post.video != null)
+                : (widget.post.video != null && widget.post.video != '')
                     ? Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: _controller.value.isInitialized

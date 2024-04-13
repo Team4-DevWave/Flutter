@@ -9,11 +9,11 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
 
 class SharedPostCard extends ConsumerStatefulWidget {
-  const SharedPostCard(
-      {super.key,
-      required this.post,
-      required this.uid,
-     });
+  const SharedPostCard({
+    super.key,
+    required this.post,
+    required this.uid,
+  });
   final Post post;
   final String uid;
   @override
@@ -44,28 +44,25 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
   Widget build(BuildContext) {
     void toggleNsfw() {
       widget.post.nsfw = !widget.post.nsfw;
-      setstate() {
-      }
-       ref.read(toggleNSFW(widget.post.id));
+      setstate() {}
+      ref.read(toggleNSFW(widget.post.id));
       Navigator.pop(context);
-      
     }
 
     void toggleSPOILER() async {
       widget.post.spoiler = !widget.post.spoiler;
-      setstate() {
-      }
+      setstate() {}
       ref.read(toggleSpoiler(widget.post.id));
       Navigator.pop(context);
-      
     }
+
     void upVotePost(WidgetRef ref) async {}
 
     void downVotePost(WidgetRef ref) async {}
     final now = DateTime.now();
     final difference = now.difference(widget.post.postedTime);
     final hoursSincePost = difference.inHours;
-    final differenceParent =now.difference(widget.post.parentPost!.postedTime);
+    final differenceParent = now.difference(widget.post.parentPost!.postedTime);
     final hoursSinceParentPost = differenceParent.inHours;
 
     return Container(
@@ -96,7 +93,6 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                               fontSize: 12,
                               color: const Color.fromARGB(98, 255, 255, 255),
                               fontWeight: FontWeight.bold)),
-                              
                     Row(
                       children: [
                         Text(
@@ -127,17 +123,28 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                 ),
               ],
             ),
-            if(widget.post.nsfw || widget.post.spoiler)
-            Padding(
-              padding: const EdgeInsets.only(top:10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                if(widget.post.nsfw) const Text("NSFW",style:TextStyle(backgroundColor: Colors.pink, color: Colors.white)),
-                const SizedBox(width: 10,),
-                if(widget.post.spoiler) const Text("SPOILER",style:TextStyle(backgroundColor: Colors.purple, color: Colors.white)),
-              ],),
-            ),
+            if (widget.post.nsfw || widget.post.spoiler)
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    if (widget.post.nsfw)
+                      const Text("NSFW",
+                          style: TextStyle(
+                              backgroundColor: Colors.pink,
+                              color: Colors.white)),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    if (widget.post.spoiler)
+                      const Text("SPOILER",
+                          style: TextStyle(
+                              backgroundColor: Colors.purple,
+                              color: Colors.white)),
+                  ],
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 13.0),
               child: Text(
@@ -147,147 +154,213 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                     fontSize: 18),
               ),
             ),
-            if(widget.post.parentPost != null)
-            GestureDetector(
-              onTap: (){Navigator.pushNamed(
-          context,
-          RouteClass.postScreen,
-          arguments: {
-            'currentpost': widget.post.parentPost!,
-            'uid': widget.uid,
-          },
-        );},
-              child: Container(
-                    padding: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20), 
-                      border: Border.all(
-                        color: const Color.fromARGB(108, 255, 255, 255), // Specify the border color
-                        width: 0.4, 
-                      ),
+            if (widget.post.parentPost != null)
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    RouteClass.postScreen,
+                    arguments: {
+                      'currentpost': widget.post.parentPost!,
+                      'uid': widget.uid,
+                    },
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: const Color.fromARGB(
+                          108, 255, 255, 255), // Specify the border color
+                      width: 0.4,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      if(widget.post.subredditID!=null)
-                      Text(
-                          'r/${widget.post.parentPost!.subredditID?.name}',
-                          style: const TextStyle(color: Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
-                        ),
-                         if(widget.post.subredditID!=null)
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal:8.w),
-                          child: const Icon(Icons.circle,size:5,color:Color.fromARGB(82, 255, 255, 255,)),
-                        ),
-                      Text(
-                          'u/${widget.post.parentPost!.userID?.username}',
-                          style: const TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
-                        ),
-                      
-                      SizedBox(
-                        width: 7.w,
-                      ),
-                      Text(
-                       '${hoursSinceParentPost}h',
-                        style: const TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
-                      ),
-                    ],
-                  )),
-                ],
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 8.0, right: 8.0, top: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.post.parentPost!.title,
-                      style: AppTextStyles.boldTextStyle,
-                    ),
-                  ],
-                ),
-              ),
-                         if (widget.post.parentPost!.image != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Image.network(widget.post.image!),
-                ),
-              if (widget.post.parentPost!.video != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: _controller.value.isInitialized
-                      ? GestureDetector(
-                          onTap: () {
-                            if (_controller.value.isPlaying) {
-                              _controller.pause();
-                            } else {
-                              _controller.play();
-                            }
-                            setState(() {});
-                          },
-                          child: AspectRatio(
-                            aspectRatio: _controller.value.aspectRatio,
-                            child: Stack(alignment: Alignment.center, children: [
-                              VideoPlayer(_controller),
-                              Positioned(
-                                child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5),
-                                    shape: BoxShape.circle,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                if (widget.post.subredditID != null)
+                                  Text(
+                                    'r/${widget.post.parentPost!.subredditID?.name}',
+                                    style: const TextStyle(
+                                        color: Color.fromARGB(
+                                          82,
+                                          255,
+                                          255,
+                                          255,
+                                        ),
+                                        fontSize: 12),
                                   ),
-                                  child: Icon(
-                                    _controller.value.isPlaying
-                                        ? Icons.pause
-                                        : Icons.play_arrow_rounded,
-                                    color: Colors.white,
-                                    size: 32,
+                                if (widget.post.subredditID != null)
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8.w),
+                                    child: const Icon(Icons.circle,
+                                        size: 5,
+                                        color: Color.fromARGB(
+                                          82,
+                                          255,
+                                          255,
+                                          255,
+                                        )),
+                                  ),
+                                Text(
+                                  'u/${widget.post.parentPost!.userID?.username}',
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(
+                                        82,
+                                        255,
+                                        255,
+                                        255,
+                                      ),
+                                      fontSize: 12),
+                                ),
+                                SizedBox(
+                                  width: 7.w,
+                                ),
+                                Text(
+                                  '${hoursSinceParentPost}h',
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(
+                                        82,
+                                        255,
+                                        255,
+                                        255,
+                                      ),
+                                      fontSize: 12),
+                                ),
+                              ],
+                            )),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 8.0, right: 8.0, top: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.post.parentPost!.title,
+                                style: AppTextStyles.boldTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (widget.post.parentPost!.image != null)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Image.network(widget.post.image!),
+                          ),
+                        if (widget.post.parentPost!.video != null &&
+                            widget.post.parentPost!.video != '')
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: _controller.value.isInitialized
+                                ? (widget.post.parentPost!.image != null &&
+                                        widget.post.parentPost!.image != '')
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          if (_controller.value.isPlaying) {
+                                            _controller.pause();
+                                          } else {
+                                            _controller.play();
+                                          }
+                                          setState(() {});
+                                        },
+                                        child: AspectRatio(
+                                          aspectRatio:
+                                              _controller.value.aspectRatio,
+                                          child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                VideoPlayer(_controller),
+                                                Positioned(
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 50,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.black
+                                                          .withOpacity(0.5),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Icon(
+                                                      _controller
+                                                              .value.isPlaying
+                                                          ? Icons.pause
+                                                          : Icons
+                                                              .play_arrow_rounded,
+                                                      color: Colors.white,
+                                                      size: 32,
+                                                    ),
+                                                  ),
+                                                )
+                                              ]),
+                                        ),
+                                      )
+                                    : const CircularProgressIndicator()
+                                : SizedBox(),
+                          ),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "${widget.post.parentPost!.votes!.upvotes - widget.post.parentPost!.votes!.downvotes} points",
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(
+                                        82,
+                                        255,
+                                        255,
+                                        255,
+                                      ),
+                                      fontSize: 12),
+                                ),
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 8.w),
+                                  child: const Icon(
+                                    Icons.circle,
+                                    size: 5,
+                                    color: Color.fromARGB(
+                                      82,
+                                      255,
+                                      255,
+                                      255,
+                                    ),
                                   ),
                                 ),
-                              )
-                            ]),
-                          ),
-                        )
-                      : const CircularProgressIndicator(),
-                ),
-              SizedBox(
-                height: 5.h,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "${widget.post.parentPost!.votes!.upvotes- widget.post.parentPost!.votes!.downvotes} points",
-                        style: const TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12),
-                      ),
-                       Padding(
-                          padding: EdgeInsets.symmetric(horizontal:8.w),
-                          child: const Icon(Icons.circle,size:5, color:Color.fromARGB(82, 255, 255, 255,) ,),
+                                Text(
+                                    "${widget.post.parentPost!.commentsCount} comments",
+                                    style: const TextStyle(
+                                        color: Color.fromARGB(
+                                          82,
+                                          255,
+                                          255,
+                                          255,
+                                        ),
+                                        fontSize: 12)),
+                              ],
+                            ),
+                          ],
                         ),
-                      Text("${widget.post.parentPost!.commentsCount} comments",
-                          style: const TextStyle(color:Color.fromARGB(82, 255, 255, 255,),fontSize: 12)),
-                    ],
-                  ),
-                ],
-              ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
-            ),
+                ),
+              ),
             Row(
               children: [
                 IconButton(
@@ -315,7 +388,6 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                   ),
                   color: Colors.white,
                 ),
-                
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,

@@ -69,8 +69,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           initialSelection: tabs[0],
           onSelected: (String? value) {
             setState(() {
-              print("RRRRRRRRRRRRRRRRRRRRRRRRR");
-              print(userId);
               feedID = value!;
             });
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -82,7 +80,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       drawer: const LeftDrawer(),
       endDrawer: const RightDrawer(),
-      body: FeedWidget(feedID: feedID),
+      body: FeedWidget(
+        feedID: feedID,
+        subreddit: '',
+      ),
     );
   }
 }

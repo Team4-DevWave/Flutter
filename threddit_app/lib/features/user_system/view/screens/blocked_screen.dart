@@ -20,13 +20,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
   List<UserMock> usernames = [];
   Future<UserModelMe> fetchBlockedUser() async {
     setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getMe();
+      ref.watch(settingsFetchProvider.notifier).getMe();
     });
-    return ref
-        .watch(settingsFetchProvider.notifier)
-        .getMe();
+    return ref.watch(settingsFetchProvider.notifier).getMe();
   }
 
   void block(query) async {
@@ -61,9 +57,7 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                   Navigator.pushNamed(context, RouteClass.blockUserScreen)
                       .then((value) {
                     setState(() {
-                      ref
-                          .watch(settingsFetchProvider.notifier)
-                          .getMe();
+                      ref.watch(settingsFetchProvider.notifier).getMe();
                     });
                   });
                 },
@@ -99,10 +93,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                 trailing: ElevatedButton(
                                   onPressed: () async {
                                     await unblockUser(
-                                      client: client,
-                                      userToUnBlock: users[index].username,
-                                      token: token!,
-                                    );
+                                        client: client,
+                                        userToUnBlock: users[index].username,
+                                        context: context);
                                     setState(() {
                                       ref
                                           .watch(settingsFetchProvider.notifier)
@@ -113,7 +106,7 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                       shape: const StadiumBorder(),
                                       textStyle: AppTextStyles.buttonTextStyle,
                                       backgroundColor: const Color.fromARGB(
-                                          255, 0, 140, 255)),
+                                          255, 233, 65, 14)),
                                   child: const Text("Unblock"),
                                 )));
                       }
@@ -136,12 +129,12 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                 unblockUser(
                                     client: client,
                                     userToUnBlock: username,
-                                    token: token!);
+                                    context: context);
                               } else {
                                 blockUser(
-                                    context: context,
-                                    userToBlock: username,
-                                   );
+                                  context: context,
+                                  userToBlock: username,
+                                );
                               }
                               setState(() {
                                 usernames[index] = usernames[index].copyWith(

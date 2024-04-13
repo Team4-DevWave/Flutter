@@ -68,7 +68,8 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
     );
 
     try {
-      final int communityCreationResult = await ref.read(createCommunityProvider(
+      final int communityCreationResult =
+          await ref.read(createCommunityProvider(
         CreateCommunityParams(
           name: _communityNameController.text,
           nsfw: is18plus,
@@ -82,11 +83,10 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
       if (communityCreationResult == 201) {
         // Community created successfully
         Navigator.pop(context);
-    Navigator.pushNamed(context, RouteClass.communityScreen,
-                      arguments: {
-                        'id': _communityNameController.text,
-                        'uid': "6617c330949400c2df6dc0d1"
-                      });
+        Navigator.pushNamed(context, RouteClass.communityScreen, arguments: {
+          'id': _communityNameController.text,
+          'uid': widget.uid
+        });
       } else if (communityCreationResult == 409) {
         // Community already exists
         ScaffoldMessenger.of(context).showSnackBar(
@@ -200,8 +200,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                     value: value,
                     child: Text(
                       value,
-                      style: const TextStyle(
-                          color: Colors.white, fontSize: 17),
+                      style: const TextStyle(color: Colors.white, fontSize: 17),
                     ),
                   );
                 }).toList(),
@@ -210,22 +209,19 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                 const Text(
                   'Anyone can view, post, and comment to this community',
                   style: TextStyle(
-                      color: Color.fromARGB(122, 255, 255, 255),
-                      fontSize: 13),
+                      color: Color.fromARGB(122, 255, 255, 255), fontSize: 13),
                 ),
               if (communityType == 'Private')
                 const Text(
                   'Only approved users can view and submit to this community',
                   style: TextStyle(
-                      color: Color.fromARGB(122, 255, 255, 255),
-                      fontSize: 13),
+                      color: Color.fromARGB(122, 255, 255, 255), fontSize: 13),
                 ),
               if (communityType == 'Restricted')
                 const Text(
                   'Anyone can view this community, but only approved users can post',
                   style: TextStyle(
-                      color: Color.fromARGB(122, 255, 255, 255),
-                      fontSize: 13),
+                      color: Color.fromARGB(122, 255, 255, 255), fontSize: 13),
                 ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
@@ -241,13 +237,11 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                         children: [
                           Switch(
                             value: is18plus,
-                            activeColor: const Color.fromARGB(
-                                255, 39, 78, 137),
-                            thumbColor:
-                                const MaterialStatePropertyAll<Color>(
-                                    Colors.white),
-                            inactiveTrackColor: const Color.fromARGB(
-                                255, 57, 57, 57),
+                            activeColor: const Color.fromARGB(255, 39, 78, 137),
+                            thumbColor: const MaterialStatePropertyAll<Color>(
+                                Colors.white),
+                            inactiveTrackColor:
+                                const Color.fromARGB(255, 57, 57, 57),
                             onChanged: (bool value) {
                               setState(() {
                                 is18plus = value;
@@ -270,8 +264,7 @@ class _CreateCommunityState extends ConsumerState<CreateCommunity> {
                         onPressed: () => createCommunity(context),
                         style: const ButtonStyle(
                             backgroundColor:
-                                MaterialStatePropertyAll<Color>(
-                                    Colors.blue)),
+                                MaterialStatePropertyAll<Color>(Colors.blue)),
                         child: const Text(
                           'Create Community',
                           style: TextStyle(fontSize: 16),

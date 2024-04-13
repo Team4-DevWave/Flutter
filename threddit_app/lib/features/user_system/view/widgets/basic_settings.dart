@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:http/http.dart' as http;
 
-const List<String> genders = <String>['man', 'woman'];
+const List<String> genders = <String>['man', 'woman', "I prefer not to say"];
 
 /// The class responsible for the Basic Settings part of the Account Settings
 /// which Includes:
@@ -32,13 +33,12 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
   String? token;
   String pickedGender = genders.first;
   Country selectedCountry = Country.worldWide;
+
   void _selectBasicSetting(BuildContext context, String settingName) {
     if (settingName == "email") {
       Navigator.pushNamed(context, RouteClass.updateEmailScreen)
           .then((value) => setState(() {
-                ref
-                    .watch(settingsFetchProvider.notifier)
-                    .getMe();
+                ref.watch(settingsFetchProvider.notifier).getMe();
               }));
     } else if (settingName == "password") {
       Navigator.pushNamed(context, RouteClass.changePasswordScreen);
@@ -47,17 +47,10 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
 
   Future<UserModelMe> fetchUser() async {
     setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getMe();
+      ref.watch(settingsFetchProvider.notifier).getMe();
     });
-    return ref
-        .watch(settingsFetchProvider.notifier)
-        .getMe();
+    return ref.watch(settingsFetchProvider.notifier).getMe();
   }
-
- 
-
 
   @override
   Widget build(BuildContext context) {
@@ -120,14 +113,11 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                   trailing: const Icon(Icons.navigate_next),
                   onTap: () {
                     showCountryPicker(
-
                         context: context,
                         onSelect: (Country country) {
                           changeCountry(
-                                 
-                                  country: country.name,
-                                  )
-                              .then((value) {
+                            country: country.name,
+                          ).then((value) {
                             if (value == 200) {
                               setState(() {
                                 selectedCountry = country;
@@ -136,7 +126,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                           });
                         },
                         countryListTheme: CountryListThemeData(
-                          searchTextStyle: AppTextStyles.primaryTextStyle,
+                            searchTextStyle: AppTextStyles.primaryTextStyle,
                             backgroundColor: AppColors.backgroundColor,
                             textStyle: AppTextStyles.primaryTextStyle));
                   },
@@ -150,8 +140,14 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                     style: AppTextStyles.primaryTextStyle,
                     icon: const Icon(Icons.arrow_downward),
                     onChanged: (String? value) {
-                      setState(() {
-                        pickedGender = value!;
+                      changeGenderFunction(gender: value!).then((test) {
+                        if (test == 200) {
+                          setState(() {
+                            pickedGender = value!;
+                          });
+                        } else {
+                          showAlert("Gender wasn't changed", context);
+                        }
                       });
                     },
                     value: pickedGender,

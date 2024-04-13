@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/chatting/view%20model/chat_provider.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
@@ -121,9 +122,9 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> {
                           const SizedBox(
                             height: 40,
                           ),
-                          const SizedBox(
-                            width: 220,
-                            child: Text(
+                          SizedBox(
+                            width: 220.w,
+                            child: const Text(
                               'Chat with other Redditors about your favourite topics.',
                               style: TextStyle(color: Colors.white),
                             ),
