@@ -43,19 +43,6 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         .getMe();
   }
 
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
-
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,7 +107,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                         confirmedPassword: confirmedPassword,
                         );
                     checkPasswordChangeResponse(
-                        context: context, statusCodeFuture: statusCode);
+                        context: context, statusCodeFuture: statusCode, ref: ref);
+                        
                   }
                 },
               ),
