@@ -29,11 +29,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _scaffoldKey.currentState!.openEndDrawer();
   }
 
-  Future<void> getUserName() async {
-    //userId = await getUserID();
-    print("RRRRRRRRRRRRRRRRRRRRRRRRR");
-    print(userId);
-  }
+  // Future<void> getUserName() async {
+  //   userId = await getUserID();
+  //   print("RRRRRRRRRRRRRRRRRRRRRRRRR");
+  //   print(userId);
+  // }
 
   @override
   Widget build(BuildContext context) {
