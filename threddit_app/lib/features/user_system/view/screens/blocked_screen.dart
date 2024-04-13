@@ -153,9 +153,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                     token: token!);
                               } else {
                                 blockUser(
-                                    client: client,
+                                    context: context,
                                     userToBlock: username,
-                                    token: token!);
+                                   );
                               }
                               setState(() {
                                 usernames[index] = usernames[index].copyWith(

@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
@@ -167,7 +168,7 @@ void checkPasswordChangeResponse({
 
 void checkBlockResponse(
     {required BuildContext context,
-    required Future<int> statusCodeFuture}) async {
+    required int statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
   } else {
@@ -176,22 +177,27 @@ void checkBlockResponse(
 }
 
 Future<int> blockUser(
-    {required http.Client client,
+    {
     required String userToBlock,
-    required String token}) async {
+    required BuildContext context,
+    }) async {
+      String? token =await getToken();
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
   } else {
     url = urlAndroid;
   }
-  http.Response response = await client.post(
+  http.Response response = await http.post(
     Uri.parse("$url:8000/api/v1/users/me/block/$userToBlock"),
+    
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
   );
+checkBlockResponse(context: context, statusCodeFuture: response.statusCode);
+Navigator.pop(context);
   return response.statusCode;
 }
 
