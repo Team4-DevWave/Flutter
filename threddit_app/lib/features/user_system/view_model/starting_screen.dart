@@ -5,16 +5,20 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/screens/register_screen.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
-
-
 class StartScreen extends ConsumerWidget {
   const StartScreen({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(textSizeProvider.notifier).getFontOption();
     ref.watch(textSizeProvider.notifier).getTextSize();
+
+    Future<String?> getUserData() async {
+      //await ref.read(settingsFetchProvider.notifier).getMe();
+      return getToken();
+    }
+
     return FutureBuilder<String?>(
-      future: getToken(),
+      future: getUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Loading();

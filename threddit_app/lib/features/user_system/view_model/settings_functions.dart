@@ -143,7 +143,7 @@ Future<int> changeGenderFunction({
 /// Depending on the Status Code returns an alert to inform the User.
 void checkEmailUpdateResponse(
     {required BuildContext context, required int statusCodeFuture}) async {
-  int statusCode = await statusCodeFuture;
+  int statusCode = statusCodeFuture;
   if (statusCode == 200) {
     showAlert("Email was changed correctly!", context);
   } else {
@@ -169,7 +169,7 @@ void checkPasswordChangeResponse({
 
 void checkBlockResponse(
     {required BuildContext context, required int statusCodeFuture}) async {
-  int statusCode = await statusCodeFuture;
+  int statusCode = statusCodeFuture;
   if (statusCode == 200) {
   } else {
     showAlert("User was not blocked/unblocked", context);
@@ -339,6 +339,7 @@ class SettingsFetch extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
+    UserModelMe user = ref.watch(userModelProvider)!;
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
@@ -347,6 +348,8 @@ class SettingsFetch extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
+    user = UserModelMe.fromJson(jsonDecode(response.body));
+    ref.watch(userModelProvider.notifier).update((state) => user);
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
 

@@ -68,6 +68,29 @@ class UserProfile {
           json['socialLinks']?.cast<String>() ?? [], // Cast to String list
     );
   }
+
+  
+  UserProfile copyWith({
+    String? displayName,
+    String? about,
+    bool? nsfw,
+    bool? allowFollowers,
+    bool? contentVisibility,
+    bool? activeCommunitiesVisibility,
+    String? profilePicture,
+    List<String>? socialLinks,
+  }) {
+    return UserProfile(
+      displayName: displayName ?? this.displayName,
+      about: about ?? this.about,
+      nsfw: nsfw ?? this.nsfw,
+      allowFollowers: allowFollowers ?? this.allowFollowers,
+      contentVisibility: contentVisibility ?? this.contentVisibility,
+      activeCommunitiesVisibility: activeCommunitiesVisibility ?? this.activeCommunitiesVisibility,
+      profilePicture: profilePicture ?? this.profilePicture,
+      socialLinks: socialLinks ?? this.socialLinks,
+    );
+  }
 }
 
 class SafetyAndPrivacy {

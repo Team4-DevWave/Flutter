@@ -255,15 +255,15 @@ Navigator.of(context).pop();
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () async {
-                                  final Uri _url = Uri.parse(
+                                  final Uri url = Uri.parse(
                                       'https://www.redditinc.com/policies/content-policy');
-                                  Future<void> _launchUrlContentPolicy() async {
-                                    if (!await launchUrl(_url)) {
-                                      throw Exception('Could not launch $_url');
+                                  Future<void> launchUrlContentPolicy() async {
+                                    if (!await launchUrl(url)) {
+                                      throw Exception('Could not launch $url');
                                     }
                                   }
 
-                                  _launchUrlContentPolicy();
+                                  launchUrlContentPolicy();
                                 },
                             ),
                           ],

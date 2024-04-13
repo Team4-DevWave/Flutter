@@ -70,8 +70,12 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     response.fold(
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
-        (success) => showSnackBar(
-            navigatorKey.currentContext!, 'Your post shared to $message'));
+        (success) {
+      showSnackBar(
+          navigatorKey.currentContext!, 'Your post shared to $message');
+      Navigator.pushNamed(navigatorKey.currentContext!, RouteClass.postScreen,
+          arguments: {});
+    });
     //ref.watch(isFirstTimeEnter.notifier).update((state) => false);
   }
 

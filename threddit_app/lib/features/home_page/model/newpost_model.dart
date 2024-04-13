@@ -6,16 +6,16 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 class Post {
   final String id;
   final String title;
-   String? textBody;
-  final String? image;
-   bool nsfw;
-   bool spoiler;
-   bool locked;
+  String? textBody;
+  String? image;
+  bool nsfw;
+  bool spoiler;
+  bool locked;
   final bool approved;
   final DateTime postedTime;
   String? video;
   final int numViews;
-   int commentsCount;
+  int commentsCount;
   final User? userID;
   final SubredditInfo? subredditID;
   final VotesList? votes;
@@ -70,6 +70,26 @@ class Post {
           : null,
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'title': title,
+      'text_body': textBody,
+      'image': image,
+      'nsfw': nsfw,
+      'spoiler': spoiler,
+      'locked': locked,
+      'approved': approved,
+      'postedTime': postedTime.toIso8601String(),
+      'numViews': numViews,
+      'commentsCount': commentsCount,
+      'video': video,
+      'userID': userID?.toJson(),
+      'subredditID': subredditID?.toJson(),
+      'votes': votes?.toJson(),
+      'parentPost': parentPost?.toJson(),
+    };
+  }
 }
 
 class User {
@@ -83,6 +103,12 @@ class User {
       id: json['_id'],
       username: json['username'],
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'username': username,
+    };
   }
 }
 
@@ -98,6 +124,12 @@ class SubredditInfo {
       name: json['name'],
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'name': name,
+    };
+  }
 }
 
 class VotesList {
@@ -111,6 +143,12 @@ class VotesList {
       upvotes: json['upvotes'],
       downvotes: json['downvotes'],
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'upvotes': upvotes,
+      'downvotes': downvotes,
+    };
   }
 }
 
@@ -132,6 +170,14 @@ class PostApiResponse {
               .toList()
           : [],
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'data': {
+        'posts': posts.map((post) => post.toJson()).toList(),
+      },
+    };
   }
 }
 

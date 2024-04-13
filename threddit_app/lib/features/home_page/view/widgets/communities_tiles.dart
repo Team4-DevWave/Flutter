@@ -8,6 +8,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -131,7 +132,11 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
             ..._userCommunitiesData!.map((community) => ListTile(
                   onTap: () {
                     ///go to the community/user's profile screen
-                    Navigator.pushNamed(context, RouteClass.communityScreen);
+                    Navigator.pushNamed(context, RouteClass.communityScreen,
+                        arguments: {
+                          'id': community[0],
+                          'uid': ref.read(userModelProvider)?.id
+                        });
                   },
                   leading: CircleAvatar(
                     radius: 10,

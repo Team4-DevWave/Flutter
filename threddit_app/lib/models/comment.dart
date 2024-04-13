@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:http/http.dart' as http;
+
 class Vote {
-   int upvotes;
- int downvotes;
+  int upvotes;
+  int downvotes;
 
   Vote({
     required this.upvotes,
@@ -26,7 +31,7 @@ class Comment {
   final String user;
   final String content;
   final DateTime createdAt;
-   Vote votes;
+  Vote votes;
   final String post;
   final bool hidden;
   final bool saved;
@@ -78,5 +83,26 @@ class Comment {
       '_id': id,
       '__v': version,
     };
+  }
+}
+
+Future<List<Comment>> fetchComments(String username) async {
+  String? token = await getToken();
+
+  final response = await http.get(
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/${username}/comments"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    Iterable jsonResponse = jsonDecode(response.body);
+    List<Comment> commentsList = List<Comment>.from(
+        jsonResponse.map((model) => Comment.fromJson(model)));
+    return commentsList;
+  } else {
+    throw Exception('Failed to load comments');
   }
 }

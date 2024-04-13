@@ -63,7 +63,7 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> checkUsernameAvailability(String username) async {
     try {
       final response = await http.get(Uri.parse(
-          'http://${AppConstants.local}:8000/api/v1/users/check/${username}'));
+          'http://${AppConstants.local}:8000/api/v1/users/check/$username'));
 
       //200 -> available to be used (not used)
       //401 -> not available (used before)
@@ -385,12 +385,12 @@ class Auth extends StateNotifier<bool> {
   }
 
   FutureEmailCheck<bool> signInWithGoogle() async {
-    final _authService = AuthService();
+    final authService = AuthService();
     final String? userToken;
     final User? user;
     if (Platform.isWindows) {
       try {
-        user = await _authService.signInWithGoogle();
+        user = await authService.signInWithGoogle();
         if (user != null) {
           userToken = await user.getIdToken();
         } else {
@@ -456,12 +456,12 @@ class Auth extends StateNotifier<bool> {
   }
 
   FutureEmailCheck<bool> connectWithGoogle() async {
-    final _authService = AuthService();
+    final authService = AuthService();
     final String? userToken;
     final User? user;
     if (Platform.isWindows) {
       try {
-        user = await _authService.signInWithGoogle();
+        user = await authService.signInWithGoogle();
         if (user != null) {
           userToken = await user.getIdToken();
         } else {

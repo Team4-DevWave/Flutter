@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScree
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 
 import 'package:lottie/lottie.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
 /// display a feed of posts. The widget takes a `feedID` as a parameter, which is used
@@ -25,7 +26,7 @@ import 'package:lottie/lottie.dart';
 /// removed from the widget tree.
 class FeedWidget extends StatefulWidget {
   final String feedID;
-  const FeedWidget({Key? key, required this.feedID}) : super(key: key);
+  const FeedWidget({super.key, required this.feedID});
 
   @override
   _FeedWidgetState createState() => _FeedWidgetState();
@@ -35,10 +36,11 @@ class _FeedWidgetState extends State<FeedWidget> {
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
-
+  String? userId;
   @override
   void initState() {
     super.initState();
+    getUserID();
     _fetchPosts();
     _scrollController.addListener(_onScroll);
   }
@@ -49,13 +51,20 @@ class _FeedWidgetState extends State<FeedWidget> {
     super.dispose();
   }
 
+  Future<void> getUserID() async {
+    userId = await getUserId();
+    print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
+    print(userId);
+  }
+
   Future _fetchPosts() async {
     final response = await fetchPosts(_currentPage);
-
-    setState(() {
-      _posts.addAll(response.posts);
-      _currentPage++;
-    });
+    if (response.posts.isNotEmpty) {
+      setState(() {
+        _posts.addAll(response.posts);
+        _currentPage++;
+      });
+    }
   }
 
   void _onScroll() {
@@ -81,8 +90,9 @@ class _FeedWidgetState extends State<FeedWidget> {
                 return _posts[index].parentPost != null
                     ? FeedUnitShare(
                         dataOfPost: _posts[index].parentPost!,
-                        parentPost: _posts[index])
-                    : FeedUnit(_posts[index]);
+                        parentPost: _posts[index],
+                        userId!)
+                    : FeedUnit(_posts[index], userId!);
               } else {
                 return SizedBox(
                   height: 75.h,

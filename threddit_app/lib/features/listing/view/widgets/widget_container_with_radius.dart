@@ -35,7 +35,7 @@ class AddRadiusBoarder extends StatelessWidget {
         borderRadius: BorderRadius.circular(
             15), // Add this line to make the border circular
       ),
-      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: childWidget,
     );
   }

@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/post/model/post_model.dart';
-import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
@@ -20,7 +18,7 @@ import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class ConfirmPost extends AddPostScreen {
+class ConfirmPost extends ConsumerStatefulWidget {
   const ConfirmPost({super.key});
 
   @override
@@ -28,8 +26,8 @@ class ConfirmPost extends AddPostScreen {
 }
 
 class _ConfirmPostState extends ConsumerState<ConfirmPost> {
-  late TextEditingController _titleController;
-  late TextEditingController _bodytextController;
+  TextEditingController _titleController = TextEditingController(text: '');
+  TextEditingController _bodytextController = TextEditingController(text: '');
   bool isImage = false;
   bool isLink = false;
   bool isVideo = false;
@@ -40,6 +38,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   final ImagePicker picker = ImagePicker();
   String? image;
   String? video;
+  String? whereTo;
   File? videoFile;
   File? imageFile;
 
@@ -102,8 +101,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
+  void intializeData() {
     final intialData = ref.watch(postDataProvider);
     _titleController = TextEditingController(text: intialData?.title ?? '');
     if (intialData?.image != null) {
@@ -117,9 +115,19 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       isVideo = true;
     }
     _bodytextController = TextEditingController(text: intialData?.text_body);
-    if (intialData?.url != "") {
+    if (intialData?.url != null) {
       isLink = true;
     }
+    if (intialData?.community == null) {
+      whereTo = 'My Profile';
+    } else {
+      whereTo = intialData?.community;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    intializeData();
     super.didChangeDependencies();
   }
 
@@ -131,21 +139,25 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   }
 
   void resetAll() {
-    _titleController = TextEditingController(text: "");
-    _bodytextController = TextEditingController(text: "");
+    _titleController = TextEditingController(text: '');
+    _bodytextController = TextEditingController(text: '');
+    _removeLink();
     ref.read(postDataProvider.notifier).resetAll();
   }
 
-  String whereToPost() {
-    final postProvider = ref.read(postDataProvider.notifier);
-    final currentCommunity = ref.read(postDataProvider)!.community;
-
-    if (currentCommunity!.isEmpty) {
-      postProvider.updateCommunityName("My Profile");
-      return "My Profile"; // Return updated value directly
-    } else {
-      return currentCommunity;
+  void onTitleChanged(String value) {
+    final post = ref.watch(postDataProvider);
+    if (post!.title != value) {
+      ref.watch(postDataProvider.notifier).updateTitle(value);
     }
+  }
+
+  void onBodyChanged(String value) {
+    final post = ref.watch(postDataProvider);
+    if (post!.text_body != value) {
+      ref.watch(postDataProvider.notifier).updateBodyText(value);
+    }
+    postBody = value;
   }
 
   @override
@@ -157,7 +169,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       if (image == null || isLink || isVideo) {
         return const SizedBox();
       }
-
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
 
@@ -241,7 +252,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                               },
                               splashColor: AppColors.realWhiteColor,
                               child: Text(
-                                whereToPost(),
+                                whereTo!,
                                 style: AppTextStyles.boldTextStyle,
                               ),
                             ),
@@ -280,13 +291,8 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                   color: AppColors.whiteColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24)),
-                          onChanged: (value) => {
-                            if (post!.title != value)
-                              {
-                                ref
-                                    .watch(postDataProvider.notifier)
-                                    .updateTitle(value)
-                              },
+                          onChanged: (value) async => {
+                            await Future.microtask(() => onTitleChanged(value))
                           },
                         ),
                       ),
@@ -326,17 +332,8 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                 focusedBorder: InputBorder.none,
                                 labelStyle: TextStyle(
                                     color: AppColors.whiteColor, fontSize: 16)),
-                            onChanged: (value) => {
-                                  if (post!.text_body != value)
-                                    {
-                                      ref
-                                          .watch(postDataProvider.notifier)
-                                          .updateBodyText(value)
-                                    },
-                                  setState(() {
-                                    postBody = value;
-                                  })
-                                }),
+                            onChanged: (value) async => await Future.microtask(
+                                () => onBodyChanged(value))),
                       ),
                     ]),
               ),

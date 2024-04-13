@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,6 +7,9 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -24,13 +25,26 @@ class _UserProfileState extends ConsumerState<UserProfile>
   final _posts = <Post>[];
   int _currentPage = 1;
   TabController? _tabController;
+  final _comments = <Comment>[];
+  UserModelMe? user;
+  void _getUserData() async {
+    user = ref.read(userModelProvider)!;
+  }
+
+  String? uid;
   @override
   void initState() {
+    _getUserData();
     _fetchPosts();
     _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
+    setUserid();
     super.initState();
     //intitialize tab controller
+  }
+
+  Future<void> setUserid() async {
+    uid = await getUserId();
   }
 
   @override
@@ -40,7 +54,10 @@ class _UserProfileState extends ConsumerState<UserProfile>
   }
 
   Future _fetchPosts() async {
-    final response = await fetchPostsByUsername('moaz', _currentPage);
+    print('USSSSSSSSSSSSSSER');
+    print(user!.username ?? ' no name');
+    final response =
+        await fetchPostsByUsername(user!.username ?? 'moaz', _currentPage);
 
     setState(() {
       _posts.addAll(response.posts);
@@ -48,10 +65,45 @@ class _UserProfileState extends ConsumerState<UserProfile>
     });
   }
 
+  Widget buildCommentsTab() {
+    return _comments.isEmpty
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.warning_amber,
+                color: AppColors.whiteGlowColor,
+              ),
+              Text(
+                "Wow, such empty in Comments!",
+                style: AppTextStyles.primaryTextStyle,
+              ),
+            ],
+          )
+        : ListView.builder(
+            controller: _scrollController,
+            itemCount: _comments.length,
+            itemBuilder: (context, index) {
+              return Container(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text(
+                      _comments[index].user,
+                      style: AppTextStyles.boldTextStyleNotifcation,
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+  }
+
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername('moaz', _currentPage);
+      fetchPostsByUsername('admin', _currentPage);
     }
   }
 
@@ -70,8 +122,9 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 return _posts[index].parentPost != null
                     ? FeedUnitShare(
                         dataOfPost: _posts[index].parentPost!,
-                        parentPost: _posts[index])
-                    : FeedUnit(_posts[index]);
+                        parentPost: _posts[index],
+                        uid!)
+                    : FeedUnit(_posts[index], uid!);
               } else {
                 return SizedBox(
                   height: 75.h,
@@ -84,23 +137,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
               }
             },
           );
-  }
-
-  Widget buildCommentsTab() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Icon(
-          Icons.warning_amber,
-          color: AppColors.whiteGlowColor,
-        ),
-        Text(
-          "Wow, such empty in Comments!",
-          style: AppTextStyles.primaryTextStyle,
-        ),
-      ],
-    );
   }
 
   Widget buildAboutTab() {
@@ -135,7 +171,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                           context),
                       sliver: SliverAppBar(
                         title: Text(
-                          "u/Me",
+                          "u/${user?.username}",
                           style: AppTextStyles.secondaryTextStyle,
                         ),
                         flexibleSpace: FlexibleSpaceBar(
@@ -189,7 +225,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                   ),
                                   Text(
                                     //to be replaced with the username from the user provider
-                                    "u/userName",
+                                    "u/${user?.username}",
                                     style: AppTextStyles.primaryTextStyle
                                         .copyWith(fontSize: 20.spMin),
                                   ),
@@ -197,14 +233,14 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                     height: 5.h,
                                   ),
                                   Text(
-                                    "Followers",
+                                    "${user?.followedUsers?.length} following",
                                     style: AppTextStyles.primaryTextStyle,
                                   ),
                                   SizedBox(
                                     height: 5.h,
                                   ),
                                   Text(
-                                    "karma",
+                                    "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
                                     style: AppTextStyles.secondaryTextStyle,
                                   )
                                 ],
@@ -260,10 +296,15 @@ class _UserProfileState extends ConsumerState<UserProfile>
                     )
                   ];
                 },
-                body: TabBarView(controller: _tabController, children: [
-                  buildPostTab(),
-                  buildCommentsTab(),
-                  buildAboutTab()
+                body: Stack(children: [
+                  Positioned.fill(
+                    top: 100.h,
+                    child: TabBarView(controller: _tabController, children: [
+                      buildPostTab(),
+                      buildCommentsTab(),
+                      buildAboutTab()
+                    ]),
+                  ),
                 ]))));
   }
 }
