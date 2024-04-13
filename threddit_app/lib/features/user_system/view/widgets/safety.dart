@@ -63,11 +63,11 @@ class _SafetyState extends ConsumerState<Safety> {
               setState(() {
                 isFollowableEnabled = value!;
                 changeSetting(
-                    client: client,
+                  
                     change: value,
                     settingsName: "allowFollowers",
                     settingsType: "userProfile",
-                    token: token!);
+                    );
               });
             },
           ),

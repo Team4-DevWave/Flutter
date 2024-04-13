@@ -57,18 +57,8 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
         .getMe();
   }
 
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
+ 
 
-  @override
-  void initState() {
-    getUserToken();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +125,9 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                         context: context,
                         onSelect: (Country country) {
                           changeCountry(
-                                  client: client,
+                                 
                                   country: country.name,
-                                  token: token!)
+                                  )
                               .then((value) {
                             if (value == 200) {
                               setState(() {

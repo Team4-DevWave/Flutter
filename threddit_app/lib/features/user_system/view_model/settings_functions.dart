@@ -23,8 +23,8 @@ const String urlWindows = "http://localhost";
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status Code
 Future<int> changePasswordFunction(
-    {required http.Client client,
-    required String token,
+    {
+    
     required String currentPassword,
     required String newPassword,
     required String confirmedPassword}) async {
@@ -40,7 +40,8 @@ Future<int> changePasswordFunction(
   } else {
     url = urlAndroid;
   }
-  http.Response response = await client.patch(
+  String? token = await getToken();
+  http.Response response = await http.patch(
     Uri.parse("$url:8000/api/v1/users/me/settings/changepassword"),
     headers: {
       'Authorization': 'Bearer $token',
@@ -83,13 +84,13 @@ Future<int> confirmPasswordFunction(
 /// Recieves the client, current password, the new email as parameters,
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status Code
-Future<int> changeEmailFunction(
-    {required http.Client client,
-    required String newEmail,
-    required String token}) async {
+Future<int> changeEmailFunction({
+  required String newEmail,
+}) async {
   Map<String, dynamic> body = {
     'email': newEmail,
   };
+  String? token = await getToken();
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
@@ -98,7 +99,7 @@ Future<int> changeEmailFunction(
   }
 
   String bodyEncoded = jsonEncode(body);
-  http.Response response = await client.patch(
+  http.Response response = await http.patch(
     Uri.parse("$url:8000/api/v1/users/me/settings/changeemail"),
     headers: {
       'Content-Type': 'application/json',
@@ -114,13 +115,14 @@ Future<int> changeEmailFunction(
 /// Currently defaults to user_id 1 should be changed to token later.
 /// Returns the status code.
 Future<int> changeGenderFunction(
-    {required http.Client client,
+    {
     required String gender,
-    required String token}) async {
+    }) async {
   Map<String, dynamic> body = {
     'user_id': 1,
     'gender': gender,
   };
+  String? token = await getToken();
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
@@ -129,7 +131,7 @@ Future<int> changeGenderFunction(
   }
   String bodyEncoded = jsonEncode(body);
 
-  http.Response response = await client.post(
+  http.Response response = await http.post(
     Uri.parse("$url:3001/api/change-gender"),
     headers: {
       'Content-Type': 'application/json',
@@ -143,8 +145,7 @@ Future<int> changeGenderFunction(
 /// API Call for checking the Email Update Response,
 /// Depending on the Status Code returns an alert to inform the User.
 void checkEmailUpdateResponse(
-    {required BuildContext context,
-    required int statusCodeFuture}) async {
+    {required BuildContext context, required int statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
     showAlert("Email was changed correctly!", context);
@@ -162,7 +163,6 @@ void checkPasswordChangeResponse({
 }) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
-    
     ref.watch(authControllerProvider.notifier).logout();
     showAlert("Password was changed correctly! Please log in again!", context);
   } else {
@@ -171,8 +171,7 @@ void checkPasswordChangeResponse({
 }
 
 void checkBlockResponse(
-    {required BuildContext context,
-    required int statusCodeFuture}) async {
+    {required BuildContext context, required int statusCodeFuture}) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
   } else {
@@ -180,12 +179,11 @@ void checkBlockResponse(
   }
 }
 
-Future<int> blockUser(
-    {
-    required String userToBlock,
-    required BuildContext context,
-    }) async {
-      String? token =await getToken();
+Future<int> blockUser({
+  required String userToBlock,
+  required BuildContext context,
+}) async {
+  String? token = await getToken();
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
@@ -194,14 +192,13 @@ Future<int> blockUser(
   }
   http.Response response = await http.post(
     Uri.parse("$url:8000/api/v1/users/me/block/$userToBlock"),
-    
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
   );
-checkBlockResponse(context: context, statusCodeFuture: response.statusCode);
-Navigator.pop(context);
+  checkBlockResponse(context: context, statusCodeFuture: response.statusCode);
+  Navigator.pop(context);
   return response.statusCode;
 }
 
@@ -318,14 +315,15 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 
   Future<UserMock> getBlockedUsers(
-      {required http.Client client, required String token}) async {
+      ) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-    http.Response response = await client.get(
+    String? token = await getToken();
+    http.Response response = await http.get(
       Uri.parse("$url:3001/api/user-info?user_id=2"),
       headers: {
         'Content-Type': 'application/json',
@@ -336,14 +334,15 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 
   Future<UserModelMe> getMe(
-      {required http.Client client, required String token}) async {
+      ) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-    http.Response response = await client.get(
+    String? token = await getToken();
+    http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
       headers: {
         'Content-Type': 'application/json',
@@ -354,14 +353,15 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 
   Future<UserSettings> getSettings(
-      {required http.Client client, required String token}) async {
+      ) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-    http.Response response = await client.get(
+    String? token = await getToken();
+    http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/settings"),
       headers: {
         'Content-Type': 'application/json',
@@ -392,14 +392,15 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 
   Future<bool> getFollowableSetting(
-      {required http.Client client, required String token}) async {
+      ) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-    http.Response response = await client.get(
+    String? token = await getToken();
+    http.Response response = await http.get(
       Uri.parse("$url/api/user-info?user_id=1"),
       headers: {
         'Content-Type': 'application/json',
@@ -413,16 +414,17 @@ class SettingsFetch extends StateNotifier<bool> {
 }
 
 Future<int> changeSetting(
-    {required http.Client client,
+    {
     required change,
     required String settingsName,
     required String settingsType,
-    required String token}) async {
+    }) async {
   Map<String, dynamic> body = {
     settingsType: {
       settingsName: change,
     }
   };
+  String? token =await getToken();
   String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
@@ -430,7 +432,7 @@ Future<int> changeSetting(
   } else {
     url = urlAndroid;
   }
-  http.Response response = await client.patch(
+  http.Response response = await http.patch(
     Uri.parse("$url:8000/api/v1/users/me/settings"),
     headers: {
       'Content-Type': 'application/json',
@@ -442,12 +444,13 @@ Future<int> changeSetting(
 }
 
 Future<int> changeCountry(
-    {required http.Client client,
+    {
     required String country,
-    required String token}) async {
+    }) async {
   Map<String, dynamic> body = {
     "country": country,
   };
+  String? token = await getToken();
   String bodyEncoded = jsonEncode(body);
   final String url;
   if (Platform.isWindows) {
@@ -455,7 +458,7 @@ Future<int> changeCountry(
   } else {
     url = urlAndroid;
   }
-  http.Response response = await client.patch(
+  http.Response response = await http.patch(
     Uri.parse("$url:8000/api/v1/users/me/settings/changecountry"),
     headers: {
       'Content-Type': 'application/json',
