@@ -12,6 +12,7 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 
 const String urlAndroid = "http://10.0.2.2";
@@ -155,12 +156,15 @@ void checkEmailUpdateResponse(
 /// API Call for checking the Password Change Response,
 /// Depending on the Status Code returns an alert to inform the User.
 void checkPasswordChangeResponse({
+  required WidgetRef ref,
   required BuildContext context,
   required Future<int> statusCodeFuture,
 }) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
-    showAlert("Password was changed correctly!", context);
+    
+    ref.watch(authControllerProvider.notifier).logout();
+    showAlert("Password was changed correctly! Please log in again!", context);
   } else {
     showAlert("Password was incorrect.", context);
   }
