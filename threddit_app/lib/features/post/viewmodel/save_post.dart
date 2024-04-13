@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 
 final saveUnsavePostProvider =
     StateNotifierProvider<SaveUnsavePost, bool>((ref) => SaveUnsavePost(ref));

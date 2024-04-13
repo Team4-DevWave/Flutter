@@ -43,7 +43,6 @@ class PostProvider extends StateNotifier<bool> {
             "image": post?.image ?? "",
             "video": post?.video ?? ""
           }));
-      print(response.body);
       if (response.statusCode == 201) {
         return right(true);
       } else {

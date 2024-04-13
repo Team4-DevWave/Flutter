@@ -136,7 +136,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       }
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
-
+  
     Widget buildVideoContent() {
       if (video == null || isLink || isImage) {
         return const SizedBox();
