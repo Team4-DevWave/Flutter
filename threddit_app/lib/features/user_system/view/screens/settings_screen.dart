@@ -129,9 +129,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             changeSetting(
                                 settingsName: "globalContentView",
                                 settingsType: "feedSettings",
-                                client: client,
                                 change: pickedView,
-                                token: token!);
+                                );
                           });
                         },
                         value: settings.feedSettings.globalContentView,
