@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
@@ -38,9 +37,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   }
 
   Future<UserModelMe> fetchUser() async {
-    return ref
-        .watch(settingsFetchProvider.notifier)
-        .getMe();
+    return ref.watch(settingsFetchProvider.notifier).getMe();
   }
 
   @override
@@ -56,7 +53,8 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             children: [
               FutureBuilder(
                 future: fetchUser(),
-                builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
+                builder:
+                    (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
                   while (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   }
@@ -83,7 +81,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 alignment: Alignment.topRight,
                 child: TextButton(
                     onPressed: () {
-                        return _forgetPassword();
+                      return _forgetPassword();
                     },
                     child: const Text("Forgot password?")),
               ),
@@ -101,14 +99,14 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                         "Password length must be greater than 8", context);
                   } else {
                     final statusCode = changePasswordFunction(
-                        
-                        currentPassword: currentPassword,
-                        newPassword: newPassword,
-                        confirmedPassword: confirmedPassword,
-                        );
+                      currentPassword: currentPassword,
+                      newPassword: newPassword,
+                      confirmedPassword: confirmedPassword,
+                    );
                     checkPasswordChangeResponse(
-                        context: context, statusCodeFuture: statusCode, ref: ref);
-                        
+                        context: context,
+                        statusCodeFuture: statusCode,
+                        ref: ref);
                   }
                 },
               ),

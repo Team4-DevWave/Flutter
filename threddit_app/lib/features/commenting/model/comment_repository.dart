@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 class CommentRepository {
-  var uuid = Uuid();
+  var uuid = const Uuid();
 
   Future<List<Comment>> fetchAllComments(String postId) async {
     print(postId);

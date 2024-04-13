@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:threddit_clone/features/post/model/post_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_video.dart';
@@ -33,6 +32,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
+
   String? image;
   String? video;
   File? videoFile;
@@ -111,11 +111,23 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     super.dispose();
   }
 
+  void onTitleChanged(String value) {
+    final post = ref.watch(postDataProvider);
+    if (post!.title != value) {
+      ref.watch(postDataProvider.notifier).updateTitle(value);
+    }
+  }
+
+  void onBodyChanged(String value) {
+    final post = ref.watch(postDataProvider);
+    if (post!.text_body != value) {
+      ref.watch(postDataProvider.notifier).updateBodyText(value);
+    }
+    postBody = value;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ref = this.ref;
-    PostData? post = ref.watch(postDataProvider);
-
     Widget buildImageContent() {
       if (image == null || isLink || isVideo) {
         print(image);
@@ -182,17 +194,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                                 color: AppColors.whiteColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 24)),
-                        onChanged: (value) => {
-                          if (post?.title != value)
-                            {
-                              ref
-                                  .read(postDataProvider.notifier)
-                                  .updateTitle(value),
-                            },
-                          setState(() {
-                            postTitle = value;
-                          })
-                        },
+                        onChanged: (value) => {onTitleChanged(value)},
                       ),
                     ),
                     buildImageContent(),
@@ -221,17 +223,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                               focusedBorder: InputBorder.none,
                               labelStyle: TextStyle(
                                   color: AppColors.whiteColor, fontSize: 16)),
-                          onChanged: (value) => {
-                                if (post?.text_body != value)
-                                  {
-                                    ref
-                                        .read(postDataProvider.notifier)
-                                        .updateBodyText(value)
-                                  },
-                                setState(() {
-                                  postBody = value;
-                                })
-                              }),
+                          onChanged: (value) => {onBodyChanged(value)}),
                     ),
                   ]),
             ),

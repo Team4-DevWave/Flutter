@@ -77,7 +77,10 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               ),
               title: "Create a community",
               onTap: () {
-                Navigator.pushNamed(context, RouteClass.createCommunityScreen);
+                Navigator.pushNamed(context, RouteClass.createCommunityScreen,
+                    arguments: 
+                       "user2",
+                    );
               }),
           RightDrawerButtons(
               icon: const Icon(
@@ -92,7 +95,10 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
                 color: AppColors.whiteColor,
               ),
               title: "History",
-              onTap: () {}),
+              onTap: () {
+                Navigator.pushNamed(context, RouteClass.historyScreen,
+                    arguments: "user2");
+              }),
           RightDrawerButtons(
             icon: const Icon(
               Icons.logout_rounded,

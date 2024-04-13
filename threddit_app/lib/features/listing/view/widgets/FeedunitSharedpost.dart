@@ -6,6 +6,7 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:video_player/video_player.dart';
 
 /// The `FeedUnitSharedPost.dart` file defines a stateful widget `FeedUnitSharedPost`
 /// that is used to display a single post in a feed. This widget takes a `Post` object
@@ -45,10 +46,18 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
   late int numbberOfvotes;
   int choiceBottum = -1; // 1 upvote 2 downvote
   final now = DateTime.now();
+  late VideoPlayerController _controller;
   @override
   void initState() {
     super.initState();
     numbberOfvotes = int.parse(widget.dataOfPost.numViews.toString());
+    if (widget.dataOfPost.video != null) {
+      _controller = VideoPlayerController.networkUrl(
+        Uri.parse(widget.dataOfPost.video!),
+      )..initialize().then((_) {
+          setState(() {});
+        });
+    }
   }
 
   @override
@@ -85,7 +94,7 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                     ),
                     Text(
                       '${hoursSincePost}h ago',
-                      style: TextStyle(color: AppColors.whiteHideColor),
+                      style: const TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],
                 )),
@@ -116,16 +125,41 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                     borderRadius:
                         BorderRadius.circular(35) // Adjust the radius as needed
                     ),
-                child: (widget.dataOfPost.image != null)
+                child: (widget.dataOfPost.image != null &&
+                        widget.dataOfPost.image != '')
                     ? Image(
-                        height: 125.h,
-                        width: 250.w,
+                        height: 250.h,
+                        width: 360.w,
                         fit: BoxFit.fitWidth,
-                        image: NetworkImage(widget.dataOfPost.image.toString()
-                            //'https://images.unsplash.com/photo-1682685797660-3d847763208e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                            ),
+                        image: NetworkImage(widget.dataOfPost.image.toString()),
                       )
-                    : const SizedBox(),
+                    : (widget.dataOfPost.video != null &&
+                            widget.dataOfPost.video != '')
+                        ? AspectRatio(
+                            aspectRatio: _controller.value.aspectRatio,
+                            child:
+                                Stack(alignment: Alignment.center, children: [
+                              VideoPlayer(_controller),
+                              Positioned(
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    _controller.value.isPlaying
+                                        ? Icons.pause
+                                        : Icons.play_arrow_rounded,
+                                    color: Colors.white,
+                                    size: 32,
+                                  ),
+                                ),
+                              )
+                            ]),
+                          )
+                        : const SizedBox(),
               ),
             ),
             SizedBox(

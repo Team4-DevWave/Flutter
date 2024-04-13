@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/post/model/post_model.dart';
-import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
@@ -20,7 +18,7 @@ import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class ConfirmPost extends AddPostScreen {
+class ConfirmPost extends ConsumerStatefulWidget {
   const ConfirmPost({super.key});
 
   @override
@@ -28,8 +26,8 @@ class ConfirmPost extends AddPostScreen {
 }
 
 class _ConfirmPostState extends ConsumerState<ConfirmPost> {
-  late TextEditingController _titleController;
-  late TextEditingController _bodytextController;
+  TextEditingController _titleController = TextEditingController(text: '');
+  TextEditingController _bodytextController = TextEditingController(text: '');
   bool isImage = false;
   bool isLink = false;
   bool isVideo = false;
@@ -40,6 +38,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   final ImagePicker picker = ImagePicker();
   String? image;
   String? video;
+  String? whereTo;
   File? videoFile;
   File? imageFile;
 
@@ -100,8 +99,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
+  void intializeData() {
     final intialData = ref.watch(postDataProvider);
     _titleController = TextEditingController(text: intialData?.title ?? '');
     if (intialData?.image != null) {
@@ -115,9 +113,20 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       isVideo = true;
     }
     _bodytextController = TextEditingController(text: intialData?.text_body);
-    if (intialData?.url != "") {
+    if (intialData?.url != null) {
       isLink = true;
     }
+    if (intialData?.community == null) {
+      whereTo = 'My Profile';
+    } else {
+      whereTo = intialData?.community;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    intializeData();
+
     super.didChangeDependencies();
   }
 
@@ -163,6 +172,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       if (video == null || isLink || isImage) {
         return const SizedBox();
       }
+
       return AddVideoWidget(onPressed: _removeVideo, videoPath: videoFile!);
     }
 
@@ -213,7 +223,9 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                 type: "image/video",
               )
             else if (isLink)
-              PostButton(titleController: _titleController, type: "url")
+              PostButton(titleController: _titleController, type: "link")
+            else if (isVideo)
+              PostButton(titleController: _titleController, type: "video")
             else
               PostButton(titleController: _titleController, type: "text")
           ]),

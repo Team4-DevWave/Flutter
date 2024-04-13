@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
@@ -9,20 +10,20 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
 
 class PostCard extends ConsumerStatefulWidget {
-  const PostCard(
-      {super.key,
-      required this.post,
-      required this.uid,
-      required this.onCommentPressed});
+  const PostCard({
+    super.key,
+    required this.post,
+    required this.uid,
+  });
   final Post post;
   final String uid;
-  final VoidCallback onCommentPressed;
   @override
   _PostCardState createState() => _PostCardState();
 }
 
 class _PostCardState extends ConsumerState<PostCard> {
   late VideoPlayerController _controller;
+  @override
   void initState() {
     super.initState();
     if (widget.post.video != null) {
@@ -52,7 +53,7 @@ class _PostCardState extends ConsumerState<PostCard> {
     void toggleSPOILER() async {
       widget.post.spoiler = !widget.post.spoiler;
       setstate() {}
-      await ref.read(toggleSpoiler(widget.post.id));
+      ref.read(toggleSpoiler(widget.post.id));
       Navigator.pop(context);
     }
 
@@ -140,18 +141,33 @@ class _PostCardState extends ConsumerState<PostCard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (widget.post.nsfw)
-                      const Text("NSFW",
-                          style: TextStyle(
-                              backgroundColor: Colors.pink,
-                              color: Colors.white)),
-                    const SizedBox(
-                      width: 10,
+                      Container(
+                          decoration: BoxDecoration(
+                              color: Colors.pink,
+                              border:
+                                  Border.all(color: AppColors.backgroundColor),
+                              borderRadius: BorderRadius.circular(
+                                  35) // Adjust the radius as needed
+                              ),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: const Text("NSFW",
+                              style: TextStyle(color: Colors.white))),
+                    SizedBox(
+                      width: 10.w,
                     ),
                     if (widget.post.spoiler)
-                      const Text("SPOILER",
-                          style: TextStyle(
-                              backgroundColor: Colors.purple,
-                              color: Colors.white)),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.purple,
+                            border:
+                                Border.all(color: AppColors.backgroundColor),
+                            borderRadius: BorderRadius.circular(
+                                35) // Adjust the radius as needed
+                            ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: const Text("SPOILER",
+                            style: TextStyle(color: Colors.white)),
+                      ),
                   ],
                 ),
               ),
@@ -213,7 +229,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                           ]),
                         ),
                       )
-                    : CircularProgressIndicator(),
+                    : const CircularProgressIndicator(),
               ),
             Row(
               children: [
@@ -242,13 +258,6 @@ class _PostCardState extends ConsumerState<PostCard> {
                   ),
                   color: Colors.white,
                 ),
-                IconButton(
-                    onPressed: widget.onCommentPressed,
-                    icon: const Icon(Icons.comment)),
-                Text(
-                    '${widget.post.commentsCount == 0 ? "comment" : widget.post.commentsCount}',
-                    style: AppTextStyles.primaryTextStyle
-                        .copyWith(color: AppColors.whiteColor)),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -269,7 +278,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                                 widget.post.spoiler
                                                     ? 'UnMark Spoiler'
                                                     : 'Mark Spoiler',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     color: Colors.white),
                                               ),
                                               leading: const Icon(
@@ -292,7 +301,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                                 widget.post.nsfw
                                                     ? 'UnMark NSFW'
                                                     : 'Mark NSFW',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     color: Colors.white),
                                               ),
                                               leading: const Icon(Icons.copy),
@@ -349,7 +358,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                 icon: const Icon(Icons.add_moderator_sharp)),
                             IconButton(
                               onPressed: () {},
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.insights,
                                 color: Colors.purple,
                               ),
@@ -360,11 +369,11 @@ class _PostCardState extends ConsumerState<PostCard> {
                               onPressed: () {
                                 share(context, ref, widget.post);
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.ios_share_rounded,
                                 color: Colors.white,
                               ),
-                              label: Text("Share"),
+                              label: const Text("Share"),
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   foregroundColor: Colors.white),

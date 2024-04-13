@@ -35,8 +35,13 @@ class _UserProfileState extends ConsumerState<UserProfile>
     _fetchPosts();
     _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
+    setUserid();
     super.initState();
     //intitialize tab controller
+  }
+
+  Future<void> setUserid() async {
+    uid = await getUserId();
   }
 
   @override
@@ -76,8 +81,9 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 return _posts[index].parentPost != null
                     ? FeedUnitShare(
                         dataOfPost: _posts[index].parentPost!,
-                        parentPost: _posts[index])
-                    : FeedUnit(_posts[index]);
+                        parentPost: _posts[index],
+                        uid!)
+                    : FeedUnit(_posts[index], uid!);
               } else {
                 return SizedBox(
                   height: 75.h,
