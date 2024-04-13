@@ -284,7 +284,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                             if (post!.title != value)
                               {
                                 ref
-                                    .read(postDataProvider.notifier)
+                                    .watch(postDataProvider.notifier)
                                     .updateTitle(value)
                               },
                           },
@@ -330,7 +330,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                   if (post!.text_body != value)
                                     {
                                       ref
-                                          .read(postDataProvider.notifier)
+                                          .watch(postDataProvider.notifier)
                                           .updateBodyText(value)
                                     },
                                   setState(() {
