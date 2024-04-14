@@ -193,7 +193,9 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
           backgroundColor: AppColors.backgroundColor,
           context: context,
           builder: (ctx) {
-            return const RulesPage();
+            return RulesPage(
+              communityName: whereTo!,
+            );
           });
     }
 

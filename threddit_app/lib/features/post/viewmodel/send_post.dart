@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 final createPost =
     StateNotifierProvider<PostProvider, bool>((ref) => PostProvider(ref));
@@ -21,9 +22,11 @@ class PostProvider extends StateNotifier<bool> {
   FutureEither<bool> submitPost(String type) async {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
-    //get username
+    final user = ref.read(userModelProvider)!;
+
     final whereTo =
-        post?.community == null ? 'u/username' : 'r/${post?.community}';
+        post?.community == null ? 'u/$user' : 'r/${post?.community}';
+    //get username
 
     try {
       final response = await http.post(

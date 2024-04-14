@@ -26,7 +26,8 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 /// removed from the widget tree.
 class FeedWidget extends StatefulWidget {
   final String feedID;
-  const FeedWidget({super.key, required this.feedID});
+  final String subreddit;
+  const FeedWidget({super.key, required this.feedID, required this.subreddit});
 
   @override
   _FeedWidgetState createState() => _FeedWidgetState();
@@ -53,12 +54,11 @@ class _FeedWidgetState extends State<FeedWidget> {
 
   Future<void> getUserID() async {
     userId = await getUserId();
-    print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD");
-    print(userId);
   }
 
   Future _fetchPosts() async {
-    final response = await fetchPosts(_currentPage);
+    final response =
+        await fetchPosts(widget.feedID, widget.subreddit, _currentPage);
     if (response.posts.isNotEmpty) {
       setState(() {
         _posts.addAll(response.posts);

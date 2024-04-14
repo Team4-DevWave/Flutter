@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
+import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/features/post/viewmodel/send_post.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
-
 
 class PostButton extends ConsumerWidget {
   const PostButton(
@@ -32,10 +32,11 @@ class PostButton extends ConsumerWidget {
       if (titleController.text.isNotEmpty) {
         ///call function to send data to the backend
         final response = await ref.watch(createPost.notifier).submitPost(type);
-        response.fold(
-            (l) {
-              showSnackBar(navigatorKey.currentContext!, l.message);
-              }, (r) {
+        response.fold((l) {
+          showSnackBar(navigatorKey.currentContext!, l.message);
+        }, (r) {
+          ref.read(postDataProvider.notifier).resetAll();
+
           ///should route to the posted post page but it routes to the mainLayout for now
           ref.read(currentScreenProvider.notifier).updateCurrentScreen(0);
           Navigator.pushReplacementNamed(context, RouteClass.mainLayoutScreen);

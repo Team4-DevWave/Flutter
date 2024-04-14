@@ -27,8 +27,22 @@ class Vote {
   }
 }
 
+class User {
+  final String id;
+  final String username;
+
+  User({required this.id, required this.username});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['_id'],
+      username: json['username'],
+    );
+  }
+}
+
 class Comment {
-  final String user;
+  final User user;
   final String content;
   final DateTime createdAt;
   Vote votes;
@@ -56,7 +70,7 @@ class Comment {
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
-      user: json['user'],
+      user: User.fromJson(json['user']),
       content: json['content'],
       createdAt: DateTime.parse(json['createdAt']),
       votes: Vote.fromJson(json['votes']),
@@ -68,21 +82,6 @@ class Comment {
       id: json['_id'],
       version: json['__v'],
     );
-  }
-  Map<String, dynamic> toJson() {
-    return {
-      'user': user,
-      'content': content,
-      'createdAt': createdAt.toIso8601String(),
-      'votes': votes.toJson(),
-      'post': post,
-      'hidden': hidden,
-      'saved': saved,
-      'collapsed': collapsed,
-      'mentioned': mentioned,
-      '_id': id,
-      '__v': version,
-    };
   }
 }
 

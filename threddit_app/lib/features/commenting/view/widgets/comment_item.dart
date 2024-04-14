@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
+import 'package:threddit_clone/features/home_page/view_model/saved_post.dart';
+import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/models/votes.dart';
@@ -21,75 +26,86 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   late TextEditingController _commentController;
   late AsyncValue<Votes> upvotes;
   late AsyncValue<Votes> downvotes;
-  bool upVoted=false;
-  bool downVoted=false;
+  bool upVoted = false;
+  bool downVoted = false;
+  bool _isLoading = false;
+  bool _isSaved = false;
+  void _setVariables() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final response =
+        await ref.read(savecommentProvider.notifier).isSaved(widget.comment.id);
+    response.fold(
+        (l) => showSnackBar(
+            navigatorKey.currentContext!, "Could not retrieve saved state"),
+        (success) {
+      setState(() {
+        _isSaved = success;
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _setVariables();
     upvotes = ref.read(getUserUpvotesProvider);
     downvotes = ref.read(getUserDownvotesProvider);
     _commentController = TextEditingController(text: widget.comment.content);
   }
-void upVoteComment(WidgetRef ref) async {
-      ref.read(
-          commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
-          if(upVoted)
-          {
-            widget.comment.votes.upvotes--;
 
-          }
-          else{
-            widget.comment.votes.upvotes++;
-            if(downVoted)
-            {
-              widget.comment.votes.downvotes--;
-            
-            }
-          }
-          upVoted=!upVoted;
-          downVoted=false;
-      setState(() {});
+  void upVoteComment(WidgetRef ref) async {
+    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
+    if (upVoted) {
+      widget.comment.votes.upvotes--;
+    } else {
+      widget.comment.votes.upvotes++;
+      if (downVoted) {
+        widget.comment.votes.downvotes--;
+      }
     }
+    upVoted = !upVoted;
+    downVoted = false;
+    setState(() {});
+  }
 
-    void downVoteComment(WidgetRef ref) async {
-      ref.read(
-          commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
-          if(downVoted)
-          {
-            widget.comment.votes.downvotes--;
-
-          }
-          else{
-            widget.comment.votes.downvotes++;
-            if(upVoted)
-            {
-              widget.comment.votes.upvotes--;
-            
-            }
-          }
-          downVoted=!downVoted;
-          upVoted=false;
-
-      setState(() {});
+  void downVoteComment(WidgetRef ref) async {
+    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
+    if (downVoted) {
+      widget.comment.votes.downvotes--;
+    } else {
+      widget.comment.votes.downvotes++;
+      if (upVoted) {
+        widget.comment.votes.upvotes--;
+      }
     }
+    downVoted = !downVoted;
+    upVoted = false;
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     bool upvoteStatus = upvotes.maybeWhen(
-      data: (votes) { 
-        upVoted=true;
-        return votes.containsComment(widget.comment.id);},
+      data: (votes) {
+        upVoted = true;
+        return votes.containsComment(widget.comment.id);
+      },
       orElse: () {
-        
-        return false;},
+        return false;
+      },
     );
 
     bool downvoteStatus = downvotes.maybeWhen(
       data: (votes) => votes.containsComment(widget.comment.id),
       orElse: () {
-        downVoted=false;
-        return false;},
+        downVoted = false;
+        return false;
+      },
     );
-    
 
     // Function to delete the comment
     void deleteComment() {
@@ -156,7 +172,6 @@ void upVoteComment(WidgetRef ref) async {
     final hoursSincePost = difference.inHours;
 
     return SafeArea(
-      
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Container(
@@ -180,7 +195,7 @@ void upVoteComment(WidgetRef ref) async {
                       ),
                     ),
                     Text(
-                      widget.comment.user,
+                      widget.comment.user.username,
                       style: AppTextStyles.primaryTextStyle.copyWith(
                         color: const Color.fromARGB(114, 255, 255, 255),
                       ),
@@ -220,19 +235,50 @@ void upVoteComment(WidgetRef ref) async {
                               builder: (context) {
                                 return Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: widget.uid != widget.comment.user
+                                  children: widget.uid != widget.comment.user.id
                                       ? [
                                           ListTile(
-                                            title: const Text(
-                                              'Save',
-                                              style: TextStyle(
-                                                  color: Colors.white),
+                                            title: Text(
+                                              _isLoading
+                                                  ? 'Loading...'
+                                                  : (_isSaved
+                                                      ? 'Unsave'
+                                                      : 'Save'),
+                                              style: const TextStyle(
+                                                  color: AppColors.whiteColor),
                                             ),
-                                            leading: const Icon(
+                                            leading: Icon(
                                               Icons.save,
-                                              color: Colors.white,
+                                              color: _isLoading
+                                                  ? AppColors.whiteHideColor
+                                                  : (_isSaved
+                                                      ? AppColors.whiteColor
+                                                      : AppColors
+                                                          .redditOrangeColor),
                                             ),
-                                            onTap: () {},
+                                            onTap: () async {
+                                              final saved = await ref
+                                                  .watch(savecommentProvider
+                                                      .notifier)
+                                                  .savecommentRequest(
+                                                      widget.comment.id);
+                                              saved.fold(
+                                                (failure) => showSnackBar(
+                                                    navigatorKey
+                                                        .currentContext!,
+                                                    failure.message),
+                                                (success) {
+                                                  setState(() {
+                                                    _isSaved =
+                                                        !_isSaved; // Toggle the saved state
+                                                  });
+                                                  showSnackBar(
+                                                      navigatorKey
+                                                          .currentContext!,
+                                                      'Post ${_isSaved ? 'Saved' : 'unSaved'} successfully');
+                                                },
+                                              );
+                                            },
                                           ),
                                           ListTile(
                                             title: const Text(
@@ -302,16 +348,47 @@ void upVoteComment(WidgetRef ref) async {
                                         ]
                                       : [
                                           ListTile(
-                                            title: const Text(
-                                              'Save',
-                                              style: TextStyle(
-                                                  color: Colors.white),
+                                            title: Text(
+                                              _isLoading
+                                                  ? 'Loading...'
+                                                  : (_isSaved
+                                                      ? 'Unsave'
+                                                      : 'Save'),
+                                              style: const TextStyle(
+                                                  color: AppColors.whiteColor),
                                             ),
-                                            leading: const Icon(
+                                            leading: Icon(
                                               Icons.save,
-                                              color: Colors.white,
+                                              color: _isLoading
+                                                  ? AppColors.whiteHideColor
+                                                  : (_isSaved
+                                                      ? AppColors.whiteColor
+                                                      : AppColors
+                                                          .redditOrangeColor),
                                             ),
-                                            onTap: () {},
+                                            onTap: () async {
+                                              final saved = await ref
+                                                  .watch(savecommentProvider
+                                                      .notifier)
+                                                  .savecommentRequest(
+                                                      widget.comment.id);
+                                              saved.fold(
+                                                (failure) => showSnackBar(
+                                                    navigatorKey
+                                                        .currentContext!,
+                                                    failure.message),
+                                                (success) {
+                                                  setState(() {
+                                                    _isSaved =
+                                                        !_isSaved; // Toggle the saved state
+                                                  });
+                                                  showSnackBar(
+                                                      navigatorKey
+                                                          .currentContext!,
+                                                      'Post ${_isSaved ? 'Saved' : ''} successfully');
+                                                },
+                                              );
+                                            },
                                           ),
                                           ListTile(
                                             title: const Text(
@@ -349,7 +426,6 @@ void upVoteComment(WidgetRef ref) async {
                                             ),
                                             onTap: () {
                                               showModalBottomSheet(
-                                                
                                                 context: context,
                                                 isScrollControlled: true,
                                                 backgroundColor:
@@ -379,7 +455,7 @@ void upVoteComment(WidgetRef ref) async {
                                                         child: Column(
                                                           children: [
                                                             SizedBox(
-                                                              height: 80,
+                                                              height: 80.h,
                                                               child: TextField(
                                                                 controller:
                                                                     _commentController,
@@ -498,13 +574,11 @@ void upVoteComment(WidgetRef ref) async {
                       onPressed: () {
                         upVoteComment(ref);
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_upward_outlined,
-                        size: 30,
+                        size: 30.sp,
                       ),
-                      color: upVoted
-                          ? Colors.red
-                          : Colors.white,
+                      color: upVoted ? Colors.red : Colors.white,
                     ),
                     Text(
                       '${widget.comment.votes.upvotes - widget.comment.votes.downvotes == 0 ? "vote" : widget.comment.votes.upvotes - widget.comment.votes.downvotes}',
@@ -515,9 +589,9 @@ void upVoteComment(WidgetRef ref) async {
                       onPressed: () {
                         downVoteComment(ref);
                       },
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_downward_outlined,
-                        size: 30,
+                        size: 30.sp,
                       ),
                       color: downVoted
                           ? const Color.fromARGB(255, 97, 137, 212)

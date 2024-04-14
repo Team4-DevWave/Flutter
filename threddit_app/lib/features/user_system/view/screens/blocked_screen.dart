@@ -94,10 +94,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                 trailing: ElevatedButton(
                                   onPressed: () async {
                                     await unblockUser(
-                                      client: client,
-                                      userToUnBlock: users[index].username,
-                                      context: context,
-                                    );
+                                        client: client,
+                                        userToUnBlock: users[index].username,
+                                        context: context);
                                     setState(() {
                                       ref
                                           .watch(settingsFetchProvider.notifier)
@@ -105,9 +104,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    shape: const StadiumBorder(),
-                                    textStyle: AppTextStyles.buttonTextStyle,
-                                    backgroundColor:
+                                      shape: const StadiumBorder(),
+                                      textStyle: AppTextStyles.buttonTextStyle,
+                                      backgroundColor:
                                         AppColors.redditOrangeColor,
                                   ),
                                   child: Text(
@@ -133,10 +132,9 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                               final username = usernames[index].getUsername;
                               if (usernames[index].getBlocked) {
                                 unblockUser(
-                                  context: context,
-                                  client: client,
-                                  userToUnBlock: username,
-                                );
+                                    client: client,
+                                    userToUnBlock: username,
+                                    context: context);
                               } else {
                                 blockUser(
                                   context: context,

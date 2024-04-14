@@ -9,16 +9,16 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:http/http.dart' as http;
 
-final savePostProvider =
-    StateNotifierProvider<SavePost, bool>((ref) => SavePost(ref));
+final savecommentProvider =
+    StateNotifierProvider<Savecomment, bool>((ref) => Savecomment(ref));
 
-class SavePost extends StateNotifier<bool> {
+class Savecomment extends StateNotifier<bool> {
   Ref ref;
-  SavePost(this.ref) : super(false);
+  Savecomment(this.ref) : super(false);
 
-  FutureEither<bool> savePostRequest(String postid) async {
+  FutureEither<bool> savecommentRequest(String commentid) async {
     final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postid/save');
+        'http://${AppConstants.local}:8000/api/v1/comments/$commentid/save');
     final token = await getToken();
     try {
       final response = await http.patch(
@@ -28,8 +28,7 @@ class SavePost extends StateNotifier<bool> {
           'Authorization': 'Bearer $token',
         },
       );
-      print('STATUS');
-      print(response.statusCode);
+
       if (response.statusCode == 200) {
         return right(true);
       } else if (response.statusCode == 404) {
@@ -47,7 +46,7 @@ class SavePost extends StateNotifier<bool> {
     }
   }
 
-  FutureEither<List<String>> getSavedPostIds() async {
+  FutureEither<List<String>> getSavedcommentIds() async {
     final url = Uri.parse(
         "http://${AppConstants.local}:8000/api/v1/users/me/saved?page=1");
     final token = await getToken();
@@ -62,12 +61,11 @@ class SavePost extends StateNotifier<bool> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(response.body)['data'];
-        final List<dynamic> posts = body['posts'];
+        final List<dynamic> comments = body['comments'];
 
-        final List<String> postIds =
-            posts.map((post) => post['_id'] as String).toList();
-
-        return Right(postIds);
+        final List<String> commentIds =
+            comments.map((comment) => comment['_id'] as String).toList();
+        return Right(commentIds);
       } else {
         return Left(Failure('Something went wrong, try again later'));
       }
@@ -80,12 +78,12 @@ class SavePost extends StateNotifier<bool> {
     }
   }
 
-  FutureEither<bool> isSaved(String postid) async {
-    final response = await getSavedPostIds();
+  FutureEither<bool> isSaved(String commentid) async {
+    final response = await getSavedcommentIds();
     return response.fold((l) {
       return left(Failure('Error retriving saved'));
     }, (listSaved) {
-      return right(listSaved.contains(postid));
+      return right(listSaved.contains(commentid));
     });
   }
 }

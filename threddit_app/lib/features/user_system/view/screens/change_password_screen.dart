@@ -84,7 +84,13 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     onPressed: () {
                       return _forgetPassword();
                     },
-                    child: const Text("Forgot password?")),
+                    child: Text(
+                      "Forgot password?",
+                      style: AppTextStyles.primaryTextStyle.copyWith(
+                        color: AppColors.redditOrangeColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )),
               ),
               confirmPasswordForm,
               const Spacer(),

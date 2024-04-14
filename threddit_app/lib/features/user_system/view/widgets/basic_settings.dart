@@ -33,6 +33,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
   String? token;
   String pickedGender = genders.first;
   Country selectedCountry = Country.worldWide;
+
   void _selectBasicSetting(BuildContext context, String settingName) {
     if (settingName == "email") {
       Navigator.pushNamed(context, RouteClass.updateEmailScreen)
@@ -144,7 +145,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                           setState(() {
                             pickedGender = value!;
                           });
-                        }else{
+                        } else {
                           showAlert("Gender wasn't changed", context);
                         }
                       });

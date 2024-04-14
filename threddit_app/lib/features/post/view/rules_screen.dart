@@ -4,11 +4,8 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class RulesPage extends ConsumerWidget {
-  const RulesPage({
-    super.key,
-    /*required this.communityName*/
-  });
-  //final String communityName;
+  const RulesPage({super.key, required this.communityName});
+  final String communityName;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

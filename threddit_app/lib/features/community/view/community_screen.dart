@@ -4,7 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
-import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
+import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
+
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 
 class CommunityScreen extends ConsumerStatefulWidget {
@@ -17,15 +21,51 @@ class CommunityScreen extends ConsumerStatefulWidget {
 }
 
 class _CommunityScreenState extends ConsumerState<CommunityScreen> {
-  String _selectedItem = 'Hot Posts'; // Initial selected item
+  String _selectedItem = 'New Posts'; // Initial selected item
+  final _scrollController = ScrollController();
+  final _posts = <Post>[];
+  int _currentPage = 1;
+  String? userId;
+
+  Future _fetchPosts() async {
+    final response = await fetchPosts(_selectedItem, widget.id, _currentPage);
+    if (response.posts.isNotEmpty) {
+      setState(() {
+        _posts.addAll(response.posts);
+        _currentPage++;
+      });
+    }
+  }
+
+  Future<void> getUserID() async {
+    userId = await getUserId();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _fetchPosts();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    getUserID();
+    _fetchPosts();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
+
     return ScreenUtilInit(
       child: Scaffold(
         body: communityAsyncValue.when(
@@ -36,15 +76,26 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               repeat: true,
             ),
           ),
-          error: (error, stack) => const Scaffold(body:Text("community not found :( )",style: TextStyle(color:Colors.white, fontSize: 20),),),
-      ),
+          error: (error, stack) => const Scaffold(
+            body: Text(
+              "community not found :( )",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          ),
+        ),
       ),
     );
   }
 
   Widget buildCommunityScreen(Subreddit community) {
-    community.srLooks.banner ??= "https://htmlcolorcodes.com/assets/images/colors/bright-blue-color-solid-background-1920x1080.png";
-    community.srLooks.icon ??= "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg";
+    community.srLooks.banner = (community.srLooks.banner == null ||
+            community.srLooks.banner == '')
+        ? "https://htmlcolorcodes.com/assets/images/colors/bright-blue-color-solid-background-1920x1080.png"
+        : community.srLooks.banner;
+    community.srLooks.icon = (community.srLooks.icon == null ||
+            community.srLooks.icon == '')
+        ? "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg"
+        : community.srLooks.icon;
     bool isCurrentUserModerator = community.moderators.contains(widget.uid);
 
     bool isCurrentUser = community.members.contains(widget.uid);
@@ -65,8 +116,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         leading: const Icon(Icons.exit_to_app),
                         title: const Text('Leave Community'),
                         onTap: () {
-                              ref.watch(unjoinCommunityProvider(widget.id));
-                              community.members.remove(widget.uid);
+                          ref.watch(unjoinCommunityProvider(widget.id));
+                          community.members.remove(widget.uid);
                           setState(() {});
                           Navigator.pop(context);
                         }),
@@ -78,7 +129,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           ref.watch(joinCommunityProvider(widget.id));
           community.members.add(widget.uid);
           setState(() {});
-          
+
           return true;
         }
       }
@@ -149,8 +200,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                              community.srLooks.icon!),
+                          backgroundImage:
+                              NetworkImage(community.srLooks.icon!),
                           radius: 30,
                         ),
                       ),
@@ -206,14 +257,15 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  community.description!=null?
-                  Text(
-                    community.description!,
-                    style: const TextStyle(color: Colors.white),
-                  ):const Text(
-                    '',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  community.description != null
+                      ? Text(
+                          community.description!,
+                          style: const TextStyle(color: Colors.white),
+                        )
+                      : const Text(
+                          '',
+                          style: TextStyle(color: Colors.white),
+                        ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -261,6 +313,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     onChanged: (value) {
                       setState(() {
                         _selectedItem = value!;
+                        _posts.clear();
+                        _fetchPosts();
                       });
                     },
                     underline: Container(), // Hide the default underline
@@ -270,8 +324,6 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       'Hot Posts',
                       'New Posts',
                       'Top Posts',
-                      // 'Controversial Posts',
-                      // 'Rising Posts'
                     ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -292,7 +344,36 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               ),
             ),
           ),
-          Flexible(child: FeedWidget(feedID: _selectedItem))
+          Flexible(
+              child: _posts.isEmpty
+                  ? Center(
+                      child: Lottie.asset(
+                      'assets/animation/loading.json',
+                      repeat: true,
+                    ))
+                  : ListView.builder(
+                      controller: _scrollController,
+                      itemCount: _posts.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index < _posts.length) {
+                          return _posts[index].parentPost != null
+                              ? FeedUnitShare(
+                                  dataOfPost: _posts[index].parentPost!,
+                                  parentPost: _posts[index],
+                                  userId!)
+                              : FeedUnit(_posts[index], userId!);
+                        } else {
+                          return SizedBox(
+                            height: 75.h,
+                            width: 75.w,
+                            child: Lottie.asset(
+                              'assets/animation/loading.json',
+                              repeat: true,
+                            ),
+                          );
+                        }
+                      },
+                    ))
         ],
       ),
     );

@@ -161,7 +161,8 @@ void checkPasswordChangeResponse({
 }) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
-    ref.read(authControllerProvider.notifier).logout();
+    ref.watch(authControllerProvider.notifier).logout();
+
     showAlert("Password was changed correctly! Please log in again!", context);
   } else {
     showAlert("Password was incorrect.", context);
@@ -340,7 +341,7 @@ class SettingsFetch extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    UserModelMe user = ref.watch(userModelProvider)!;
+    UserModelMe user = ref.read(userModelProvider)!;
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
@@ -350,7 +351,8 @@ class SettingsFetch extends StateNotifier<bool> {
       },
     );
     user = UserModelMe.fromJson(jsonDecode(response.body));
-    ref.watch(userModelProvider.notifier).update((state) => user);
+    print(user);
+    ref.read(userModelProvider.notifier).update((state) => user);
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
 

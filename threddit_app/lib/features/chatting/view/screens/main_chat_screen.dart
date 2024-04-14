@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/chatting/view%20model/chat_provider.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
@@ -19,13 +20,13 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Message message = Message(
-        id: '1',
-        sender: 'user1',
-        recipient: 'user2',
-        timestamp: DateTime.now(),
-        text: 'Hello');
-    ChatItem chat = ChatItem(message: message, uid: 'user2');
+    // Message message = Message(
+    //     id: '1',
+    //     sender: 'user1',
+    //     recipient: 'user2',
+    //     timestamp: DateTime.now(),
+    //     text: 'Hello');
+    //ChatItem chat = ChatItem(message: message, uid: 'user2');
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(199, 10, 10, 10),
@@ -121,9 +122,9 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> {
                           const SizedBox(
                             height: 40,
                           ),
-                          const SizedBox(
-                            width: 220,
-                            child: Text(
+                          SizedBox(
+                            width: 220.w,
+                            child: const Text(
                               'Chat with other Redditors about your favourite topics.',
                               style: TextStyle(color: Colors.white),
                             ),

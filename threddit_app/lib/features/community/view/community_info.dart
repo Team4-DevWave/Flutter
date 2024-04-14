@@ -137,7 +137,10 @@ class CommunityInfo extends ConsumerWidget {
             actions: [
               community.moderators.contains(uid)
                   ? TextButton(
-                      onPressed: () {Navigator.pushNamed(context, RouteClass.communityModTools);},
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, RouteClass.communityModTools);
+                      },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                             const Color.fromARGB(223, 49, 49, 49)),

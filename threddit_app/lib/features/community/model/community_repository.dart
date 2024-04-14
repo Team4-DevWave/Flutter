@@ -29,18 +29,13 @@ class CommunityRepository {
 
       if (response.statusCode == 201) {
         jsonDecode(response.body);
-        print('community created successfully');
+
         return 201;
       }
       if (response.statusCode == 409) {
         return 409;
-      } else {
-        print(
-            'Failed to create community. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error creating community: $e');
-    }
+      } else {}
+    } catch (e) {}
     return 404;
   }
 
@@ -58,16 +53,12 @@ class CommunityRepository {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final Map<String, dynamic> data = responseData['data'];
         final Map<String, dynamic> communityData = data['subreddit'];
-        print(communityData);
-        print(Subreddit.fromJson(communityData));
+
         return Subreddit.fromJson(communityData);
       } else {
-        print(
-            'Failed to fetch subreddit info. Status code: ${response.statusCode}');
         throw Exception('Failed to fetch subreddit info');
       }
     } catch (e) {
-      print('Error fetching subreddit info: $e');
       throw Exception('Community not found');
     }
   }
@@ -84,17 +75,10 @@ class CommunityRepository {
       final response = await http.post(url, headers: headers);
 
       if (response.statusCode == 201) {
-        print('Successfully joined subreddit: $subredditName');
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        String status = responseData['status'];
-        print('Response status: $status');
       } else {
-        print(
-            'Failed to join subreddit: $subredditName. Status code: ${response.statusCode}');
         throw Exception('Failed to join subreddit');
       }
     } catch (e) {
-      print('Error joining subreddit: $e');
       throw Exception('Failed to join subreddit');
     }
   }
@@ -111,15 +95,10 @@ class CommunityRepository {
       final response = await http.delete(url, headers: headers);
 
       if (response.statusCode == 204) {
-        print('Successfully unsubscribed from subreddit: $subredditName');
-        print('Response status: ${response.statusCode}');
       } else {
-        print(
-            'Failed to unsubscribe from subreddit: $subredditName. Status code: ${response.statusCode}');
         throw Exception('Failed to unsubscribe from subreddit');
       }
     } catch (e) {
-      print('Error unsubscribing from subreddit: $e');
       throw Exception('Failed to unsubscribe from subreddit');
     }
   }

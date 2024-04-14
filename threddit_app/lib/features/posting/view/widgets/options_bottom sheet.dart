@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
@@ -8,6 +9,7 @@ import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart'
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
 class OptionsBotttomSheet extends ConsumerStatefulWidget {
   const OptionsBotttomSheet({
@@ -26,22 +28,30 @@ class OptionsBotttomSheet extends ConsumerStatefulWidget {
 }
 
 class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
-  bool isSave = false;
+  bool _isLoading = false;
+  bool _isSaved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _setVariables();
+  }
+
   void _setVariables() async {
+    setState(() {
+      _isLoading = true;
+    });
     final response =
         await ref.read(savePostProvider.notifier).isSaved(widget.post.id);
     response.fold(
         (l) => showSnackBar(
-            navigatorKey.currentContext!, "could not retrieve saved"),
+            navigatorKey.currentContext!, "Could not retrieve saved state"),
         (success) {
-      isSave = success;
+      setState(() {
+        _isSaved = success;
+        _isLoading = false;
+      });
     });
-  }
-
-  @override
-  void initState() {
-    _setVariables();
-    super.initState();
   }
 
   @override
@@ -72,16 +82,22 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
           ),
           leading: const Icon(Icons.share),
           onTap: () {
-            Navigator.pop(context);
             share(context, ref, widget.post);
           },
         ),
         ListTile(
-          title: const Text(
-            'Save',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            _isLoading ? 'Loading...' : (_isSaved ? 'Unsave' : 'Save'),
+            style: const TextStyle(color: AppColors.whiteColor),
           ),
-          leading: const Icon(Icons.save),
+          leading: Icon(
+            Icons.save,
+            color: _isLoading
+                ? AppColors.whiteHideColor
+                : (_isSaved
+                    ? AppColors.whiteColor
+                    : AppColors.redditOrangeColor),
+          ),
           onTap: () async {
             final saved = await ref
                 .watch(savePostProvider.notifier)
@@ -90,8 +106,11 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
               (failure) =>
                   showSnackBar(navigatorKey.currentContext!, failure.message),
               (success) {
+                setState(() {
+                  _isSaved = !_isSaved; // Toggle the saved state
+                });
                 showSnackBar(navigatorKey.currentContext!,
-                    'Post save/unsaved successfully');
+                    'Post ${_isSaved ? 'Saved' : ''} successfully');
               },
             );
           },
@@ -154,7 +173,7 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
           ),
           leading: const Icon(Icons.hide_source),
           onTap: () {},
-        )
+        ),
       ],
     );
   }
