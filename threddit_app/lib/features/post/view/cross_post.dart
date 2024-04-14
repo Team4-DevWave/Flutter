@@ -48,11 +48,14 @@ class _CrossPostState extends ConsumerState<CrossPost> {
   }
 
   void openRulesOverlay() {
+    final shared = ref.read(sharedPostProvider);
     showModalBottomSheet(
       backgroundColor: AppColors.backgroundColor,
       context: context,
       builder: (ctx) {
-        return const RulesPage();
+        return RulesPage(
+          communityName: shared.destination!,
+        );
       },
     );
   }
