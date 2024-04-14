@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/models/subreddit.dart';
@@ -80,10 +81,12 @@ class CommunityInfo extends ConsumerWidget {
                               for (var rule in community.rules)
                                 Row(
                                   children: [
-                                    Text(
-                                      rule,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 15),
+                                    Expanded(
+                                      child: Text(
+                                        rule as String,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      ),
                                     ),
                                   ],
                                 )
