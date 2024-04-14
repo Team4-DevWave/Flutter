@@ -110,7 +110,10 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                     backgroundColor:
                                         AppColors.redditOrangeColor,
                                   ),
-                                  child:  Text("Unblock", style: AppTextStyles.primaryTextStyle,),
+                                  child: Text(
+                                    "Unblock",
+                                    style: AppTextStyles.primaryTextStyle,
+                                  ),
                                 )));
                       }
                     }

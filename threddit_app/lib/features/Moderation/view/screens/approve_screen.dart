@@ -2,27 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
+import 'package:threddit_clone/features/Moderation/view_model/moderation_functions.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
-
+/// Class responsible for approving a user as a user in a locked subreddit. 
+/// Takes the username of the user of the user you want to approve and
+/// checks that the username isn't empty. Then adds him to the approved
+/// users list.
 class ApproveScreen extends ConsumerStatefulWidget {
   const ApproveScreen({super.key});
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ApproveScreenState();
 }
 
-/// Validator function
-/// Checks for the necessary checks and if not true returns a number
-/// 3 for name is empty
-/// 0 if all checks pass
-int validateApprove(String name) {
-  if (name == "") {
-    return 3;
-  } else {
-    return 0;
-  }
-}
+
 
 class _ApproveScreenState extends ConsumerState<ApproveScreen> {
   final EmailForm usernameForm = EmailForm("username");

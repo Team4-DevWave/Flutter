@@ -13,6 +13,7 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 
@@ -160,7 +161,7 @@ void checkPasswordChangeResponse({
 }) async {
   int statusCode = await statusCodeFuture;
   if (statusCode == 200) {
-    ref.watch(authControllerProvider.notifier).logout();
+    ref.read(authControllerProvider.notifier).logout();
     showAlert("Password was changed correctly! Please log in again!", context);
   } else {
     showAlert("Password was incorrect.", context);

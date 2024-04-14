@@ -114,7 +114,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               ),
               title: "Settings",
               onTap: () {
-                Navigator.pushNamed(context, RouteClass.settingsScreen);
+                Navigator.pushNamed(context, RouteClass.communityModTools);
               }),
         ],
       ),

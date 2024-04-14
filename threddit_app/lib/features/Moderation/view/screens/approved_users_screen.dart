@@ -8,7 +8,9 @@ import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.da
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
-
+///Class responsible for fetching and displaying the approved
+///users list. Also navigates you to the add approved user screen.
+/// And you can remvoe an approved user from it.
 class ApprovedUsersScreen extends ConsumerStatefulWidget {
   const ApprovedUsersScreen({super.key});
   @override
