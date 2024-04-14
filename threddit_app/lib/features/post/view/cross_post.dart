@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
@@ -8,6 +9,7 @@ import 'package:threddit_clone/features/post/view/widgets/classic_post_card.dart
 import 'package:threddit_clone/features/post/view/widgets/onexit_share.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -73,11 +75,13 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     response.fold(
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
-        (success) {
+        (post) {
       showSnackBar(
           navigatorKey.currentContext!, 'Your post shared to $message');
-      Navigator.pushNamed(navigatorKey.currentContext!, RouteClass.postScreen,
-          arguments: {});
+      Navigator.pushNamed(context, RouteClass.postScreen, arguments: {
+        'currentpost': post,
+        'uid': ref.read(userModelProvider)?.id
+      });
     });
     //ref.watch(isFirstTimeEnter.notifier).update((state) => false);
   }

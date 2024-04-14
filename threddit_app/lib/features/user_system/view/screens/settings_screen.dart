@@ -36,7 +36,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     super.initState();
   }
 
-
   Future<void> fetchUser() async {
     final userModel = ref.watch(settingsFetchProvider.notifier).getMe();
 
@@ -70,7 +69,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         body: ListView(children: [
           const SettingsTitle(title: "GENERAL"),
           FutureBuilder(
-            future: fetchUser(client),
+            future: fetchUser(),
             builder: (BuildContext ctx, AsyncSnapshot<void> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();

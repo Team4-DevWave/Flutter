@@ -144,7 +144,7 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                   ),
                   title: Text(community[0],
                       style: AppTextStyles.primaryTextStyle.copyWith(
-                        fontSize: 20.spMin,
+                        fontSize: 17.spMin,
                       )),
                   trailing: IconButton(
                     onPressed: () => _onStarPressed(community[0]),

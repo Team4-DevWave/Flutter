@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:threddit_clone/app/app.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/home_page/model/shared_child.dart';
@@ -19,7 +20,7 @@ class SharePosts extends StateNotifier<bool> {
   Ref ref;
   SharePosts(this.ref) : super(false);
 
-  FutureEither<bool> sharePost() async {
+  FutureEither<Post> sharePost() async {
     state = true;
     final sharedPost = ref.watch(sharedPostProvider);
 
@@ -45,11 +46,24 @@ class SharePosts extends StateNotifier<bool> {
         ),
       );
       if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final child = SharedChildPost.fromJson(responseData).post;
-        print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
-        print(child);
-        return right(true);
+        final pid = json.decode(response.body)["data"]["post"]["_id"];
+
+        final urlPost =
+            Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/$pid');
+
+        final responsePost = await http.get(urlPost, headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        });
+        if (responsePost.statusCode == 200) {
+          final Map<String, dynamic> responseData =
+              jsonDecode(responsePost.body);
+          final post = Post.fromJson(responseData['data']['post']);
+          return right(post);
+        } else {
+          throw Exception(
+              'Failed to fetch post. Status code: ${response.statusCode}');
+        }
       } else {
         return left(Failure('Something went wrong while sharing the post'));
       }
