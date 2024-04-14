@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 /// A placeholder screen that should show the accounts blocked by a user.
@@ -105,9 +106,13 @@ class _BlockedScreenState extends ConsumerState<BlockedScreen> {
                                   style: ElevatedButton.styleFrom(
                                       shape: const StadiumBorder(),
                                       textStyle: AppTextStyles.buttonTextStyle,
-                                      backgroundColor: const Color.fromARGB(
-                                          255, 233, 65, 14)),
-                                  child: const Text("Unblock"),
+                                      backgroundColor:
+                                        AppColors.redditOrangeColor,
+                                  ),
+                                  child: Text(
+                                    "Unblock",
+                                    style: AppTextStyles.primaryTextStyle,
+                                  ),
                                 )));
                       }
                     }

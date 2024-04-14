@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
+import 'package:threddit_clone/features/Moderation/view_model/moderation_functions.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
@@ -29,25 +30,6 @@ class EditModeratorScreen extends ConsumerStatefulWidget {
 class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
   final EmailForm usernameForm = EmailForm("username");
   final client = http.Client();
-  void setAllPermissions(bool? value) {
-    setState(() {
-      modPermissions.forEach((key, _) {
-        modPermissions[key] = value;
-      });
-    });
-  }
-
-  void checkPermissions() {
-    if (modPermissions.values.every((value) => value == true)) {
-      setState(() {
-        fullPermissions = true;
-      });
-    } else {
-      setState(() {
-        fullPermissions = false;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,8 +88,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                 onChanged: (value) {
                   setState(() {
                     fullPermissions = value;
+                    setAllPermissions(value, modPermissions);
                   });
-                  setAllPermissions(value);
                 }),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,8 +105,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['access'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
                 Expanded(
@@ -137,8 +119,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['mail'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
               ],
@@ -157,8 +139,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['config'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
                 Expanded(
@@ -171,8 +153,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['posts'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
               ],
@@ -191,8 +173,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['flair'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
                 Expanded(
@@ -205,8 +187,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['wiki'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
               ],
@@ -225,8 +207,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['chatConfig'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
                 Expanded(
@@ -239,8 +221,8 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['chatOperator'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
               ],

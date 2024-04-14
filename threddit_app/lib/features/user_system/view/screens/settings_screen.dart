@@ -36,13 +36,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     super.initState();
   }
 
-  Future<void> fetchUser(http.Client client) async {
+
+  Future<void> fetchUser() async {
     final userModel = ref.watch(settingsFetchProvider.notifier).getMe();
 
     user = await userModel;
   }
 
-  Future<UserSettings> fetchSettings(http.Client client) async {
+  Future<UserSettings> fetchSettings() async {
     final userSettings =
         ref.watch(settingsFetchProvider.notifier).getSettings();
     settings = await userSettings;
@@ -93,7 +94,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const SettingsTitle(title: "VIEW OPTIONS"),
           FutureBuilder(
-              future: fetchSettings(client),
+              future: fetchSettings(),
               builder:
                   (BuildContext ctx, AsyncSnapshot<UserSettings> snapshot) {
                 while (snapshot.connectionState == ConnectionState.waiting) {

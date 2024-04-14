@@ -62,6 +62,7 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     return const Text("ERROR LOADING USER DATA");
                   } else {
                     final UserModelMe user = snapshot.data!;
+
                     return Row(
                       children: [
                         const Icon(

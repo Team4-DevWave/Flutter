@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/Moderation/view/widgets/input_form.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
+import 'package:threddit_clone/features/Moderation/view_model/moderation_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
@@ -15,23 +16,8 @@ class BanScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _BanScreenState();
 }
 
-/// Validator function
-/// Checks for the necessary checks and if not true returns a number
-/// 1 for rule not chose
-/// 2 for ban length == 0(custom ban and the length = 0)
-/// 3 for name is empty
-/// 0 if all checks pass
-int validateBan(String name, String rule, String length) {
-  if (rule == "Select a rule") {
-    return 1;
-  } else if (length == "0") {
-    return 2;
-  } else if (name == "") {
-    return 3;
-  } else {
-    return 0;
-  }
-}
+
+
 
 class _BanScreenState extends ConsumerState<BanScreen> {
   final InputForm usernameForm = InputForm("username");
