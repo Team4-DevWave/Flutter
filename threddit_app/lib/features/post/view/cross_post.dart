@@ -52,7 +52,9 @@ class _CrossPostState extends ConsumerState<CrossPost> {
       backgroundColor: AppColors.backgroundColor,
       context: context,
       builder: (ctx) {
-        return const RulesPage();
+        return RulesPage(
+          communityName: ref.read(sharedPostProvider).destination!,
+        );
       },
     );
   }

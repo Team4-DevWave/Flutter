@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
@@ -81,7 +82,6 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
           ),
           leading: const Icon(Icons.share),
           onTap: () {
-            Navigator.pop(context);
             share(context, ref, widget.post);
           },
         ),
@@ -173,7 +173,7 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
           ),
           leading: const Icon(Icons.hide_source),
           onTap: () {},
-        )
+        ),
       ],
     );
   }

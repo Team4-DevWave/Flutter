@@ -81,6 +81,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                 IconButton(
                     onPressed: () {
                       showModalBottomSheet(
+                          isScrollControlled: true,
                           context: context,
                           backgroundColor: AppColors.backgroundColor,
                           builder: (context) {

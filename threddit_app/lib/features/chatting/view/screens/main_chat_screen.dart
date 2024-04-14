@@ -20,13 +20,13 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Message message = Message(
-        id: '1',
-        sender: 'user1',
-        recipient: 'user2',
-        timestamp: DateTime.now(),
-        text: 'Hello');
-    ChatItem chat = ChatItem(message: message, uid: 'user2');
+    // Message message = Message(
+    //     id: '1',
+    //     sender: 'user1',
+    //     recipient: 'user2',
+    //     timestamp: DateTime.now(),
+    //     text: 'Hello');
+    //ChatItem chat = ChatItem(message: message, uid: 'user2');
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(199, 10, 10, 10),

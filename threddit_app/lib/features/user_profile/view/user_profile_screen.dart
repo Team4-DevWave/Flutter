@@ -88,7 +88,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 child: Column(
                   children: [
                     Text(
-                      _comments[index].user,
+                      _comments[index].user.username,
                       style: AppTextStyles.boldTextStyleNotifcation,
                     )
                   ],

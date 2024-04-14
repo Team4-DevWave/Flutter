@@ -21,10 +21,9 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    //PostScreen(currentPost: posts[1], uid: "user2"),
-    const MainCommunityScreen(),
-    const AddPostScreen(),
     const CommunityScreen(id: "he7", uid: 'user2'),
+    const AddPostScreen(),
+    const MainCommunityScreen(),
     const NotificationsScreen()
   ];
 
