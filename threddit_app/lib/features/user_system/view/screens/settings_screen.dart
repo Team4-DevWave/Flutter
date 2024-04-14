@@ -70,7 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         body: ListView(children: [
           const SettingsTitle(title: "GENERAL"),
           FutureBuilder(
-            future: fetchUser(client),
+            future: fetchUser(),
             builder: (BuildContext ctx, AsyncSnapshot<void> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
