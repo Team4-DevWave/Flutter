@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
@@ -31,13 +33,9 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
   String? token;
   Future<UserModelMe> fetchUser() async {
     setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getMe();
+      ref.watch(settingsFetchProvider.notifier).getMe();
     });
-    return ref
-        .watch(settingsFetchProvider.notifier)
-        .getMe();
+    return ref.watch(settingsFetchProvider.notifier).getMe();
   }
 
   @override
@@ -67,6 +65,9 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
                         Icons.person,
                         color: AppColors.redditOrangeColor,
                       ),
+                      SizedBox(
+                        width: 15.w,
+                      ),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -87,7 +88,17 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
             Container(
               alignment: Alignment.topRight,
               child: TextButton(
-                  onPressed: () {}, child: const Text("Forgot password?")),
+                  onPressed: () {
+                    Navigator.pushNamed(
+                        context, RouteClass.forgotPasswordScreen);
+                  },
+                  child: Text(
+                    "Forgot password?",
+                    style: AppTextStyles.primaryTextStyle.copyWith(
+                      color: AppColors.redditOrangeColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  )),
             ),
             const Spacer(),
             SaveChanges(
@@ -96,14 +107,12 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
                 //final String currentPassword =
                 currentPasswordForm.enteredPassword;
                 changeEmailFunction(
-                        newEmail: newEmail,)
-                    .then((value) {
+                  newEmail: newEmail,
+                ).then((value) {
                   checkEmailUpdateResponse(
                       context: context, statusCodeFuture: value);
                   setState(() {
-                    ref
-                        .watch(settingsFetchProvider.notifier)
-                        .getMe();
+                    ref.watch(settingsFetchProvider.notifier).getMe();
                   });
                 });
               },

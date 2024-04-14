@@ -1,8 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:fpdart/fpdart.dart';
+import 'package:threddit_clone/features/user_system/model/failure.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/type_defs.dart';
+import 'package:http/http.dart' as http;
 
 class UserProfileNotifier extends StateNotifier<UserProfile> {
-  //link returned to null here and in reset all
   UserProfileNotifier()
       : super(UserProfile(
             displayName: "",
@@ -13,6 +20,39 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
             activeCommunitiesVisibility: true,
             profilePicture: "",
             socialLinks: []));
+
+  ///this function sends the current state of the user data
+  ///if the request is successfull, the data will be updated in the provider
+  FutureEither<bool> updateUserData() async {
+    String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+
+    final token = await getToken();
+    final url = "http://$local:8000/api/v1/users/me/settings";
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final jsonBody = state.toJson();
+
+    try {
+      final response =
+          await http.patch(Uri.parse(url), headers: headers, body: jsonBody);
+      if (response.statusCode == 200) {
+        final updatedProfile = UserProfile.fromJson(json.decode(response.body));
+        state = updatedProfile;
+        return right(true);
+      } else {
+        return left(Failure("Can't submit changes, please try again later"));
+      }
+    } catch (e) {
+      if (e is SocketException || e is TimeoutException || e is HttpException) {
+        return left(Failure('Check your internet connection...'));
+      } else {
+        return left(Failure(e.toString()));
+      }
+    }
+  }
+
   void updateDiplayName(String disName) =>
       state = state.copyWith(displayName: disName);
   void updateAbout(String about) => state = state.copyWith(about: about);

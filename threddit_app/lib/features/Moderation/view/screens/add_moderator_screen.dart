@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
+import 'package:threddit_clone/features/Moderation/view_model/moderation_functions.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +19,11 @@ Map<String, bool?> modPermissions = {
   'chatOperator': false,
 };
 
-
+/// Class responsible for adding a moderator
+/// It shows a screen that has a username form that takes the username of the user you
+/// want to add as a moderator and also has a checklist of the Permissions you 
+/// want to give him (access, config, flair, chatconfig, mail, posts, wiki, chatoperator)
+/// And a check for full permissions which enables all of the permissions
 class AddModeratorScreen extends ConsumerStatefulWidget {
   const AddModeratorScreen({super.key});
   @override
@@ -41,24 +46,7 @@ int validateAddModerator(String name) {
 class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
   final EmailForm usernameForm = EmailForm("username");
   final client = http.Client();
-  void setAllPermissions(bool? value) {
-    setState(() {
-      modPermissions.forEach((key, _) {
-        modPermissions[key] = value;
-      });
-    });
-  }
-  void checkPermissions(){
-    if(modPermissions.values.every((value) => value == true)){
-      setState(() {
-        fullPermissions = true;
-      });
-    }else{
-      setState(() {
-        fullPermissions = false;
-      });
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -123,8 +111,9 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                 onChanged: (value) {
                   setState(() {
                     fullPermissions = value;
+                    setAllPermissions(value, modPermissions);
                   });
-                  setAllPermissions(value);
+                  
                 }),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -140,8 +129,9 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['access'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
+                        
                       }),
                 ),
                 Expanded(
@@ -154,8 +144,8 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['mail'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
               ],
@@ -174,8 +164,8 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['config'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
                 Expanded(
@@ -188,8 +178,9 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['posts'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
+
                       }),
                 ),
               ],
@@ -208,8 +199,8 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['flair'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
                 Expanded(
@@ -222,8 +213,8 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['wiki'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
               ],
@@ -242,8 +233,8 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['chatConfig'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
                 Expanded(
@@ -256,8 +247,8 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                       onChanged: (value) {
                         setState(() {
                           modPermissions['chatOperator'] = value;
+                          fullPermissions = checkPermissions(modPermissions);
                         });
-                        checkPermissions();
                       }),
                 ),
               ],

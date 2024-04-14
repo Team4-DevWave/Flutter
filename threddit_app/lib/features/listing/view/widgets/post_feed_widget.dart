@@ -218,7 +218,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                       widget.dataOfPost.image != '')
                   ? Image(
                       height: 250.h,
-                      width: 360.w,
+                      width: 350.w,
                       fit: BoxFit.fitWidth,
                       image: NetworkImage(widget.dataOfPost.image.toString()),
                     )
@@ -230,8 +230,8 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                             VideoPlayer(_controller),
                             Positioned(
                               child: Container(
-                                width: 50,
-                                height: 50,
+                                width: 50.w,
+                                height: 50.h,
                                 decoration: BoxDecoration(
                                   color: Colors.black.withOpacity(0.5),
                                   shape: BoxShape.circle,
@@ -241,7 +241,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                                       ? Icons.pause
                                       : Icons.play_arrow_rounded,
                                   color: Colors.white,
-                                  size: 32,
+                                  size: 32.sp,
                                 ),
                               ),
                             )

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/delete_post.dart';
+import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
+import 'package:threddit_clone/theme/colors.dart';
 
 class ModeratorBotttomSheet extends ConsumerStatefulWidget {
   const ModeratorBotttomSheet({
@@ -13,11 +17,37 @@ class ModeratorBotttomSheet extends ConsumerStatefulWidget {
   final Post post;
   final VoidCallback toggleSPOILER;
   final VoidCallback toggleNsfw;
+
   @override
   _ModeratorBotttomSheetState createState() => _ModeratorBotttomSheetState();
 }
 
 class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
+  bool _isLoading = false;
+  bool _isSaved = false;
+  @override
+  void initState() {
+    _setVariables();
+    super.initState();
+  }
+
+  void _setVariables() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final response =
+        await ref.read(savePostProvider.notifier).isSaved(widget.post.id);
+    response.fold(
+        (l) => showSnackBar(
+            navigatorKey.currentContext!, "Could not retrieve saved state"),
+        (success) {
+      setState(() {
+        _isSaved = success;
+        _isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -32,12 +62,34 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
               Navigator.pop(context);
             }),
         ListTile(
-          title: const Text(
-            'Save',
-            style: TextStyle(color: Colors.white),
+          title: Text(
+            _isLoading ? 'Loading...' : (_isSaved ? 'Unsave' : 'Save'),
+            style: const TextStyle(color: AppColors.whiteColor),
           ),
-          leading: const Icon(Icons.save),
-          onTap: () {},
+          leading: Icon(
+            Icons.save,
+            color: _isLoading
+                ? AppColors.whiteHideColor
+                : (_isSaved
+                    ? AppColors.whiteColor
+                    : AppColors.redditOrangeColor),
+          ),
+          onTap: () async {
+            final saved = await ref
+                .watch(savePostProvider.notifier)
+                .savePostRequest(widget.post.id);
+            saved.fold(
+              (failure) =>
+                  showSnackBar(navigatorKey.currentContext!, failure.message),
+              (success) {
+                setState(() {
+                  _isSaved = !_isSaved; // Toggle the saved state
+                });
+                showSnackBar(navigatorKey.currentContext!,
+                    'Post ${_isSaved ? 'Saved' : ''} successfully');
+              },
+            );
+          },
         ),
         ListTile(
           title: const Text(

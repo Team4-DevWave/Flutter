@@ -157,7 +157,7 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                   child: SizedBox(
                     width: 90.w,
                     height: 90.h,
-                    child: widget.post.image != null
+                    child: widget.post.image != null && widget.post.image != ''
                         ? Image(image: NetworkImage(widget.post.image!))
                         : _controller.value.isInitialized
                             ? GestureDetector(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 
 /// SaveChanges class responisble for the save/cancel button in Update Email and Change
 /// Password takes the function it's going to call when save is Pressed as a
@@ -28,16 +30,26 @@ class _SaveChangesState extends State<SaveChanges> {
                 shape: const StadiumBorder(),
                 backgroundColor: const Color.fromARGB(255, 253, 253, 253),
               ),
-              child: const Text("Cancel"),
+              child: Text(
+                "Cancel",
+                style: AppTextStyles.primaryButtonGlowTextStyle
+                    .copyWith(color: Colors.black),
+              ),
             ),
+          ),
+          SizedBox(
+            width: 15.w,
           ),
           Expanded(
             child: ElevatedButton(
               onPressed: widget.saveChanges,
               style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
-                  backgroundColor: const Color.fromARGB(255, 0, 140, 255)),
-              child: const Text("Save"),
+                  backgroundColor: Color.fromARGB(255, 255, 81, 0)),
+              child: Text(
+                "Save",
+                style: AppTextStyles.primaryButtonGlowTextStyle,
+              ),
             ),
           ),
         ],

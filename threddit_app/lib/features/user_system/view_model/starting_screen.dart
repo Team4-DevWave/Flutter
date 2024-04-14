@@ -29,9 +29,6 @@ class StartScreen extends ConsumerWidget {
           if (token == null) {
             return const RegisterScreen();
           } else {
-            print("Token");
-            print(token);
-            print("Token222");
             return const MainScreenLayout();
           }
         }

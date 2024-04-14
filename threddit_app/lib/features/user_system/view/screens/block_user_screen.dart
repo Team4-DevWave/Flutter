@@ -48,7 +48,7 @@ class _BlockUserScreenState extends ConsumerState<BlockUserScreen> {
                          userToBlock: username)
                     .then((value) {
                   if (value == 200) {
-                    Navigator.pop(context);
+                    
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Please type a user name")),

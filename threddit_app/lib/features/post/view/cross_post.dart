@@ -54,7 +54,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
       context: context,
       builder: (ctx) {
         return RulesPage(
-          communityName: shared.destination!,
+          communityName: ref.read(sharedPostProvider).destination!,
         );
       },
     );

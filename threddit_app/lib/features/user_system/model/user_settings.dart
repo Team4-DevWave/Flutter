@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 class UserSettings {
   final UserProfile userProfile;
   final SafetyAndPrivacy safetyAndPrivacy;
@@ -69,7 +72,6 @@ class UserProfile {
     );
   }
 
-  
   UserProfile copyWith({
     String? displayName,
     String? about,
@@ -86,11 +88,27 @@ class UserProfile {
       nsfw: nsfw ?? this.nsfw,
       allowFollowers: allowFollowers ?? this.allowFollowers,
       contentVisibility: contentVisibility ?? this.contentVisibility,
-      activeCommunitiesVisibility: activeCommunitiesVisibility ?? this.activeCommunitiesVisibility,
+      activeCommunitiesVisibility:
+          activeCommunitiesVisibility ?? this.activeCommunitiesVisibility,
       profilePicture: profilePicture ?? this.profilePicture,
       socialLinks: socialLinks ?? this.socialLinks,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'displayName': displayName,
+      'about': about,
+      'nsfw': nsfw,
+      'allowFollowers': allowFollowers,
+      'contentVisibility': contentVisibility,
+      'activeCommunitiesVisibility': activeCommunitiesVisibility,
+      'profilePicture': profilePicture,
+      'socialLinks': socialLinks,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }
 
 class SafetyAndPrivacy {

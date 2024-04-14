@@ -279,7 +279,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                             width: 5.w,
                           ),
                           Text(
-                            widget.dataOfPost.commentsCount.toString(),
+                            widget.parentPost.commentsCount.toString(),
                             style: const TextStyle(color: AppColors.whiteColor),
                           ),
                         ],

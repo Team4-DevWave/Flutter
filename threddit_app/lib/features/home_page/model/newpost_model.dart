@@ -181,11 +181,23 @@ class PostApiResponse {
   }
 }
 
-Future<PostApiResponse> fetchPosts(int pageNumber) async {
+Future<PostApiResponse> fetchPosts(
+    String feedID, String subreddit, int pageNumber) async {
   String? token = await getToken();
 
+  String url = "http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber";
+  if (feedID == 'Hot Posts') {
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
+  }
+  if (feedID == 'New Posts') {
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/new?page=$pageNumber";
+  }
+  if (feedID == 'Top Posts') {
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/top?page=$pageNumber";
+  }
+
   final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber"),
+    Uri.parse(url),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
