@@ -5,6 +5,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/models/votes.dart';
 
+/// This repository handles all the http requests sent to the backend related to post
+/// operations like voting on a post, toggling post NSFW status and toggling post spoiler status
+/// votePost is used to vote on a post, vote type is 1 for upvote and -1 for downvote
+/// togglePostNSFW is used to toggle the NSFW status of a post
+/// togglePostSpoiler is used to toggle the spoiler status of a post
+/// fetchPost is used to get a post by it's ID
+
 class PostRepository {
   Future<void> votePost(String postId, int voteType) async {
     try {

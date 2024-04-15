@@ -5,6 +5,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
+///this repository handles all the http requests sent to the backend related to comment 
+///operations like fetching all comments, creating a comment, voting on a comment, editing a comment and deleting a comment 
+///fetch comment is used to get all the comments of a post and then used by get comments stream which automatically fetches the comments every 5 seconds to update the UI continously
+///create comment is used to create a new comment on a post
+///vote comment is used to vote on a comment, vote type is 1 for upvote and -1 for downvote
+///edit comment is used to edit a comment and accepts a comment ID and the new content as it's parameters 
+///delete comment is used to delete a comment and accepts a comment ID as it's parameter
+
+
 class CommentRepository {
   var uuid = const Uuid();
 

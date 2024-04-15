@@ -3,8 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/saved_post.dart';
-import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
-
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
@@ -13,6 +11,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/models/votes.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+
+///this class is used to display a single comment in the comments section of a post
+///it displays the user's avatar, username, the content of the comment, the time since the comment was posted, the number of upvotes and downvotes on the comment
+///it also displays the options to save, copy, report, block and collapse the comment (bottom sheet)
+///it handles most of the operations related to a comment like upvoting, downvoting, saving, copying, reporting, blocking and collapsing the comment
+///it also handles the editing and deleting of a comment
 
 class CommentItem extends ConsumerStatefulWidget {
   const CommentItem({super.key, required this.comment, required this.uid});
@@ -89,24 +93,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   @override
   Widget build(BuildContext context) {
-    bool upvoteStatus = upvotes.maybeWhen(
-      data: (votes) {
-        upVoted = true;
-        return votes.containsComment(widget.comment.id);
-      },
-      orElse: () {
-        return false;
-      },
-    );
-
-    bool downvoteStatus = downvotes.maybeWhen(
-      data: (votes) => votes.containsComment(widget.comment.id),
-      orElse: () {
-        downVoted = false;
-        return false;
-      },
-    );
-
+    
     // Function to delete the comment
     void deleteComment() {
       ref.watch(deleteCommentProvider(

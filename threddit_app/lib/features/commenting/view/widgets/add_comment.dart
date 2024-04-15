@@ -3,6 +3,13 @@ import 'package:threddit_clone/features/commenting/view_model/comment_provider.d
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+///this widget is composed of the text field that is used to add a comment to a post and the send button that is used to send the comment
+///the add comment function is called when the send button is pressed and the comment is added to the post
+///the comment is added to the post by calling the addComment function from the comment provider
+///the addComment function takes the post ID, the content of the comment and the user ID as it's parameters
+///the addComment function returns a Future that is used to add the comment to the post
+///the comment controller is used to get the content of the comment that is being added to the post
+
 class AddComment extends ConsumerStatefulWidget {
   const AddComment({super.key, required this.postID, required this.uid});
   final String uid;

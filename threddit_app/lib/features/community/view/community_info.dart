@@ -4,6 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 
+/// This widget displays the information about a community
+/// It displays the description and rules of the community
+/// It also displays the moderators of the community
+/// If the user is a moderator of the community, it displays the mod tools button
+
 class CommunityInfo extends ConsumerWidget {
   const CommunityInfo({super.key, required this.community, required this.uid});
 
