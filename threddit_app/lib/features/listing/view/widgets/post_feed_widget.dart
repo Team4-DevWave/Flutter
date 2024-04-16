@@ -354,9 +354,21 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                               },
                             );
                           },
-                          child: Icon(
-                            Icons.comment,
-                            color: AppColors.whiteColor,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                RouteClass.postScreen,
+                                arguments: {
+                                  'currentpost': widget.dataOfPost,
+                                  'uid': widget.uid,
+                                },
+                              );
+                            },
+                            child: Icon(
+                              Icons.comment,
+                              color: AppColors.whiteColor,
+                            ),
                           ),
                         ),
                         SizedBox(
