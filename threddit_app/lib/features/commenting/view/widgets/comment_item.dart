@@ -93,7 +93,6 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   @override
   Widget build(BuildContext context) {
-    
     // Function to delete the comment
     void deleteComment() {
       ref.watch(deleteCommentProvider(
@@ -101,7 +100,6 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     }
 
     Future<void> showDeleteConfirmationDialog(BuildContext context) async {
-      print(widget.comment.user);
       return showDialog<void>(
         context: context,
         barrierDismissible:

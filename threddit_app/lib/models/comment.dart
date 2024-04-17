@@ -85,11 +85,12 @@ class Comment {
   }
 }
 
-Future<List<Comment>> fetchComments(String username) async {
+Future<List<Comment>> fetchComments(String username, int numPage) async {
   String? token = await getToken();
 
   final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/${username}/comments"),
+    Uri.parse(
+        "http://www.threadit.tech/api/v1/users/${username}/comments?page=$numPage"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// The `NotificationFeedUnit` is a StatefulWidget that represents a single notification unit in the feed. This widget is designed to be used in the notifications screen of the application. It consists of a user avatar, an add icon, and a couple of text messages.
+///
+/// The avatar is a circular image fetched from a network source. The add icon is positioned at the bottom right of the avatar. The text messages are displayed in a column, with the first one styled as bold and the second one as secondary.
+///
+/// The entire widget is wrapped in a Padding widget for spacing and a SizedBox to constrain its height. The widget's state is managed by `_NotificationFeedUnitState`, which builds the widget's UI.
 class NotificationFeedUnit extends StatefulWidget {
   const NotificationFeedUnit({super.key});
 

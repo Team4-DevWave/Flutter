@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
+import 'package:threddit_clone/features/listing/view/widgets/models/new_comment_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -22,10 +23,12 @@ class UserProfile extends ConsumerStatefulWidget {
 class _UserProfileState extends ConsumerState<UserProfile>
     with TickerProviderStateMixin {
   final _scrollController = ScrollController();
+  final _scrollControllerComments = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
+  int _currentPagecomment = 1;
   TabController? _tabController;
-  final _comments = <Comment>[];
+  final _comments = <CommentNew>[];
   UserModelMe? user;
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
@@ -37,8 +40,10 @@ class _UserProfileState extends ConsumerState<UserProfile>
     _getUserData();
     _fetchPosts();
     _scrollController.addListener(_onScroll);
+    _scrollControllerComments.addListener(_onScrollCoomments);
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
+    _fetchComments();
     super.initState();
     //intitialize tab controller
   }
@@ -63,6 +68,18 @@ class _UserProfileState extends ConsumerState<UserProfile>
     });
   }
 
+  Future _fetchComments() async {
+    print("NAMMMMMMMMMMMMMMMMMMMMMMMe");
+    print(user!.username);
+    final response =
+        await fetchCommentNews(user!.username ?? '', _currentPagecomment);
+
+    setState(() {
+      _comments.addAll(response);
+      _currentPagecomment++;
+    });
+  }
+
   Widget buildCommentsTab() {
     return _comments.isEmpty
         ? Column(
@@ -74,13 +91,13 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 color: AppColors.whiteGlowColor,
               ),
               Text(
-                "Wow, such empty in Comments!",
+                "Wow, such empty in Commsssents!",
                 style: AppTextStyles.primaryTextStyle,
               ),
             ],
           )
         : ListView.builder(
-            controller: _scrollController,
+            controller: _scrollControllerComments,
             itemCount: _comments.length,
             itemBuilder: (context, index) {
               return Container(
@@ -99,6 +116,13 @@ class _UserProfileState extends ConsumerState<UserProfile>
   }
 
   void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      fetchPostsByUsername(user?.username ?? '', _currentPage);
+    }
+  }
+
+  void _onScrollCoomments() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       fetchPostsByUsername(user?.username ?? '', _currentPage);
@@ -304,8 +328,41 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                 }
                               },
                             ),
+                      _comments.isEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.warning_amber,
+                                  color: AppColors.whiteGlowColor,
+                                ),
+                                Text(
+                                  "Wow, such empty in Commsssents!",
+                                  style: AppTextStyles.primaryTextStyle,
+                                ),
+                              ],
+                            )
+                          : ListView.builder(
+                              controller: _scrollControllerComments,
+                              itemCount: _comments.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        _comments[index].user.username,
+                                        style: AppTextStyles
+                                            .boldTextStyleNotifcation,
+                                      )
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                       buildCommentsTab(),
-                      buildAboutTab()
+                      // buildAboutTab()
                     ]),
                   ),
                 ]))));

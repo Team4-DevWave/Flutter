@@ -3,9 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// The [NoNotification] widget is a [StatelessWidget] that displays a message when there are no notifications.
+///
+/// It displays an image, a title, a description, and a button to check communities.
 class NoNotification extends StatelessWidget {
   const NoNotification({super.key});
 
+  /// The build method describes the part of the user interface represented by this widget.
+  ///
+  /// It returns a [Center] widget that contains a [Column] with an image, a title, a description, and a button.
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -17,7 +23,8 @@ class NoNotification extends StatelessWidget {
             child: Image(
                 height: 150.h,
                 width: 150.w,
-                image: const AssetImage('assets/images/snoovatar-full-hi.png'))),
+                image:
+                    const AssetImage('assets/images/snoovatar-full-hi.png'))),
         SizedBox(
           height: 10.h,
         ),
