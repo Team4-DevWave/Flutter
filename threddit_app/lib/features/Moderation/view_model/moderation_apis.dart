@@ -6,8 +6,8 @@ import 'package:threddit_clone/features/Moderation/model/banned_user.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/Moderation/model/moderator.dart';
 
-const String urlAndroid = "https://www.threadit.tech";
-const String urlWindows = "https://www.threadit.tech";
+const String urlAndroid = "http://10.0.2.2:3001";
+const String urlWindows = "http://localhost:3001";
 final moderationApisProvider =
     StateNotifierProvider<ModerationApis, bool>((ref) => ModerationApis(ref));
 
