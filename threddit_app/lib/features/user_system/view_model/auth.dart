@@ -335,6 +335,9 @@ class Auth extends StateNotifier<bool> {
           },
         ),
       );
+      print(
+          "GGGGGGGGGGGGGGGGGGGGGGdddddddddddddddGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         ref.watch(signUpSuccess.notifier).update((state) => true);
         return right(true);
@@ -364,6 +367,8 @@ class Auth extends StateNotifier<bool> {
         Uri.parse(
             'http://10.0.2.2:8000/api/v1/users/googleLogin?token=${user.token}'),
       );
+      print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+      print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         saveToken(response.body.toString());
         saveGoogleToken(response.body.toString());
@@ -441,7 +446,7 @@ class Auth extends StateNotifier<bool> {
       Uri.parse(
           'http://10.0.2.2:8000/api/v1/users/googleLogin?token=$userToken'),
     );
-
+    print(response.body);
     //200 for exisiting users
     //400 new users
     if (response.statusCode == 200 || response.statusCode == 201) {

@@ -9,6 +9,7 @@ class BreakCommunityRules extends ConsumerStatefulWidget {
   _BreakCommunityRulesState createState() => _BreakCommunityRulesState();
 }
 class _BreakCommunityRulesState extends ConsumerState<BreakCommunityRules> {
+  // ignore: unused_field
   final List<String> _communityRules=[];
   @override
   Widget build(BuildContext context) {

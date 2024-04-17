@@ -6,6 +6,10 @@ import 'package:threddit_clone/features/posting/view/widgets/shared_post_card.da
 
 import 'package:threddit_clone/features/posting/view_model/history_manager.dart';
 
+/// This widget displays the history screen
+/// It displays the history of the user and which pots he had previously viewed 
+/// it uses the shared prefrences to store the history of the user
+
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key, required this.uid});
   final String uid;

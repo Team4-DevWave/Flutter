@@ -7,6 +7,9 @@ import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
+/// this bottom sheet is the options bottom sheet that is displayed when the user clicks on the three dots on a post and he is an owner of the post or a moderator
+/// it gives him options like save the post, copy the text of the post, mark the post as spoiler, mark the post as NSFW, delete the post, crosspost the post to a community
+
 class ModeratorBotttomSheet extends ConsumerStatefulWidget {
   const ModeratorBotttomSheet({
     super.key,

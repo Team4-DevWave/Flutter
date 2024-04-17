@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
@@ -9,7 +8,9 @@ import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart'
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
-import 'package:threddit_clone/theme/theme.dart';
+
+/// this bottom sheet is the options bottom sheet that is displayed when the user clicks on the three dots on a post and he is not an owner of the post or a moderator 
+/// therefor he can only save the post, share the post, report the post, block the user or hide the post
 
 class OptionsBotttomSheet extends ConsumerStatefulWidget {
   const OptionsBotttomSheet({

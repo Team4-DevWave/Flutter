@@ -4,6 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 
+/// This repository handles all the http requests sent to the backend related to community
+/// operations like creating a community, fetching a community and joining/unsubscribing from a community
+/// createCommunity is used to create a new community
+/// fetchCommunity is used to fetch a community
+/// joinSubreddit is used to join a community
+/// unsubscribeFromSubreddit is used to unsubscribe from a community
+
 class CommunityRepository {
   Future<int> createCommunity(String name, bool nsfw, String type) async {
     String? token = await getToken();
