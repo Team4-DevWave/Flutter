@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
+// The [Post] class represents a post in the application.
+///
+/// Each post has an id, title, text body, image, NSFW flag, spoiler flag, locked flag, approved flag, posted time, video, number of views, comments count, user ID, subreddit ID, votes, and parent post.
+/// The text body, image, video, user ID, subreddit ID, votes, and parent post are optional.
 class Post {
   final String id;
   final String title;
@@ -21,6 +25,10 @@ class Post {
   final VotesList? votes;
   final Post? parentPost;
 
+  /// Creates a new [Post] object.
+  ///
+  /// The id, title, NSFW flag, spoiler flag, locked flag, approved flag, posted time, number of views, and comments count are required.
+  /// The text body, image, video, user ID, subreddit ID, votes, and parent post are optional.
   Post({
     required this.id,
     required this.title,
@@ -40,6 +48,9 @@ class Post {
     this.parentPost,
   });
 
+  /// Creates a new [Post] object from a map.
+  ///
+  /// The map must contain an id and a title. The other properties are optional.
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       id: json['_id'],
@@ -185,15 +196,15 @@ Future<PostApiResponse> fetchPosts(
     String feedID, String subreddit, int pageNumber) async {
   String? token = await getToken();
 
-  String url = "http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber";
+  String url = "https://www.threadit.tech/api/v1/posts/best?page=$pageNumber";
   if (feedID == 'Hot Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/hot?page=$pageNumber";
   }
   if (feedID == 'New Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/new?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/new?page=$pageNumber";
   }
   if (feedID == 'Top Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/top?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/top?page=$pageNumber";
   }
 
   final response = await http.get(

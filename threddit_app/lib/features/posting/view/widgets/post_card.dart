@@ -242,7 +242,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                               )
                             : const CircularProgressIndicator(),
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
             Row(
               children: [
                 IconButton(

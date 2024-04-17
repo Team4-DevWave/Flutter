@@ -15,7 +15,7 @@ class CommunityRepository {
   Future<int> createCommunity(String name, bool nsfw, String type) async {
     String? token = await getToken();
 
-    final url = Uri.parse("http://10.0.2.2:8000/api/v1/r/create");
+    final url = Uri.parse("https://www.threadit.tech/api/v1/r/create");
     final body = jsonEncode({
       'name': name,
       'srType': type,
@@ -48,7 +48,7 @@ class CommunityRepository {
 
   Future<Subreddit> fetchCommunity(String subreddit) async {
     String? token = await getToken();
-    final url = Uri.parse('http://10.0.2.2:8000/api/v1/r/$subreddit');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/r/$subreddit');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",
@@ -72,8 +72,8 @@ class CommunityRepository {
 
   Future<void> joinSubreddit(String subredditName) async {
     String? token = await getToken();
-    final url =
-        Uri.parse('http://10.0.2.2:8000/api/v1/r/$subredditName/subscribe');
+    final url = Uri.parse(
+        'https://www.threadit.tech/api/v1/r/$subredditName/subscribe');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",
@@ -92,8 +92,8 @@ class CommunityRepository {
 
   Future<void> unsubscribeFromSubreddit(String subredditName) async {
     String? token = await getToken();
-    final url =
-        Uri.parse('http://10.0.2.2:8000/api/v1/r/$subredditName/unsubscribe');
+    final url = Uri.parse(
+        'https://www.threadit.tech/api/v1/r/$subredditName/unsubscribe');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",

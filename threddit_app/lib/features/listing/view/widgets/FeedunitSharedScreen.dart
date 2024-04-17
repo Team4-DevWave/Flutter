@@ -14,10 +14,17 @@ import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// The [FeedUnitShare] widget is a [ConsumerStatefulWidget] that displays a shared post in the feed.
+///
+/// It takes a user ID, a post, and a parent post as parameters.
 class FeedUnitShare extends ConsumerStatefulWidget {
   final Post parentPost;
   final Post dataOfPost;
   final String uid;
+
+  /// Creates a [FeedUnitShare] widget.
+  ///
+  /// Takes a user ID, a post, and a parent post as parameters.
   const FeedUnitShare(this.uid,
       {super.key, required this.dataOfPost, required this.parentPost});
 
@@ -25,6 +32,9 @@ class FeedUnitShare extends ConsumerStatefulWidget {
   ConsumerState<FeedUnitShare> createState() => _FeedUnitShareState();
 }
 
+/// The [_FeedUnitShareState] class is the state object for a [FeedUnitShare] widget.
+///
+/// It manages the number of votes, whether the post is locked or spam, and the choice for the bottom sheet.
 class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
   late int numbberOfvotes;
   late bool isLocked;
@@ -38,11 +48,17 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
     numbberOfvotes = int.parse(widget.parentPost.numViews.toString());
   }
 
+  /// Fetches the moderation options for the post.
+  ///
+  /// Sets the [isLocked] and [isSpam] variables based on the response from the server.
   Future getModOptions() async {
     isLocked = await ref.watch(moderationApisProvider.notifier).getLocked();
     isSpam = await ref.watch(moderationApisProvider.notifier).getSpam();
   }
 
+  /// Toggles the NSFW status of the post.
+  ///
+  /// Calls the [toggleNSFW] function with the post's ID and updates the post's NSFW status.
   void toggleNsfw() async {
     ref.read(toggleNSFW(widget.dataOfPost.id));
     widget.dataOfPost.nsfw = !widget.dataOfPost.nsfw;
@@ -292,7 +308,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                                 },
                               );
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.comment,
                               color: AppColors.whiteColor,
                             ),

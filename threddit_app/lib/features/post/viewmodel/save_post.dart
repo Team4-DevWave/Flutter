@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
@@ -17,8 +16,8 @@ class SavePost extends StateNotifier<bool> {
   SavePost(this.ref) : super(false);
 
   FutureEither<bool> savePostRequest(String postid) async {
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postid/save');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postid/save');
     final token = await getToken();
     try {
       final response = await http.patch(
@@ -48,8 +47,8 @@ class SavePost extends StateNotifier<bool> {
   }
 
   FutureEither<List<String>> getSavedPostIds() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/saved?page=1");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/saved?page=1");
     final token = await getToken();
     try {
       final response = await http.get(

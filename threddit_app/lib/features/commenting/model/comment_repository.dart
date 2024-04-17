@@ -5,21 +5,20 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
-///this repository handles all the http requests sent to the backend related to comment 
-///operations like fetching all comments, creating a comment, voting on a comment, editing a comment and deleting a comment 
+///this repository handles all the http requests sent to the backend related to comment
+///operations like fetching all comments, creating a comment, voting on a comment, editing a comment and deleting a comment
 ///fetch comment is used to get all the comments of a post and then used by get comments stream which automatically fetches the comments every 5 seconds to update the UI continously
 ///create comment is used to create a new comment on a post
 ///vote comment is used to vote on a comment, vote type is 1 for upvote and -1 for downvote
-///edit comment is used to edit a comment and accepts a comment ID and the new content as it's parameters 
+///edit comment is used to edit a comment and accepts a comment ID and the new content as it's parameters
 ///delete comment is used to delete a comment and accepts a comment ID as it's parameter
-
 
 class CommentRepository {
   var uuid = const Uuid();
 
   Future<List<Comment>> fetchAllComments(String postId) async {
     final url =
-        Uri.parse('http://10.0.2.2:8000/api/v1/posts/$postId/comments/');
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postId/comments/');
     String? token = await getToken();
     final headers = {
       "Authorization": "Bearer $token",
@@ -50,7 +49,7 @@ class CommentRepository {
   Future<void> createComment(String postId, String content) async {
     String? token = await getToken();
     final url =
-        Uri.parse('http://10.0.2.2:8000/api/v1/posts/$postId/comments/');
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postId/comments/');
     final headers = {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $token",
@@ -75,7 +74,7 @@ class CommentRepository {
 
   Future<void> voteComment(String commentId, int voteType) async {
     try {
-      final url = 'http://10.0.2.2:8000/api/v1/comments/$commentId/vote';
+      final url = 'https://www.threadit.tech/api/v1/comments/$commentId/vote';
       final token = await getToken();
       final Map<String, String> headers = {
         'Content-Type': 'application/json',
@@ -99,7 +98,7 @@ class CommentRepository {
 
   Future<void> editComment(String commentId, String newContent) async {
     try {
-      String url = 'http://10.0.2.2:8000/api/v1/comments/$commentId';
+      String url = 'https://www.threadit.tech/api/v1/comments/$commentId';
       final token = await getToken();
       Map<String, String> headers = {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -125,7 +124,7 @@ class CommentRepository {
 
   Future<void> deleteComment(String postId, String commentId) async {
     final url = Uri.parse(
-        'http://10.0.2.2:8000/api/v1/posts/$postId/comments/$commentId');
+        'https://www.threadit.tech/api/v1/posts/$postId/comments/$commentId');
     final token = await getToken();
 
     final headers = {

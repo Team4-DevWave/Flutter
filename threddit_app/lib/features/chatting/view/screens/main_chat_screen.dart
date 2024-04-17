@@ -5,7 +5,6 @@ import 'package:threddit_clone/features/chatting/view%20model/chat_provider.dart
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
-import 'package:threddit_clone/models/message.dart';
 
 class MainChatScreen extends ConsumerStatefulWidget {
   const MainChatScreen({super.key, required this.uid});

@@ -143,7 +143,7 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
                       changeGenderFunction(gender: value!).then((test) {
                         if (test == 200) {
                           setState(() {
-                            pickedGender = value!;
+                            pickedGender = value;
                           });
                         } else {
                           showAlert("Gender wasn't changed", context);

@@ -15,8 +15,8 @@ class EditProfile extends ConsumerStatefulWidget {
 }
 
 class _EditProfileState extends ConsumerState<EditProfile> {
-  TextEditingController _displayNameController = TextEditingController();
-  TextEditingController _aboutController = TextEditingController();
+  final TextEditingController _displayNameController = TextEditingController();
+  final TextEditingController _aboutController = TextEditingController();
   String? displayName;
   String? about;
   List<String>? socialLinks;

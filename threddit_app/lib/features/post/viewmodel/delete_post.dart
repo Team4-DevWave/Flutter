@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/posting/view_model/history_manager.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -18,8 +17,8 @@ class DeletePost extends StateNotifier<bool> {
   DeletePost(this.ref) : super(false);
 
   FutureEither<bool> deletePostRequest(String postid) async {
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postid/delete');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postid/delete');
     final token = await getToken();
     try {
       final response = await http.delete(

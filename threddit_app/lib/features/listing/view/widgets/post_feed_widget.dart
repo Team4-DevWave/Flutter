@@ -365,7 +365,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                                 },
                               );
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.comment,
                               color: AppColors.whiteColor,
                             ),
