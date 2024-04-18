@@ -72,7 +72,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             future: fetchUser(),
             builder: (BuildContext ctx, AsyncSnapshot<void> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
+                return ListView(shrinkWrap: true, children: [
+                  ListTile(
+                    leading: const Icon(Icons.person),
+                    title: const Text("Account settings for u/"),
+                    titleTextStyle: AppTextStyles.primaryTextStyle,
+                    trailing: const Icon(Icons.navigate_next),
+                    onTap: () {
+                      _selectAccountSetting(context);
+                    },
+                  ),
+                ]);
               }
               if (snapshot.hasError) {
                 return const Text("ERROR LOADING USER DATA");
@@ -97,7 +107,51 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               builder:
                   (BuildContext ctx, AsyncSnapshot<UserSettings> snapshot) {
                 while (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return ListView(shrinkWrap: true, children: [
+                    ListTile(
+                      leading: const Icon(Icons.view_agenda),
+                      title: const Text("Default View"),
+                      titleTextStyle: AppTextStyles.primaryTextStyle,
+                      trailing: DropdownButton<String>(
+                        style: AppTextStyles.secondaryTextStyle,
+                        dropdownColor: AppColors.backgroundColor,
+                        icon: const Icon(Icons.arrow_downward),
+                        onChanged: (String? value) {
+                        },
+                        value: defaultView.first,
+                        items: defaultView
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.image),
+                      title: const Text("Thumbnails"),
+                      titleTextStyle: AppTextStyles.primaryTextStyle,
+                      trailing: DropdownButton<String>(
+                        style: AppTextStyles.secondaryTextStyle,
+                        dropdownColor: AppColors.backgroundColor,
+                        icon: const Icon(Icons.arrow_downward),
+                        onChanged: (String? value) {
+                          setState(() {
+                            currentThumbnail = value!;
+                          });
+                        },
+                        value: currentThumbnail,
+                        items: thumbnail
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  ]);
                 }
                 if (snapshot.hasError) {
                   return const Text("ERROR LOADING DATA");
