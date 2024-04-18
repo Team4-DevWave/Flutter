@@ -140,7 +140,7 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                   },
                   leading: CircleAvatar(
                     radius: 10,
-                    backgroundImage: NetworkImage(community[0]),
+                    backgroundImage: NetworkImage(community[1]),
                   ),
                   title: Text(community[0],
                       maxLines: 1,
