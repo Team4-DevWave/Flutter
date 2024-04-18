@@ -9,6 +9,14 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
 
+/// This widget displays the post card
+/// It displays the post and all the details of the post
+/// it also displays the options that the user can perform on the post
+/// it also displays the upvote and downvote buttons
+/// it also displays the share button
+/// it also displays the comments button
+/// it also calls the correct bottom based on the moderation case of the user 
+
 class PostCard extends ConsumerStatefulWidget {
   const PostCard({
     super.key,

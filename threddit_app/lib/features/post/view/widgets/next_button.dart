@@ -26,9 +26,9 @@ class NextButton extends ConsumerWidget {
     return ElevatedButton(
       onPressed: isValid
           ? () {
-            //there is a problem that we don't know if there is actually a link or not
-            //so we need correctly know if there is a link then this part is done
-              Navigator.pushReplacementNamed(context, RouteClass.postToScreen);
+              //there is a problem that we don't know if there is actually a link or not
+              //so we need correctly know if there is a link then this part is done
+              Navigator.pushNamed(context, RouteClass.postToScreen);
             }
           : null,
       //the button is greyed out at first until the user enters a title

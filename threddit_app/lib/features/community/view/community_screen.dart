@@ -11,6 +11,10 @@ import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.da
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 
+/// This widget is used to display the community screen
+/// The community screen is composed of the community banner, community icon, community name, community description, community members count, join button, community info button, community posts and the community post feed
+/// The community screen is used to display the community banner, community icon, community name, community description, community members count, join button, community info button, community posts and the community post feed
+
 class CommunityScreen extends ConsumerStatefulWidget {
   final String id;
   final String uid;

@@ -210,6 +210,11 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                                   }
                                   choiceBottum = 1;
                                 });
+                              } else {
+                                setState(() {
+                                  numbberOfvotes--;
+                                  choiceBottum = -1;
+                                });
                               }
                             },
                             child: Icon(
@@ -243,6 +248,11 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                                   }
                                   choiceBottum = 2;
                                 });
+                              } else {
+                                setState(() {
+                                  numbberOfvotes++;
+                                  choiceBottum = -1;
+                                });
                               }
                             },
                             child: Icon(
@@ -271,9 +281,21 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                           horizontal: 16.0, vertical: 4.0),
                       child: Row(
                         children: [
-                          const Icon(
-                            Icons.comment,
-                            color: AppColors.whiteColor,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                RouteClass.postScreen,
+                                arguments: {
+                                  'currentpost': widget.dataOfPost,
+                                  'uid': widget.uid,
+                                },
+                              );
+                            },
+                            child: Icon(
+                              Icons.comment,
+                              color: AppColors.whiteColor,
+                            ),
                           ),
                           SizedBox(
                             width: 5.w,

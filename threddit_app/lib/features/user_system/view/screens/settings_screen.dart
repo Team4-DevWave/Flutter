@@ -36,7 +36,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     super.initState();
   }
 
-
   Future<void> fetchUser() async {
     final userModel = ref.watch(settingsFetchProvider.notifier).getMe();
 

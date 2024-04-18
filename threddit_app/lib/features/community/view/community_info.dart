@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/models/subreddit.dart';
+
+/// This widget displays the information about a community
+/// It displays the description and rules of the community
+/// It also displays the moderators of the community
+/// If the user is a moderator of the community, it displays the mod tools button
 
 class CommunityInfo extends ConsumerWidget {
   const CommunityInfo({super.key, required this.community, required this.uid});
@@ -80,10 +86,12 @@ class CommunityInfo extends ConsumerWidget {
                               for (var rule in community.rules)
                                 Row(
                                   children: [
-                                    Text(
-                                      rule,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 15),
+                                    Expanded(
+                                      child: Text(
+                                        rule as String,
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      ),
                                     ),
                                   ],
                                 )

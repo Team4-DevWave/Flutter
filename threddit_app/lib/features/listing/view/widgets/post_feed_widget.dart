@@ -272,6 +272,11 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                                 }
                                 choiceBottum = 1;
                               });
+                            } else {
+                              setState(() {
+                                numbberOfvotes--;
+                                choiceBottum = -1;
+                              });
                             }
                           },
                           child: Icon(
@@ -305,6 +310,11 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                                 }
                                 choiceBottum = 2;
                               });
+                            } else {
+                              setState(() {
+                                numbberOfvotes++;
+                                choiceBottum = -1;
+                              });
                             }
                           },
                           child: Icon(
@@ -333,9 +343,33 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                         horizontal: 16.0, vertical: 4.0),
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.comment,
-                          color: AppColors.whiteColor,
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RouteClass.postScreen,
+                              arguments: {
+                                'currentpost': widget.dataOfPost,
+                                'uid': widget.uid,
+                              },
+                            );
+                          },
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                RouteClass.postScreen,
+                                arguments: {
+                                  'currentpost': widget.dataOfPost,
+                                  'uid': widget.uid,
+                                },
+                              );
+                            },
+                            child: Icon(
+                              Icons.comment,
+                              color: AppColors.whiteColor,
+                            ),
+                          ),
                         ),
                         SizedBox(
                           width: 5.w,
