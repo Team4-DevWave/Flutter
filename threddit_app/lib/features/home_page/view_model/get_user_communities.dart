@@ -18,7 +18,7 @@ class UserCommunities extends StateNotifier<bool> {
   Ref ref;
   UserCommunities(this.ref) : super(false);
 
-  // static String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+  // static String local = Platform.isAndroid ? '${AppConstants.local}' : 'localhost';
 
   final String communitiesURL =
       "http://${AppConstants.local}:8000/api/v1/r/user_subreddits";

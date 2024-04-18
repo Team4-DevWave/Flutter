@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
@@ -138,7 +137,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                       Navigator.pushNamed(context, RouteClass.chooseCommunity);
                     },
                     leading: Icon(Icons.account_circle,
-                        size: 38.sp, color: AppColors.whiteColor),
+                        size: 38.spMin, color: AppColors.whiteColor),
                     title: Row(
                       children: [
                         Text(
@@ -149,7 +148,10 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Icon(Icons.keyboard_arrow_down_outlined),
+                        Icon(
+                          Icons.keyboard_arrow_down_outlined,
+                          size: 38.spMin,
+                        ),
                       ],
                     ),
                     trailing: isNotProfile
@@ -219,9 +221,9 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                                 backgroundColor: isNSFW
                                     ? AppColors.redColor
                                     : AppColors.backgroundColor,
-                                side: const BorderSide(
+                                side: BorderSide(
                                   color: AppColors.whiteColor,
-                                  width: 2.0,
+                                  width: 2.0.w,
                                 ),
                               ),
                               child: Text(

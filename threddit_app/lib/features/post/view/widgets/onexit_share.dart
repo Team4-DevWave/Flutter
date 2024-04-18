@@ -57,7 +57,7 @@ class ExitShare extends ConsumerWidget {
               );
             });
       },
-      icon: Icon(Icons.close, size: 27.sp),
+      icon: Icon(Icons.close, size: 27.spMin),
     );
   }
 }

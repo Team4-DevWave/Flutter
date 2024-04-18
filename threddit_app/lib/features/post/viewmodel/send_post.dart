@@ -17,7 +17,7 @@ import 'package:threddit_clone/app/pref_constants.dart';
 final createPost =
     StateNotifierProvider<PostProvider, bool>((ref) => PostProvider(ref));
 
-String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+String local = Platform.isAndroid ? '${AppConstants.local}' : 'localhost';
 
 class PostProvider extends StateNotifier<bool> {
   final Ref ref;

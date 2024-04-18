@@ -72,7 +72,7 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
                 leading: IconButton(
                   onPressed: onExit,
                   icon: Icon(Icons.close,
-                      size: 27.sp, color: AppColors.whiteColor),
+                      size: 27.spMin, color: AppColors.whiteColor),
                 ),
                 backgroundColor: AppColors.backgroundColor,
                 title: Text(
@@ -93,7 +93,7 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
                         onProfile('She3bo');
                       },
                       leading: Icon(Icons.account_circle,
-                          size: 38.sp, color: AppColors.whiteColor),
+                          size: 38.spMin, color: AppColors.whiteColor),
                       title: Text("My profile",
                           style: AppTextStyles.primaryTextStyle.copyWith(
                             fontSize: 20.spMin,
@@ -109,8 +109,8 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
                           onCommunity(community[0]);
                         },
                         leading: CircleAvatar(
-                          radius: 10,
-                          backgroundImage: NetworkImage(community[0]),
+                          radius: 10.r,
+                          backgroundImage: NetworkImage(community[1]),
                         ),
                         title: Text(community[0],
                             style: AppTextStyles.primaryTextStyle.copyWith(

@@ -53,8 +53,8 @@ class GetCommunityRules extends StateNotifier<bool> {
 }
 
 Future<SubredditList> fetchSubredditsAll() async {
-  final response =
-      await http.get(Uri.parse('http://10.0.2.2:8000/api/v1/r/all'));
+  final response = await http
+      .get(Uri.parse('http://${AppConstants.local}:8000/api/v1/r/all'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> body = jsonDecode(response.body);
