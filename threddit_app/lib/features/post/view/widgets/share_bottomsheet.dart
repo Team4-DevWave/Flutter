@@ -14,9 +14,9 @@ void share(BuildContext context, WidgetRef ref, Post post) {
   ref.watch(isChanged.notifier).update((state) => false);
   showModalBottomSheet<void>(
       context: context,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(15.0),
+          top: Radius.circular(15.0.r),
         ),
       ),
       backgroundColor: AppColors.backgroundColor,
@@ -84,7 +84,7 @@ void share(BuildContext context, WidgetRef ref, Post post) {
                         ),
                         child: Image.asset(
                           Photos.thinkingSno,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                           width: 17.w,
                           height: 17.h,
                         ),

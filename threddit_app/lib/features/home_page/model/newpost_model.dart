@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 class Post {
@@ -185,15 +186,19 @@ Future<PostApiResponse> fetchPosts(
     String feedID, String subreddit, int pageNumber) async {
   String? token = await getToken();
 
-  String url = "http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber";
+  String url =
+      "http://${AppConstants.local}:8000/api/v1/posts/best?page=$pageNumber";
   if (feedID == 'Hot Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
+    url =
+        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
   }
   if (feedID == 'New Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/new?page=$pageNumber";
+    url =
+        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/new?page=$pageNumber";
   }
   if (feedID == 'Top Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/top?page=$pageNumber";
+    url =
+        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/top?page=$pageNumber";
   }
 
   final response = await http.get(

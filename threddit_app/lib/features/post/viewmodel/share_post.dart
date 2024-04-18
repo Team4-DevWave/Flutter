@@ -6,6 +6,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/app/app.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/home_page/model/shared_child.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';

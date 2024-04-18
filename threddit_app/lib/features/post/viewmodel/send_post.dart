@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
+import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
@@ -15,7 +17,7 @@ import 'package:threddit_clone/app/pref_constants.dart';
 final createPost =
     StateNotifierProvider<PostProvider, bool>((ref) => PostProvider(ref));
 
-String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+String local = Platform.isAndroid ? '${AppConstants.local}' : 'localhost';
 
 class PostProvider extends StateNotifier<bool> {
   final Ref ref;
@@ -48,6 +50,7 @@ class PostProvider extends StateNotifier<bool> {
             "image": post?.image ?? "",
             "video": post?.video ?? ""
           }));
+
       if (response.statusCode == 201) {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
 

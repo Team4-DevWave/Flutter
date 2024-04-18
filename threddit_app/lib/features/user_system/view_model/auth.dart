@@ -321,7 +321,8 @@ class Auth extends StateNotifier<bool> {
     final UserModel user = ref.watch(userProvider)!;
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/v1/users/googleSignup'),
+        Uri.parse(
+            'http://10.0.2.2:8000/api/v1/users/googleSignup?token=${user.token}'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -335,8 +336,6 @@ class Auth extends StateNotifier<bool> {
           },
         ),
       );
-      print(
-          "GGGGGGGGGGGGGGGGGGGGGGdddddddddddddddGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
       print(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         ref.watch(signUpSuccess.notifier).update((state) => true);
@@ -359,9 +358,7 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> loginWithGoogle() async {
     state = true;
     final user = ref.watch(userProvider)!;
-    // final url = Uri.https(
-    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-    //     'loginWithGoogle.json');
+
     try {
       final response = await http.get(
         Uri.parse(
@@ -391,6 +388,7 @@ class Auth extends StateNotifier<bool> {
     final authService = AuthService();
     final String? userToken;
     final User? user;
+    final test;
     if (Platform.isWindows) {
       try {
         user = await authService.signInWithGoogle();
@@ -414,6 +412,8 @@ class Auth extends StateNotifier<bool> {
             await ref.read(authControllerProvider.notifier).signInWithGoogle();
         if (user != null) {
           userToken = await user.getIdToken();
+          test = await user.getIdTokenResult();
+          print(test);
         } else {
           return left(Failure('Sign in with google failed'));
         }
@@ -431,6 +431,8 @@ class Auth extends StateNotifier<bool> {
     //After getting the token we will update the user and send the token to the backend
     UserModel? currentUser = ref.read(userProvider)!;
 
+    print("TEST SIGN IN WITH GOOGLE TOKEN $userToken");
+
     /// Create a new user with the updated email
     UserModel updatedUser =
         currentUser.copyWith(token: userToken, isGoogle: true);
@@ -444,9 +446,10 @@ class Auth extends StateNotifier<bool> {
 
     final response = await http.get(
       Uri.parse(
-          'http://10.0.2.2:8000/api/v1/users/googleLogin?token=$userToken'),
+          'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=$userToken'),
     );
-    print(response.body);
+
+    print("LOGIN TEST GOOGLE ${response.body}");
     //200 for exisiting users
     //400 new users
     if (response.statusCode == 200 || response.statusCode == 201) {

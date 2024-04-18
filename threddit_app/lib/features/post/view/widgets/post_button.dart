@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/home_page/view_model/home_page_provider.
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/features/post/viewmodel/send_post.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
@@ -43,11 +44,10 @@ class PostButton extends ConsumerWidget {
           ///should route to the posted post page but it routes to the mainLayout for now
 
           ref.read(currentScreenProvider.notifier).updateCurrentScreen(0);
-          Navigator.pushReplacementNamed(context, RouteClass.postScreen,
-              arguments: {
-                'currentpost': post,
-                'uid': ref.read(userModelProvider)?.id
-              });
+          Navigator.pushNamed(context, RouteClass.postScreen, arguments: {
+            'currentpost': post,
+            'uid': ref.read(userModelProvider)?.id
+          });
         });
       } else {
         null;

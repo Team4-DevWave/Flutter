@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/models/subreddit.dart';
 
 final getCommunityRules = StateNotifierProvider<GetCommunityRules, bool>(
     (ref) => GetCommunityRules(ref));
@@ -21,6 +18,8 @@ class GetCommunityRules extends StateNotifier<bool> {
 
   Future<Either<Failure, List<String>>> getCommunityRules(
       String communityName) async {
+    print("HEEHEHEHEHEHEHEHEHEHEHEHEHEHEHEHE");
+    print(communityName);
     final url = Uri.parse(
         "http://${AppConstants.local}:8000/api/v1/r/$communityName/rules");
     final token = await getToken();
@@ -32,10 +31,11 @@ class GetCommunityRules extends StateNotifier<bool> {
           HttpHeaders.authorizationHeader: 'Bearer $token',
         },
       );
-
+      print(response.statusCode);
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         final List<String> rules = List<String>.from(json['data']['rules']);
+        print(rules);
         return right(rules);
       } else {
         return left(Failure('Something went wrong, please try again later.'));
@@ -49,19 +49,5 @@ class GetCommunityRules extends StateNotifier<bool> {
         return left(Failure(e.toString()));
       }
     }
-  }
-}
-
-Future<SubredditList> fetchSubredditsAll() async {
-  final response = await http
-      .get(Uri.parse('http://${AppConstants.local}:8000/api/v1/r/all'));
-
-  if (response.statusCode == 200) {
-    Map<String, dynamic> body = jsonDecode(response.body);
-    List<dynamic> subredditList = body['data']['subreddits'];
-
-    return SubredditList.fromJson(subredditList);
-  } else {
-    throw Exception('Failed to load subreddits');
   }
 }
