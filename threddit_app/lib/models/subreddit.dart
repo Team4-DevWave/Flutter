@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Subreddit {
   final String id;
   final String name;
@@ -7,8 +9,8 @@ class Subreddit {
   final SubredditSettings srSettings;
   final SubredditLooks srLooks;
   final SubredditUserManagement userManagement;
-  final List<dynamic> postsToBeApproved;
-  final List<dynamic> posts;
+  List<dynamic>? postsToBeApproved;
+  List<dynamic>? posts;
   final List<dynamic> rules;
   final List<dynamic> invitedUsers;
   final int version;
@@ -23,8 +25,8 @@ class Subreddit {
     required this.srSettings,
     required this.srLooks,
     required this.userManagement,
-    required this.postsToBeApproved,
-    required this.posts,
+    this.postsToBeApproved,
+    this.posts,
     required this.rules,
     required this.invitedUsers,
     required this.version,
@@ -40,7 +42,8 @@ class Subreddit {
       status: json['status'] ?? "",
       srSettings: SubredditSettings.fromJson(json['srSettings'] ?? {}),
       srLooks: SubredditLooks.fromJson(json['srLooks'] ?? {}),
-      userManagement: SubredditUserManagement.fromJson(json['userManagement'] ?? {}),
+      userManagement:
+          SubredditUserManagement.fromJson(json['userManagement'] ?? {}),
       postsToBeApproved: List<dynamic>.from(json['postsToBeApproved'] ?? []),
       posts: List<dynamic>.from(json['posts'] ?? []),
       rules: List<dynamic>.from(json['rules'] ?? []),
@@ -84,7 +87,8 @@ class SubredditSettings {
 
   factory SubredditSettings.fromJson(Map<String, dynamic> json) {
     return SubredditSettings(
-      spamFilterStrength: Map<String, String>.from(json['spamFilterStrength'] ?? {}),
+      spamFilterStrength:
+          Map<String, String>.from(json['spamFilterStrength'] ?? {}),
       srType: json['srType'] ?? "",
       nsfw: json['nsfw'] ?? false,
       postType: json['postType'] ?? "",
@@ -95,22 +99,23 @@ class SubredditSettings {
       allowMultipleImages: json['allowMultipleImages'] ?? false,
       allowPolls: json['allowPolls'] ?? false,
       postReviewing: json['postReviewing'] ?? false,
-      collapseDeletedRemovedComments: json['collapseDeletedRemovedComments'] ?? false,
+      collapseDeletedRemovedComments:
+          json['collapseDeletedRemovedComments'] ?? false,
       welcomeMessageEnabled: json['welcomeMessageEnabled'] ?? false,
     );
   }
 }
 
 class SubredditLooks {
-   String? banner;
-  String? icon;
-   String? color;
-   bool darkMode;
+  String banner;
+  String icon;
+  String color;
+  bool darkMode;
 
   SubredditLooks({
-    this.banner,
-    this.icon,
-    this.color,
+    required this.banner,
+    required this.icon,
+    required this.color,
     required this.darkMode,
   });
 
@@ -142,4 +147,24 @@ class SubredditUserManagement {
       approvedList: List<dynamic>.from(json['approvedList'] ?? []),
     );
   }
+}
+
+class SubredditList {
+  final List<Subreddit> subreddits;
+
+  SubredditList({required this.subreddits});
+
+  factory SubredditList.fromJson(List<dynamic> json) {
+    List<Subreddit> subreddits =
+        json.map((i) => Subreddit.fromJson(i)).toList();
+
+    return SubredditList(
+      subreddits: subreddits,
+    );
+  }
+}
+
+SubredditList decodeSubredditList(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return SubredditList.fromJson(parsed);
 }

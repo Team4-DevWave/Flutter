@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
+/// This class is used to manage the history of the user
+/// It uses shared preferences to store the history of the user
+
 class HistoryManager {
   static const String _historyKey = 'postHistory';
 

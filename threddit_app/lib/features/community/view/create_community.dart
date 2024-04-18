@@ -5,6 +5,16 @@ import "package:threddit_clone/models/community.dart";
 import "package:threddit_clone/features/community/view%20model/community_provider.dart";
 import "package:threddit_clone/theme/colors.dart";
 
+///this class resembles the create community screen 
+///it is used to create a new community
+///the createCommunity function is called when the create community button is pressed
+///the createCommunity function is used to create a new community by calling the createCommunity function from the community provider
+/// the createCommunity function takes the name, nsfw and type of the community as it's parameters
+/// it then calls the createCommunity function from the community provider
+/// the createCommunity function returns a Future that is used to create the community
+/// if the community is created successfully, the user is navigated to the community screen
+/// if the community is not created successfully, an error message is displayed
+
 class CreateCommunity extends ConsumerStatefulWidget {
   const CreateCommunity({super.key, required this.uid});
   final String uid;

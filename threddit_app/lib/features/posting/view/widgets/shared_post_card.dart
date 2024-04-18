@@ -8,6 +8,11 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
 
+/// This widget displays the shared post card
+/// similar to the post card but with the addition of the parent post
+/// it displays the parent post of the post that is being shared
+/// it also displays the shared post
+
 class SharedPostCard extends ConsumerStatefulWidget {
   const SharedPostCard({
     super.key,

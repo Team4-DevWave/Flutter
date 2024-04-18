@@ -15,6 +15,11 @@ import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 
+/// This widget displays the post screen
+/// It displays the post and all the comments on the post
+/// it also displays the add comment widget
+/// it calls either the standard post card or the shared post card based on whether the post has a parent post or not
+
 class PostScreen extends ConsumerStatefulWidget {
   final String uid;
   final Post currentPost;
