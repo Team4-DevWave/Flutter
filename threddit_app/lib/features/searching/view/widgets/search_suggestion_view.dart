@@ -10,7 +10,7 @@ class SearchSuggestionsView extends ConsumerWidget {
   const SearchSuggestionsView({required this.query});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(queryProvider.notifier).state = query;
+      ref.read(queryProvider.notifier).state = query;
     final searchResult = ref.read(futureSearchProvide);
     return ListView.builder(
         shrinkWrap: true,

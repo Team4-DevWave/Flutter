@@ -6,6 +6,7 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class Search extends SearchDelegate<String> {
+  
   @override
   TextStyle? get searchFieldStyle => AppTextStyles.primaryTextStyle;
   @override
@@ -53,6 +54,7 @@ class Search extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    
     return SearchSuggestionsView(query: query);
   }
 }
