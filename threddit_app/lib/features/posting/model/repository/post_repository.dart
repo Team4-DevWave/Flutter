@@ -1,3 +1,4 @@
+import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'dart:async';
@@ -16,7 +17,7 @@ class PostRepository {
   Future<void> votePost(String postId, int voteType) async {
     try {
       String? token = await getToken();
-      final url = 'http://10.0.2.2:8000/comments?_id=$postId';
+      final url = 'http://${AppConstants.local}:8000/comments?_id=$postId';
       final Map<String, String> headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -40,7 +41,8 @@ class PostRepository {
   Future<void> togglePostNSFW(String postId) async {
     try {
       String? jwtToken = await getToken();
-      String url = 'http://10.0.2.2:8000/api/v1/posts/$postId/nsfw';
+      String url =
+          'http://${AppConstants.local}:8000/api/v1/posts/$postId/nsfw';
       final headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer $jwtToken",
@@ -56,9 +58,9 @@ class PostRepository {
 
   Future<void> togglePostSpoiler(String postId) async {
     try {
-      
       String? jwtToken = await getToken();
-      String url = 'http://10.0.2.2:8000/api/v1/posts/$postId/spoiler';
+      String url =
+          'http://${AppConstants.local}:8000/api/v1/posts/$postId/spoiler';
       final headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer $jwtToken",
@@ -74,7 +76,8 @@ class PostRepository {
 
   Future<Post> fetchPost(String postId) async {
     String? token = await getToken();
-    final url = Uri.parse('http://10.0.2.2:8000/api/v1/posts/$postId');
+    final url =
+        Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/$postId');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",
@@ -99,8 +102,8 @@ class PostRepository {
 
   Future<Votes> getUserUpvotes() async {
     String? token = await getToken();
-    final url =
-        Uri.parse('http://10.0.2.2:8000/api/v1/users/me/upvoted?page=1');
+    final url = Uri.parse(
+        'http://${AppConstants.local}:8000/api/v1/users/me/upvoted?page=1');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",
@@ -124,8 +127,8 @@ class PostRepository {
 
   Future<Votes> getUserDownvotes() async {
     String? token = await getToken();
-    final url =
-        Uri.parse('http://10.0.2.2:8000/api/v1/users/me/downvoted?page=1');
+    final url = Uri.parse(
+        'http://${AppConstants.local}:8000/api/v1/users/me/downvoted?page=1');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",

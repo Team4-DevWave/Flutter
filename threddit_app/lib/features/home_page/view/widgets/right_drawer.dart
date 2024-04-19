@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/home_page/view/screens/saved_screen.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
@@ -89,7 +90,10 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
                 color: AppColors.whiteColor,
               ),
               title: "Saved",
-              onTap: () {}),
+              onTap: () {
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (_) => const SavedScreen()));
+              }),
           RightDrawerButtons(
               icon: const Icon(
                 Icons.history_toggle_off_rounded,

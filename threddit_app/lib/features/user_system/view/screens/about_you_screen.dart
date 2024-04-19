@@ -61,55 +61,57 @@ class _AboutYouState extends ConsumerState {
         : Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: RegisterAppBar(action: onSkip, title: 'Skip'),
-            body: Column(
-              children: [
-                Column(
-                  children: [
-                    SizedBox(height: 20.h),
-                    Text(
-                      'About you',
-                      style: AppTextStyles.primaryTextStyle.copyWith(
-                        fontSize: 28.spMin,
-                        fontWeight: FontWeight.w600,
+            body: Center(
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(height: 20.h),
+                      Text(
+                        'About you',
+                        style: AppTextStyles.primaryTextStyle.copyWith(
+                          fontSize: 28.spMin,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 15.h),
-                    Text(
-                      """Tell us about yourself to improve your recommendations and ads""",
-                      style: AppTextStyles.primaryTextStyle.copyWith(
-                        fontSize: 20.spMin,
-                        color: AppColors.whiteHideColor,
+                      SizedBox(height: 15.h),
+                      Text(
+                        """Tell us about yourself to improve your recommendations and ads""",
+                        style: AppTextStyles.primaryTextStyle.copyWith(
+                          fontSize: 20.spMin,
+                          color: AppColors.whiteHideColor,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 20.h),
-                    Text(
-                      'How do you identify?',
-                      style: AppTextStyles.primaryTextStyle.copyWith(
-                        fontSize: 20.spMin,
-                        color: AppColors.whiteHideColor,
+                      SizedBox(height: 20.h),
+                      Text(
+                        'How do you identify?',
+                        style: AppTextStyles.primaryTextStyle.copyWith(
+                          fontSize: 20.spMin,
+                          color: AppColors.whiteHideColor,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 13.h),
-                    ...types.map((type) {
-                      return Column(
-                        children: [
-                          AnswerButton(
-                              answerText: type,
-                              style: _buttonStyles[type],
-                              onTap: () => onTap(type)),
-                          SizedBox(height: 5.h),
-                        ],
-                      );
-                    }),
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                  ],
-                ),
-              ],
+                      SizedBox(height: 13.h),
+                      ...types.map((type) {
+                        return Column(
+                          children: [
+                            AnswerButton(
+                                answerText: type,
+                                style: _buttonStyles[type],
+                                onTap: () => onTap(type)),
+                            SizedBox(height: 5.h),
+                          ],
+                        );
+                      }),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
   }
