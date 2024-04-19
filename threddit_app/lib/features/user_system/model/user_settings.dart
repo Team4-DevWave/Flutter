@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:io';
 
 class UserSettings {
   final UserProfile userProfile;
@@ -45,6 +46,7 @@ class UserProfile {
   final bool contentVisibility;
   final bool activeCommunitiesVisibility;
   final String profilePicture;
+  final File?imagePath;
   final List<String> socialLinks; // Specify String type
 
   UserProfile({
@@ -55,6 +57,7 @@ class UserProfile {
     required this.contentVisibility,
     required this.activeCommunitiesVisibility,
     required this.profilePicture,
+    this.imagePath,
     required this.socialLinks,
   });
 
@@ -80,6 +83,7 @@ class UserProfile {
     bool? contentVisibility,
     bool? activeCommunitiesVisibility,
     String? profilePicture,
+    File? imagePath,
     List<String>? socialLinks,
   }) {
     return UserProfile(
@@ -92,23 +96,27 @@ class UserProfile {
           activeCommunitiesVisibility ?? this.activeCommunitiesVisibility,
       profilePicture: profilePicture ?? this.profilePicture,
       socialLinks: socialLinks ?? this.socialLinks,
+      imagePath: imagePath ?? this.imagePath,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'displayName': displayName,
-      'about': about,
+    return {
+    'userProfile' : 
+    {
+      if(displayName.isNotEmpty) 'displayName': displayName,
+      if(about.isNotEmpty) 'about': about,
       'nsfw': nsfw,
       'allowFollowers': allowFollowers,
       'contentVisibility': contentVisibility,
       'activeCommunitiesVisibility': activeCommunitiesVisibility,
-      'profilePicture': profilePicture,
-      'socialLinks': socialLinks,
-    };
+      if(profilePicture.isNotEmpty)'profilePicture': profilePicture,
+      if(socialLinks.isNotEmpty)'socialLinks': socialLinks,
+    }
+  };
   }
-
   String toJson() => json.encode(toMap());
+
 }
 
 class SafetyAndPrivacy {

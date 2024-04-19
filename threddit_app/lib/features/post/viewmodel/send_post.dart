@@ -26,11 +26,10 @@ class PostProvider extends StateNotifier<bool> {
   FutureEither<Post> submitPost(String type) async {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
-    final user = ref.read(userModelProvider)!;
+    final user = ref.read(userModelProvider)!.username;
 
     final whereTo =
         post?.community == null ? 'u/$user' : 'r/${post?.community}';
-    //get username
 
     try {
       final response = await http.post(
@@ -53,7 +52,6 @@ class PostProvider extends StateNotifier<bool> {
 
       if (response.statusCode == 201) {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
-
         final urlPost =
             Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/$pid');
 
@@ -70,11 +68,14 @@ class PostProvider extends StateNotifier<bool> {
           throw Exception(
               'Failed to fetch post. Status code: ${response.statusCode}');
         }
-      } else {
+      }
+     else {
         return left(
+            
             Failure("Can't submit post, please discard or try again later"));
       }
-    } catch (e) {
+      }
+    catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {
         return left(Failure('Check your internet connection...'));
       } else {
@@ -83,3 +84,4 @@ class PostProvider extends StateNotifier<bool> {
     }
   }
 }
+
