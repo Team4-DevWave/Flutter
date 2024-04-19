@@ -135,6 +135,7 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                     backgroundImage: NetworkImage(community[1]),
                   ),
                   title: Text(community[0],
+                      maxLines: 1,
                       style: AppTextStyles.primaryTextStyle.copyWith(
                         fontSize: 17.spMin,
                       )),

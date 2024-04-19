@@ -42,6 +42,7 @@ class ContinueWithGoogle extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
       onPressed: () {
+        print("HERE Continue with google");
         onContinue(context, ref);
       },
       style: AppButtons.registerButtons,
