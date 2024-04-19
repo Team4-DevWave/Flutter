@@ -260,7 +260,8 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                             ],
                           ),
                         ),
-                        if (widget.post.parentPost!.image != null)
+                        if (widget.post.parentPost!.image != null &&
+                            widget.post.parentPost!.image != "")
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Image.network(widget.post.image!),

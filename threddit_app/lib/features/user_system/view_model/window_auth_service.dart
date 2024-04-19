@@ -5,14 +5,14 @@ class AuthService {
   final _auth = FirebaseAuth.instance;
   final _authManager = AuthManager();
 
-  Future<User?> signInWithGoogle() async {
+  Future<String?> signInWithGoogle() async {
     final credentials = await _authManager.login();
     final authCredential = GoogleAuthProvider.credential(
       idToken: credentials.idToken,
       accessToken: credentials.accessToken,
     );
-    final userCredential = await _auth.signInWithCredential(authCredential);
-    return userCredential.user;
+    // final userCredential = await _auth.signInWithCredential(authCredential);
+    return authCredential.accessToken;
   }
 
   Future<void> signOut() async {
