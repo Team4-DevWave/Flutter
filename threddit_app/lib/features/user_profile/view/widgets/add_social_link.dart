@@ -12,7 +12,8 @@ class AddSocialLink extends ConsumerWidget {
     return Padding(
   padding: const EdgeInsets.all(16.0),
   child: Column(
-    children: [
+    mainAxisSize: MainAxisSize.min,
+      children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.start, // Align button to the far left
         children: [

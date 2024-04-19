@@ -11,7 +11,8 @@ import 'package:http/http.dart' as http;
 
 class UserProfileNotifier extends StateNotifier<UserProfile> {
   UserProfileNotifier()
-      : super(UserProfile(
+      : super(
+          UserProfile(
             displayName: "",
             about: "",
             nsfw: false,
@@ -19,13 +20,15 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
             contentVisibility: true,
             activeCommunitiesVisibility: true,
             profilePicture: "",
-            socialLinks: []));
+            socialLinks: [],
+          ),
+        );
 
   ///this function sends the current state of the user data
   ///if the request is successfull, the data will be updated in the provider
   FutureEither<bool> updateUserData() async {
-    String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
+    String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
     final token = await getToken();
     final url = "http://$local:8000/api/v1/users/me/settings";
     final headers = {
@@ -33,12 +36,13 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
       'Authorization': 'Bearer $token',
     };
     final jsonBody = state.toJson();
-
     try {
       final response =
           await http.patch(Uri.parse(url), headers: headers, body: jsonBody);
       if (response.statusCode == 200) {
-        final updatedProfile = UserProfile.fromJson(json.decode(response.body));
+        final resBody = json.decode(response.body) as Map<String, dynamic>;
+        final userProfileData = resBody['data']['settings']['userProfile'] as Map<String, dynamic>;
+        final updatedProfile = UserProfile.fromJson(userProfileData);
         state = updatedProfile;
         return right(true);
       } else {
@@ -62,6 +66,8 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
       state = state.copyWith(activeCommunitiesVisibility: active);
   void updateProfilePic(String pic) =>
       state = state.copyWith(profilePicture: pic);
+  void updateImagePath(File?imgePath) =>
+      state = state.copyWith(imagePath: imgePath);
   void updateSocialLinks(List<String> social) =>
       state = state.copyWith(socialLinks: social);
   void addLink(String link) => state.socialLinks.add(link);
@@ -70,3 +76,5 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
 final userProfileProvider =
     StateNotifierProvider<UserProfileNotifier, UserProfile?>(
         (ref) => UserProfileNotifier());
+
+final imagePathProvider = StateProvider<File?>((ref) => null);

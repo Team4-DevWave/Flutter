@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/post/viewmodel/delete_post.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -58,7 +57,6 @@ void delete(BuildContext context, WidgetRef ref, String postid) {
               }, (success) {
                 showSnackBar(navigatorKey.currentContext!,
                     'Your post deleted to succefully');
-
                 Navigator.pop(context);
               });
             },

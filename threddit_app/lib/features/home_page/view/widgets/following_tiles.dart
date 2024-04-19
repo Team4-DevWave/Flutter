@@ -23,65 +23,71 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
   @override
   void initState() {
     super.initState();
-
-    ///fetches the data when the widget is intialized
-    _initializeData();
-  }
-
-  Future<void> _initializeData() async {
-    await _getFavourites();
-    _userFollowingData = UserFollowingAPI().getUserFollowing();
-    await _userFollowingData; // Wait for userFollowingData to be fetched
     _isFavouriteFollowing = {};
+    _userFollowingData = UserFollowingAPI().getUserFollowing();
     _userFollowingData?.then((value) {
       for (String user in value) {
         _isFavouriteFollowing![user] = _favouritesList!.contains(user);
       }
-      setState(() {}); // Trigger a rebuild after initializing data
     });
+    
+    print(_userFollowingData);
+    ///fetches the data when the widget is intialized
+    _initializeData();
+  }
+
+  
+
+  Future<void> _initializeData() async {
+    // await _getFavourites(); //
+    
+    // 
+    
+    //   setState(() {}); // Trigger a rebuild after initializing data
+    // });
   }
 
   Future<void> _getFavourites() async {
-    prefs = await SharedPreferences.getInstance();
-    _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
-    (ref
-        .read(favouriteListProvider.notifier)
-        .update((state) => _favouritesList!));
+    // prefs = await SharedPreferences.getInstance();
+    // _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
+    // (ref
+    //     .read(favouriteListProvider.notifier)
+    //     .update((state) => _favouritesList!));
   }
 
   Future<void> _updateIsFavouriteSub() async {
-    if (_favouritesList != null) {
-      _isFavouriteFollowing = {};
-      _userFollowingData?.then((value) {
-        for (String user in value) {
-          _isFavouriteFollowing![user] = _favouritesList!.contains(user);
-        }
-      });
-      setState(() {});
-    }
+    // if (_favouritesList != null) {
+    //   _isFavouriteFollowing = {};
+    //   _userFollowingData?.then((value) {
+    //     for (String user in value) {
+    //       _isFavouriteFollowing![user] = _favouritesList!.contains(user);
+    //     }
+    //   });
+    //   setState(() {});
+    // }
   }
 
   void _removeFavourites(String toBeRemoved) async {
-    prefs = await SharedPreferences.getInstance();
-    if (prefs != null) {
-      _favouritesList?.removeWhere((element) => element == toBeRemoved);
-      prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      (ref
-          .read(favouriteListProvider.notifier)
-          .update((state) => _favouritesList!));
-    }
+    // prefs = await SharedPreferences.getInstance();
+    // if (prefs != null) {
+    //   _favouritesList?.removeWhere((element) => element == toBeRemoved);
+    //   prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
+    //   (ref
+    //       .read(favouriteListProvider.notifier)
+    //       .update((state) => _favouritesList!));
+    // }
   }
 
   void _setFavourites(String favourite) async {
-    prefs = await SharedPreferences.getInstance();
-    if (prefs != null) {
-      _favouritesList?.add(favourite);
-      prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-      print("alo from set");
-      print(ref
-          .read(favouriteListProvider.notifier)
-          .update((state) => _favouritesList!));
-    }
+    // prefs = await SharedPreferences.getInstance();
+    // if (prefs != null) {
+    //   _favouritesList?.add(favourite);
+    //   prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
+    //   print("alo from set");
+    //   print(ref
+    //       .read(favouriteListProvider.notifier)
+    //       .update((state) => _favouritesList!));
+    // }
   }
 
   void _onStarPressed(String selected) {
@@ -96,12 +102,6 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
         _updateIsFavouriteSub();
       }
     });
-  }
-
-  @override
-  void didChangeDependencies() {
-    _favouritesList = ref.watch(favouriteListProvider);
-    super.didChangeDependencies();
   }
 
   @override
@@ -129,13 +129,8 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                         title: Text(dataList[index],
                             style: AppTextStyles.secondaryTextStyle
                                 .copyWith(fontSize: 14)),
-
-                        /// There should be an icon with the data of following but it will be
-                        /// implemented when the community class is made
                         onTap: () {
-                          ///go to the user's profile screen
 
-                        
                         },
                         trailing: IconButton(
                           onPressed: () => _onStarPressed(dataList[index]),

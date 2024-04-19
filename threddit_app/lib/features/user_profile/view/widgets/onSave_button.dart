@@ -20,6 +20,7 @@ class SaveButton extends ConsumerWidget {
                 showSnackBar(navigatorKey.currentContext!, l.message);
               }, (r) {
                 showSnackBar(navigatorKey.currentContext!, "User Data Saved!");
+                Navigator.pop(context);
               });
             }
           : null,
