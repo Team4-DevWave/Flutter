@@ -88,8 +88,13 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
                 setState(() {
                   _isSaved = !_isSaved; // Toggle the saved state
                 });
+                if (!_isSaved) {
+                  // Check if un-saved
+                  ref.read(updatesSaveProvider.notifier).state = widget.post.id;
+                }
+                Navigator.pop(context);
                 showSnackBar(navigatorKey.currentContext!,
-                    'Post ${_isSaved ? 'Saved' : ''} successfully');
+                    'Post ${_isSaved ? 'Saved' : 'Unsaved'} successfully');
               },
             );
           },

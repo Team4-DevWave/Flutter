@@ -13,7 +13,6 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
-import 'package:threddit_clone/features/user_system/view_model/auth.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 
@@ -343,6 +342,7 @@ class SettingsFetch extends StateNotifier<bool> {
     }
     UserModelMe user = ref.read(userModelProvider)!;
     String? token = await getToken();
+    print(token);
     http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
       headers: {
@@ -351,7 +351,6 @@ class SettingsFetch extends StateNotifier<bool> {
       },
     );
     user = UserModelMe.fromJson(jsonDecode(response.body));
-    print(user);
     ref.read(userModelProvider.notifier).update((state) => user);
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
