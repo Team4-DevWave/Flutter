@@ -28,7 +28,6 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
 
   @override
   void initState() {
-    ///fetches the data when the widget is intialized
     _initializeData();
     super.initState();
   }
@@ -46,15 +45,10 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
         (list) {
       setState(() {
         _userCommunitiesData = list;
+        _updateIsFavouriteSub();
         isLoading = false;
       });
     });
-    // Wait for userFollowingData to be fetched
-    _isFavouriteSub = {};
-    for (final value in _userCommunitiesData!) {
-      _isFavouriteSub![value[0]] = _favouritesList!.contains(value[0]);
-    }
-    // Trigger a rebuild after initializing data
   }
 
   Future<void> _getFavourites() async {
@@ -71,7 +65,6 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
       for (final value in _userCommunitiesData!) {
         _isFavouriteSub![value[0]] = _favouritesList!.contains(value[0]);
       }
-      setState(() {});
     }
   }
 
@@ -91,7 +84,6 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
     if (prefs != null) {
       _favouritesList?.add(favourite);
       prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-
       ref
           .read(favouriteListProvider.notifier)
           .update((state) => _favouritesList!);
@@ -140,7 +132,7 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                   },
                   leading: CircleAvatar(
                     radius: 10,
-                    backgroundImage: NetworkImage(community[0]),
+                    backgroundImage: NetworkImage(community[1]),
                   ),
                   title: Text(community[0],
                       style: AppTextStyles.primaryTextStyle.copyWith(

@@ -24,7 +24,7 @@ class PostProvider extends StateNotifier<bool> {
   FutureEither<Post> submitPost(String type) async {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
-    final user = ref.read(userModelProvider)!;
+    final user = ref.read(userModelProvider)!.username;
 
     final whereTo =
         post?.community == null ? 'u/$user' : 'r/${post?.community}';
@@ -47,9 +47,9 @@ class PostProvider extends StateNotifier<bool> {
             "image": post?.image ?? "",
             "video": post?.video ?? ""
           }));
+          print(response.body);
       if (response.statusCode == 201) {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
-
         final urlPost =
             Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/$pid');
 
@@ -69,6 +69,7 @@ class PostProvider extends StateNotifier<bool> {
       }
      else {
         return left(
+            
             Failure("Can't submit post, please discard or try again later"));
       }
       }
