@@ -37,8 +37,14 @@ class SearchingApis extends StateNotifier<bool> {
   }
 
   Future<List<String>> search(String query) async {
+    final String url;
+    if (Platform.isWindows) {
+      url = urlWindows;
+    } else {
+      url = urlAndroid;
+    }
     http.Response response = await http.get(
-      Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
+      Uri.parse("$url/api/search-user?query=$query"),
     );
     List<dynamic> data = jsonDecode(response.body.toString());
     List<String> searchResults = [];

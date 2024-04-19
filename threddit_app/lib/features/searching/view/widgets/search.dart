@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/Moderation/model/moderator.dart';
+import 'package:threddit_clone/features/searching/view/widgets/search_suggestion_view.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -48,14 +49,10 @@ class Search extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     return SizedBox();
-   
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return ListView.builder(
-      itemCount: 0,
-      itemBuilder: (context, index) => Container(),
-    );
+    return SearchSuggestionsView(query: query);
   }
 }
