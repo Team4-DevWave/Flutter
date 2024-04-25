@@ -38,6 +38,7 @@ class _FeedWidgetState extends State<FeedWidget> {
   final _posts = <Post>[];
   int _currentPage = 1;
   bool _fetching = true;
+  bool _fetchingFinish = true;
   String? userId;
   @override
   void initState() {
@@ -60,6 +61,7 @@ class _FeedWidgetState extends State<FeedWidget> {
   Future _fetchPosts() async {
     final response =
         await fetchPosts(widget.feedID, widget.subreddit, _currentPage);
+
     if (response.posts.isNotEmpty) {
       setState(() {
         _posts.addAll(response.posts);
@@ -69,6 +71,7 @@ class _FeedWidgetState extends State<FeedWidget> {
     } else {
       setState(() {
         _fetching = false;
+        _fetchingFinish = false;
       });
     }
   }
@@ -92,7 +95,13 @@ class _FeedWidgetState extends State<FeedWidget> {
         );
       } else {
         return Center(
-          child: Text('No feed available.'),
+          child: Text(
+            'No feed available.',
+            style: TextStyle(
+              fontSize: 20.sp,
+              color: Colors.white,
+            ),
+          ),
         );
       }
     } else {
@@ -108,14 +117,28 @@ class _FeedWidgetState extends State<FeedWidget> {
                     userId!)
                 : FeedUnit(_posts[index], userId!);
           } else {
-            return SizedBox(
-              height: 75.h,
-              width: 75.w,
-              child: Lottie.asset(
-                'assets/animation/loading.json',
-                repeat: true,
-              ),
-            );
+            return _fetchingFinish
+                ? SizedBox(
+                    height: 75.h,
+                    width: 75.w,
+                    child: Lottie.asset(
+                      'assets/animation/loading.json',
+                      repeat: true,
+                    ),
+                  )
+                : SizedBox(
+                    child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        'No more posts available.',
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ));
           }
         },
       );

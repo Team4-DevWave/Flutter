@@ -186,19 +186,15 @@ Future<PostApiResponse> fetchPosts(
     String feedID, String subreddit, int pageNumber) async {
   String? token = await getToken();
 
-  String url =
-      "http://${AppConstants.local}:8000/api/v1/posts/best?page=$pageNumber";
+  String url = "http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber";
   if (feedID == 'Hot Posts') {
-    url =
-        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
   }
   if (feedID == 'New Posts') {
-    url =
-        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/new?page=$pageNumber";
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/new?page=$pageNumber";
   }
   if (feedID == 'Top Posts') {
-    url =
-        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/top?page=$pageNumber";
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/top?page=$pageNumber";
   }
 
   final response = await http.get(

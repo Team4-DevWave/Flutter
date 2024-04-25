@@ -27,6 +27,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   TabController? _tabController;
   final _comments = <Comment>[];
   bool _fetchingPosts = true;
+  bool _fetchingPostsFinish = true;
   UserModelMe? user;
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
@@ -67,6 +68,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     } else {
       setState(() {
         _fetchingPosts = false;
+        _fetchingPostsFinish = false;
       });
     }
   }
@@ -109,7 +111,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername(user?.username ?? '', _currentPage);
+      _fetchPosts();
     }
   }
 
@@ -308,14 +310,29 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                           uid!)
                                       : FeedUnit(_posts[index], uid!);
                                 } else {
-                                  return SizedBox(
-                                    height: 75.h,
-                                    width: 75.w,
-                                    child: Lottie.asset(
-                                      'assets/animation/loading.json',
-                                      repeat: true,
-                                    ),
-                                  );
+                                  return _fetchingPostsFinish
+                                      ? SizedBox(
+                                          height: 75.h,
+                                          width: 75.w,
+                                          child: Lottie.asset(
+                                            'assets/animation/loading.json',
+                                            repeat: true,
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: Text(
+                                                'No more posts available.',
+                                                style: TextStyle(
+                                                  fontSize: 20.sp,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
                                 }
                               },
                             ),

@@ -154,7 +154,8 @@ class RouteClass {
       case notificationsScreen:
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case notificationsSettingsScreen:
-        return MaterialPageRoute(builder: (_) => const NotificationsSettingsScreen());
+        return MaterialPageRoute(
+            builder: (_) => const NotificationsSettingsScreen());
       case postToScreen:
         return MaterialPageRoute(builder: (_) => const PostToScreen());
       case accountSettingsScreen:
@@ -252,7 +253,7 @@ class RouteClass {
       case historyScreen:
         var data = settings.arguments as String;
         return MaterialPageRoute(
-          builder: (_) =>HistoryScreen(
+          builder: (_) => HistoryScreen(
             uid: data,
           ),
         );
