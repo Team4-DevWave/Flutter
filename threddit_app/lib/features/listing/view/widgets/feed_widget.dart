@@ -37,6 +37,7 @@ class _FeedWidgetState extends State<FeedWidget> {
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
+  bool _fetching = true;
   String? userId;
   @override
   void initState() {
@@ -63,6 +64,11 @@ class _FeedWidgetState extends State<FeedWidget> {
       setState(() {
         _posts.addAll(response.posts);
         _currentPage++;
+        _fetching = true;
+      });
+    } else {
+      setState(() {
+        _fetching = false;
       });
     }
   }
@@ -76,34 +82,43 @@ class _FeedWidgetState extends State<FeedWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return _posts.isEmpty
-        ? Center(
-            child: Lottie.asset(
+    if (_posts.isEmpty) {
+      if (_fetching) {
+        return Center(
+          child: Lottie.asset(
             'assets/animation/loading.json',
             repeat: true,
-          ))
-        : ListView.builder(
-            controller: _scrollController,
-            itemCount: _posts.length + 1,
-            itemBuilder: (context, index) {
-              if (index < _posts.length) {
-                return _posts[index].parentPost != null
-                    ? FeedUnitShare(
-                        dataOfPost: _posts[index].parentPost!,
-                        parentPost: _posts[index],
-                        userId!)
-                    : FeedUnit(_posts[index], userId!);
-              } else {
-                return SizedBox(
-                  height: 75.h,
-                  width: 75.w,
-                  child: Lottie.asset(
-                    'assets/animation/loading.json',
-                    repeat: true,
-                  ),
-                );
-              }
-            },
-          );
+          ),
+        );
+      } else {
+        return Center(
+          child: Text('No feed available.'),
+        );
+      }
+    } else {
+      return ListView.builder(
+        controller: _scrollController,
+        itemCount: _posts.length + 1,
+        itemBuilder: (context, index) {
+          if (index < _posts.length) {
+            return _posts[index].parentPost != null
+                ? FeedUnitShare(
+                    dataOfPost: _posts[index].parentPost!,
+                    parentPost: _posts[index],
+                    userId!)
+                : FeedUnit(_posts[index], userId!);
+          } else {
+            return SizedBox(
+              height: 75.h,
+              width: 75.w,
+              child: Lottie.asset(
+                'assets/animation/loading.json',
+                repeat: true,
+              ),
+            );
+          }
+        },
+      );
+    }
   }
 }

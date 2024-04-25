@@ -26,6 +26,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   int _currentPage = 1;
   TabController? _tabController;
   final _comments = <Comment>[];
+  bool _fetchingPosts = true;
   UserModelMe? user;
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
@@ -57,10 +58,17 @@ class _UserProfileState extends ConsumerState<UserProfile>
     final response =
         await fetchPostsByUsername(user!.username ?? '', _currentPage);
 
-    setState(() {
-      _posts.addAll(response.posts);
-      _currentPage++;
-    });
+    if (response.posts.isNotEmpty) {
+      setState(() {
+        _posts.addAll(response.posts);
+        _currentPage++;
+        _fetchingPosts = false;
+      });
+    } else {
+      setState(() {
+        _fetchingPosts = false;
+      });
+    }
   }
 
   Widget buildCommentsTab() {
@@ -267,20 +275,27 @@ class _UserProfileState extends ConsumerState<UserProfile>
                     top: 100.h,
                     child: TabBarView(controller: _tabController, children: [
                       _posts.isEmpty
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.warning_amber,
-                                  color: AppColors.whiteGlowColor,
-                                ),
-                                Text(
-                                  "Wow, such empty in Posts!",
-                                  style: AppTextStyles.primaryTextStyle,
-                                ),
-                              ],
-                            )
+                          ? _fetchingPosts
+                              ? Center(
+                                  child: Lottie.asset(
+                                    'assets/animation/loading.json',
+                                    repeat: true,
+                                  ),
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.warning_amber,
+                                      color: AppColors.whiteGlowColor,
+                                    ),
+                                    Text(
+                                      "Wow, such empty in Posts!",
+                                      style: AppTextStyles.primaryTextStyle,
+                                    ),
+                                  ],
+                                )
                           : ListView.builder(
                               controller: _scrollController,
                               itemCount: _posts.length + 1,
