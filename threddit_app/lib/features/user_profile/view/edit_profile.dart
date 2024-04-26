@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/add_social_link.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/onSave_button.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
@@ -25,18 +30,64 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   bool? isActive;
   bool? isVisible;
   bool isAnythingChanged = false;
+  final ImagePicker picker = ImagePicker();
+  String? image;
+  File? imageFile;
+  bool? isImage;
+  bool? initIsImage;
+
+  Future<void> _pickImage() async {
+    final XFile? pickedImage =
+        await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage == null) return;
+    imageFile = File(pickedImage.path);
+
+    Uint8List imageBytes = await imageFile!.readAsBytes();
+    setState(() {
+      image = base64Encode(imageBytes);
+      isImage = true;
+      ref.read(userProfileProvider.notifier).updateProfilePic(image!);
+      ref.read(imagePathProvider.notifier).state = imageFile;
+
+      isAnythingChanged = true;
+    });
+  }
+
+  Future<void> _removeImage() async {
+    setState(() {
+      image = "";
+      isImage = false;
+      imageFile = null;
+    });
+    ref.read(userProfileProvider.notifier).updateProfilePic(image!);
+    ref.read(imagePathProvider.notifier).state = null;
+    isAnythingChanged = true;
+  }
 
   @override
   void didChangeDependencies() {
     final userProfile = ref.watch(userProfileProvider);
     if (userProfile != null) {
       displayName = userProfile.displayName;
+      _displayNameController = TextEditingController(text: displayName);
       about = userProfile.about;
+      _aboutController = TextEditingController(text: about);
       socialLinks = userProfile.socialLinks;
       initIsActive = userProfile.activeCommunitiesVisibility;
       initIsVisible = userProfile.contentVisibility;
       isVisible = initIsVisible;
       isActive = initIsActive;
+      if (userProfile.profilePicture.isEmpty) {
+        initIsImage = false;
+        isImage = false;
+        image = "";
+        imageFile = null;
+      } else {
+        initIsImage = true;
+        isImage = true;
+        image = userProfile.profilePicture;
+        imageFile = ref.watch(imagePathProvider);
+      }
     }
     super.didChangeDependencies();
   }
@@ -49,13 +100,11 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         isAnythingChanged = false;
       }
     });
-    final userProfile = ref.watch(userProfileProvider.notifier);
-    userProfile.updateDiplayName(name);
+    ref.read(userProfileProvider.notifier).updateDiplayName(name);
   }
 
   void updateAbout(String abot) {
-    final userProfile = ref.watch(userProfileProvider.notifier);
-    userProfile.updateAbout(abot);
+    ref.read(userProfileProvider.notifier).updateAbout(abot);
     setState(() {
       if (about != abot) {
         isAnythingChanged = true;
@@ -65,11 +114,10 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     });
   }
 
-  void updateSocialLinks(List<String> links) {
-    final userProfile = ref.watch(userProfileProvider.notifier);
-    userProfile.updateSocialLinks(links);
+  void updateSocialLinks(String link) {
+    ref.read(userProfileProvider.notifier).addLink(link);
     setState(() {
-      if (socialLinks != links) {
+      if (!socialLinks!.contains(link)) {
         isAnythingChanged = true;
       } else {
         isAnythingChanged = false;
@@ -78,6 +126,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   }
 
   void updateActive(bool value) {
+    ref.read(userProfileProvider.notifier).updateActiveCom(value);
     setState(() {
       if (value != initIsActive || isVisible != initIsVisible) {
         isAnythingChanged = true;
@@ -85,11 +134,11 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         isAnythingChanged = false;
       }
       isActive = value;
-      ref.read(userProfileProvider.notifier).updateActiveCom(value);
     });
   }
 
   void updateVisible(bool value) {
+    ref.read(userProfileProvider.notifier).updateContetnVis(value);
     setState(() {
       if (value != initIsVisible || isActive != initIsActive) {
         isAnythingChanged = true;
@@ -97,12 +146,101 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         isAnythingChanged = false;
       }
       isVisible = value;
-      ref.read(userProfileProvider.notifier).updateContetnVis(value);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider setProfilePic() {
+      if (imageFile != null) {
+        return FileImage(imageFile!);
+      } else {
+        return const AssetImage('assets/images/Default_Avatar.png');
+      }
+    }
+
+    Widget removeImage() {
+      if (isImage!) {
+        return InkWell(
+          onTap: () {
+            setState(() {
+              isAnythingChanged = true;
+            });
+            _removeImage();
+            Navigator.pop(context);
+          },
+          child: Row(
+            children: [
+              const Icon(
+                Icons.delete_outline_outlined,
+                color: Colors.red,
+              ),
+              SizedBox(
+                width: 20.w,
+              ),
+              Text(
+                "Remove profile picture",
+                style: AppTextStyles.boldTextStyle
+                    .copyWith(fontSize: 18, color: Colors.red),
+              )
+            ],
+          ),
+        );
+      } else {
+        return const SizedBox();
+      }
+    }
+
+    void openPicOverlay() {
+      showModalBottomSheet(
+          context: context,
+          backgroundColor: AppColors.backgroundColor,
+          builder: (ctx) {
+            return Padding(
+              padding: EdgeInsets.all(10.sp),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Update profile image",
+                    style: AppTextStyles.primaryButtonHideTextStyle,
+                  ),
+                  const Divider(),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _pickImage();
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.add_photo_alternate_rounded,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 20.w,
+                        ),
+                        Text(
+                          "Pick a profile image",
+                          style: AppTextStyles.boldTextStyle
+                              .copyWith(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  removeImage(),
+                ],
+              ),
+            );
+          });
+    }
+
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
@@ -135,11 +273,26 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                       Positioned(
                         top: 60.h,
                         right: 120.w,
-                        child: CircleAvatar(
-                          radius: 50.r,
-                          backgroundImage: const AssetImage(
-                              'assets/images/Default_Avatar.png'),
-                        ),
+                        child: Stack(children: [
+                          CircleAvatar(
+                            radius: 50.r,
+                            backgroundImage: setProfilePic(),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: IconButton(
+                              onPressed: () => openPicOverlay(),
+                              icon: isImage!
+                                  ? const Icon(
+                                      Icons.edit_outlined,
+                                      color: Colors.white,
+                                    )
+                                  : const Icon(Icons.add, color: Colors.white),
+                                  style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255,37, 39, 44))),
+                            ),
+                          )
+                        ]),
                       ),
                     ],
                   ),
