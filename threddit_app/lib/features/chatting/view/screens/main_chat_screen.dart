@@ -1,32 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/features/chatting/view%20model/chat_provider.dart';
-import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
-import 'package:threddit_clone/models/message.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 class MainChatScreen extends ConsumerStatefulWidget {
-  const MainChatScreen({super.key, required this.uid});
-  final String uid;
+  const MainChatScreen({super.key});
+
   @override
   _MainChatScreenState createState() => _MainChatScreenState();
 }
 
-class _MainChatScreenState extends ConsumerState<MainChatScreen> {
-  bool isMessagesButtonPressed = true;
-  bool isRequestsButtonPressed = false;
+class _MainChatScreenState extends ConsumerState<MainChatScreen> with SingleTickerProviderStateMixin {
+  TabController? _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Message message = Message(
-    //     id: '1',
-    //     sender: 'user1',
-    //     recipient: 'user2',
-    //     timestamp: DateTime.now(),
-    //     text: 'Hello');
-    //ChatItem chat = ChatItem(message: message, uid: 'user2');
+    // ignore: unused_local_variable
+    String uid = ref.read(userModelProvider)!.id!;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(199, 10, 10, 10),
@@ -35,124 +40,63 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> {
           backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
           title: const Text(
             'Chat',
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: Colors.white, fontSize: 18),
           ),
           centerTitle: true,
           actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add_comment_sharp),
-                ),
-                IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.filter_alt_sharp)),
-                Builder(
-                  builder: (context) => IconButton(
-                    icon: const Icon(Icons.person_rounded),
-                    onPressed: () => Scaffold.of(context).openEndDrawer(),
-                  ),
-                ),
-                const SizedBox(width: 5)
-              ],
+            IconButton(onPressed: () {}, icon: const Icon(Icons.filter_alt_sharp)),
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.person_rounded),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+              ),
             ),
+            SizedBox(width: 5.w),
           ],
+          
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(110.h),
+            
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal:10.0.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20.h),
+                  const Text("Discover Channels", style: TextStyle(color: Color.fromARGB(126, 255, 255, 255), fontSize: 16)),
+                  // Add more widgets or placeholders here for future content
+                  const SizedBox(height: 70),
+                  TabBar(
+                    controller: _tabController,
+                    indicatorColor: Color.fromARGB(255, 221, 106, 24),
+                    labelColor: Colors.white,
+                    tabs: const [
+                      Tab(text: 'Messages'),
+                      Tab(text: 'Threads'),
+                      Tab(text: 'Requests'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         drawer: const LeftDrawer(),
         endDrawer: const RightDrawer(),
-        body: Consumer(
-          builder: (context, watch, child) {
-            var userMessages = ref.watch(chatProvider(widget.uid));
-            return userMessages.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stackTrace) =>
-                    Center(child: Text('Error: $error')),
-                data: (userMessages) {
-                  return Column(
-                    children: [
-                      Row(
-                        children: [
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              foregroundColor: isMessagesButtonPressed
-                                  ? Colors.white
-                                  : const Color.fromARGB(56, 255, 255, 255),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isMessagesButtonPressed = true;
-                                isRequestsButtonPressed = false;
-                              });
-                            },
-                            child: const Text(
-                              'Messages',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                          ),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              foregroundColor: isRequestsButtonPressed
-                                  ? Colors.white
-                                  : const Color.fromARGB(58, 255, 255, 255),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isRequestsButtonPressed = true;
-                                isMessagesButtonPressed = false;
-                              });
-                            },
-                            child: const Text(
-                              'Requests',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (isMessagesButtonPressed)
-                        if (userMessages != [])
-                          ...userMessages.map((message) => ChatItem(
-                                message: message,
-                                uid: widget.uid,
-                              )),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          SizedBox(
-                            width: 220.w,
-                            child: const Text(
-                              'Chat with other Redditors about your favourite topics.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 200,
-                            child: FilledButton(
-                                onPressed: () {},
-                                style: const ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStatePropertyAll<Color>(
-                                            Color.fromARGB(255, 4, 44, 77))),
-                                child: const Row(
-                                  children: [
-                                    Icon(Icons.travel_explore),
-                                    Text(
-                                      'Explore Channels',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                        ],
-                      )
-                    ],
-                  );
-                });
-          },
+       floatingActionButton: IconButton(
+          onPressed: () {},
+          icon: const Icon(
+            Icons.chat_bubble,
+            color: Color.fromARGB(255, 163, 151, 239),
+          ),
+        ),
+        body: TabBarView(
+          controller: _tabController,
+          children: const [
+            Center(child: Text('Messages Page')),
+            Center(child: Text('Threads Page')),
+            Center(child: Text('Requests Page')),
+          ],
         ),
       ),
     );

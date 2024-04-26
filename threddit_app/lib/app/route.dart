@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_s
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
 import 'package:threddit_clone/features/post/view/cross_post.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approve_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approved_users_screen.dart';
@@ -60,6 +61,7 @@ class RouteClass {
   static const String homeScreen = "/home";
   static const String appPostScreen = "/app_post_screen";
   static const String chatScreen = "/chat";
+  static const String inboxScreen = "/inbox";
   static const String mainCommunityScreen = "/communities";
   static const String notificationsScreen = "/notifications";
   static const String notificationsSettingsScreen = "/notifications_settings";
@@ -149,6 +151,8 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const AddPostScreen());
       case chatScreen:
         return MaterialPageRoute(builder: (_) => const ChatScreen());
+      case inboxScreen:
+        return MaterialPageRoute(builder: (_) => const MainInboxScreen());
       case mainCommunityScreen:
         return MaterialPageRoute(builder: (_) => const MainCommunityScreen());
       case notificationsScreen:
