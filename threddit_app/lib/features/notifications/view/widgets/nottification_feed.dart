@@ -20,7 +20,7 @@ class _NotificationFeedState extends State<NotificationFeed> {
   void initState() {
     super.initState();
 
-    futuredata = fetchdata(widget.userID);
+    futuredata = fetchDataNotifications(widget.userID);
   }
 
   @override
@@ -40,18 +40,22 @@ class _NotificationFeedState extends State<NotificationFeed> {
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             } else if (snapshot.hasData) {
-              final countryData = snapshot.data!.result;
+              final countryData = snapshot.data!.notifications;
 
-              return (countryData.length == 6)
+              return (countryData.length > 0)
                   ? ListView.builder(
                       itemCount: countryData.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return const NotificationFeedUnit();
+                        return NotificationFeedUnit(
+                          data: countryData[index],
+                        );
                       },
                     )
                   : const NoNotification();
             } else {
-              return const Text('No data available.');
+              return const Text(
+                'No data available.',
+              );
             }
           },
         ));

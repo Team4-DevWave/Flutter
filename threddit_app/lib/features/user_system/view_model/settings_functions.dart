@@ -342,6 +342,7 @@ class SettingsFetch extends StateNotifier<bool> {
     }
     UserModelMe user = ref.read(userModelProvider)!;
     String? token = await getToken();
+    print(token);
     http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
       headers: {
@@ -350,7 +351,6 @@ class SettingsFetch extends StateNotifier<bool> {
       },
     );
     user = UserModelMe.fromJson(jsonDecode(response.body));
-    print(user);
     ref.read(userModelProvider.notifier).update((state) => user);
     return UserModelMe.fromJson(jsonDecode(response.body));
   }

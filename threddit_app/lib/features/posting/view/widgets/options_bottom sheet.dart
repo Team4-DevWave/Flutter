@@ -9,7 +9,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
-/// this bottom sheet is the options bottom sheet that is displayed when the user clicks on the three dots on a post and he is not an owner of the post or a moderator 
+/// this bottom sheet is the options bottom sheet that is displayed when the user clicks on the three dots on a post and he is not an owner of the post or a moderator
 /// therefor he can only save the post, share the post, report the post, block the user or hide the post
 
 class OptionsBotttomSheet extends ConsumerStatefulWidget {
@@ -110,8 +110,13 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
                 setState(() {
                   _isSaved = !_isSaved; // Toggle the saved state
                 });
+                if (!_isSaved) {
+                  // Check if un-saved
+                  ref.read(updatesSaveProvider.notifier).state = widget.post.id;
+                }
+                Navigator.pop(context);
                 showSnackBar(navigatorKey.currentContext!,
-                    'Post ${_isSaved ? 'Saved' : ''} successfully');
+                    'Post ${_isSaved ? 'Saved' : 'Unsaved'} successfully');
               },
             );
           },

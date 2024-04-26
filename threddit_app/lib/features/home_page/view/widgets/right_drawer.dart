@@ -91,8 +91,8 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               ),
               title: "Saved",
               onTap: () {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (_) => const SavedScreen()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const SavedScreen()));
               }),
           RightDrawerButtons(
               icon: const Icon(

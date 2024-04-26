@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/saved_post.dart';
+import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
@@ -93,7 +94,6 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   @override
   Widget build(BuildContext context) {
-    
     // Function to delete the comment
     void deleteComment() {
       ref.watch(deleteCommentProvider(
@@ -101,7 +101,6 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     }
 
     Future<void> showDeleteConfirmationDialog(BuildContext context) async {
-      print(widget.comment.user);
       return showDialog<void>(
         context: context,
         barrierDismissible:
@@ -259,10 +258,19 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                     _isSaved =
                                                         !_isSaved; // Toggle the saved state
                                                   });
+                                                  if (!_isSaved) {
+                                                    // Check if un-saved
+                                                    ref
+                                                        .read(
+                                                            updatesSaveProvider
+                                                                .notifier)
+                                                        .state = widget.comment.id;
+                                                  }
+                                                  Navigator.pop(context);
                                                   showSnackBar(
                                                       navigatorKey
                                                           .currentContext!,
-                                                      'Post ${_isSaved ? 'Saved' : 'unSaved'} successfully');
+                                                      'Comment ${_isSaved ? 'Saved' : 'Unsaved'} successfully');
                                                 },
                                               );
                                             },
@@ -563,7 +571,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                       },
                       icon: Icon(
                         Icons.arrow_upward_outlined,
-                        size: 30.sp,
+                        size: 30.spMin,
                       ),
                       color: upVoted ? Colors.red : Colors.white,
                     ),
@@ -578,7 +586,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                       },
                       icon: Icon(
                         Icons.arrow_downward_outlined,
-                        size: 30.sp,
+                        size: 30.spMin,
                       ),
                       color: downVoted
                           ? const Color.fromARGB(255, 97, 137, 212)

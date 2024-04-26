@@ -10,6 +10,7 @@ import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.da
 
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/models/subreddit.dart';
+import 'package:threddit_clone/theme/colors.dart';
 
 /// This widget is used to display the community screen
 /// The community screen is composed of the community banner, community icon, community name, community description, community members count, join button, community info button, community posts and the community post feed
@@ -30,13 +31,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   final _posts = <Post>[];
   int _currentPage = 1;
   String? userId;
-
+  bool _fetching = true;
+  bool _fetchingFinish = true;
   Future _fetchPosts() async {
     final response = await fetchPosts(_selectedItem, widget.id, _currentPage);
     if (response.posts.isNotEmpty) {
       setState(() {
         _posts.addAll(response.posts);
         _currentPage++;
+        _fetching = true;
+      });
+    } else {
+      setState(() {
+        _fetching = false;
+        _fetchingFinish = false;
       });
     }
   }
@@ -350,11 +358,19 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           ),
           Flexible(
               child: _posts.isEmpty
-                  ? Center(
-                      child: Lottie.asset(
-                      'assets/animation/loading.json',
-                      repeat: true,
-                    ))
+                  ? _fetching
+                      ? Center(
+                          child: Lottie.asset(
+                          'assets/animation/loading.json',
+                          repeat: true,
+                        ))
+                      : Center(
+                          child: Text(
+                            'No feed available.',
+                            style: TextStyle(
+                                color: AppColors.whiteColor, fontSize: 18.sp),
+                          ),
+                        )
                   : ListView.builder(
                       controller: _scrollController,
                       itemCount: _posts.length + 1,
@@ -367,14 +383,28 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                   userId!)
                               : FeedUnit(_posts[index], userId!);
                         } else {
-                          return SizedBox(
-                            height: 75.h,
-                            width: 75.w,
-                            child: Lottie.asset(
-                              'assets/animation/loading.json',
-                              repeat: true,
-                            ),
-                          );
+                          return _fetchingFinish
+                              ? SizedBox(
+                                  height: 75.h,
+                                  width: 75.w,
+                                  child: Lottie.asset(
+                                    'assets/animation/loading.json',
+                                    repeat: true,
+                                  ),
+                                )
+                              : SizedBox(
+                                  child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text(
+                                      'No more posts available.',
+                                      style: TextStyle(
+                                        fontSize: 20.sp,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ));
                         }
                       },
                     ))
