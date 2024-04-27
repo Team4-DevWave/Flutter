@@ -7,8 +7,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/add_social_link.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/onSave_button.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -37,23 +41,46 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   bool? initIsImage;
 
   Future<void> _pickImage() async {
+    prefs = await SharedPreferences.getInstance();
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage == null) return;
-    imageFile = File(pickedImage.path);
+    // 1. Get Application Documents Directory
+    final appDir = await getApplicationDocumentsDirectory();
+
+
+    final uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+    // 2. Create the destination file path
+    final newImagePath = '${appDir.path}/$uniqueFileName.jpg';
+
+    // 3. Copy the picked image to the new path
+    imageFile = await File(pickedImage.path).copy(newImagePath);
+
+    // 4. Save the new image path in SharedPreferences
+    await prefs?.setString(PrefConstants.imagePath, newImagePath);
 
     Uint8List imageBytes = await imageFile!.readAsBytes();
     setState(() {
       image = base64Encode(imageBytes);
-      isImage = true;
       ref.read(userProfileProvider.notifier).updateProfilePic(image!);
       ref.read(imagePathProvider.notifier).state = imageFile;
-
+      isImage = true;
       isAnythingChanged = true;
     });
   }
 
   Future<void> _removeImage() async {
+    // 1. Get the stored image path
+    final savedImagePath = prefs?.getString(PrefConstants.imagePath);
+
+    // 2. Check if a path exists and delete the file
+    if (savedImagePath != null) {
+      final fileToDelete = File(savedImagePath);
+      if (await fileToDelete.exists()) {
+        await fileToDelete.delete();
+      }
+    }
+
     setState(() {
       image = "";
       isImage = false;
@@ -289,7 +316,9 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                                       color: Colors.white,
                                     )
                                   : const Icon(Icons.add, color: Colors.white),
-                                  style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255,37, 39, 44))),
+                              style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      Color.fromARGB(255, 37, 39, 44))),
                             ),
                           )
                         ]),

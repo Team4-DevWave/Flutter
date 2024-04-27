@@ -7,12 +7,10 @@ import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
-import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 
 final createPost =
     StateNotifierProvider<PostProvider, bool>((ref) => PostProvider(ref));

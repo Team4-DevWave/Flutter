@@ -20,7 +20,10 @@ final headers = {
           };
         
   try{
-    final response = await http.patch(Uri.parse(url), headers: headers, body: jsonEncode(user.toJson()));
+    final response = await http.patch(Uri.parse(url), headers: headers,
+    body: 
+    
+    jsonEncode(user.toJson()));
     if(response.statusCode == 200)
     {
       return right(true);

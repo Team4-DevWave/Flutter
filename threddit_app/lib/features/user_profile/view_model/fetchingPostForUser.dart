@@ -7,8 +7,6 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 Future<PostApiResponse> fetchPostsByUsername(
     String name, int pageNumber) async {
   String? token = await getToken();
-  print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-  print(name);
   final response = await http.get(
     Uri.parse("http://10.0.2.2:8000/api/v1/users/$name/posts?page=$pageNumber"),
     headers: {
