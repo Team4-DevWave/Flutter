@@ -171,7 +171,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton.filled(
-                            onPressed: () {},
+                            onPressed: () {
+
+                               Navigator.pushNamed(context, RouteClass.searchCommunity,
+                    arguments: widget.id);
+                            },
                             icon: const Icon(Icons.search),
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(

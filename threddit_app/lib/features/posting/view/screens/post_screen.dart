@@ -34,6 +34,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
   void initState() {
     super.initState();
     HistoryManager.addPostToHistory(widget.currentPost);
+    print(widget.currentPost.id);
   }
 
   void _openAddCommentOverlay() {
