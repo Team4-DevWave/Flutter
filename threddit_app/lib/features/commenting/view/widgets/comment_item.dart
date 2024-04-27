@@ -59,6 +59,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     upvotes = ref.read(getUserUpvotesProvider);
     downvotes = ref.read(getUserDownvotesProvider);
     _commentController = TextEditingController(text: widget.comment.content);
+    
   }
 
   void upVoteComment(WidgetRef ref) async {

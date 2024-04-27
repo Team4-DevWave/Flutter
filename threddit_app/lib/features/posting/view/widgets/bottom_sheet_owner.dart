@@ -142,6 +142,19 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
         ),
         ListTile(
           title: const Text(
+            "Edit post",
+            style: TextStyle(color: Colors.orange),
+          ),
+          leading: const Icon(
+            Icons.edit,
+            color: Colors.orange,
+          ),
+          onTap: () {
+           //Edit post
+          },
+        ),
+        ListTile(
+          title: const Text(
             "Crosspost to community",
             style: TextStyle(color: Colors.white),
           ),

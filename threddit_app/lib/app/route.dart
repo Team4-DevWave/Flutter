@@ -50,6 +50,7 @@ import 'package:threddit_clone/features/user_system/view/screens/interests_scree
 import 'package:threddit_clone/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_clone/features/post/view/choose_community.dart';
 import 'package:threddit_clone/features/messaging/view/screens/message_screen.dart';
+import 'package:threddit_clone/features/community/view/search_community.dart';
 
 // import 'package:threddit_clone/models/post.dart';
 
@@ -104,6 +105,7 @@ class RouteClass {
   static const String editModeratorScreen = '/edit-moderator';
   static const String historyScreen = '/history';
   static const String messageScreen = '/message';
+  static const String searchCommunity = '/serach-community';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -284,6 +286,10 @@ class RouteClass {
         String user = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => EditModeratorScreen(moderator: user));
+      case searchCommunity:
+        String community = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (_) => SearchCommunityScreenPage(community: community));
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }
