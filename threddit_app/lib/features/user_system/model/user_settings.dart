@@ -46,8 +46,8 @@ class UserProfile {
   final bool contentVisibility;
   final bool activeCommunitiesVisibility;
   final String profilePicture;
-  final File?imagePath;
-  final List<String> socialLinks; // Specify String type
+  final File? imagePath;
+  final List<List<String>> socialLinks;
 
   UserProfile({
     required this.displayName,
@@ -62,6 +62,18 @@ class UserProfile {
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
+    final List<dynamic> rawSocialLinks = json['socialLinks'] ?? [];
+    final List<List<String>> socialLinks = rawSocialLinks.map((socialLink) {
+      final Map<String, dynamic> linkData = socialLink as Map<String, dynamic>;
+      final List<String> linkDetails = [
+        linkData['socialType'] ?? '',
+        linkData['username'] ?? '',
+      ];
+      if (linkData['url'] != null) {
+        linkDetails.add(linkData['url']);
+      }
+      return linkDetails;
+    }).toList();
     return UserProfile(
       displayName: json['displayName'] ?? '',
       about: json['about'] ?? '',
@@ -70,8 +82,7 @@ class UserProfile {
       contentVisibility: json['contentVisibility'] ?? true,
       activeCommunitiesVisibility: json['activeCommunitiesVisibility'] ?? true,
       profilePicture: json['profilePicture'] ?? '',
-      socialLinks:
-          json['socialLinks']?.cast<String>() ?? [], // Cast to String list
+      socialLinks: socialLinks,
     );
   }
 
@@ -84,7 +95,7 @@ class UserProfile {
     bool? activeCommunitiesVisibility,
     String? profilePicture,
     File? imagePath,
-    List<String>? socialLinks,
+    List<List<String>>? socialLinks,
   }) {
     return UserProfile(
       displayName: displayName ?? this.displayName,
@@ -102,21 +113,19 @@ class UserProfile {
 
   Map<String, dynamic> toMap() {
     return {
-    'userProfile' : 
-    {
-      if(displayName.isNotEmpty) 'displayName': displayName,
-      if(about.isNotEmpty) 'about': about,
-      'nsfw': nsfw,
-      'allowFollowers': allowFollowers,
-      'contentVisibility': contentVisibility,
-      'activeCommunitiesVisibility': activeCommunitiesVisibility,
-      if(profilePicture.isNotEmpty)'profilePicture': profilePicture,
-      if(socialLinks.isNotEmpty)'socialLinks': socialLinks,
-    }
-  };
+      'userProfile': {
+        if (displayName.isNotEmpty) 'displayName': displayName,
+        if (about.isNotEmpty) 'about': about,
+        'nsfw': nsfw,
+        'allowFollowers': allowFollowers,
+        'contentVisibility': contentVisibility,
+        'activeCommunitiesVisibility': activeCommunitiesVisibility,
+        if (profilePicture.isNotEmpty) 'profilePicture': profilePicture,
+      }
+    };
   }
-  String toJson() => json.encode(toMap());
 
+  String toJson() => json.encode(toMap());
 }
 
 class SafetyAndPrivacy {

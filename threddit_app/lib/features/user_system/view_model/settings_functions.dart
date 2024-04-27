@@ -14,6 +14,7 @@ import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
 import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
+import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 
 const String urlAndroid = "http://10.0.2.2";
@@ -342,7 +343,6 @@ class SettingsFetch extends StateNotifier<bool> {
     }
     UserModelMe user = ref.read(userModelProvider)!;
     String? token = await getToken();
-    print(token);
     http.Response response = await http.get(
       Uri.parse("$url:8000/api/v1/users/me/current"),
       headers: {
@@ -357,6 +357,7 @@ class SettingsFetch extends StateNotifier<bool> {
 
   Future<UserSettings> getSettings() async {
     final String url;
+
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
@@ -370,7 +371,9 @@ class SettingsFetch extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
-    return UserSettings.fromJson(jsonDecode(response.body));
+    final userSettings = UserSettings.fromJson(jsonDecode(response.body));
+    ref.read(userProfileProvider.notifier).setUser(userSettings.userProfile);
+    return userSettings;
   }
 
   Future<bool> getNotificationSetting(

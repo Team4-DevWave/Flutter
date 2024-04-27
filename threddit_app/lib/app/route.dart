@@ -12,6 +12,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/approved_users_s
 import 'package:threddit_clone/features/Moderation/view/screens/ban_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/banned_users_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
+import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
 import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
@@ -98,7 +99,7 @@ class RouteClass {
   static const String approvedUsersScreen = '/approved-users';
   static const String approveScreen = '/approve';
   static const String blockUserScreen = '/block-user';
-
+  static const String editPostScreen = '/edit-post';
   static const String editUser = '/edit-user';
   static const String moderatorsScreen = '/moderators';
   static const String addModeratorScreen = '/add-moderator';
@@ -136,10 +137,8 @@ class RouteClass {
         final uid = args['uid'] as String;
         return MaterialPageRoute(
             builder: (_) => CommunityInfo(community: community, uid: uid));
-
       case communityModTools:
         return MaterialPageRoute(builder: (_) => const CommunityModTools());
-
       case chooseCommunity:
         return MaterialPageRoute(builder: (_) => const ChooseCommunity());
       case crossPost:
@@ -196,10 +195,8 @@ class RouteClass {
       case blockUserScreen:
         return MaterialPageRoute(
             builder: (_) => const BlockUserScreen(), fullscreenDialog: true);
-      case blockedScreen:
-        return MaterialPageRoute(builder: (_) => const BlockedScreen());
-      case communityModTools:
-        return MaterialPageRoute(builder: (_) => const CommunityModTools());
+      case editPostScreen:
+        return MaterialPageRoute(builder: (_) => const EditPost());
       case textSize:
         return MaterialPageRoute(builder: (_) => const TextSizeScreen());
       case bannedUsersScreen:
@@ -207,7 +204,6 @@ class RouteClass {
       case banScreen:
         return MaterialPageRoute(
             builder: (_) => const BanScreen(), fullscreenDialog: true);
-
       case approvedUsersScreen:
         return MaterialPageRoute(builder: (_) => const ApprovedUsersScreen());
       case approveScreen:
@@ -219,13 +215,6 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => UpdateBanScreen(user: input[0], reason: input[1]),
             fullscreenDialog: true);
-      case communityInfo:
-        final args = settings.arguments as Map<String, dynamic>;
-        final community =
-            args['community'] as Subreddit; // Extract the community object
-        final uid = args['uid'] as String;
-        return MaterialPageRoute(
-            builder: (_) => CommunityInfo(community: community, uid: uid));
       case communityScreen:
         final args = settings.arguments as Map<String, dynamic>;
         final id = args['id'] as String; // Extract the community object
@@ -245,7 +234,6 @@ class RouteClass {
         final currentpost =
             args['currentpost'] as Post; // Extract the community object
         final uid = args['uid'] as String;
-
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   currentPost: currentpost,
@@ -266,10 +254,9 @@ class RouteClass {
       case createCommunityScreen:
         var data = settings.arguments as String;
         return MaterialPageRoute(
-          builder: (_) => CreateCommunity(
-            uid: data,
-          ),
-        );
+            builder: (_) => CreateCommunity(
+                  uid: data,
+                ));
       case historyScreen:
         var data = settings.arguments as String;
         return MaterialPageRoute(
