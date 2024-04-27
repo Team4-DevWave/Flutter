@@ -23,8 +23,8 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
     const HomeScreen(),
     const MainCommunityScreen(),
     const AddPostScreen(),
+    const MainChatScreen(),
      const MainInboxScreen(),
-    const NotificationsScreen()
   ];
 
   Future<void> _setData() async {
@@ -88,7 +88,7 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
               Icons.notifications,
               color: Color.fromARGB(255, 255, 255, 255),
             ),
-            label: 'Notification',
+            label: 'Inbox',
           ),
         ],
         currentIndex: selectedIndex,
