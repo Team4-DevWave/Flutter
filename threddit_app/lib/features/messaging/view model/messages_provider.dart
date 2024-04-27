@@ -4,7 +4,16 @@ import 'package:threddit_clone/models/message.dart';
 
 final messageRepositoryProvider = Provider((ref) => MessageRepository());
 
-final messagesProvider = FutureProvider<List<Message>>((ref) async {
+final messagesProvider =
+    StreamProvider<List<Message>>((ref) {
   final repository = ref.watch(messageRepositoryProvider);
-  return await repository.fetchUserMessages();
+  return repository.getMessagesStream();
+});
+typedef parameters = ({String recipient, String subject, String message});
+final addMessageProvider = FutureProvider.autoDispose.family<void, parameters>((
+  ref,
+  arguments,
+) async {
+  final repository = ref.watch(messageRepositoryProvider);
+  repository.createMessage(arguments.recipient, arguments.subject,arguments.message);
 });

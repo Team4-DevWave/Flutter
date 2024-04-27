@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/models/message.dart';
@@ -35,21 +36,102 @@ class _MessageItemState extends ConsumerState<MessageItem> {
               children: [
                 Row(
                   children: [
-                    Text(widget.message.from.username,style: const TextStyle(color:Color.fromARGB(55, 255, 255, 255) ),),
+                    Text(
+                      widget.message.from.id == widget.uid
+                          ? widget.message.to.username
+                          : widget.message.from.username,
+                      style: TextStyle(
+                          color: widget.message.read ||
+                                  widget.message.from.id == widget.uid
+                              ? const Color.fromARGB(55, 255, 255, 255)
+                              : Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                      child: Icon(Icons.circle,color: const Color.fromARGB(60, 255, 255, 255),size: 4.sp,),
+                      child: Icon(
+                        Icons.circle,
+                        color: const Color.fromARGB(60, 255, 255, 255),
+                        size: 4.sp,
+                      ),
                     ),
-                    Text("$hoursSincePost h",style: const TextStyle(color:Color.fromARGB(55, 255, 255, 255) )),
+                    Text("$hoursSincePost h",
+                        style: TextStyle(
+                            color: widget.message.read ||
+                                    widget.message.from.id == widget.uid
+                                ? const Color.fromARGB(55, 255, 255, 255)
+                                : Colors.white)),
+                    const Spacer(),
+                    if (widget.message.from.id != widget.uid ||
+                        widget.message.to.id != widget.uid)
+                      IconButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              backgroundColor: AppColors.backgroundColor,
+                              builder: (context) {
+                                return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      GestureDetector(
+                                        child: ListTile(
+                                          title: const Text(
+                                            "Block account",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          leading: const Icon(Icons.block),
+                                          onTap: () {
+                                            //block user
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: FilledButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          style: FilledButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 55, 55, 55),
+                                            foregroundColor:
+                                                const Color.fromARGB(
+                                                    123, 255, 255, 255),
+                                          ),
+                                          child: const Text("Close"),
+                                        ),
+                                      )
+                                    ]);
+                              });
+                        },
+                        icon: const Icon(Icons.more_horiz),
+                      ),
                   ],
                 ),
                 Row(
-                  children: [Text(widget.message.subject,style: const TextStyle(color:Color.fromARGB(55, 255, 255, 255) ))],
+                  children: [
+                    Text(widget.message.subject,
+                        style: TextStyle(
+                            color: widget.message.read ||
+                                    widget.message.from.id == widget.uid
+                                ? const Color.fromARGB(55, 255, 255, 255)
+                                : Colors.white))
+                  ],
                 ),
                 Row(
-                  children: [Text(widget.message.message,style: const TextStyle(color:Color.fromARGB(55, 255, 255, 255) ))],
+                  children: [
+                    Text(widget.message.message,
+                        style: TextStyle(
+                            color: widget.message.read ||
+                                    widget.message.from.id == widget.uid
+                                ? const Color.fromARGB(55, 255, 255, 255)
+                                : Colors.white))
+                  ],
                 )
-
               ],
             )),
       ),

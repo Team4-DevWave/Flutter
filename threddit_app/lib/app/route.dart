@@ -18,6 +18,7 @@ import 'package:threddit_clone/features/user_profile/view/user_profile_screen.da
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
+import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
@@ -48,6 +49,7 @@ import 'package:threddit_clone/features/user_system/view_model/starting_screen.d
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_clone/features/post/view/choose_community.dart';
+import 'package:threddit_clone/features/messaging/view/screens/message_screen.dart';
 
 // import 'package:threddit_clone/models/post.dart';
 
@@ -101,6 +103,7 @@ class RouteClass {
   static const String addModeratorScreen = '/add-moderator';
   static const String editModeratorScreen = '/edit-moderator';
   static const String historyScreen = '/history';
+  static const String messageScreen = '/message';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -244,6 +247,17 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   currentPost: currentpost,
+                  uid: uid,
+                ));
+      case messageScreen:
+        final args = settings.arguments as Map<String, dynamic>;
+        final message =
+            args['message'] as Message; // Extract the community object
+        final uid = args['uid'] as String;
+
+        return MaterialPageRoute(
+            builder: (_) => MessageScreen(
+                  message: message,
                   uid: uid,
                 ));
 

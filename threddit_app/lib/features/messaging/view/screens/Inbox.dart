@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
+import 'package:threddit_clone/features/messaging/model/message_repository.dart';
 import 'package:threddit_clone/features/messaging/view%20model/messages_provider.dart';
 import 'package:threddit_clone/features/messaging/view/widgets/message_item.dart';
 import 'package:threddit_clone/features/messaging/view/widgets/options_bottom_sheet.dart';
@@ -97,9 +99,23 @@ class _MainInboxScreenState extends ConsumerState<MainInboxScreen>
                       return ListView.builder(
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
-            final message = messages[index];
-            return MessageItem(message: message, uid: uid);
-                          
+                          final message = messages[index];
+                          return GestureDetector(
+                              onTap: () {
+                                if(!message.read)
+                                {
+                                  ref.read(toggleRead(message.id));
+                                }
+                                Navigator.pushNamed(
+                                  context,
+                                  RouteClass.messageScreen,
+                                  arguments: {
+                                    'message': message,
+                                    'uid': uid,
+                                  },
+                                );
+                              },
+                              child: MessageItem(message: message, uid: uid));
                         },
                       );
                     },
