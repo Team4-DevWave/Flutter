@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
+import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
-import 'package:threddit_clone/features/community/view/community_screen.dart';
+import 'package:threddit_clone/features/chatting/view/screens/main_chat_screen.dart';
 
 class MainScreenLayout extends ConsumerStatefulWidget {
   const MainScreenLayout({super.key});
@@ -22,7 +23,7 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
     const HomeScreen(),
     const MainCommunityScreen(),
     const AddPostScreen(),
-    const CommunityScreen(id: "he7", uid: 'user2'),
+     const MainInboxScreen(),
     const NotificationsScreen()
   ];
 

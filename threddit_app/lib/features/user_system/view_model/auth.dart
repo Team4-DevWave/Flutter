@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
@@ -162,7 +161,7 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> forgotPassword() async {
     state = true;
     final UserModel? user = ref.watch(userProvider);
-    print(user);
+
     try {
       final response = await http.post(
         Uri.parse(
@@ -322,13 +321,12 @@ class Auth extends StateNotifier<bool> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://10.0.2.2:8000/api/v1/users/googleSignup?token=${user.token}'),
+            'http://${AppConstants.local}:8000/api/v1/users/googleSignup?token=${user.token}'),
         headers: {
           'Content-Type': 'application/json',
         },
         body: json.encode(
           {
-            'token': user.token,
             'username': user.username,
             'country': 'Egypt',
             'gender': user.gender,
@@ -336,7 +334,7 @@ class Auth extends StateNotifier<bool> {
           },
         ),
       );
-      print(response.body);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         ref.watch(signUpSuccess.notifier).update((state) => true);
         return right(true);
@@ -362,13 +360,12 @@ class Auth extends StateNotifier<bool> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://10.0.2.2:8000/api/v1/users/googleLogin?token=${user.token}'),
+            'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=${user.token}'),
       );
-      print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-      print(response.body);
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        saveToken(response.body.toString());
-        saveGoogleToken(response.body.toString());
+        saveToken(jsonDecode(response.body)['token']);
+        saveGoogleToken(jsonDecode(response.body)['token']);
         return right(true);
       } else {
         return right(false);
@@ -387,16 +384,10 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> signInWithGoogle() async {
     final authService = AuthService();
     final String? userToken;
-    final User? user;
-    final test;
+
     if (Platform.isWindows) {
       try {
-        user = await authService.signInWithGoogle();
-        if (user != null) {
-          userToken = await user.getIdToken();
-        } else {
-          return left(Failure('Sign in with google failed'));
-        }
+        userToken = await authService.signInWithGoogle();
       } catch (e) {
         if (e is SocketException ||
             e is TimeoutException ||
@@ -408,15 +399,8 @@ class Auth extends StateNotifier<bool> {
       }
     } else {
       try {
-        user =
+        userToken =
             await ref.read(authControllerProvider.notifier).signInWithGoogle();
-        if (user != null) {
-          userToken = await user.getIdToken();
-          test = await user.getIdTokenResult();
-          print(test);
-        } else {
-          return left(Failure('Sign in with google failed'));
-        }
       } catch (e) {
         if (e is SocketException ||
             e is TimeoutException ||
@@ -428,35 +412,29 @@ class Auth extends StateNotifier<bool> {
       }
     }
 
-    //After getting the token we will update the user and send the token to the backend
+    // After getting the token we will update the user and send the token to the backend
     UserModel? currentUser = ref.read(userProvider)!;
 
-    print("TEST SIGN IN WITH GOOGLE TOKEN $userToken");
-
-    /// Create a new user with the updated email
+    // Create a new user with the updated email
     UserModel updatedUser =
         currentUser.copyWith(token: userToken, isGoogle: true);
 
-    /// Update the userProvider state with the new user
-    /// we are trying to log in by google
+    // Update the userProvider state with the new user
+    // we are trying to log in by google
     ref.read(userProvider.notifier).state = updatedUser;
-    // final url = Uri.https(
-    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-    //     'token.json');
 
     final response = await http.get(
       Uri.parse(
           'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=$userToken'),
     );
 
-    print("LOGIN TEST GOOGLE ${response.body}");
     //200 for exisiting users
     //400 new users
     if (response.statusCode == 200 || response.statusCode == 201) {
-      saveToken(response.body.toString());
+      saveToken(jsonDecode(response.body)['token']);
+      saveGoogleToken(jsonDecode(response.body)['token']);
       return right(true);
     } else {
-      saveGoogleToken(response.body.toString());
       return right(false);
     }
   }
@@ -464,15 +442,10 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> connectWithGoogle() async {
     final authService = AuthService();
     final String? userToken;
-    final User? user;
+
     if (Platform.isWindows) {
       try {
-        user = await authService.signInWithGoogle();
-        if (user != null) {
-          userToken = await user.getIdToken();
-        } else {
-          return left(Failure('Sign in with google failed'));
-        }
+        userToken = await authService.signInWithGoogle();
       } catch (e) {
         if (e is SocketException ||
             e is TimeoutException ||
@@ -484,13 +457,8 @@ class Auth extends StateNotifier<bool> {
       }
     } else {
       try {
-        user =
+        userToken =
             await ref.read(authControllerProvider.notifier).signInWithGoogle();
-        if (user != null) {
-          userToken = await user.getIdToken();
-        } else {
-          return left(Failure('Sign in with google failed'));
-        }
       } catch (e) {
         if (e is SocketException ||
             e is TimeoutException ||
@@ -510,29 +478,19 @@ class Auth extends StateNotifier<bool> {
 
     /// Update the userProvider state with the new user
     ref.read(userProvider.notifier).state = updatedUser;
-    final url = Uri.https(
-        'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-        'token.json');
 
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode(
-        {
-          'token': userToken,
-        },
-      ),
+    final response = await http.get(
+      Uri.parse(
+          'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=$userToken'),
     );
 
     //200 for exisiting users
     //400 new users
-    if (response.statusCode == 200) {
-      saveToken(response.body.toString());
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      saveToken(jsonDecode(response.body)['token']);
       return right(true);
     } else {
-      saveGoogleToken(response.body.toString());
+      saveGoogleToken(jsonDecode(response.body)['token']);
       return right(false);
     }
   }

@@ -88,8 +88,13 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
                 setState(() {
                   _isSaved = !_isSaved; // Toggle the saved state
                 });
+                if (!_isSaved) {
+                  // Check if un-saved
+                  ref.read(updatesSaveProvider.notifier).state = widget.post.id;
+                }
+                Navigator.pop(context);
                 showSnackBar(navigatorKey.currentContext!,
-                    'Post ${_isSaved ? 'Saved' : ''} successfully');
+                    'Post ${_isSaved ? 'Saved' : 'Unsaved'} successfully');
               },
             );
           },
@@ -133,6 +138,19 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
           ),
           onTap: () {
             delete(context, ref, widget.post.id);
+          },
+        ),
+        ListTile(
+          title: const Text(
+            "Edit post",
+            style: TextStyle(color: Colors.orange),
+          ),
+          leading: const Icon(
+            Icons.edit,
+            color: Colors.orange,
+          ),
+          onTap: () {
+           //Edit post
           },
         ),
         ListTile(

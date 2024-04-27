@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -17,7 +18,8 @@ class NoNotification extends StatelessWidget {
             child: Image(
                 height: 150.h,
                 width: 150.w,
-                image: const AssetImage('assets/images/snoovatar-full-hi.png'))),
+                image:
+                    const AssetImage('assets/images/snoovatar-full-hi.png'))),
         SizedBox(
           height: 10.h,
         ),
@@ -42,7 +44,10 @@ class NoNotification extends StatelessWidget {
             borderRadius: BorderRadius.circular(10), // set the border radius
           ),
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              // Navigate to the community page
+              Navigator.pushNamed(context, RouteClass.mainCommunityScreen);
+            },
             child: const Text(
               'Check Communites',
               style: TextStyle(color: AppColors.redditOrangeColor),

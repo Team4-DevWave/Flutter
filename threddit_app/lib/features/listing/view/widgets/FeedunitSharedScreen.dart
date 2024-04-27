@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
-
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedpost.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
@@ -107,7 +106,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               OptionsBotttomSheet(
-                                  post: widget.dataOfPost,
+                                  post: widget.parentPost,
                                   toggleSPOILER: toggleSPOILER,
                                   toggleNsfw: toggleNsfw,
                                   uid: widget.uid)

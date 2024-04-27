@@ -42,7 +42,7 @@ class CommentRepository {
   }
 
   Stream<List<Comment>> getCommentsStream(String postId) {
-    return Stream.periodic(const Duration(seconds: 5), (_) {
+    return Stream.periodic(const Duration(seconds: 1), (_) {
       return fetchAllComments(postId);
     }).asyncMap((_) async => fetchAllComments(postId));
   }
