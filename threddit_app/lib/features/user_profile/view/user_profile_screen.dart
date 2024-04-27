@@ -8,6 +8,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
+import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
 import 'package:threddit_clone/features/user_profile/view_model/on_link.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -142,6 +143,30 @@ class _UserProfileState extends ConsumerState<UserProfile>
         return const AssetImage('assets/images/Default_Avatar.png');
       }
     }
+
+    ref.listen(updatesEditProvider, (previous, next) {
+      if (next != null) {
+        setState(() {
+          _posts.clear();
+          _currentPage = 1;
+          _fetchingPosts = true;
+          _fetchingPostsFinish = true;
+        });
+        _fetchPosts();
+      }
+    });
+    ref.listen(updatesDeleteProvider, (previous, next) {
+      if (next != null) {
+        setState(() {
+          _posts.clear();
+          _currentPage = 1;
+          _fetchingPosts = true;
+          _fetchingPostsFinish = true;
+        });
+
+        _fetchPosts();
+      }
+    });
 
     return DefaultTabController(
       length: tabs.length,
@@ -323,20 +348,29 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 top: 100.h,
                 child: TabBarView(controller: _tabController, children: [
                   _posts.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.warning_amber,
-                              color: AppColors.whiteGlowColor,
-                            ),
-                            Text(
-                              "Wow, such empty in Posts!",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                          ],
-                        )
+                      ? _fetchingPosts
+                          ? SizedBox(
+                              height: 75.h,
+                              width: 75.w,
+                              child: Lottie.asset(
+                                'assets/animation/loading.json',
+                                repeat: true,
+                              ),
+                            )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.warning_amber,
+                                  color: AppColors.whiteGlowColor,
+                                ),
+                                Text(
+                                  "Wow, such empty in Posts!",
+                                  style: AppTextStyles.primaryTextStyle,
+                                ),
+                              ],
+                            )
                       : ListView.builder(
                           controller: _scrollController,
                           itemCount: _posts.length + 1,
@@ -349,14 +383,28 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                       uid!)
                                   : FeedUnit(_posts[index], uid!);
                             } else {
-                              return SizedBox(
-                                height: 75.h,
-                                width: 75.w,
-                                child: Lottie.asset(
-                                  'assets/animation/loading.json',
-                                  repeat: true,
-                                ),
-                              );
+                              return _fetchingPostsFinish
+                                  ? SizedBox(
+                                      height: 75.h,
+                                      width: 75.w,
+                                      child: Lottie.asset(
+                                        'assets/animation/loading.json',
+                                        repeat: true,
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          'No more posts available.',
+                                          style: TextStyle(
+                                            fontSize: 20.sp,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ));
                             }
                           },
                         ),

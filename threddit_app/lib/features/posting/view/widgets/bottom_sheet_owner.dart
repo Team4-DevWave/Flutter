@@ -143,7 +143,8 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
           },
         ),
         if ((widget.post.image == "" || widget.post.image == null) &&
-            (widget.post.video == "" || widget.post.video == null))
+            (widget.post.video == "" || widget.post.video == null) &&
+            (widget.post.linkURL == "" || widget.post.linkURL == null))
           ListTile(
             title: const Text(
               "Edit post",
@@ -157,19 +158,6 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
               editPost(context, ref, widget.post);
             },
           ),
-        ListTile(
-          title: const Text(
-            "Edit post",
-            style: TextStyle(color: Colors.orange),
-          ),
-          leading: const Icon(
-            Icons.edit,
-            color: Colors.orange,
-          ),
-          onTap: () {
-           //Edit post
-          },
-        ),
         ListTile(
           title: const Text(
             "Crosspost to community",
