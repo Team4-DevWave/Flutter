@@ -24,7 +24,7 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
     const MainCommunityScreen(),
     const AddPostScreen(),
     const MainChatScreen(),
-     const MainInboxScreen(),
+    const MainInboxScreen()
   ];
 
   Future<void> _setData() async {

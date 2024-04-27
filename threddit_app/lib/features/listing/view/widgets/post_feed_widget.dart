@@ -1,3 +1,4 @@
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,6 +7,8 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
+
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
@@ -49,7 +52,6 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
   late int numbberOfvotes;
   final now = DateTime.now();
   late VideoPlayerController _controller;
- 
 
   @override
   void initState() {
@@ -82,45 +84,39 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
     Navigator.pop(context);
     setstate() {}
   }
-  void upVotePost(WidgetRef ref) async {
-      ref.read(votePost((postID: widget.dataOfPost.id, voteType: 1)));
-      if(widget.dataOfPost.userVote == 'upvoted'){
-        widget.dataOfPost.votes!.upvotes--;
-        widget.dataOfPost.userVote = 'none';
-    }
-    else if(widget.dataOfPost.userVote == 'downvoted'){
-        widget.dataOfPost.votes!.downvotes--;
-        widget.dataOfPost.votes!.upvotes++;
-        widget.dataOfPost.userVote = 'upvoted';
-    }
-    else{
-        widget.dataOfPost.votes!.upvotes++;
-        widget.dataOfPost.userVote = 'upvoted';
-    }
-    setState(() {
-      
-    });
-    }
 
-    void downVotePost(WidgetRef ref) async {
-      ref.read(votePost((postID: widget.dataOfPost.id, voteType: -1)));
-      if(widget.dataOfPost.userVote == 'downvoted'){
-        widget.dataOfPost.votes!.downvotes--;
-        widget.dataOfPost.userVote = 'none';
-      }
-      if(widget.dataOfPost.userVote == 'upvoted'){
-        widget.dataOfPost.votes!.upvotes--;
-        widget.dataOfPost.votes!.downvotes++;
-        widget.dataOfPost.userVote = 'downvoted';
-      }
-      else{
-        widget.dataOfPost.votes!.downvotes++;
-        widget.dataOfPost.userVote = 'downvoted';
-      }
-      setState(() {
-        
-      });
+  void upVotePost(WidgetRef ref) async {
+    ref.read(votePost((postID: widget.dataOfPost.id, voteType: 1)));
+    if (widget.dataOfPost.userVote == 'upvoted') {
+      widget.dataOfPost.votes!.upvotes--;
+      widget.dataOfPost.userVote = 'none';
+    } else if (widget.dataOfPost.userVote == 'downvoted') {
+      widget.dataOfPost.votes!.downvotes--;
+      widget.dataOfPost.votes!.upvotes++;
+      widget.dataOfPost.userVote = 'upvoted';
+    } else {
+      widget.dataOfPost.votes!.upvotes++;
+      widget.dataOfPost.userVote = 'upvoted';
     }
+    setState(() {});
+  }
+
+  void downVotePost(WidgetRef ref) async {
+    ref.read(votePost((postID: widget.dataOfPost.id, voteType: -1)));
+    if (widget.dataOfPost.userVote == 'downvoted') {
+      widget.dataOfPost.votes!.downvotes--;
+      widget.dataOfPost.userVote = 'none';
+    }
+    if (widget.dataOfPost.userVote == 'upvoted') {
+      widget.dataOfPost.votes!.upvotes--;
+      widget.dataOfPost.votes!.downvotes++;
+      widget.dataOfPost.userVote = 'downvoted';
+    } else {
+      widget.dataOfPost.votes!.downvotes++;
+      widget.dataOfPost.userVote = 'downvoted';
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +286,17 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                       : const SizedBox(),
             ),
           ),
+          widget.dataOfPost.type == 'url'
+              ? Center(
+                  child: AnyLinkPreview(
+                    link: widget.dataOfPost.linkURL ?? '',
+                    onTap: () {
+                      launchUrlFunction(
+                          Uri.parse(widget.dataOfPost.linkURL ?? ''));
+                    },
+                  ),
+                )
+              : SizedBox(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -313,7 +320,9 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                           thickness: 1,
                         ),
                         Text(
-                          (widget.dataOfPost.votes!.upvotes-widget.dataOfPost.votes!.downvotes).toString(),
+                          (widget.dataOfPost.votes!.upvotes -
+                                  widget.dataOfPost.votes!.downvotes)
+                              .toString(),
                           style: AppTextStyles.secondaryTextStyle,
                         ),
                         const VerticalDivider(
@@ -321,7 +330,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                         ),
                         InkWell(
                           onTap: () {
-                           downVotePost(ref);
+                            downVotePost(ref);
                           },
                           child: Icon(
                             Icons.arrow_downward,
@@ -371,7 +380,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                                 },
                               );
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.comment,
                               color: AppColors.whiteColor,
                             ),

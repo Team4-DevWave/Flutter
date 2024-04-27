@@ -1,3 +1,4 @@
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,6 +6,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedpost.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
@@ -47,58 +49,49 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
     ref.read(toggleNSFW(widget.dataOfPost.id));
     widget.dataOfPost.nsfw = !widget.dataOfPost.nsfw;
     Navigator.pop(context);
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   void toggleSPOILER() async {
     ref.read(toggleSpoiler(widget.dataOfPost.id));
     widget.dataOfPost.spoiler = !widget.dataOfPost.spoiler;
     Navigator.pop(context);
-   setState(() {
-     
-   });
+    setState(() {});
   }
-void upVotePost(WidgetRef ref) async {
-      ref.read(votePost((postID: widget.parentPost.id, voteType: 1)));
-      if(widget.parentPost.userVote == 'upvoted'){
-        widget.parentPost.votes!.upvotes--;
-        widget.parentPost.userVote = 'none';
-    }
-    else if(widget.parentPost.userVote == 'downvoted'){
-        widget.parentPost.votes!.downvotes--;
-        widget.parentPost.votes!.upvotes++;
-        widget.parentPost.userVote = 'upvoted';
-    }
-    else{
-        widget.parentPost.votes!.upvotes++;
-        widget.parentPost.userVote = 'upvoted';
-    }
-    setState(() {
-      
-    });
-    }
 
-    void downVotePost(WidgetRef ref) async {
-      ref.read(votePost((postID: widget.parentPost.id, voteType: -1)));
-      if(widget.parentPost.userVote == 'downvoted'){
-        widget.parentPost.votes!.downvotes--;
-        widget.parentPost.userVote = 'none';
-      }
-      if(widget.parentPost.userVote == 'upvoted'){
-        widget.parentPost.votes!.upvotes--;
-        widget.parentPost.votes!.downvotes++;
-        widget.parentPost.userVote = 'downvoted';
-      }
-      else{
-        widget.parentPost.votes!.downvotes++;
-        widget.parentPost.userVote = 'downvoted';
-      }
-      setState(() {
-        
-      });
+  void upVotePost(WidgetRef ref) async {
+    ref.read(votePost((postID: widget.parentPost.id, voteType: 1)));
+    if (widget.parentPost.userVote == 'upvoted') {
+      widget.parentPost.votes!.upvotes--;
+      widget.parentPost.userVote = 'none';
+    } else if (widget.parentPost.userVote == 'downvoted') {
+      widget.parentPost.votes!.downvotes--;
+      widget.parentPost.votes!.upvotes++;
+      widget.parentPost.userVote = 'upvoted';
+    } else {
+      widget.parentPost.votes!.upvotes++;
+      widget.parentPost.userVote = 'upvoted';
     }
+    setState(() {});
+  }
+
+  void downVotePost(WidgetRef ref) async {
+    ref.read(votePost((postID: widget.parentPost.id, voteType: -1)));
+    if (widget.parentPost.userVote == 'downvoted') {
+      widget.parentPost.votes!.downvotes--;
+      widget.parentPost.userVote = 'none';
+    }
+    if (widget.parentPost.userVote == 'upvoted') {
+      widget.parentPost.votes!.upvotes--;
+      widget.parentPost.votes!.downvotes++;
+      widget.parentPost.userVote = 'downvoted';
+    } else {
+      widget.parentPost.votes!.downvotes++;
+      widget.parentPost.userVote = 'downvoted';
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     getModOptions();
@@ -218,19 +211,30 @@ void upVotePost(WidgetRef ref) async {
             Padding(
               padding: const EdgeInsets.all(6.0),
               child: GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      RouteClass.postScreen,
-                      arguments: {
-                        'currentpost': widget.parentPost.parentPost!,
-                        'uid': widget.uid,
-                      },
-                    );
-                  },
-                  child: FeedUnitSharedPost(widget.dataOfPost),
-                  ),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    RouteClass.postScreen,
+                    arguments: {
+                      'currentpost': widget.parentPost.parentPost!,
+                      'uid': widget.uid,
+                    },
+                  );
+                },
+                child: FeedUnitSharedPost(widget.dataOfPost),
+              ),
             ),
+            widget.dataOfPost.type == 'url'
+                ? Center(
+                    child: AnyLinkPreview(
+                      link: widget.dataOfPost.linkURL ?? '',
+                      onTap: () {
+                        launchUrlFunction(
+                            Uri.parse(widget.dataOfPost.linkURL ?? ''));
+                      },
+                    ),
+                  )
+                : SizedBox(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -241,12 +245,12 @@ void upVotePost(WidgetRef ref) async {
                         children: [
                           InkWell(
                             onTap: () {
-                             upVotePost(ref);
+                              upVotePost(ref);
                             },
                             child: Icon(
                               Icons.arrow_upward,
-                              color: widget.parentPost.userVote=='upvoted'?
-                                   AppColors.redditOrangeColor
+                              color: widget.parentPost.userVote == 'upvoted'
+                                  ? AppColors.redditOrangeColor
                                   : AppColors.whiteColor,
                             ),
                           ),
@@ -254,7 +258,9 @@ void upVotePost(WidgetRef ref) async {
                             thickness: 1,
                           ),
                           Text(
-                            (widget.parentPost.votes!.upvotes - widget.parentPost.votes!.downvotes).toString(),
+                            (widget.parentPost.votes!.upvotes -
+                                    widget.parentPost.votes!.downvotes)
+                                .toString(),
                             style: AppTextStyles.secondaryTextStyle,
                           ),
                           const VerticalDivider(
@@ -262,11 +268,11 @@ void upVotePost(WidgetRef ref) async {
                           ),
                           InkWell(
                             onTap: () {
-                             downVotePost(ref);
+                              downVotePost(ref);
                             },
                             child: Icon(
                               Icons.arrow_downward,
-                              color: widget.parentPost.userVote=='downvoted'
+                              color: widget.parentPost.userVote == 'downvoted'
                                   ? AppColors.blueColor
                                   : AppColors.whiteColor,
                             ),

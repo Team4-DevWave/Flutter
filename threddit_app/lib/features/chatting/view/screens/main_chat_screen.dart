@@ -12,7 +12,8 @@ class MainChatScreen extends ConsumerStatefulWidget {
   _MainChatScreenState createState() => _MainChatScreenState();
 }
 
-class _MainChatScreenState extends ConsumerState<MainChatScreen> with SingleTickerProviderStateMixin {
+class _MainChatScreenState extends ConsumerState<MainChatScreen>
+    with SingleTickerProviderStateMixin {
   TabController? _tabController;
 
   @override
@@ -44,7 +45,8 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> with SingleTick
           ),
           centerTitle: true,
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.filter_alt_sharp)),
+            IconButton(
+                onPressed: () {}, icon: const Icon(Icons.filter_alt_sharp)),
             Builder(
               builder: (context) => IconButton(
                 icon: const Icon(Icons.person_rounded),
@@ -53,17 +55,18 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> with SingleTick
             ),
             SizedBox(width: 5.w),
           ],
-          
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(110.h),
-            
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal:10.0.w),
+              padding: EdgeInsets.symmetric(horizontal: 10.0.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20.h),
-                  const Text("Discover Channels", style: TextStyle(color: Color.fromARGB(126, 255, 255, 255), fontSize: 16)),
+                  const Text("Discover Channels",
+                      style: TextStyle(
+                          color: Color.fromARGB(126, 255, 255, 255),
+                          fontSize: 16)),
                   // Add more widgets or placeholders here for future content
                   const SizedBox(height: 70),
                   TabBar(
@@ -83,7 +86,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen> with SingleTick
         ),
         drawer: const LeftDrawer(),
         endDrawer: const RightDrawer(),
-       floatingActionButton: IconButton(
+        floatingActionButton: IconButton(
           onPressed: () {},
           icon: const Icon(
             Icons.chat_bubble,

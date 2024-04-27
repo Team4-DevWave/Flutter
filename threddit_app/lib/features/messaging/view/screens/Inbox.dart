@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/messaging/model/message_repository.dart'
 import 'package:threddit_clone/features/messaging/view%20model/messages_provider.dart';
 import 'package:threddit_clone/features/messaging/view/widgets/message_item.dart';
 import 'package:threddit_clone/features/messaging/view/widgets/options_bottom_sheet.dart';
+import 'package:threddit_clone/features/notifications/view/widgets/nottification_feed.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/theme.dart';
@@ -88,7 +89,7 @@ class _MainInboxScreenState extends ConsumerState<MainInboxScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            const Center(child: Text('Activity Page')),
+            Center(child: NotificationFeed(userID: uid)),
             Center(
               child: Consumer(
                 builder: (context, watch, child) {
@@ -102,8 +103,7 @@ class _MainInboxScreenState extends ConsumerState<MainInboxScreen>
                           final message = messages[index];
                           return GestureDetector(
                               onTap: () {
-                                if(!message.read)
-                                {
+                                if (!message.read) {
                                   ref.read(toggleRead(message.id));
                                 }
                                 Navigator.pushNamed(

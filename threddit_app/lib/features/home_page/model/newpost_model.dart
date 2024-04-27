@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 class Post {
@@ -9,6 +8,7 @@ class Post {
   final String title;
   String? textBody;
   String? image;
+  String? type;
   bool nsfw;
   bool spoiler;
   bool locked;
@@ -25,6 +25,7 @@ class Post {
   bool? saved;
   String? userVote;
 
+  final String? linkURL;
   Post({
     required this.id,
     required this.title,
@@ -40,11 +41,13 @@ class Post {
     this.userID,
     this.subredditID,
     this.votes,
+    required this.linkURL,
     required this.commentsCount,
     this.parentPost,
     this.hidden,
     this.saved,
     this.userVote,
+    this.type,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -58,6 +61,8 @@ class Post {
       locked: json['locked'],
       approved: json['approved'],
       video: json['video'],
+      type: json['type'],
+      linkURL: json['url'] ?? "",
       postedTime: json['postedTime'] != null
           ? DateTime.parse(json['postedTime'])
           : DateTime.now(),
@@ -101,6 +106,8 @@ class Post {
       'hidden': hidden,
       'saved': saved,
       'userVote': userVote,
+      'type': type,
+      'url': linkURL
     };
   }
 }
@@ -216,7 +223,8 @@ Future<PostApiResponse> fetchPosts(
       'Authorization': 'Bearer $token',
     },
   );
-
+  print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+  print(response.body);
   if (response.statusCode == 200) {
     return PostApiResponse.fromJson(jsonDecode(response.body));
   } else {
