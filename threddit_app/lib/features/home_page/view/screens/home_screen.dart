@@ -5,7 +5,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
-import 'package:threddit_clone/features/searching/view/widgets/search.dart';
+import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -46,7 +46,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              showSearch(context: context, delegate: Search());
+              Navigator.pushNamed(context, RouteClass.searchScreen);
             },
             icon: const Icon(Icons.search),
           ),
