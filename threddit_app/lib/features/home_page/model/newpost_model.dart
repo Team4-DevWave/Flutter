@@ -19,8 +19,11 @@ class Post {
   int commentsCount;
   final User? userID;
   final SubredditInfo? subredditID;
-  final VotesList? votes;
+  VotesList? votes;
   final Post? parentPost;
+  bool? hidden;
+  bool? saved;
+  String? userVote;
 
   Post({
     required this.id,
@@ -39,6 +42,9 @@ class Post {
     this.votes,
     required this.commentsCount,
     this.parentPost,
+    this.hidden,
+    this.saved,
+    this.userVote,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -69,6 +75,9 @@ class Post {
       parentPost: json['parentPost'] != null
           ? Post.fromJson(json['parentPost'] as Map<String, dynamic>)
           : null,
+      hidden: json['hidden'],
+      saved: json['saved'],
+      userVote: json['userVote'],
     );
   }
   Map<String, dynamic> toJson() {
@@ -89,6 +98,9 @@ class Post {
       'subredditID': subredditID?.toJson(),
       'votes': votes?.toJson(),
       'parentPost': parentPost?.toJson(),
+      'hidden': hidden,
+      'saved': saved,
+      'userVote': userVote,
     };
   }
 }
@@ -134,8 +146,8 @@ class SubredditInfo {
 }
 
 class VotesList {
-  final int upvotes;
-  final int downvotes;
+  int upvotes;
+  int downvotes;
 
   VotesList({required this.upvotes, required this.downvotes});
 

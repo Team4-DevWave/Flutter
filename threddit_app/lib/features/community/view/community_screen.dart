@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
+import 'package:threddit_clone/features/community/view/widgets/community_options.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
@@ -191,7 +192,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                             ),
                           ),
                           IconButton.filled(
-                            onPressed: () {},
+                            onPressed: () {
+                               showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          backgroundColor: AppColors.backgroundColor,
+                          builder: (context) {
+                            return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children:[CommunityOptionsBotttomSheet(uid: widget.uid, community: community),],
+                            );
+                          }
+                               );
+
+                            },
                             icon: const Icon(Icons.more_horiz),
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all<Color>(
