@@ -32,6 +32,8 @@ class _UserProfileState extends ConsumerState<UserProfile>
 
   TabController? _tabController;
   final _comments = <Comment>[];
+  bool _fetchingPosts = true;
+  bool _fetchingPostsFinish = true;
   UserModelMe? user;
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
@@ -69,10 +71,18 @@ class _UserProfileState extends ConsumerState<UserProfile>
     final response =
         await fetchPostsByUsername(user!.username ?? '', _currentPage);
 
-    setState(() {
-      _posts.addAll(response.posts);
-      _currentPage++;
-    });
+    if (response.posts.isNotEmpty) {
+      setState(() {
+        _posts.addAll(response.posts);
+        _currentPage++;
+        _fetchingPosts = false;
+      });
+    } else {
+      setState(() {
+        _fetchingPosts = false;
+        _fetchingPostsFinish = false;
+      });
+    }
   }
 
   Widget buildCommentsTab() {
@@ -113,7 +123,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername(user?.username ?? '', _currentPage);
+      _fetchPosts();
     }
   }
 

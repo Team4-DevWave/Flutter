@@ -12,6 +12,7 @@ class Post {
   final String title;
   String? textBody;
   String? image;
+  String? type;
   String? url;
   bool nsfw;
   bool spoiler;
@@ -23,9 +24,13 @@ class Post {
   int commentsCount;
   final User? userID;
   final SubredditInfo? subredditID;
-  final VotesList? votes;
+  VotesList? votes;
   final Post? parentPost;
+  bool? hidden;
+  bool? saved;
+  String? userVote;
 
+  final String? linkURL;
   Post({
     required this.id,
     required this.title,
@@ -41,9 +46,14 @@ class Post {
     this.userID,
     this.subredditID,
     this.votes,
+    required this.linkURL,
     required this.commentsCount,
     this.parentPost,
     this.url,
+    this.hidden,
+    this.saved,
+    this.userVote,
+    this.type,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -58,6 +68,8 @@ class Post {
       locked: json['locked'],
       approved: json['approved'],
       video: json['video'],
+      type: json['type'],
+      linkURL: json['url'] ?? "",
       postedTime: json['postedTime'] != null
           ? DateTime.parse(json['postedTime'])
           : DateTime.now(),
@@ -75,6 +87,9 @@ class Post {
       parentPost: json['parentPost'] != null
           ? Post.fromJson(json['parentPost'] as Map<String, dynamic>)
           : null,
+      hidden: json['hidden'],
+      saved: json['saved'],
+      userVote: json['userVote'],
     );
   }
   Map<String, dynamic> toJson() {
@@ -96,7 +111,52 @@ class Post {
       'votes': votes?.toJson(),
       'parentPost': parentPost?.toJson(),
       'url': url
+      'hidden': hidden,
+      'saved': saved,
+      'userVote': userVote,
+      'type': type,
+      'url': linkURL
     };
+  }
+
+  Post copyWith({
+    String? id,
+    String? title,
+    String? textBody,
+    String? image,
+    String? url,
+    bool? nsfw,
+    bool? spoiler,
+    bool? locked,
+    bool? approved,
+    DateTime? postedTime,
+    String? video,
+    int? numViews,
+    int? commentsCount,
+    User? userID,
+    SubredditInfo? subredditID,
+    VotesList? votes,
+    Post? parentPost,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      textBody: textBody ?? this.textBody,
+      image: image ?? this.image,
+      url: url ?? this.url,
+      nsfw: nsfw ?? this.nsfw,
+      spoiler: spoiler ?? this.spoiler,
+      locked: locked ?? this.locked,
+      approved: approved ?? this.approved,
+      postedTime: postedTime ?? this.postedTime,
+      video: video ?? this.video,
+      numViews: numViews ?? this.numViews,
+      commentsCount: commentsCount ?? this.commentsCount,
+      userID: userID ?? this.userID,
+      subredditID: subredditID ?? this.subredditID,
+      votes: votes ?? this.votes,
+      parentPost: parentPost ?? this.parentPost,
+    );
   }
 
   Post copyWith({
@@ -181,8 +241,8 @@ class SubredditInfo {
 }
 
 class VotesList {
-  final int upvotes;
-  final int downvotes;
+  int upvotes;
+  int downvotes;
 
   VotesList({required this.upvotes, required this.downvotes});
 
@@ -233,19 +293,15 @@ Future<PostApiResponse> fetchPosts(
     String feedID, String subreddit, int pageNumber) async {
   String? token = await getToken();
 
-  String url =
-      "http://${AppConstants.local}:8000/api/v1/posts/best?page=$pageNumber";
+  String url = "http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber";
   if (feedID == 'Hot Posts') {
-    url =
-        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
   }
   if (feedID == 'New Posts') {
-    url =
-        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/new?page=$pageNumber";
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/new?page=$pageNumber";
   }
   if (feedID == 'Top Posts') {
-    url =
-        "http://${AppConstants.local}:8000/api/v1/r/$subreddit/top?page=$pageNumber";
+    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/top?page=$pageNumber";
   }
 
   final response = await http.get(
@@ -255,7 +311,8 @@ Future<PostApiResponse> fetchPosts(
       'Authorization': 'Bearer $token',
     },
   );
-
+  print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+  print(response.body);
   if (response.statusCode == 200) {
     return PostApiResponse.fromJson(jsonDecode(response.body));
   } else {

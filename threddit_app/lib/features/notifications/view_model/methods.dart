@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 /// Requests permission for receiving notifications.
 ///
@@ -75,4 +76,21 @@ void sendPushNotification(String token, String body, String title) async {
         }));
     // ignore: empty_catches
   } catch (e) {}
+}
+
+Future<void> markAsRead(String id) async {
+  String? token = await getToken();
+  final response = await http.patch(
+    Uri.parse(
+      'http://10.0.2.2:8000/api/v1/notifications/read/$id',
+    ),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to mark notification as read');
+  }
 }

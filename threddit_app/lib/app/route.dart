@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_s
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
 import 'package:threddit_clone/features/post/view/cross_post.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approve_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approved_users_screen.dart';
@@ -18,6 +19,7 @@ import 'package:threddit_clone/features/user_profile/view/user_profile_screen.da
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
+import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
@@ -48,6 +50,10 @@ import 'package:threddit_clone/features/user_system/view_model/starting_screen.d
 import 'package:threddit_clone/features/user_system/view/screens/interests_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/login_screen.dart';
 import 'package:threddit_clone/features/post/view/choose_community.dart';
+import 'package:threddit_clone/features/messaging/view/screens/message_screen.dart';
+import 'package:threddit_clone/features/community/view/search_community.dart';
+
+// import 'package:threddit_clone/models/post.dart';
 
 class RouteClass {
   static const String initRoute = "/";
@@ -59,6 +65,7 @@ class RouteClass {
   static const String homeScreen = "/home";
   static const String appPostScreen = "/app_post_screen";
   static const String chatScreen = "/chat";
+  static const String inboxScreen = "/inbox";
   static const String mainCommunityScreen = "/communities";
   static const String notificationsScreen = "/notifications";
   static const String notificationsSettingsScreen = "/notifications_settings";
@@ -98,6 +105,8 @@ class RouteClass {
   static const String addModeratorScreen = '/add-moderator';
   static const String editModeratorScreen = '/edit-moderator';
   static const String historyScreen = '/history';
+  static const String messageScreen = '/message';
+  static const String searchCommunity = '/serach-community';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -146,11 +155,15 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const AddPostScreen());
       case chatScreen:
         return MaterialPageRoute(builder: (_) => const ChatScreen());
+      case inboxScreen:
+        return MaterialPageRoute(builder: (_) => const MainInboxScreen());
       case mainCommunityScreen:
         return MaterialPageRoute(builder: (_) => const MainCommunityScreen());
       case notificationsScreen:
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case notificationsSettingsScreen:
+        return MaterialPageRoute(
+            builder: (_) => const NotificationsSettingsScreen());
         return MaterialPageRoute(
             builder: (_) => const NotificationsSettingsScreen());
       case postToScreen:
@@ -224,7 +237,22 @@ class RouteClass {
             args['currentpost'] as Post; // Extract the community object
         final uid = args['uid'] as String;
         return MaterialPageRoute(
-            builder: (_) => PostScreen(currentPost: currentpost, uid: uid));
+            builder: (_) => PostScreen(
+                  currentPost: currentpost,
+                  uid: uid,
+                ));
+      case messageScreen:
+        final args = settings.arguments as Map<String, dynamic>;
+        final message =
+            args['message'] as Message; // Extract the community object
+        final uid = args['uid'] as String;
+
+        return MaterialPageRoute(
+            builder: (_) => MessageScreen(
+                  message: message,
+                  uid: uid,
+                ));
+
       case createCommunityScreen:
         var data = settings.arguments as String;
         return MaterialPageRoute(
@@ -234,6 +262,7 @@ class RouteClass {
       case historyScreen:
         var data = settings.arguments as String;
         return MaterialPageRoute(
+          builder: (_) => HistoryScreen(
           builder: (_) => HistoryScreen(
             uid: data,
           ),
@@ -247,6 +276,10 @@ class RouteClass {
         String user = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => EditModeratorScreen(moderator: user));
+      case searchCommunity:
+        String community = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (_) => SearchCommunityScreenPage(community: community));
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }
