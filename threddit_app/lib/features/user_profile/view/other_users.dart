@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
+import 'package:threddit_clone/features/listing/view/widgets/comment_item_user_profile.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 import 'package:threddit_clone/features/user_profile/models/other_user_data.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
@@ -27,10 +28,17 @@ class OtherUsersProfile extends ConsumerStatefulWidget {
 class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     with TickerProviderStateMixin {
   final _scrollController = ScrollController();
+  final _scrollControllerComments = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
-  TabController? _tabController;
+  bool _fetchingPosts = true;
   final _comments = <Comment>[];
+  int _currentPageComments = 1;
+  bool _fetchingPostsFinish = true;
+  bool _fetchingComments = true;
+  bool _fetchingCommentsFinish = true;
+  TabController? _tabController;
+
   UserModelNotMe? user;
   bool isLoading = true;
   bool? isFollowed;
@@ -67,16 +75,41 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   @override
   void initState() {
     //setData();
+    _fetchPosts();
     _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
+    _scrollControllerComments.addListener(_onScrollComments);
     setUserid();
+    _fetchComments();
     super.initState();
+  }
+
+  Future _fetchComments() async {
+    final response = await fetchComments(
+      widget.username,
+    );
+
+    if (response.isNotEmpty) {
+      setState(() {
+        _comments.addAll(response);
+        _currentPageComments++;
+        _fetchingComments = false;
+        if (response.length < 10) {
+          _fetchingCommentsFinish = false;
+        }
+      });
+    } else {
+      setState(() {
+        _fetchingComments = false;
+        _fetchingCommentsFinish = false;
+      });
+    }
   }
 
   @override
   void didChangeDependencies() {
     setData();
-    _fetchPosts();
+
     super.didChangeDependencies();
   }
 
@@ -91,13 +124,20 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   }
 
   Future _fetchPosts() async {
-    final response =
-        await fetchPostsByUsername(user?.username ?? '', _currentPage);
+    final response = await fetchPostsByUsername(widget.username, _currentPage);
 
-    setState(() {
-      _posts.addAll(response.posts);
-      _currentPage++;
-    });
+    if (response.posts.isNotEmpty) {
+      setState(() {
+        _posts.addAll(response.posts);
+        _currentPage++;
+        _fetchingPosts = false;
+      });
+    } else {
+      setState(() {
+        _fetchingPosts = false;
+        _fetchingPostsFinish = false;
+      });
+    }
   }
 
   Widget buildCommentsTab() {
@@ -155,6 +195,13 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
         isFollowed = false;
       });
       showSnackBar(context, "${user!.username} unfollowed successfully");
+    }
+  }
+
+  void _onScrollComments() {
+    if (_scrollControllerComments.position.pixels ==
+        _scrollControllerComments.position.maxScrollExtent) {
+      _fetchComments();
     }
   }
 
@@ -308,20 +355,30 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                       top: 100.h,
                       child: TabBarView(controller: _tabController, children: [
                         _posts.isEmpty
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.warning_amber,
-                                    color: AppColors.whiteGlowColor,
-                                  ),
-                                  Text(
-                                    "Wow, such empty in Posts!",
-                                    style: AppTextStyles.primaryTextStyle,
-                                  ),
-                                ],
-                              )
+                            ? _fetchingPosts
+                                ? SizedBox(
+                                    height: 75.h,
+                                    width: 75.w,
+                                    child: Lottie.asset(
+                                      'assets/animation/loading.json',
+                                      repeat: true,
+                                    ),
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.warning_amber,
+                                        color: AppColors.whiteGlowColor,
+                                      ),
+                                      Text(
+                                        "Wow, such empty in Posts!",
+                                        style: AppTextStyles.primaryTextStyle,
+                                      ),
+                                    ],
+                                  )
                             : ListView.builder(
                                 controller: _scrollController,
                                 itemCount: _posts.length + 1,
@@ -335,18 +392,80 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                                             uid!)
                                         : FeedUnit(_posts[index], uid!);
                                   } else {
-                                    return SizedBox(
-                                      height: 75.h,
-                                      width: 75.w,
-                                      child: Lottie.asset(
-                                        'assets/animation/loading.json',
-                                        repeat: true,
-                                      ),
-                                    );
+                                    return _fetchingPostsFinish
+                                        ? SizedBox(
+                                            height: 75.h,
+                                            width: 75.w,
+                                            child: Lottie.asset(
+                                              'assets/animation/loading.json',
+                                              repeat: true,
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: Text(
+                                                'No more posts available.',
+                                                style: TextStyle(
+                                                  fontSize: 20.sp,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ));
                                   }
                                 },
                               ),
-                        buildCommentsTab(),
+                        _comments.isEmpty
+                            ? _fetchingComments
+                                ? SizedBox(
+                                    height: 75.h,
+                                    width: 75.w,
+                                    child: Lottie.asset(
+                                      'assets/animation/loading.json',
+                                      repeat: true,
+                                    ),
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.warning_amber,
+                                        color: AppColors.whiteGlowColor,
+                                      ),
+                                      Text(
+                                        "Wow, such empty in Comments!",
+                                        style: AppTextStyles.primaryTextStyle,
+                                      ),
+                                    ],
+                                  )
+                            : ListView.builder(
+                                controller: _scrollControllerComments,
+                                itemCount: _comments.length + 1,
+                                itemBuilder: (context, index) {
+                                  if (index < _comments.length) {
+                                    return CommentItemForProfile(
+                                        comment: _comments[index], uid: uid!);
+                                  } else {
+                                    return SizedBox(
+                                        child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          'No more Comments ',
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ));
+                                  }
+                                },
+                              ),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: 8.w, vertical: 30.h),

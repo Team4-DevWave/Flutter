@@ -31,6 +31,7 @@ class UserProfile extends ConsumerStatefulWidget {
 class _UserProfileState extends ConsumerState<UserProfile>
     with TickerProviderStateMixin {
   final _scrollController = ScrollController();
+  final _scrollControllerComments = ScrollController();
 
   final _posts = <Post>[];
   int _currentPage = 1;
@@ -43,6 +44,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   bool _fetchingComments = true;
   bool _fetchingPostsFinish = true;
   bool _fetchingCommentsFinish = true;
+
   UserModelMe? user;
   String? dis;
 
@@ -66,6 +68,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     setData();
     setData();
     _scrollController.addListener(_onScroll);
+    _scrollControllerComments.addListener(_onScrollComments);
 
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
@@ -127,6 +130,13 @@ class _UserProfileState extends ConsumerState<UserProfile>
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       _fetchPosts();
+    }
+  }
+
+  void _onScrollComments() {
+    if (_scrollControllerComments.position.pixels ==
+        _scrollControllerComments.position.maxScrollExtent) {
+      _fetchComments();
     }
   }
 
@@ -433,6 +443,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                               ],
                             )
                       : ListView.builder(
+                          controller: _scrollControllerComments,
                           itemCount: _comments.length + 1,
                           itemBuilder: (context, index) {
                             if (index < _comments.length) {

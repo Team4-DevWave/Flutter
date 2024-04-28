@@ -173,9 +173,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         children: [
                           IconButton.filled(
                             onPressed: () {
-
-                               Navigator.pushNamed(context, RouteClass.searchCommunity,
-                    arguments: widget.id);
+                              Navigator.pushNamed(
+                                  context, RouteClass.searchCommunity,
+                                  arguments: widget.id);
                             },
                             icon: const Icon(Icons.search),
                             style: ButtonStyle(
@@ -193,18 +193,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           ),
                           IconButton.filled(
                             onPressed: () {
-                               showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: context,
-                          backgroundColor: AppColors.backgroundColor,
-                          builder: (context) {
-                            return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children:[CommunityOptionsBotttomSheet(uid: widget.uid, community: community),],
-                            );
-                          }
-                               );
-
+                              showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  backgroundColor: AppColors.backgroundColor,
+                                  builder: (context) {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CommunityOptionsBotttomSheet(
+                                            uid: widget.uid,
+                                            community: community),
+                                      ],
+                                    );
+                                  });
                             },
                             icon: const Icon(Icons.more_horiz),
                             style: ButtonStyle(
