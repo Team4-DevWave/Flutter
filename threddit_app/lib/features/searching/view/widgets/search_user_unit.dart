@@ -57,7 +57,7 @@ class _SearchUserUnitState extends State<SearchUserUnit> {
             ],
           ),
           SizedBox(height: 10.h),
-          Divider(
+          const Divider(
             color: Color.fromRGBO(233, 93, 95, 0.573),
             thickness: 1,
           )
