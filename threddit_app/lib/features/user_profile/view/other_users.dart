@@ -33,7 +33,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   final _comments = <Comment>[];
   UserModelNotMe? user;
   bool isLoading = true;
-  bool?isFollowed;
+  bool? isFollowed;
 
   void setData() async {
     //getUser function gets the user data and updates it in the provider
@@ -45,17 +45,14 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     res.fold((l) => showSnackBar(navigatorKey.currentContext!, l.message), (r) {
       user = r;
     });
-    final response =
-      await followUser(user!.username!);
+    final response = await followUser(user!.username!);
     response.fold((l) {
-     if(l.message == "user already followed")
-     {
-      setState(() {
-        isFollowed = true;
-      });
-     }
-    },
-     (r) {
+      if (l.message == "user already followed") {
+        setState(() {
+          isFollowed = true;
+        });
+      }
+    }, (r) {
       setState(() {
         isFollowed = !r;
         unfollowUser(user!.username!);
@@ -145,17 +142,14 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     }
   }
 
-  void _onFollow(){
-    if(!isFollowed!)
-    {
+  void _onFollow() {
+    if (!isFollowed!) {
       followUser(user!.username!);
       setState(() {
         isFollowed = true;
       });
       showSnackBar(context, "${user!.username} followed successfully");
-    }
-    else
-    {
+    } else {
       unfollowUser(user!.username!);
       setState(() {
         isFollowed = false;
@@ -176,233 +170,240 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
       return const AssetImage('assets/images/Default_Avatar.png');
     }
 
-    return !isLoading ? DefaultTabController(
-      length: tabs.length,
-      child: Scaffold(
-        body: NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              SliverOverlapAbsorber(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverAppBar(
-                  title: Text(
-                    "u/${user?.username}",
-                    style: AppTextStyles.secondaryTextStyle,
-                  ),
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: Container(
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        colors: const [
-                          Color.fromARGB(255, 0, 99, 145),
-                          Color.fromARGB(255, 2, 55, 99),
-                          Color.fromARGB(221, 14, 13, 13),
-                          Colors.black,
-                        ],
-                        stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      )),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.w, vertical: 75.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CircleAvatar(
-                                radius: 45.spMin,
-                                backgroundImage: setProfilePic()),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            ElevatedButton(
-                              style: const ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(
-                                      AppColors.whiteHideColor)),
-                              onPressed: () {
-                                _onFollow();
-                              },
-                              child: Text(
-                                isFollowed!? "Unfollow" : "Follow",
-                                style: AppTextStyles.buttonTextStyle.copyWith(
-                                    backgroundColor: Colors.transparent),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  //"u/User",
-                                  user?.displayName == ""
-                                      ? "u/${user?.username}"
-                                      : "u/${user?.displayName}",
-                                  style: AppTextStyles.primaryTextStyle
-                                      .copyWith(fontSize: 20.spMin),
-                                ),
-                                SizedBox(
-                                  width: 5.w,
-                                ),
-                                Icon(
-                                  Icons.circle,
-                                  color: Colors.white,
-                                  size: 6.r,
-                                ),
-                                SizedBox(
-                                  width: 5.w,
-                                ),
-                                Text(
-                                  "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
-                                  style: AppTextStyles.secondaryTextStyle,
-                                ),
-                              ],
-                            ),
-                            Text(
-                              user?.userProfileSettings?.about != null
-                                  ? user!.userProfileSettings!.about
-                                  : "",
-                              style: AppTextStyles.secondaryTextStyle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  expandedHeight: 340.h,
-                  actions: [
-                    const Align(
-                      alignment: Alignment.centerRight,
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        //open search screen
-                      },
-                      icon: const Icon(
-                        Icons.search_outlined,
-                        color: AppColors.whiteGlowColor,
-                      ),
-                    ),
-                  ],
-                  pinned: true,
-                  forceElevated: innerBoxIsScrolled,
-                  bottom: TabBar(
-                      controller: _tabController,
-                      indicatorColor: AppColors.redditOrangeColor,
-                      labelStyle: AppTextStyles.buttonTextStyle,
-                      tabs: tabs
-                          .map((name) => Tab(
-                                text: name,
-                              ))
-                          .toList()),
-                ),
-              )
-            ];
-          },
-          body: Stack(
-            children: [
-              Positioned.fill(
-                top: 100.h,
-                child: TabBarView(controller: _tabController, children: [
-                  _posts.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.warning_amber,
-                              color: AppColors.whiteGlowColor,
-                            ),
-                            Text(
-                              "Wow, such empty in Posts!",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                          ],
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          itemCount: _posts.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index < _posts.length) {
-                              return _posts[index].parentPost != null
-                                  ? FeedUnitShare(
-                                      dataOfPost: _posts[index].parentPost!,
-                                      parentPost: _posts[index],
-                                      uid!)
-                                  : FeedUnit(_posts[index], uid!);
-                            } else {
-                              return SizedBox(
-                                height: 75.h,
-                                width: 75.w,
-                                child: Lottie.asset(
-                                  'assets/animation/loading.json',
-                                  repeat: true,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                  buildCommentsTab(),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 30.h),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  "${user?.karma?.posts}",
-                                  style: AppTextStyles.boldTextStyle,
-                                ),
-                                Text(
-                                  "Post karma",
-                                  style:
-                                      AppTextStyles.primaryButtonHideTextStyle,
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 50.w,
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  "${user?.karma?.comments}",
-                                  style: AppTextStyles.boldTextStyle,
-                                ),
-                                Text(
-                                  "Comments karma",
-                                  style:
-                                      AppTextStyles.primaryButtonHideTextStyle,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Divider(),
-                        Text(
-                          user!.userProfileSettings!.about,
+    return !isLoading
+        ? DefaultTabController(
+            length: tabs.length,
+            child: Scaffold(
+              body: NestedScrollView(
+                floatHeaderSlivers: true,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverOverlapAbsorber(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context),
+                      sliver: SliverAppBar(
+                        title: Text(
+                          "u/${user?.username}",
                           style: AppTextStyles.secondaryTextStyle,
                         ),
-                      ],
+                        flexibleSpace: FlexibleSpaceBar(
+                          collapseMode: CollapseMode.parallax,
+                          background: Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                              colors: const [
+                                Color.fromARGB(255, 0, 99, 145),
+                                Color.fromARGB(255, 2, 55, 99),
+                                Color.fromARGB(221, 14, 13, 13),
+                                Colors.black,
+                              ],
+                              stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w, vertical: 75.h),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                      radius: 45.spMin,
+                                      backgroundImage: setProfilePic()),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  ElevatedButton(
+                                    style: const ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                AppColors.whiteHideColor)),
+                                    onPressed: () {
+                                      _onFollow();
+                                    },
+                                    child: Text(
+                                      isFollowed! ? "Unfollow" : "Follow",
+                                      style: AppTextStyles.buttonTextStyle
+                                          .copyWith(
+                                              backgroundColor:
+                                                  Colors.transparent),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        //"u/User",
+                                        user?.displayName == ""
+                                            ? "u/${user?.username}"
+                                            : "u/${user?.displayName}",
+                                        style: AppTextStyles.primaryTextStyle
+                                            .copyWith(fontSize: 20.spMin),
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Icon(
+                                        Icons.circle,
+                                        color: Colors.white,
+                                        size: 6.r,
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Text(
+                                        "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
+                                        style: AppTextStyles.secondaryTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    user?.userProfileSettings?.about != null
+                                        ? user!.userProfileSettings!.about
+                                        : "",
+                                    style: AppTextStyles.secondaryTextStyle,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        expandedHeight: 340.h,
+                        actions: [
+                          const Align(
+                            alignment: Alignment.centerRight,
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              //open search screen
+                            },
+                            icon: const Icon(
+                              Icons.search_outlined,
+                              color: AppColors.whiteGlowColor,
+                            ),
+                          ),
+                        ],
+                        pinned: true,
+                        forceElevated: innerBoxIsScrolled,
+                        bottom: TabBar(
+                            controller: _tabController,
+                            indicatorColor: AppColors.redditOrangeColor,
+                            labelStyle: AppTextStyles.buttonTextStyle,
+                            tabs: tabs
+                                .map((name) => Tab(
+                                      text: name,
+                                    ))
+                                .toList()),
+                      ),
+                    )
+                  ];
+                },
+                body: Stack(
+                  children: [
+                    Positioned.fill(
+                      top: 100.h,
+                      child: TabBarView(controller: _tabController, children: [
+                        _posts.isEmpty
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.warning_amber,
+                                    color: AppColors.whiteGlowColor,
+                                  ),
+                                  Text(
+                                    "Wow, such empty in Posts!",
+                                    style: AppTextStyles.primaryTextStyle,
+                                  ),
+                                ],
+                              )
+                            : ListView.builder(
+                                controller: _scrollController,
+                                itemCount: _posts.length + 1,
+                                itemBuilder: (context, index) {
+                                  if (index < _posts.length) {
+                                    return _posts[index].parentPost != null
+                                        ? FeedUnitShare(
+                                            dataOfPost:
+                                                _posts[index].parentPost!,
+                                            parentPost: _posts[index],
+                                            uid!)
+                                        : FeedUnit(_posts[index], uid!);
+                                  } else {
+                                    return SizedBox(
+                                      height: 75.h,
+                                      width: 75.w,
+                                      child: Lottie.asset(
+                                        'assets/animation/loading.json',
+                                        repeat: true,
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                        buildCommentsTab(),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 30.h),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "${user?.karma?.posts}",
+                                        style: AppTextStyles.boldTextStyle,
+                                      ),
+                                      Text(
+                                        "Post karma",
+                                        style: AppTextStyles
+                                            .primaryButtonHideTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: 50.w,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "${user?.karma?.comments}",
+                                        style: AppTextStyles.boldTextStyle,
+                                      ),
+                                      Text(
+                                        "Comments karma",
+                                        style: AppTextStyles
+                                            .primaryButtonHideTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const Divider(),
+                              Text(
+                                user!.userProfileSettings!.about,
+                                style: AppTextStyles.secondaryTextStyle,
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
                     ),
-                  )
-                ]),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-    ) : const Loading();
+            ),
+          )
+        : const Loading();
   }
 }

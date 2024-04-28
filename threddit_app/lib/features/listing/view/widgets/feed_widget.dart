@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.da
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
@@ -43,6 +44,7 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
   bool _fetching = true;
   bool _fetchingFinish = true;
   String? userId;
+
   @override
   void initState() {
     super.initState();
@@ -99,6 +101,7 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
         _fetchPosts();
       }
     });
+
     ref.listen(updatesEditProvider, (previous, next) {
       if (next != null) {
         setState(() {

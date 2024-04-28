@@ -51,7 +51,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
     socialLinks = ref.read(userProfileProvider)?.socialLinks;
   }
 
-
   void setData() async {
     //getSettings function gets the user settings data and updates it in the provider
     await ref.read(settingsFetchProvider.notifier).getSettings();
@@ -124,48 +123,12 @@ class _UserProfileState extends ConsumerState<UserProfile>
     }
   }
 
-  Widget buildCommentsTab() {
-    return _comments.isEmpty
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.warning_amber,
-                color: AppColors.whiteGlowColor,
-              ),
-              Text(
-                "Wow, such empty in Comments!",
-                style: AppTextStyles.primaryTextStyle,
-              ),
-            ],
-          )
-        : ListView.builder(
-            controller: _scrollController,
-            itemCount: _comments.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      _comments[index].user.username,
-                      style: AppTextStyles.boldTextStyleNotifcation,
-                    )
-                  ],
-                ),
-              );
-            },
-          );
-  }
-
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       _fetchPosts();
     }
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +167,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
         _fetchPosts();
       }
     });
-
 
     return DefaultTabController(
       length: tabs.length,
