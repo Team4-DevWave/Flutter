@@ -102,6 +102,54 @@ class UserModelMe {
       settings: user['settings'] as String?,
     );
   }
+  factory UserModelMe.fromJsonSearch(Map<String, dynamic> json) {
+
+    if (json == null) return UserModelMe(); // Handle null user data
+    return UserModelMe(
+      id: json['_id'] as String?,
+      username: json['username'] as String?,
+      email: json['email'] as String?,
+      verified: json['verified'] as bool?,
+      verificationToken: json['verificationToken'] as String?,
+      dateJoined: json['dateJoined'] != null
+          ? DateTime.parse(json['dateJoined'] as String)
+          : null,
+      country: json['country'] as String?,
+      gender: json['gender'] as String?,
+      interests: (json['interests'] as List<dynamic>?)
+          ?.map((interest) => interest as String)
+          .toList(),
+      followedUsers: (json['followedUsers'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      blockedUsers: (json['blockedUsers'] as List<dynamic>?)
+          ?.map((blockedUser) =>
+              BlockedUsers.fromJson(blockedUser as Map<String, dynamic>))
+          .toList(),
+      joinedSubreddits: (json['joinedSubreddits'] as List<dynamic>?)
+          ?.map((subreddit) => subreddit as String)
+          .toList(),
+      followedPosts: (json['followedPosts'] as List<dynamic>?)
+          ?.map((post) => post as String)
+          .toList(),
+      viewedPosts: (json['viewedPosts'] as List<dynamic>?)
+          ?.map((post) => post as String)
+          .toList(),
+      hiddenPosts: (json['hiddenPosts'] as List<dynamic>?)
+          ?.map((post) => post as String)
+          .toList(),
+      posts: (json['posts'] as List<dynamic>?)
+          ?.map((post) => post as String)
+          .toList(),
+      karma: Karma.fromJson(json['karma'] as Map<String, dynamic>),
+      savedPostsAndComments: SavedPostsAndComments.fromJson(
+          json['savedPostsAndComments'] as Map<String, dynamic>),
+      upvotes: Votes.fromJson(json['upvotes'] as Map<String, dynamic>),
+      downvotes: Votes.fromJson(json['downvotes'] as Map<String, dynamic>),
+      v: json['__v'] as int?,
+      settings: json['settings'] as String?,
+    );
+  }
 }
 
 class Karma {

@@ -14,57 +14,95 @@ final searchInputProvider = StateProvider<String>((ref) => '');
 
 final searchingApisProvider =
     StateNotifierProvider<SearchingApis, bool>((ref) => SearchingApis(ref));
-final searchFutureProvider = FutureProvider<SearchModel>(
+final trendingFutureProvider = FutureProvider<List<Trend>>(
   (ref) async {
     final searchingApi = ref.read(searchingApisProvider.notifier);
-    final query = ref.read(searchInputProvider);
-    print("THIS IS THE QUERY INSIDE THE SEARCHING FUTURE PROVIDER: ");
-    print(query);
-    final searchResult = searchingApi.search(query); // Assuming search returns SearchModel
+    final searchResult =
+        searchingApi.getTrending(); // Assuming search returns SearchModel
     return searchResult;
   },
 );
+Future<SearchModel> searchTest(String query, int page) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  print("TESSSSSSSSSSSSSSSST before");
+
+  String? token = await getToken();
+  http.Response response = await http.get(
+    Uri.parse("$url:8000/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  print(response.statusCode);
+  print("TESSSSSSSSSSSSSSSST after");
+  print(response.body);
+  final search = SearchModel.fromJson(jsonDecode(response.body));
+  print("Subbredits: ");
+  print(search.subreddits.length);
+  print("Posts: ");
+  print(search.posts.length);
+  return SearchModel.fromJson(jsonDecode(response.body));
+}
 
 class SearchingApis extends StateNotifier<bool> {
   final Ref ref;
   SearchingApis(this.ref) : super(false);
-  Future<Trends> getTrending() async {
+  Future<List<Trend>> getTrending() async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-    
+    String? token = await getToken();
+
     final response = await http.get(
-      Uri.parse('$url:3001/api/v1/homepage/trending'),
+      Uri.parse('$url:8000/api/v1/homepage/trending'),
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
       },
     );
-    return Trends.fromJson(jsonDecode(response.body));
+    print(response.statusCode);
+    print(response.body);
+    Map<String, dynamic> data = jsonDecode(response.body);
+    List<dynamic> trendsData = data['data']['trends'];
+    List<Trend> trends =
+        trendsData.map((json) => Trend.fromJson(json)).toList();
+    return trends;
   }
 
-  Future<SearchModel> search(String query) async {
+  Future<SearchModel> search(String query, int page) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
-        print("TESSSSSSSSSSSSSSSST before");
+    print("TESSSSSSSSSSSSSSSST before");
 
     String? token = await getToken();
     http.Response response = await http.get(
-      Uri.parse("$url:8000/api/v1/homepage/search?q=$query&sort=Top&page=1"),
+      Uri.parse(
+          "$url:8000/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
     print(response.statusCode);
-        print("TESSSSSSSSSSSSSSSST after");
+    print("TESSSSSSSSSSSSSSSST after");
+    print(response.body);
     final search = SearchModel.fromJson(jsonDecode(response.body));
+    print("Subbredits: ");
+    print(search.subreddits.length);
+    print("Posts: ");
     print(search.posts.length);
     return SearchModel.fromJson(jsonDecode(response.body));
   }

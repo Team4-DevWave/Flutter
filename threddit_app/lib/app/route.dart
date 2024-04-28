@@ -14,6 +14,8 @@ import 'package:threddit_clone/features/Moderation/view/screens/banned_users_scr
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
+import 'package:threddit_clone/features/searching/model/search_model.dart';
+import 'package:threddit_clone/features/searching/view/screens/search_results_screen.dart';
 import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
@@ -107,6 +109,7 @@ class RouteClass {
   static const String historyScreen = '/history';
   static const String messageScreen = '/message';
   static const String searchCommunity = '/serach-community';
+  static const String searchResultsScreen = '/serach-results';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -277,6 +280,16 @@ class RouteClass {
         String community = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => SearchCommunityScreenPage(community: community));
+      case searchResultsScreen:
+        final args = settings.arguments as Map<String, dynamic>;
+        final searchModel = args['search'] as SearchModel; // Extract the community object
+        final searchText = args['text'] as String;
+        return MaterialPageRoute(
+          builder: (_) => SearchResultsScreen(
+            searchResults: searchModel,
+            searchText: searchText,
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }
