@@ -89,17 +89,15 @@ FutureEither<bool> updateUserLinks() async {
   }
 
   
-  void updateDiplayName(String disName) =>
-      state = state.copyWith(displayName: disName);
   void updateAbout(String about) => state = state.copyWith(about: about);
   void updateContetnVis(bool vis) =>
       state = state.copyWith(contentVisibility: vis);
   void updateActiveCom(bool active) =>
       state = state.copyWith(activeCommunitiesVisibility: active);
-  void updateProfilePic(String pic) =>
-      state = state.copyWith(profilePicture: pic);
-  void updateImagePath(File?imgePath) =>
-      state = state.copyWith(imagePath: imgePath);
+  // void updateProfilePic(String pic) =>
+  //     state = state.copyWith(profilePicture: pic);
+  // void updateImagePath(File?imgePath) =>
+  //     state = state.copyWith(imagePath: imgePath);
   void updateSocialLinks(List<String> social) =>
       state = state.copyWith(socialLinks: social);
   void addLink(String link) => state.socialLinks.add(link);

@@ -15,7 +15,7 @@ import 'package:video_player/video_player.dart';
 /// it also displays the upvote and downvote buttons
 /// it also displays the share button
 /// it also displays the comments button
-/// it also calls the correct bottom based on the moderation case of the user 
+/// it also calls the correct bottom based on the moderation case of the user
 
 class PostCard extends ConsumerStatefulWidget {
   const PostCard({
@@ -114,11 +114,17 @@ class _PostCardState extends ConsumerState<PostCard> {
                       ),
                     Row(
                       children: [
-                        Text(
-                          'u/${widget.post.userID!.username}',
-                          style: AppTextStyles.primaryTextStyle.copyWith(
-                              fontSize: 12,
-                              color: const Color.fromARGB(206, 20, 113, 190)),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, RouteClass.otherUsers,
+                                arguments: widget.post.userID!.username);
+                          },
+                          child: Text(
+                            'u/${widget.post.userID!.username}',
+                            style: AppTextStyles.primaryTextStyle.copyWith(
+                                fontSize: 12,
+                                color: const Color.fromARGB(206, 20, 113, 190)),
+                          ),
                         ),
                         const SizedBox(
                           width: 10,

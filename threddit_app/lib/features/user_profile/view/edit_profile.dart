@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,6 +12,7 @@ import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/add_social_link.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/onSave_button.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -62,7 +62,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     Uint8List imageBytes = await imageFile!.readAsBytes();
     setState(() {
       image = base64Encode(imageBytes);
-      ref.read(userProfileProvider.notifier).updateProfilePic(image!);
+      //ref.read(userProfileProvider.notifier).updateProfilePic(image!);
       ref.read(imagePathProvider.notifier).state = imageFile;
       isImage = true;
       isAnythingChanged = true;
@@ -86,7 +86,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
       isImage = false;
       imageFile = null;
     });
-    ref.read(userProfileProvider.notifier).updateProfilePic(image!);
+    //ref.read(userProfileProvider.notifier).updateProfilePic(image!);
     ref.read(imagePathProvider.notifier).state = null;
     isAnythingChanged = true;
   }
@@ -94,8 +94,9 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   @override
   void didChangeDependencies() {
     final userProfile = ref.watch(userProfileProvider);
+    final dis = ref.read(userModelProvider)?.displayName;
     if (userProfile != null) {
-      displayName = userProfile.displayName;
+      displayName = dis;
       _displayNameController = TextEditingController(text: displayName);
       about = userProfile.about;
       _aboutController = TextEditingController(text: about);
@@ -127,7 +128,6 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         isAnythingChanged = false;
       }
     });
-    ref.read(userProfileProvider.notifier).updateDiplayName(name);
   }
 
   void updateAbout(String abot) {
@@ -272,7 +272,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text("Edit Profile"),
-          actions: [SaveButton(changed: isAnythingChanged)],
+          actions: [SaveButton(changed: isAnythingChanged, dis: _displayNameController.text)],
         ),
         body: SingleChildScrollView(
           child: Padding(

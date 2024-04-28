@@ -115,9 +115,9 @@ class UserProfile {
     }
   };
   }
-  String toJson() => json.encode(toMap());
+    String toJson() => json.encode(toMap());
 
-}
+  }
 
 class SafetyAndPrivacy {
   final List<dynamic> blockedPeople;

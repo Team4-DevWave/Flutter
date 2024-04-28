@@ -1,54 +1,86 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
+import 'package:threddit_clone/features/user_profile/models/other_user_data.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
-import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/user_profile/view_model/follow_user.dart';
+import 'package:threddit_clone/features/user_profile/view_model/get_user.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
-import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
-class UserProfile extends ConsumerStatefulWidget {
-  const UserProfile({super.key});
+class OtherUsersProfile extends ConsumerStatefulWidget {
+  const OtherUsersProfile({super.key, required this.username});
+  final String username;
   @override
-  ConsumerState<UserProfile> createState() => _UserProfileState();
+  ConsumerState<OtherUsersProfile> createState() => _OtherUsersProfileState();
 }
 
-class _UserProfileState extends ConsumerState<UserProfile>
+class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     with TickerProviderStateMixin {
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
   TabController? _tabController;
   final _comments = <Comment>[];
-  UserModelMe? user;
-  void _getUserData() async {
-    user = ref.read(userModelProvider)!;
-  }
+  UserModelNotMe? user;
+  bool isLoading = true;
+  bool?isFollowed;
 
   void setData() async {
-    //getSettings function gets the user settings data and updates it in the provider
-    await ref.read(settingsFetchProvider.notifier).getSettings();
+    //getUser function gets the user data and updates it in the provider
+    setState(() {
+      isLoading = true;
+    });
+    final res =
+        await ref.watch(getUserProvider.notifier).getUser(widget.username);
+    res.fold((l) => showSnackBar(navigatorKey.currentContext!, l.message), (r) {
+      user = r;
+    });
+    final response =
+      await followUser(user!.username!);
+    response.fold((l) {
+     if(l.message == "user already followed")
+     {
+      setState(() {
+        isFollowed = true;
+      });
+     }
+    },
+     (r) {
+      setState(() {
+        isFollowed = !r;
+        unfollowUser(user!.username!);
+      });
+    });
+    setState(() {
+      isLoading = false;
+    });
   }
 
   String? uid;
   @override
   void initState() {
-    _getUserData();
-    _fetchPosts();
-    setData();
+    //setData();
     _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    setData();
+    _fetchPosts();
+    super.didChangeDependencies();
   }
 
   Future<void> setUserid() async {
@@ -63,7 +95,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
 
   Future _fetchPosts() async {
     final response =
-        await fetchPostsByUsername(user!.username ?? '', _currentPage);
+        await fetchPostsByUsername(user?.username ?? '', _currentPage);
 
     setState(() {
       _posts.addAll(response.posts);
@@ -113,21 +145,38 @@ class _UserProfileState extends ConsumerState<UserProfile>
     }
   }
 
+  void _onFollow(){
+    if(!isFollowed!)
+    {
+      followUser(user!.username!);
+      setState(() {
+        isFollowed = true;
+      });
+      showSnackBar(context, "${user!.username} followed successfully");
+    }
+    else
+    {
+      unfollowUser(user!.username!);
+      setState(() {
+        isFollowed = false;
+      });
+      showSnackBar(context, "${user!.username} unfollowed successfully");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<String> tabs = <String>['Posts', 'Comments', 'About'];
-    final settings = ref.watch(userProfileProvider);
-    final imageFile = ref.watch(imagePathProvider);
 
     ImageProvider setProfilePic() {
-      if (imageFile != null) {
-        return FileImage(imageFile);
-      } else {
-        return const AssetImage('assets/images/Default_Avatar.png');
-      }
+      // if (imageFile != null) {
+      //   return FileImage(imageFile);
+      // } else {
+      // }
+      return const AssetImage('assets/images/Default_Avatar.png');
     }
 
-    return DefaultTabController(
+    return !isLoading ? DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         body: NestedScrollView(
@@ -174,11 +223,10 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                   backgroundColor: MaterialStatePropertyAll(
                                       AppColors.whiteHideColor)),
                               onPressed: () {
-                                Navigator.pushNamed(
-                                    context, RouteClass.editUser);
+                                _onFollow();
                               },
                               child: Text(
-                                "Edit",
+                                isFollowed!? "Unfollow" : "Follow",
                                 style: AppTextStyles.buttonTextStyle.copyWith(
                                     backgroundColor: Colors.transparent),
                               ),
@@ -186,32 +234,37 @@ class _UserProfileState extends ConsumerState<UserProfile>
                             SizedBox(
                               height: 5.h,
                             ),
+                            Row(
+                              children: [
+                                Text(
+                                  //"u/User",
+                                  user?.displayName == ""
+                                      ? "u/${user?.username}"
+                                      : "u/${user?.displayName}",
+                                  style: AppTextStyles.primaryTextStyle
+                                      .copyWith(fontSize: 20.spMin),
+                                ),
+                                SizedBox(
+                                  width: 5.w,
+                                ),
+                                Icon(
+                                  Icons.circle,
+                                  color: Colors.white,
+                                  size: 6.r,
+                                ),
+                                SizedBox(
+                                  width: 5.w,
+                                ),
+                                Text(
+                                  "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
+                                  style: AppTextStyles.secondaryTextStyle,
+                                ),
+                              ],
+                            ),
                             Text(
-                              settings!.displayName == ""
-                                  ? "u/${user?.username}"
-                                  : "u/${settings.displayName}",
-                              style: AppTextStyles.primaryTextStyle
-                                  .copyWith(fontSize: 20.spMin),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              "${user?.followedUsers?.length} following",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
-                              style: AppTextStyles.secondaryTextStyle,
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              settings.about,
+                              user?.userProfileSettings?.about != null
+                                  ? user!.userProfileSettings!.about
+                                  : "",
                               style: AppTextStyles.secondaryTextStyle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -227,29 +280,11 @@ class _UserProfileState extends ConsumerState<UserProfile>
                       alignment: Alignment.centerRight,
                     ),
                     IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, RouteClass.confirmPostScreen);
-                        },
-                        icon: const Icon(
-                          Icons.add,
-                          color: AppColors.whiteGlowColor,
-                        )),
-                    IconButton(
                       onPressed: () {
                         //open search screen
                       },
                       icon: const Icon(
                         Icons.search_outlined,
-                        color: AppColors.whiteGlowColor,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        //share profile modal bottom sheet
-                      },
-                      icon: const Icon(
-                        Icons.share,
                         color: AppColors.whiteGlowColor,
                       ),
                     ),
@@ -356,7 +391,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                         ),
                         const Divider(),
                         Text(
-                          "${settings?.about}",
+                          user!.userProfileSettings!.about,
                           style: AppTextStyles.secondaryTextStyle,
                         ),
                       ],
@@ -368,6 +403,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
           ),
         ),
       ),
-    );
+    ) : const Loading();
   }
 }
