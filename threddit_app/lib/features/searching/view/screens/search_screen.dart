@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/community/view/search_community.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/model/trends.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
+import 'package:threddit_clone/features/searching/view_model/searching_function.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -72,6 +73,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final futureData = ref.watch(trendingFutureProvider);
+    final history = ref.watch(histroyFutureProvider);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -85,6 +87,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           style: AppTextStyles.primaryTextStyle,
           controller: searchController,
           onFieldSubmitted: (value) {
+            saveSearchHistory(value);
             final arguements = {
               'search': search,
               'text': value,
@@ -149,42 +152,82 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
                   ],
                 )
-              : futureData.when(
-                  data: (data) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          onTap: () {
-                            final arguements = {
-                              'search': search,
-                              'text': data[index].title,
-                            };
-                            Navigator.pushNamed(
-                                context, RouteClass.searchResultsScreen,
-                                arguments: arguements);
+              : SingleChildScrollView(
+                child: Column(
+                    children: [
+                      history.when(
+                          data: (data) {
+                            return ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  onTap: () {
+                                    final arguements = {
+                                      'search': search,
+                                      'text': data[index],
+                                    };
+                                    Navigator.pushNamed(
+                                        context, RouteClass.searchResultsScreen,
+                                        arguments: arguements);
+                                  },
+                                  title: Text(
+                                    "${data[index]}",
+                                    style: AppTextStyles.primaryTextStyle,
+                                  ),
+                                );
+                              },
+                              itemCount: data.length,
+                            );
                           },
-                          title: Text(
-                            "${data[index].title}",
-                            style: AppTextStyles.primaryTextStyle,
-                          ),
-                          subtitle: Text(
-                            "${data[index].subtitle}",
-                            style: AppTextStyles.primaryTextStyle,
-                          ),
-                        );
-                      },
-                      itemCount: data.length,
-                    );
-                  },
-                  error: ((error, stackTrace) =>
-                      Center(child: Text("Error is ${error.toString()}"))),
-                  loading: () => Center(
-                        child: Lottie.asset(
-                          'assets/animation/loading.json',
-                          repeat: true,
-                        ),
-                      ))),
+                          error: ((error, stackTrace) => Center(
+                              child: Text("Error is ${error.toString()}"))),
+                          loading: () => Center(
+                                child: Lottie.asset(
+                                  'assets/animation/loading.json',
+                                  repeat: true,
+                                ),
+                              )),
+                      futureData.when(
+                          data: (data) {
+                            return ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  onTap: () {
+                                    final arguements = {
+                                      'search': search,
+                                      'text': data[index].title,
+                                    };
+                                    Navigator.pushNamed(
+                                        context, RouteClass.searchResultsScreen,
+                                        arguments: arguements);
+                                  },
+                                  title: Text(
+                                    "${data[index].title}",
+                                    style: AppTextStyles.primaryTextStyle,
+                                  ),
+                                  subtitle: Text(
+                                    "${data[index].subtitle}",
+                                    style: AppTextStyles.primaryTextStyle,
+                                  ),
+                                );
+                              },
+                              itemCount: data.length,
+                            );
+                          },
+                          error: ((error, stackTrace) => Center(
+                              child: Text("Error is ${error.toString()}", style: AppTextStyles.primaryTextStyle,))),
+                          loading: () => Center(
+                                child: Lottie.asset(
+                                  'assets/animation/loading.json',
+                                  repeat: true,
+                                ),
+                              )),
+                    ],
+                  ),
+              )),
     );
   }
 }
