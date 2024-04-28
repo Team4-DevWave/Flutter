@@ -15,6 +15,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/update_ban_scree
 import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
 import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
+import 'package:threddit_clone/features/user_profile/view/other_users.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
@@ -105,6 +106,7 @@ class RouteClass {
   static const String addModeratorScreen = '/add-moderator';
   static const String editModeratorScreen = '/edit-moderator';
   static const String historyScreen = '/history';
+  static const String otherUsers = '/other-users';
   static const String messageScreen = '/message';
   static const String searchCommunity = '/serach-community';
 
@@ -273,6 +275,11 @@ class RouteClass {
         String user = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => EditModeratorScreen(moderator: user));
+      case otherUsers:
+        String uname = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) =>  OtherUsersProfile(
+          username: uname,
+        ));
       case searchCommunity:
         String community = settings.arguments as String;
         return MaterialPageRoute(

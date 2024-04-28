@@ -147,11 +147,17 @@ class _PostCardState extends ConsumerState<PostCard> {
                       ),
                     Row(
                       children: [
-                        Text(
-                          'u/${widget.post.userID!.username}',
-                          style: AppTextStyles.primaryTextStyle.copyWith(
-                              fontSize: 12,
-                              color: const Color.fromARGB(206, 20, 113, 190)),
+                        InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, RouteClass.otherUsers,
+                                arguments: widget.post.userID!.username);
+                          },
+                          child: Text(
+                            'u/${widget.post.userID!.username}',
+                            style: AppTextStyles.primaryTextStyle.copyWith(
+                                fontSize: 12,
+                                color: const Color.fromARGB(206, 20, 113, 190)),
+                          ),
                         ),
                         const SizedBox(
                           width: 10,

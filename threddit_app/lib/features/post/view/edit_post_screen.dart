@@ -74,7 +74,7 @@ class _EditPostState extends ConsumerState<EditPost> {
             showSnackBar(navigatorKey.currentContext!, failure.message),
         (post) {
       showSnackBar(
-          navigatorKey.currentContext!, "Social links updated successfully");
+          navigatorKey.currentContext!, "Post updated successfully");
       Navigator.pop(context);
       Navigator.pop(context);
       Navigator.popAndPushNamed(context, RouteClass.postScreen,
