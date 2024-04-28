@@ -6,8 +6,8 @@ import 'package:threddit_clone/features/home_page/view/screens/saved_screen.dart
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
+import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
-import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class RightDrawer extends ConsumerStatefulWidget {
@@ -23,6 +23,8 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
     user = ref.read(userModelProvider)!;
   }
 
+  
+
   @override
   void initState() {
     _getUserData();
@@ -31,6 +33,17 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
 
   @override
   Widget build(BuildContext context) {
+
+    final imageFile = ref.watch(imagePathProvider);
+
+    ImageProvider setProfilePic() {
+      if (imageFile != null) {
+        return FileImage(imageFile);
+      } else {
+        return const AssetImage('assets/images/Default_Avatar.png');
+      }
+    }
+
     return Drawer(
       backgroundColor: AppColors.mainColor,
       child: Column(
@@ -46,11 +59,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
                       Navigator.pushNamed(
                           context, RouteClass.userProfileScreen);
                     },
-                    child: Image.asset(
-                      Photos.snoLogo,
-                      width: 50.w,
-                      height: 50.h,
-                    ),
+                    child: CircleAvatar(backgroundImage: setProfilePic(), radius: 30.spMin,)
                   ),
                   SizedBox(height: 10.h),
                   Text(

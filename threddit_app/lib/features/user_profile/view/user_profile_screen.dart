@@ -44,14 +44,18 @@ class _UserProfileState extends ConsumerState<UserProfile>
   bool _fetchingPostsFinish = true;
   bool _fetchingCommentsFinish = true;
   UserModelMe? user;
+  String? dis;
+
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
     socialLinks = ref.read(userProfileProvider)?.socialLinks;
   }
 
+
   void setData() async {
     //getSettings function gets the user settings data and updates it in the provider
     await ref.read(settingsFetchProvider.notifier).getSettings();
+    dis = ref.read(userModelProvider)?.displayName;
   }
 
   String? uid;
@@ -60,6 +64,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     _getUserData();
     _fetchPosts();
 
+    setData();
     setData();
     _scrollController.addListener(_onScroll);
 
@@ -160,6 +165,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
       _fetchPosts();
     }
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +204,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
         _fetchPosts();
       }
     });
+
 
     return DefaultTabController(
       length: tabs.length,
