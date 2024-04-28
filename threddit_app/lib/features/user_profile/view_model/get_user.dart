@@ -1,19 +1,22 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/pref_constants.dart';
-import 'package:threddit_clone/features/user_profile/models/user_model.dart';
+import 'package:threddit_clone/features/user_profile/models/other_user_data.dart';
+import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 
 final getUserProvider =
-    StateNotifierProvider<GetUser, bool>((ref) => GetUser(ref));
+    StateNotifierProvider<GetUserNotifier, UserModelNotMe>((ref) => GetUserNotifier(ref));
 
-class GetUser extends StateNotifier<bool> {
+class GetUserNotifier extends StateNotifier<UserModelNotMe> {
   final Ref ref;
 
-  GetUser(this.ref) : super(false);
+  GetUserNotifier(this.ref) : super(UserModelNotMe());
 
-  Future<void> getUser(String username) async {
+  FutureEither<UserModelNotMe> getUser(String username) async {
     String? token = await getToken();
     try {
       http.Response response = await http.get(
@@ -24,14 +27,20 @@ class GetUser extends StateNotifier<bool> {
         },
       );
       if (response.statusCode == 200) {
-        UserModelNotMe user = ref.read(userModelNotMeProvider)!;
-        user = UserModelNotMe.fromJson(jsonDecode(response.body));
-        ref.watch(userModelNotMeProvider.notifier).update((state) => user);
+        print("SUUUUUUUUUCCCCCCCEEEEEEEESSSSSSSSSSSSSS");
+        final jsonBody = UserModelNotMe.fromJson(jsonDecode(response.body));
+        state = jsonBody;
+        print("SSSSSSSSSSSSSSSSSSSSSSSSSSsss");
+        print(state.username);
+        print(state.userProfileSettings?.about);
+        return right(state);
       } else {
-        throw Exception('Failed to load user data');
+
+        return left(Failure("Getting user data failed :( "));
       }
     } catch (e) {
       throw e.toString();
     }
   }
+
 }

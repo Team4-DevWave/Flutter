@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final userModelProvider = StateProvider<UserModelMe?>(
@@ -7,6 +8,8 @@ final userModelProvider = StateProvider<UserModelMe?>(
 class UserModelMe {
   final String? id;
   final String? username;
+  final String? displayName;
+  //final String? profilePicture;
   final String? email;
   final bool? verified;
   final String? verificationToken;
@@ -14,7 +17,7 @@ class UserModelMe {
   final String? country;
   final String? gender;
   final List<String>? interests;
-  final List<String>? followedUsers;
+  final List<Map<String, dynamic>>? followedUsers;
   final List<BlockedUsers>? blockedUsers;
   final List<String>? joinedSubreddits;
   final List<String>? followedPosts;
@@ -25,13 +28,14 @@ class UserModelMe {
   final SavedPostsAndComments? savedPostsAndComments;
   final Votes? upvotes;
   final Votes? downvotes;
-  final int? v; // Version
   final String? settings;
 
   UserModelMe({
     this.id,
     this.username,
     this.email,
+    //this.profilePicture,
+    this.displayName,
     this.verified,
     this.verificationToken,
     this.dateJoined,
@@ -49,7 +53,6 @@ class UserModelMe {
     this.savedPostsAndComments,
     this.upvotes,
     this.downvotes,
-    this.v,
     this.settings,
   });
 
@@ -62,6 +65,8 @@ class UserModelMe {
       username: user['username'] as String?,
       email: user['email'] as String?,
       verified: user['verified'] as bool?,
+      displayName: user['displayName'] as String?,
+      //profilePicture: user['profilePicture'] as String,
       verificationToken: user['verificationToken'] as String?,
       dateJoined: user['dateJoined'] != null
           ? DateTime.parse(user['dateJoined'] as String)
@@ -71,9 +76,12 @@ class UserModelMe {
       interests: (user['interests'] as List<dynamic>?)
           ?.map((interest) => interest as String)
           .toList(),
-      followedUsers: (user['followedUsers'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      // followedUsers: (user['followedUsers'] as List<dynamic>?)
+      //     ?.map<Map<String, dynamic>>((followedUser) => {
+      //           '_id': followedUser['_id'] as String?,
+      //           'username': followedUser['username'] as String?,
+      //         })
+      //     .toList(),
       blockedUsers: (user['blockedUsers'] as List<dynamic>?)
           ?.map((blockedUser) =>
               BlockedUsers.fromJson(blockedUser as Map<String, dynamic>))
@@ -98,8 +106,57 @@ class UserModelMe {
           user['savedPostsAndComments'] as Map<String, dynamic>),
       upvotes: Votes.fromJson(user['upvotes'] as Map<String, dynamic>),
       downvotes: Votes.fromJson(user['downvotes'] as Map<String, dynamic>),
-      v: user['__v'] as int?,
       settings: user['settings'] as String?,
+    );
+  }
+
+  UserModelMe copyWith({
+    String? id,
+    String? username,
+    String? displayName,
+    String? email,
+    bool? verified,
+    String? verificationToken,
+    DateTime? dateJoined,
+    String? country,
+    String? gender,
+    List<String>? interests,
+    List<Map<String, dynamic>>? followedUsers,
+    List<BlockedUsers>? blockedUsers,
+    List<String>? joinedSubreddits,
+    List<String>? followedPosts,
+    List<String>? viewedPosts,
+    List<String>? hiddenPosts,
+    List<String>? posts,
+    Karma? karma,
+    SavedPostsAndComments? savedPostsAndComments,
+    Votes? upvotes,
+    Votes? downvotes,
+    String? settings,
+  }) {
+    return UserModelMe(
+      id: id ?? this.id,
+      username: username ?? this.username,
+      displayName: displayName ?? this.displayName,
+      email: email ?? this.email,
+      verified: verified ?? this.verified,
+      verificationToken: verificationToken ?? this.verificationToken,
+      dateJoined: dateJoined ?? this.dateJoined,
+      country: country ?? this.country,
+      gender: gender ?? this.gender,
+      interests: interests ?? this.interests,
+      followedUsers: followedUsers ?? this.followedUsers,
+      blockedUsers: blockedUsers ?? this.blockedUsers,
+      joinedSubreddits: joinedSubreddits ?? this.joinedSubreddits,
+      followedPosts: followedPosts ?? this.followedPosts,
+      viewedPosts: viewedPosts ?? this.viewedPosts,
+      hiddenPosts: hiddenPosts ?? this.hiddenPosts,
+      posts: posts ?? this.posts,
+      karma: karma ?? this.karma,
+      savedPostsAndComments: savedPostsAndComments ?? this.savedPostsAndComments,
+      upvotes: upvotes ?? this.upvotes,
+      downvotes: downvotes ?? this.downvotes,
+      settings: settings ?? this.settings,
     );
   }
   factory UserModelMe.fromJsonSearch(Map<String, dynamic> json) {
