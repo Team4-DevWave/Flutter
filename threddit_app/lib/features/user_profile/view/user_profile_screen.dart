@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,12 +8,17 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
+import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
+import 'package:threddit_clone/features/user_profile/view_model/on_link.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
+import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
+import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/models/comment.dart';
+import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -26,13 +33,24 @@ class _UserProfileState extends ConsumerState<UserProfile>
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
+  List<List<String>>? socialLinks;
+
   TabController? _tabController;
   final _comments = <Comment>[];
+  bool _fetchingPosts = true;
+  bool _fetchingPostsFinish = true;
   UserModelMe? user;
   String? dis;
 
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
+    socialLinks = ref.read(userProfileProvider)?.socialLinks;
+  }
+
+  void setData() async {
+    //getSettings function gets the user settings data and updates it in the provider
+    await ref.read(settingsFetchProvider.notifier).getSettings();
+    dis = ref.read(userModelProvider)?.displayName;
   }
 
   void setData() async {
@@ -46,6 +64,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void initState() {
     _getUserData();
     _fetchPosts();
+    setData();
     setData();
     _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
@@ -67,10 +86,18 @@ class _UserProfileState extends ConsumerState<UserProfile>
     final response =
         await fetchPostsByUsername(user!.username ?? '', _currentPage);
 
-    setState(() {
-      _posts.addAll(response.posts);
-      _currentPage++;
-    });
+    if (response.posts.isNotEmpty) {
+      setState(() {
+        _posts.addAll(response.posts);
+        _currentPage++;
+        _fetchingPosts = false;
+      });
+    } else {
+      setState(() {
+        _fetchingPosts = false;
+        _fetchingPostsFinish = false;
+      });
+    }
   }
 
   Widget buildCommentsTab() {
@@ -111,13 +138,49 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername(user?.username ?? '', _currentPage);
+      _fetchPosts();
     }
+  }
   }
 
   @override
   Widget build(BuildContext context) {
     final List<String> tabs = <String>['Posts', 'Comments', 'About'];
+    final settings = ref.watch(userProfileProvider);
+    final imageFile = ref.watch(imagePathProvider);
+
+    ImageProvider setProfilePic() {
+      if (imageFile != null) {
+        return FileImage(imageFile);
+      } else {
+        return const AssetImage('assets/images/Default_Avatar.png');
+      }
+    }
+
+    ref.listen(updatesEditProvider, (previous, next) {
+      if (next != null) {
+        setState(() {
+          _posts.clear();
+          _currentPage = 1;
+          _fetchingPosts = true;
+          _fetchingPostsFinish = true;
+        });
+        _fetchPosts();
+      }
+    });
+    ref.listen(updatesDeleteProvider, (previous, next) {
+      if (next != null) {
+        setState(() {
+          _posts.clear();
+          _currentPage = 1;
+          _fetchingPosts = true;
+          _fetchingPostsFinish = true;
+        });
+
+        _fetchPosts();
+      }
+    });
+
     final settings = ref.watch(userProfileProvider);
 
     final imageFile = ref.watch(imagePathProvider);
@@ -132,6 +195,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -179,15 +243,13 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                 Navigator.pushNamed(
                                         context, RouteClass.editUser)
                                     .then((value) => setState(() {
-                                          dis = ref
-                                              .read(userModelProvider)
-                                              ?.displayName;
-                                              print("ASDFASDFASDFASFDASDF");
-                                              print(dis);
+                                          socialLinks = ref
+                                              .read(userProfileProvider)
+                                              ?.socialLinks;
                                         }));
                               },
                               child: Text(
-                                "ُEdit",
+                                "Edit",
                                 style: AppTextStyles.buttonTextStyle.copyWith(
                                     backgroundColor: Colors.transparent),
                               ),
@@ -196,7 +258,9 @@ class _UserProfileState extends ConsumerState<UserProfile>
                               height: 5.h,
                             ),
                             Text(
-                              dis == "" ? "u/${user?.username}" : "u/$dis",
+                              settings!.displayName == ""
+                                  ? "u/${user?.username}"
+                                  : "u/${settings.displayName}",
                               style: AppTextStyles.primaryTextStyle
                                   .copyWith(fontSize: 20.spMin),
                             ),
@@ -217,11 +281,37 @@ class _UserProfileState extends ConsumerState<UserProfile>
                             SizedBox(
                               height: 5.h,
                             ),
-                            Text(
-                              settings!.about,
-                              style: AppTextStyles.secondaryTextStyle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            if (settings.about != "")
+                              Text(
+                                settings.about,
+                                style: AppTextStyles.secondaryTextStyle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            Expanded(
+                              child: Wrap(
+                                spacing: 7.0.w,
+                                runSpacing: 5.0.h,
+                                children: socialLinks!
+                                    .map(
+                                      (link) => ElevatedButton(
+                                        style: AppButtons.interestsButtons
+                                            .copyWith(
+                                                minimumSize:
+                                                    const MaterialStatePropertyAll(
+                                                        Size(20, 25))),
+                                        onPressed: () {
+                                          onLink(link);
+                                        },
+                                        child: Text(
+                                          link[1],
+                                          style: AppTextStyles.primaryTextStyle
+                                              .copyWith(fontSize: 13.spMin),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
                             ),
                           ],
                         ),
@@ -251,6 +341,15 @@ class _UserProfileState extends ConsumerState<UserProfile>
                         color: AppColors.whiteGlowColor,
                       ),
                     ),
+                    IconButton(
+                      onPressed: () {
+                        //share profile modal bottom sheet
+                      },
+                      icon: const Icon(
+                        Icons.share,
+                        color: AppColors.whiteGlowColor,
+                      ),
+                    ),
                   ],
                   pinned: true,
                   forceElevated: innerBoxIsScrolled,
@@ -273,20 +372,29 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 top: 100.h,
                 child: TabBarView(controller: _tabController, children: [
                   _posts.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.warning_amber,
-                              color: AppColors.whiteGlowColor,
-                            ),
-                            Text(
-                              "Wow, such empty in Posts!",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                          ],
-                        )
+                      ? _fetchingPosts
+                          ? SizedBox(
+                              height: 75.h,
+                              width: 75.w,
+                              child: Lottie.asset(
+                                'assets/animation/loading.json',
+                                repeat: true,
+                              ),
+                            )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.warning_amber,
+                                  color: AppColors.whiteGlowColor,
+                                ),
+                                Text(
+                                  "Wow, such empty in Posts!",
+                                  style: AppTextStyles.primaryTextStyle,
+                                ),
+                              ],
+                            )
                       : ListView.builder(
                           controller: _scrollController,
                           itemCount: _posts.length + 1,
@@ -299,14 +407,28 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                       uid!)
                                   : FeedUnit(_posts[index], uid!);
                             } else {
-                              return SizedBox(
-                                height: 75.h,
-                                width: 75.w,
-                                child: Lottie.asset(
-                                  'assets/animation/loading.json',
-                                  repeat: true,
-                                ),
-                              );
+                              return _fetchingPostsFinish
+                                  ? SizedBox(
+                                      height: 75.h,
+                                      width: 75.w,
+                                      child: Lottie.asset(
+                                        'assets/animation/loading.json',
+                                        repeat: true,
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Text(
+                                          'No more posts available.',
+                                          style: TextStyle(
+                                            fontSize: 20.sp,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ));
                             }
                           },
                         ),

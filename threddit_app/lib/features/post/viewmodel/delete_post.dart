@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
+import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/posting/view_model/history_manager.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -32,6 +33,7 @@ class DeletePost extends StateNotifier<bool> {
 
       if (response.statusCode == 204) {
         HistoryManager.removePostFromHistory(postid);
+        ref.read(updatesDeleteProvider.notifier).state = postid;
         return right(true);
       } else if (response.statusCode == 500) {
         return left(Failure('Post not found, may be deleted before'));

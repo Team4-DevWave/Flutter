@@ -29,6 +29,13 @@ class _CrossPostState extends ConsumerState<CrossPost> {
   bool isSpoiler = false;
   bool isNotProfile = true;
   bool _isLoading = false;
+  bool _isValid = true;
+
+  void _updateFormValidity() {
+    setState(() {
+      _isValid = lastValue.trim().isNotEmpty ? true : false;
+    });
+  }
 
   void onIsOn() {
     setState(() {
@@ -82,7 +89,6 @@ class _CrossPostState extends ConsumerState<CrossPost> {
         'uid': ref.read(userModelProvider)?.id
       });
     });
-    //ref.watch(isFirstTimeEnter.notifier).update((state) => false);
   }
 
   @override
@@ -99,7 +105,6 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     return _isLoading
         ? const Loading()
         : Scaffold(
-            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               leading: const ExitShare(),
               backgroundColor: AppColors.backgroundColor,
@@ -110,12 +115,14 @@ class _CrossPostState extends ConsumerState<CrossPost> {
               ),
               actions: [
                 TextButton(
-                  onPressed: onPost,
+                  onPressed: _isValid ? onPost : null,
                   child: Text(
                     'Post',
                     style: AppTextStyles.primaryTextStyle.copyWith(
                         fontSize: 20.spMin,
-                        color: AppColors.blueColor,
+                        color: _isValid
+                            ? AppColors.blueColor
+                            : AppColors.whiteHideColor,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -176,12 +183,11 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                           .read(isFirstTimeEnter.notifier)
                           .update((state) => false);
                       ref.read(sharedPostProvider.notifier).setTitle(value);
-                      //ref.watch(isChanged.notifier).update((state) => true);
+
                       lastValue = value;
+                      _updateFormValidity();
                     },
-                    initialValue: /*(*/ ref.read(
-                            isFirstTimeEnter) /* &&
-                            !ref.watch(isChanged))*/
+                    initialValue: ref.read(isFirstTimeEnter)
                         ? lastValue =
                             ref.read(sharedPostProvider).post?.title ?? ""
                         : lastValue = ref.read(sharedPostProvider).title ?? "",

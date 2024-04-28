@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/post/view/widgets/delete_post.dart';
+import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -140,13 +142,31 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
             delete(context, ref, widget.post.id);
           },
         ),
+        if ((widget.post.image == "" || widget.post.image == null) &&
+            (widget.post.video == "" || widget.post.video == null) &&
+            (widget.post.linkURL == "" || widget.post.linkURL == null))
+          ListTile(
+            title: const Text(
+              "Edit post",
+              style: TextStyle(color: Colors.white),
+            ),
+            leading: const Icon(
+              Icons.edit,
+              color: Colors.white,
+            ),
+            onTap: () {
+              editPost(context, ref, widget.post);
+            },
+          ),
         ListTile(
           title: const Text(
             "Crosspost to community",
             style: TextStyle(color: Colors.white),
           ),
           leading: const Icon(Icons.share_outlined),
-          onTap: () {},
+          onTap: () {
+            share(context, ref, widget.post);
+          },
         ),
       ],
     );
