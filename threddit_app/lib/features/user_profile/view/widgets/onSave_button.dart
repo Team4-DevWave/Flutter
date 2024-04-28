@@ -37,7 +37,7 @@ class _SaveButtonState extends ConsumerState<SaveButton> {
                 });
                 Navigator.pop(context);
               });
-              final response2 = await updateDisplayName(dis, ref);
+              final response2 = await updateDisplayName(widget.dis, ref);
               response2.fold((l) {
                 showSnackBar(navigatorKey.currentContext!, l.message);
               } , (r) {

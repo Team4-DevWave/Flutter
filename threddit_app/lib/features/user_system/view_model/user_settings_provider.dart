@@ -103,37 +103,6 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
       }
     }
   }
-
-FutureEither<bool> updateUserLinks() async {
-    String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
-    final token = await getToken();
-    final url = "http://$local:8000/api/v1/users/me/settings";
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
-    final jsonBody = state.toJson();
-    try {
-      final response =
-          await http.patch(Uri.parse(url), headers: headers, body: jsonBody);
-      if (response.statusCode == 200) {
-        final resBody = json.decode(response.body) as Map<String, dynamic>;
-        final userProfileData =
-            resBody['data']['settings']['userProfile'] as Map<String, dynamic>;
-        final updatedProfile = UserProfile.fromJson(userProfileData);
-        state = updatedProfile;
-        return right(true);
-      } else {
-        return left(Failure("Can't submit changes, please try again later"));
-      }
-    } catch (e) {
-      if (e is SocketException || e is TimeoutException || e is HttpException) {
-        return left(Failure('Check your internet connection...'));
-      } else {
-        return left(Failure(e.toString()));
-      }
-    }
-  }
   
   void updateAbout(String about) => state = state.copyWith(about: about);
   void updateContetnVis(bool vis) =>
@@ -144,9 +113,9 @@ FutureEither<bool> updateUserLinks() async {
   //     state = state.copyWith(profilePicture: pic);
   // void updateImagePath(File?imgePath) =>
   //     state = state.copyWith(imagePath: imgePath);
-  void updateSocialLinks(List<String> social) =>
+  void updateSocialLinks(List<List<String>>?social) =>
       state = state.copyWith(socialLinks: social);
-  void addLink(String link) => state.socialLinks.add(link);
+  void addLink(List<String>link) => state.socialLinks.add(link);
   void setUser(UserProfile user) => state = user;
   
 }

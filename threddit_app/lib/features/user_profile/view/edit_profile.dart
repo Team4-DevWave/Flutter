@@ -8,12 +8,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/add_social_link.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/onSave_button.dart';
-import 'package:threddit_clone/features/user_profile/view/widgets/social_form.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/features/user_profile/view/widgets/social_form.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/theme/button_styles.dart';
@@ -45,13 +46,11 @@ class _EditProfileState extends ConsumerState<EditProfile> {
 
   Future<void> _pickImage() async {
     prefs = await SharedPreferences.getInstance();
-    prefs = await SharedPreferences.getInstance();
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage == null) return;
     // 1. Get Application Documents Directory
     final appDir = await getApplicationDocumentsDirectory();
-
 
     final uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
     // 2. Create the destination file path
@@ -67,8 +66,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     setState(() {
       image = base64Encode(imageBytes);
       //ref.read(userProfileProvider.notifier).updateProfilePic(image!);
-      ref.read(imagePathProvider.notifier).state = imageFile;
-      isImage = true;
+      //ref.read(imagePathProvider.notifier).state = imageFile;
       isImage = true;
       isAnythingChanged = true;
     });
@@ -91,17 +89,6 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   }
 
   Future<void> _removeImage() async {
-    // 1. Get the stored image path
-    final savedImagePath = prefs?.getString(PrefConstants.imagePath);
-
-    // 2. Check if a path exists and delete the file
-    if (savedImagePath != null) {
-      final fileToDelete = File(savedImagePath);
-      if (await fileToDelete.exists()) {
-        await fileToDelete.delete();
-      }
-    }
-
     // 1. Get the stored image path
     final savedImagePath = prefs?.getString(PrefConstants.imagePath);
 
@@ -146,7 +133,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         initIsImage = true;
         isImage = true;
         image = userProfile.profilePicture;
-        imageFile = ref.watch(imagePathProvider);
+        //imageFile = ref.watch(imagePathProvider);
       }
     }
     super.didChangeDependencies();

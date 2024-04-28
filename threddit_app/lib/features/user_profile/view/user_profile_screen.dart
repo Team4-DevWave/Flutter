@@ -15,8 +15,6 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
-import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
-import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -47,11 +45,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
     socialLinks = ref.read(userProfileProvider)?.socialLinks;
   }
 
-  void setData() async {
-    //getSettings function gets the user settings data and updates it in the provider
-    await ref.read(settingsFetchProvider.notifier).getSettings();
-    dis = ref.read(userModelProvider)?.displayName;
-  }
 
   void setData() async {
     //getSettings function gets the user settings data and updates it in the provider
@@ -141,7 +134,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
       _fetchPosts();
     }
   }
-  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -181,16 +174,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
       }
     });
 
-    final settings = ref.watch(userProfileProvider);
-
-    final imageFile = ref.watch(imagePathProvider);
-
-    ImageProvider setProfilePic() {
-      if (imageFile != null) {
-        return FileImage(imageFile);
-      } else {}
-      return const AssetImage('assets/images/Default_Avatar.png');
-    }
 
     return DefaultTabController(
       length: tabs.length,
