@@ -14,11 +14,13 @@ final searchInputProvider = StateProvider<String>((ref) => '');
 
 final searchingApisProvider =
     StateNotifierProvider<SearchingApis, bool>((ref) => SearchingApis(ref));
-final searchFutureProvider = FutureProvider.autoDispose<SearchModel>(
+final searchFutureProvider = FutureProvider<SearchModel>(
   (ref) async {
     final searchingApi = ref.read(searchingApisProvider.notifier);
     final query = ref.read(searchInputProvider);
-    final searchResult = await searchingApi.search(query); // Assuming search returns SearchModel
+    print("THIS IS THE QUERY INSIDE THE SEARCHING FUTURE PROVIDER: ");
+    print(query);
+    final searchResult = searchingApi.search(query); // Assuming search returns SearchModel
     return searchResult;
   },
 );

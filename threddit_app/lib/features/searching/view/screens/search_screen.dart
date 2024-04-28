@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/community/view/search_community.dart';
+import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   SearchScreen({Key? key}) : super(key: key);
@@ -11,7 +14,32 @@ class SearchScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
- final TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
+  SearchModel search =
+      SearchModel(posts: [], comments: [], subreddits: [], medias: []);
+  @override
+  void initState() {
+    super.initState();
+    searchController.addListener(onChange);
+  }
+
+  void fetchSearch(String query) async {
+    search = await ref.watch(searchingApisProvider.notifier).search(query);
+  }
+
+  void onChange() async {
+    print("the text is ${searchController.text}");
+    setState(() {
+      fetchSearch(searchController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,31 +48,21 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         child: Column(
           children: [
             TextFormField(
-                   controller: searchController,
-                    onChanged: (text) {
-                        ref.read(searchingApisProvider.notifier).search(text);
-                        ref.read(searchInputProvider.notifier).state = text;
-                        setState(() {
-                          
-
-                        });
-                    },
+              style: AppTextStyles.primaryTextStyle,
+              controller: searchController,
             ),
             Expanded(
-              child: ref.watch(searchFutureProvider).when(
-                  data: (data) {
-                    print('final data length : ${data?.posts.length}');
-                    return ListView.builder(
-                        itemCount: data?.posts.length ?? 0,
-                        itemBuilder: (_, int index) {
-                          return ListTile(
-                            dense: true,
-                            title:  Text("TEST")
-                          );
-                        });
-                  },
-                  error: (e, s) => Center(child: Text("ERROR")),
-                  loading: () => Center(child: CircularProgressIndicator())),
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(
+                      search.posts[index].title,
+                      style: AppTextStyles.primaryTextStyle,
+                    ),
+                  );
+                },
+                itemCount: search.posts.length,
+              ),
             )
           ],
         ),

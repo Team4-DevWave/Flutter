@@ -8,7 +8,7 @@ class SearchResultsScreen extends ConsumerWidget {
   const SearchResultsScreen({required this.query});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final searchResults = ref.read(searchFutureProvider(query));
+    //final searchResults = ref.read(searchFutureProvider(query));
     return DefaultTabController(
         length: 4,
         child: Scaffold(
