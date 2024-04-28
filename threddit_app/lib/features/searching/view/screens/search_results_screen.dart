@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/Moderation/model/moderator.dart';
 import 'package:threddit_clone/features/Moderation/view/widgets/moderators_search.dart';
@@ -34,6 +35,7 @@ class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: ListTile(
+            onTap: () => Navigator.pop(context),
             leading: const Icon(Icons.search),
             title: Text(
               widget.searchText,

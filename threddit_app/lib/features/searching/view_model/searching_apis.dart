@@ -16,7 +16,7 @@ final searchingApisProvider =
     StateNotifierProvider<SearchingApis, bool>((ref) => SearchingApis(ref));
 final trendingFutureProvider = FutureProvider<List<Trend>>(
   (ref) async {
-    final searchingApi = ref.read(searchingApisProvider.notifier);
+    final searchingApi = ref.watch(searchingApisProvider.notifier);
     final searchResult =
         searchingApi.getTrending(); // Assuming search returns SearchModel
     return searchResult;
@@ -72,7 +72,7 @@ class SearchingApis extends StateNotifier<bool> {
     print(response.statusCode);
     print(response.body);
     Map<String, dynamic> data = jsonDecode(response.body);
-    List<dynamic> trendsData = data['data']['trends'];
+    List<dynamic> trendsData = data['data']['restOfTrends'];
     List<Trend> trends =
         trendsData.map((json) => Trend.fromJson(json)).toList();
     return trends;

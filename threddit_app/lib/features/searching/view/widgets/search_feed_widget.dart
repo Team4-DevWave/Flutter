@@ -66,13 +66,13 @@ class _SearchFeedWidgetState extends ConsumerState<SearchFeedWidget> {
   }
 
   Future _fetchPosts() async {
-    print("ALOOOOOOOOOOOOOOOOOOOOO1111");
+    print("ALOOOOOOOOOOOOOOOOOOOOO11112323");
 
     final response = await searchTest(widget.searchText, _currentPage);
 
     final SearchModel results = response;
     print(results.posts.length);
-
+    print("HAMADAAAAAAAAAAAAAAAAAAHELOOOOOOOO");
     if (results.posts.isNotEmpty) {
       setState(() {
         _posts.addAll(results.posts);

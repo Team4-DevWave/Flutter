@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 final histroyFutureProvider = FutureProvider<List<String>>(
   (ref) async {
     List<String>? history = await getSearchHistory();
@@ -17,6 +18,13 @@ Future<void> saveSearchHistory(String history) async {
 Future<List<String>?> getSearchHistory() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getStringList('searchHistory');
+}
+
+Future<void> removeSearchHistory(String historyToDelete) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String>? currentHistory = prefs.getStringList('searchHistory');
+  currentHistory!.remove(historyToDelete);
+  await prefs.setStringList("searchHistory", currentHistory);
 }
 
 List<String> addingHistory(String history, List<String>? currentHistory) {

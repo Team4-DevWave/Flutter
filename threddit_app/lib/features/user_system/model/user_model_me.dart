@@ -122,10 +122,6 @@ class UserModelMe {
       followedUsers: (json['followedUsers'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      blockedUsers: (json['blockedUsers'] as List<dynamic>?)
-          ?.map((blockedUser) =>
-              BlockedUsers.fromJson(blockedUser as Map<String, dynamic>))
-          .toList(),
       joinedSubreddits: (json['joinedSubreddits'] as List<dynamic>?)
           ?.map((subreddit) => subreddit as String)
           .toList(),

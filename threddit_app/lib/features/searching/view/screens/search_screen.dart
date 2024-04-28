@@ -25,12 +25,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
   int mode = 0;
   String? userId;
+  List<String> localSearchHistory = [];
   SearchModel search = SearchModel(
       posts: [], comments: [], subreddits: [], medias: [], users: []);
   @override
   void initState() {
     super.initState();
     getUserId();
+    getSearchHistory();
     searchController.addListener(onChange);
   }
 
@@ -70,6 +72,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     super.dispose();
   }
 
+  Future fetchHistory() async {
+    final response = await getSearchHistory();
+    if (response != null) {
+      localSearchHistory = response;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final futureData = ref.watch(trendingFutureProvider);
@@ -88,72 +97,80 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           controller: searchController,
           onFieldSubmitted: (value) {
             saveSearchHistory(value);
+
             final arguements = {
               'search': search,
               'text': value,
             };
             Navigator.pushNamed(context, RouteClass.searchResultsScreen,
-                arguments: arguements);
+                    arguments: arguements)
+                .then((test) => setState(() {
+                      localSearchHistory.add(value);
+                    }));
           },
         ),
       ),
       body: Padding(
           padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
           child: mode == 1
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Communities",
-                      style:
-                          AppTextStyles.boldTextStyle.copyWith(fontSize: 15.sp),
-                    ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          contentPadding: const EdgeInsets.all(0),
-                          leading: ClipOval(
-                            child: search.subreddits[index].srLooks.icon != ''
-                                ? Image.network(
-                                    search.subreddits[index].srLooks.icon,
+              ? SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Communities",
+                        style: AppTextStyles.boldTextStyle
+                            .copyWith(fontSize: 15.sp),
+                      ),
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            dense: true,
+                            contentPadding: const EdgeInsets.all(0),
+                            leading: ClipOval(
+                              child: search.subreddits[index].srLooks.icon != ''
+                                  ? Image.network(
+                                      search.subreddits[index].srLooks.icon,
 
-                                    fit: BoxFit.cover,
-                                    width: 30
-                                        .w, // You can adjust width and height to your needs
-                                    height: 30.h,
-                                  )
-                                : SizedBox(
-                                    width: 30,
-                                    height: 30.h,
-                                    child: Image.asset(
-                                      'assets/images/Reddit_Icon_FullColor.png',
+                                      fit: BoxFit.cover,
+                                      width: 30
+                                          .w, // You can adjust width and height to your needs
+                                      height: 30.h,
+                                    )
+                                  : SizedBox(
+                                      width: 30,
+                                      height: 30.h,
+                                      child: Image.asset(
+                                        'assets/images/Reddit_Icon_FullColor.png',
+                                      ),
                                     ),
-                                  ),
-                          ),
-                          title: Text(
-                            "r/${search.subreddits[index].name}",
-                            style: AppTextStyles.boldTextStyle
-                                .copyWith(fontSize: 15.sp),
-                          ),
-                          onTap: () {
-                            print(userId);
-                            print(search.subreddits[index].name);
-                            Navigator.pushNamed(
-                                context, RouteClass.communityScreen,
-                                arguments: {
-                                  'id': search.subreddits[index].name,
-                                  'uid': " "
-                                });
-                          },
-                        );
-                      },
-                      itemCount: search.subreddits.length,
-                    ),
-                  ],
+                            ),
+                            title: Text(
+                              "r/${search.subreddits[index].name}",
+                              style: AppTextStyles.boldTextStyle
+                                  .copyWith(fontSize: 15.sp),
+                            ),
+                            onTap: () {
+                              print(userId);
+                              print(search.subreddits[index].name);
+                              Navigator.pushNamed(
+                                  context, RouteClass.communityScreen,
+                                  arguments: {
+                                    'id': search.subreddits[index].name,
+                                    'uid': " "
+                                  });
+                            },
+                          );
+                        },
+                        itemCount: search.subreddits.length,
+                      ),
+                    ],
+                  ),
                 )
               : SingleChildScrollView(
-                child: Column(
+                  child: Column(
                     children: [
                       history.when(
                           data: (data) {
@@ -162,6 +179,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return ListTile(
+                                  trailing: IconButton(
+                                      onPressed: () {
+                                        removeSearchHistory(data[index]);
+                                        setState(() {
+                                          localSearchHistory.remove(localSearchHistory[index]);
+                                        });
+                                      },
+                                      icon: Icon(Icons.clear)),
                                   onTap: () {
                                     final arguements = {
                                       'search': search,
@@ -172,12 +197,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                         arguments: arguements);
                                   },
                                   title: Text(
-                                    "${data[index]}",
+                                    "${localSearchHistory[index]}",
                                     style: AppTextStyles.primaryTextStyle,
                                   ),
                                 );
                               },
-                              itemCount: data.length,
+                              itemCount: localSearchHistory.length,
                             );
                           },
                           error: ((error, stackTrace) => Center(
@@ -218,7 +243,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             );
                           },
                           error: ((error, stackTrace) => Center(
-                              child: Text("Error is ${error.toString()}", style: AppTextStyles.primaryTextStyle,))),
+                                  child: Text(
+                                "Error is ${error.toString()}",
+                                style: AppTextStyles.primaryTextStyle,
+                              ))),
                           loading: () => Center(
                                 child: Lottie.asset(
                                   'assets/animation/loading.json',
@@ -227,7 +255,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               )),
                     ],
                   ),
-              )),
+                )),
     );
   }
 }
