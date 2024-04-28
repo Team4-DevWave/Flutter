@@ -29,10 +29,7 @@ class CommentItem extends ConsumerStatefulWidget {
 
 class _CommentItemState extends ConsumerState<CommentItem> {
   late TextEditingController _commentController;
-  late AsyncValue<Votes> upvotes;
-  late AsyncValue<Votes> downvotes;
-  bool upVoted = false;
-  bool downVoted = false;
+
   bool _isLoading = false;
   bool _isSaved = false;
   void _setVariables() async {
@@ -56,40 +53,18 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   void initState() {
     super.initState();
     _setVariables();
-    upvotes = ref.read(getUserUpvotesProvider);
-    downvotes = ref.read(getUserDownvotesProvider);
     _commentController = TextEditingController(text: widget.comment.content);
     
   }
 
   void upVoteComment(WidgetRef ref) async {
     ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
-    if (upVoted) {
-      widget.comment.votes.upvotes--;
-    } else {
-      widget.comment.votes.upvotes++;
-      if (downVoted) {
-        widget.comment.votes.downvotes--;
-      }
-    }
-    upVoted = !upVoted;
-    downVoted = false;
     setState(() {});
   }
 
   void downVoteComment(WidgetRef ref) async {
     ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
-    if (downVoted) {
-      widget.comment.votes.downvotes--;
-    } else {
-      widget.comment.votes.downvotes++;
-      if (upVoted) {
-        widget.comment.votes.upvotes--;
-      }
-    }
-    downVoted = !downVoted;
-    upVoted = false;
-
+       
     setState(() {});
   }
 
@@ -574,7 +549,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_upward_outlined,
                         size: 30.spMin,
                       ),
-                      color: upVoted ? Colors.red : Colors.white,
+                      color:  Colors.white,
                     ),
                     Text(
                       '${widget.comment.votes.upvotes - widget.comment.votes.downvotes == 0 ? "vote" : widget.comment.votes.upvotes - widget.comment.votes.downvotes}',
@@ -589,9 +564,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_downward_outlined,
                         size: 30.spMin,
                       ),
-                      color: downVoted
-                          ? const Color.fromARGB(255, 97, 137, 212)
-                          : Colors.white,
+                      color: Colors.white,
                     ),
                   ],
                 )

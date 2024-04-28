@@ -1,6 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
@@ -9,6 +12,8 @@ class Post {
   final String title;
   String? textBody;
   String? image;
+  String? type;
+
   bool nsfw;
   bool spoiler;
   bool locked;
@@ -19,9 +24,13 @@ class Post {
   int commentsCount;
   final User? userID;
   final SubredditInfo? subredditID;
-  final VotesList? votes;
+  VotesList? votes;
   final Post? parentPost;
+  bool? hidden;
+  bool? saved;
+  String? userVote;
 
+  final String? linkURL;
   Post({
     required this.id,
     required this.title,
@@ -37,8 +46,13 @@ class Post {
     this.userID,
     this.subredditID,
     this.votes,
+    this.linkURL,
     required this.commentsCount,
     this.parentPost,
+    this.hidden,
+    this.saved,
+    this.userVote,
+    this.type,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -52,6 +66,8 @@ class Post {
       locked: json['locked'],
       approved: json['approved'],
       video: json['video'],
+      type: json['type'],
+      linkURL: json['url'] ?? "",
       postedTime: json['postedTime'] != null
           ? DateTime.parse(json['postedTime'])
           : DateTime.now(),
@@ -69,6 +85,9 @@ class Post {
       parentPost: json['parentPost'] != null
           ? Post.fromJson(json['parentPost'] as Map<String, dynamic>)
           : null,
+      hidden: json['hidden'],
+      saved: json['saved'],
+      userVote: json['userVote'],
     );
   }
   Map<String, dynamic> toJson() {
@@ -89,7 +108,52 @@ class Post {
       'subredditID': subredditID?.toJson(),
       'votes': votes?.toJson(),
       'parentPost': parentPost?.toJson(),
+      'hidden': hidden,
+      'saved': saved,
+      'userVote': userVote,
+      'type': type,
+      'url': linkURL
     };
+  }
+
+  Post copyWith({
+    String? id,
+    String? title,
+    String? textBody,
+    String? image,
+    String? linkURL,
+    bool? nsfw,
+    bool? spoiler,
+    bool? locked,
+    bool? approved,
+    DateTime? postedTime,
+    String? video,
+    int? numViews,
+    int? commentsCount,
+    User? userID,
+    SubredditInfo? subredditID,
+    VotesList? votes,
+    Post? parentPost,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      textBody: textBody ?? this.textBody,
+      image: image ?? this.image,
+      linkURL: linkURL ?? this.linkURL,
+      nsfw: nsfw ?? this.nsfw,
+      spoiler: spoiler ?? this.spoiler,
+      locked: locked ?? this.locked,
+      approved: approved ?? this.approved,
+      postedTime: postedTime ?? this.postedTime,
+      video: video ?? this.video,
+      numViews: numViews ?? this.numViews,
+      commentsCount: commentsCount ?? this.commentsCount,
+      userID: userID ?? this.userID,
+      subredditID: subredditID ?? this.subredditID,
+      votes: votes ?? this.votes,
+      parentPost: parentPost ?? this.parentPost,
+    );
   }
 }
 
@@ -134,8 +198,8 @@ class SubredditInfo {
 }
 
 class VotesList {
-  final int upvotes;
-  final int downvotes;
+  int upvotes;
+  int downvotes;
 
   VotesList({required this.upvotes, required this.downvotes});
 
@@ -204,7 +268,8 @@ Future<PostApiResponse> fetchPosts(
       'Authorization': 'Bearer $token',
     },
   );
-
+  print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+  print(response.body);
   if (response.statusCode == 200) {
     return PostApiResponse.fromJson(jsonDecode(response.body));
   } else {

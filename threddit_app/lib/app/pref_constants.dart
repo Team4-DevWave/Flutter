@@ -6,6 +6,7 @@ class PrefConstants {
   static String authToken = 'authToken';
   static String userName = 'username';
   static String userId = '_id';
+  static String imagePath = 'imagePath';
 }
 
 class AppConstants {

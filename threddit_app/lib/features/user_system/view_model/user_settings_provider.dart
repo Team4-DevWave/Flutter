@@ -27,7 +27,6 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
   ///this function sends the current state of the user data
   ///if the request is successfull, the data will be updated in the provider
   FutureEither<bool> updateUserData() async {
-
     String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
     final token = await getToken();
     final url = "http://$local:8000/api/v1/users/me/settings";
@@ -41,9 +40,57 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
           await http.patch(Uri.parse(url), headers: headers, body: jsonBody);
       if (response.statusCode == 200) {
         final resBody = json.decode(response.body) as Map<String, dynamic>;
-        final userProfileData = resBody['data']['settings']['userProfile'] as Map<String, dynamic>;
+        final userProfileData =
+            resBody['data']['settings']['userProfile'] as Map<String, dynamic>;
         final updatedProfile = UserProfile.fromJson(userProfileData);
         state = updatedProfile;
+        return right(true);
+      } else {
+        return left(Failure("Can't submit changes, please try again later"));
+      }
+    } catch (e) {
+      if (e is SocketException || e is TimeoutException || e is HttpException) {
+        return left(Failure('Check your internet connection...'));
+      } else {
+        return left(Failure(e.toString()));
+      }
+    }
+  }
+
+  FutureEither<bool> updateUserLinks() async {
+    String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+    final token = await getToken();
+    final url = "http://$local:8000/api/v1/users/me/settings";
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final List<Map<String, String>> mappedSocialLinks =
+        state.socialLinks.map((link) {
+      final Map<String, String> newLink = {
+        'socialType': link[0].toLowerCase(),
+        'username': link[1],
+      };
+      if (link.length == 3) {
+        newLink['url'] = link[2];
+      }
+      return newLink;
+    }).toList();
+
+    final dataToSend = {
+      "userProfile": {
+        "socialLinks": mappedSocialLinks,
+      }
+    };
+
+    final jsonBody = json.encode(dataToSend);
+
+    try {
+      final response =
+          await http.patch(Uri.parse(url), headers: headers, body: jsonBody);
+
+      if (response.statusCode == 200) {
         return right(true);
       } else {
         return left(Failure("Can't submit changes, please try again later"));
@@ -66,12 +113,17 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
       state = state.copyWith(activeCommunitiesVisibility: active);
   void updateProfilePic(String pic) =>
       state = state.copyWith(profilePicture: pic);
-  void updateImagePath(File?imgePath) =>
+  void updateImagePath(File? imgePath) =>
       state = state.copyWith(imagePath: imgePath);
-  void updateSocialLinks(List<String> social) =>
+  void updateSocialLinks(List<List<String>>? social) =>
       state = state.copyWith(socialLinks: social);
-  void addLink(String link) => state.socialLinks.add(link);
+  void addLink(List<String> link) => state.socialLinks.add(link);
+  void setUser(UserProfile user) => state = user;
 }
+
+final socialLinksFutureProvider = FutureProvider((ref) async {
+  return ref.read(userProfileProvider)?.socialLinks;
+});
 
 final userProfileProvider =
     StateNotifierProvider<UserProfileNotifier, UserProfile?>(

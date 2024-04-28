@@ -1,8 +1,11 @@
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
+import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -49,21 +52,51 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
   Widget build(BuildContext) {
     void toggleNsfw() {
       widget.post.nsfw = !widget.post.nsfw;
-      setstate() {}
+      setState(() {});
       ref.read(toggleNSFW(widget.post.id));
       Navigator.pop(context);
     }
 
     void toggleSPOILER() async {
       widget.post.spoiler = !widget.post.spoiler;
-      setstate() {}
+      setState(() {});
       ref.read(toggleSpoiler(widget.post.id));
       Navigator.pop(context);
     }
 
-    void upVotePost(WidgetRef ref) async {}
+    void upVotePost(WidgetRef ref) async {
+      ref.read(votePost((postID: widget.post.id, voteType: 1)));
+      if (widget.post.userVote == 'upvoted') {
+        widget.post.votes!.upvotes--;
+        widget.post.userVote = 'none';
+      } else if (widget.post.userVote == 'downvoted') {
+        widget.post.votes!.downvotes--;
+        widget.post.votes!.upvotes++;
+        widget.post.userVote = 'upvoted';
+      } else {
+        widget.post.votes!.upvotes++;
+        widget.post.userVote = 'upvoted';
+      }
+      setState(() {});
+    }
 
-    void downVotePost(WidgetRef ref) async {}
+    void downVotePost(WidgetRef ref) async {
+      ref.read(votePost((postID: widget.post.id, voteType: -1)));
+      if (widget.post.userVote == 'downvoted') {
+        widget.post.votes!.downvotes--;
+        widget.post.userVote = 'none';
+      }
+      if (widget.post.userVote == 'upvoted') {
+        widget.post.votes!.upvotes--;
+        widget.post.votes!.downvotes++;
+        widget.post.userVote = 'downvoted';
+      } else {
+        widget.post.votes!.downvotes++;
+        widget.post.userVote = 'downvoted';
+      }
+      setState(() {});
+    }
+
     final now = DateTime.now();
     final difference = now.difference(widget.post.postedTime);
     final hoursSincePost = difference.inHours;
@@ -367,6 +400,16 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                   ),
                 ),
               ),
+            widget.post.type == 'url'
+                ? Center(
+                    child: AnyLinkPreview(
+                      link: widget.post.linkURL ?? '',
+                      onTap: () {
+                        launchUrlFunction(Uri.parse(widget.post.linkURL ?? ''));
+                      },
+                    ),
+                  )
+                : SizedBox(),
             Row(
               children: [
                 IconButton(
@@ -377,7 +420,9 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                     Icons.arrow_upward_outlined,
                     size: 30,
                   ),
-                  color: Colors.white,
+                  color: widget.post.userVote == 'upvoted'
+                      ? Colors.red
+                      : Colors.white,
                 ),
                 Text(
                   '${widget.post.votes!.upvotes - widget.post.votes!.downvotes == 0 ? "vote" : widget.post.votes!.upvotes - widget.post.votes!.downvotes}',
@@ -392,7 +437,9 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                     Icons.arrow_downward_outlined,
                     size: 30,
                   ),
-                  color: Colors.white,
+                  color: widget.post.userVote == 'downvoted'
+                      ? Colors.blue
+                      : Colors.white,
                 ),
                 Expanded(
                   child: Row(

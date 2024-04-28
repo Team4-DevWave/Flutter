@@ -3,13 +3,20 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/add_social_link.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/onSave_button.dart';
+import 'package:threddit_clone/features/user_profile/view/widgets/social_form.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
+import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -24,7 +31,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   TextEditingController _aboutController = TextEditingController();
   String? displayName;
   String? about;
-  List<String>? socialLinks;
+  List<List<String>>? socialLinks;
   bool? initIsActive;
   bool? initIsVisible;
   bool? isActive;
@@ -37,23 +44,61 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   bool? initIsImage;
 
   Future<void> _pickImage() async {
+    prefs = await SharedPreferences.getInstance();
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage == null) return;
-    imageFile = File(pickedImage.path);
+    // 1. Get Application Documents Directory
+    final appDir = await getApplicationDocumentsDirectory();
+
+    final uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+    // 2. Create the destination file path
+    final newImagePath = '${appDir.path}/$uniqueFileName.jpg';
+
+    // 3. Copy the picked image to the new path
+    imageFile = await File(pickedImage.path).copy(newImagePath);
+
+    // 4. Save the new image path in SharedPreferences
+    await prefs?.setString(PrefConstants.imagePath, newImagePath);
 
     Uint8List imageBytes = await imageFile!.readAsBytes();
     setState(() {
       image = base64Encode(imageBytes);
-      isImage = true;
       ref.read(userProfileProvider.notifier).updateProfilePic(image!);
       ref.read(imagePathProvider.notifier).state = imageFile;
-
+      isImage = true;
       isAnythingChanged = true;
     });
   }
 
+  Future<void> _onDelete(List<String> link) async {
+    socialLinks?.remove(link);
+    ref.read(userProfileProvider.notifier).updateSocialLinks(socialLinks);
+    final response =
+        await ref.read(userProfileProvider.notifier).updateUserLinks();
+
+    response.fold(
+        (failure) =>
+            showSnackBar(navigatorKey.currentContext!, failure.message),
+        (sucesss) {
+      showSnackBar(
+          navigatorKey.currentContext!, "Social links updated successfully");
+      setState(() {});
+    });
+  }
+
   Future<void> _removeImage() async {
+    // 1. Get the stored image path
+    final savedImagePath = prefs?.getString(PrefConstants.imagePath);
+
+    // 2. Check if a path exists and delete the file
+    if (savedImagePath != null) {
+      final fileToDelete = File(savedImagePath);
+      if (await fileToDelete.exists()) {
+        await fileToDelete.delete();
+      }
+    }
+
     setState(() {
       image = "";
       isImage = false;
@@ -114,17 +159,6 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     });
   }
 
-  void updateSocialLinks(String link) {
-    ref.read(userProfileProvider.notifier).addLink(link);
-    setState(() {
-      if (!socialLinks!.contains(link)) {
-        isAnythingChanged = true;
-      } else {
-        isAnythingChanged = false;
-      }
-    });
-  }
-
   void updateActive(bool value) {
     ref.read(userProfileProvider.notifier).updateActiveCom(value);
     setState(() {
@@ -151,6 +185,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(socialLinksFutureProvider);
+
     ImageProvider setProfilePic() {
       if (imageFile != null) {
         return FileImage(imageFile!);
@@ -181,7 +217,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
               Text(
                 "Remove profile picture",
                 style: AppTextStyles.boldTextStyle
-                    .copyWith(fontSize: 18, color: Colors.red),
+                    .copyWith(fontSize: 18.spMin, color: Colors.red),
               )
             ],
           ),
@@ -226,7 +262,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                         Text(
                           "Pick a profile image",
                           style: AppTextStyles.boldTextStyle
-                              .copyWith(fontSize: 18),
+                              .copyWith(fontSize: 18.spMin),
                         ),
                       ],
                     ),
@@ -289,7 +325,9 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                                       color: Colors.white,
                                     )
                                   : const Icon(Icons.add, color: Colors.white),
-                                  style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromARGB(255,37, 39, 44))),
+                              style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll(
+                                      Color.fromARGB(255, 37, 39, 44))),
                             ),
                           )
                         ]),
@@ -328,16 +366,16 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                 TextFormField(
                   style: AppTextStyles.primaryTextStyle,
                   controller: _aboutController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                        borderRadius: BorderRadius.all(Radius.circular(16.r))),
                     labelText: "About you - optional",
                     filled: true,
-                    fillColor: Color.fromARGB(255, 38, 38, 38),
+                    fillColor: const Color.fromARGB(255, 38, 38, 38),
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     floatingLabelAlignment: FloatingLabelAlignment.start,
                     alignLabelWithHint: true,
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                       color: AppColors.whiteHideColor,
                     ),
                   ),
@@ -363,37 +401,103 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     SizedBox(
                       height: 10.h,
                     ),
-                    IntrinsicWidth(
-                      child: ElevatedButton(
-                          onPressed: () {
-                            //open add link bottom sheet
-                            showModalBottomSheet(
-                                context: context,
-                                backgroundColor: AppColors.backgroundColor,
-                                builder: (ctx) {
-                                  return const AddSocialLink();
-                                });
-                          },
-                          style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(
-                                  Color.fromARGB(255, 38, 38, 38)),
-                              shadowColor: null,
-                              overlayColor: null,
-                              surfaceTintColor: null,
-                              foregroundColor: null),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.add,
-                                color: AppColors.whiteColor,
-                              ),
-                              Text(
-                                "Add social link",
-                                style: AppTextStyles.primaryButtonGlowTextStyle,
-                              )
-                            ],
-                          )),
+                    Wrap(
+                      spacing: 7.0.w,
+                      runSpacing: 5.0.h,
+                      children: socialLinks!
+                          .map((link) => IntrinsicWidth(
+                                child: ElevatedButton(
+                                  style: AppButtons.interestsButtons,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        link[1],
+                                        style: AppTextStyles.primaryTextStyle
+                                            .copyWith(fontSize: 16.spMin),
+                                      ),
+                                      IconButton(
+                                        onPressed: () => _onDelete(link),
+                                        icon: const Icon(
+                                          Icons.cancel_outlined,
+                                        ),
+                                        iconSize: 19.spMin,
+                                        color: AppColors.whiteColor,
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      useSafeArea: true,
+                                      isScrollControlled: true,
+                                      isDismissible: false,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(15.0.r)),
+                                      ),
+                                      context: context,
+                                      backgroundColor:
+                                          AppColors.backgroundColor,
+                                      builder: (ctx) {
+                                        return SocialForm(
+                                          typePressed: link[0]
+                                                  .substring(0, 1)
+                                                  .toUpperCase() +
+                                              link[0].substring(1),
+                                          initial: link,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ))
+                          .toList(),
                     ),
+                    SizedBox(height: 5.h),
+                    socialLinks!.length < 5
+                        ? IntrinsicWidth(
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  //open add link bottom sheet
+                                  showModalBottomSheet(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(15.0.r),
+                                        ),
+                                      ),
+                                      useSafeArea: true,
+                                      isScrollControlled: true,
+                                      isDismissible: false,
+                                      context: context,
+                                      backgroundColor:
+                                          AppColors.backgroundColor,
+                                      builder: (ctx) {
+                                        return const AddSocialLink();
+                                      });
+                                },
+                                style: const ButtonStyle(
+                                    backgroundColor: MaterialStatePropertyAll(
+                                        Color.fromARGB(255, 38, 38, 38)),
+                                    shadowColor: null,
+                                    overlayColor: null,
+                                    surfaceTintColor: null,
+                                    foregroundColor: null),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.add,
+                                      color: AppColors.whiteColor,
+                                    ),
+                                    Text(
+                                      "Add social link",
+                                      style: AppTextStyles
+                                          .primaryButtonGlowTextStyle,
+                                    )
+                                  ],
+                                )),
+                          )
+                        : const SizedBox(),
                     SizedBox(
                       height: 10.h,
                     ),
@@ -408,12 +512,12 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                               Text(
                                 "Content Visibility",
                                 style: AppTextStyles.boldTextStyle
-                                    .copyWith(fontSize: 18),
+                                    .copyWith(fontSize: 18.spMin),
                               ),
                               Text(
                                 "All posts to this profile will appear in r/all and your profile can be discovered in /users",
                                 style: AppTextStyles.primaryButtonHideTextStyle
-                                    .copyWith(fontSize: 12),
+                                    .copyWith(fontSize: 12.spMin),
                                 maxLines: 2,
                               )
                             ],
@@ -444,13 +548,13 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                               Text(
                                 "Show active communities",
                                 style: AppTextStyles.boldTextStyle
-                                    .copyWith(fontSize: 18),
+                                    .copyWith(fontSize: 18.spMin),
                               ),
                               Text(
                                 "Decide whether to show the communities you are active in on your profile",
                                 maxLines: 2,
                                 style: AppTextStyles.primaryButtonHideTextStyle
-                                    .copyWith(fontSize: 12),
+                                    .copyWith(fontSize: 12.spMin),
                               )
                             ],
                           ),

@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
@@ -23,12 +24,13 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
     const HomeScreen(),
     const MainCommunityScreen(),
     const AddPostScreen(),
-     const MainInboxScreen(),
-    const NotificationsScreen()
+    const MainChatScreen(),
+    const MainInboxScreen()
   ];
 
   Future<void> _setData() async {
     await ref.read(settingsFetchProvider.notifier).getMe();
+    print("ddddddddddddddddddddddd${await getToken()}");
   }
 
   @override
@@ -88,7 +90,7 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
               Icons.notifications,
               color: Color.fromARGB(255, 255, 255, 255),
             ),
-            label: 'Notification',
+            label: 'Inbox',
           ),
         ],
         currentIndex: selectedIndex,

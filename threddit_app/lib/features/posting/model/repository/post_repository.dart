@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -12,32 +13,9 @@ import 'package:threddit_clone/models/votes.dart';
 /// togglePostNSFW is used to toggle the NSFW status of a post
 /// togglePostSpoiler is used to toggle the spoiler status of a post
 /// fetchPost is used to get a post by it's ID
-
+typedef votingParameters = ({String postID, int voteType});
 class PostRepository {
-  Future<void> votePost(String postId, int voteType) async {
-    try {
-      String? token = await getToken();
-      final url = 'http://${AppConstants.local}:8000/comments?_id=$postId';
-      final Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      };
-      final response = await http.patch(
-        Uri.parse(url),
-        body: jsonEncode({'voteType': voteType}),
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        print("post upvoted");
-      } else {
-        print('Failed to vote on post: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error voting on post: $e');
-    }
-  }
-
+ 
   Future<void> togglePostNSFW(String postId) async {
     try {
       String? jwtToken = await getToken();
@@ -150,3 +128,28 @@ class PostRepository {
     }
   }
 }
+ final votePost=FutureProvider.family<void,votingParameters>((ref,arguments) async {
+  
+    try {
+      String? token = await getToken();
+      final url = 'http://${AppConstants.local}:8000/api/v1/posts/${arguments.postID}/vote';
+      final Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+      final response = await http.patch(
+        Uri.parse(url),
+        body: jsonEncode({'voteType': arguments.voteType}),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        print("post upvoted");
+      } else {
+        print('Failed to vote on post: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error voting on post: $e');
+    }
+  }
+  );

@@ -6,7 +6,6 @@ import 'package:threddit_clone/features/home_page/view_model/home_page_provider.
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/features/post/viewmodel/send_post.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
-import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
