@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
+import 'package:threddit_clone/features/listing/view/widgets/comment_item_user_profile.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
@@ -29,14 +31,18 @@ class UserProfile extends ConsumerStatefulWidget {
 class _UserProfileState extends ConsumerState<UserProfile>
     with TickerProviderStateMixin {
   final _scrollController = ScrollController();
+
   final _posts = <Post>[];
   int _currentPage = 1;
+  int _currentPageComments = 1;
   List<List<String>>? socialLinks;
 
   TabController? _tabController;
   final _comments = <Comment>[];
   bool _fetchingPosts = true;
+  bool _fetchingComments = true;
   bool _fetchingPostsFinish = true;
+  bool _fetchingCommentsFinish = true;
   UserModelMe? user;
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
@@ -53,10 +59,13 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void initState() {
     _getUserData();
     _fetchPosts();
+
     setData();
     _scrollController.addListener(_onScroll);
+
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
+    _fetchComments();
     super.initState();
   }
 
@@ -84,6 +93,28 @@ class _UserProfileState extends ConsumerState<UserProfile>
       setState(() {
         _fetchingPosts = false;
         _fetchingPostsFinish = false;
+      });
+    }
+  }
+
+  Future _fetchComments() async {
+    final response = await fetchComments(
+      user!.username ?? '',
+    );
+
+    if (response.isNotEmpty) {
+      setState(() {
+        _comments.addAll(response);
+        _currentPageComments++;
+        _fetchingComments = false;
+        if (response.length < 10) {
+          _fetchingCommentsFinish = false;
+        }
+      });
+    } else {
+      setState(() {
+        _fetchingComments = false;
+        _fetchingCommentsFinish = false;
       });
     }
   }
@@ -408,7 +439,53 @@ class _UserProfileState extends ConsumerState<UserProfile>
                             }
                           },
                         ),
-                  buildCommentsTab(),
+                  _comments.isEmpty
+                      ? _fetchingComments
+                          ? SizedBox(
+                              height: 75.h,
+                              width: 75.w,
+                              child: Lottie.asset(
+                                'assets/animation/loading.json',
+                                repeat: true,
+                              ),
+                            )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.warning_amber,
+                                  color: AppColors.whiteGlowColor,
+                                ),
+                                Text(
+                                  "Wow, such empty in Comments!",
+                                  style: AppTextStyles.primaryTextStyle,
+                                ),
+                              ],
+                            )
+                      : ListView.builder(
+                          itemCount: _comments.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index < _comments.length) {
+                              return CommentItemForProfile(
+                                  comment: _comments[index], uid: uid!);
+                            } else {
+                              return SizedBox(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    'No more Comments ',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ));
+                            }
+                          },
+                        ),
                   Padding(
                     padding:
                         EdgeInsets.symmetric(horizontal: 8.w, vertical: 30.h),

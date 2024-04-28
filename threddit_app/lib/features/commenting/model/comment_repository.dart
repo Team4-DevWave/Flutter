@@ -62,13 +62,11 @@ class CommentRepository {
         headers: headers,
       );
       if (response.statusCode == 201) {
-        print('comment added successfully');
       } else {
         throw Exception(
             'Failed to create comment. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error creating comment: $e');
       throw Exception('Failed to create comment');
     }
   }
