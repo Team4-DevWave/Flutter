@@ -24,3 +24,32 @@ final fetchChatRooms = FutureProvider<List<Chatroom>>((ref) async {
     }
 
 });
+
+typedef ChatRoomParameters = ({List<String> users, String groupName});
+final createChatroom=FutureProvider.family<void,ChatRoomParameters>((ref,parameters) async {
+  try {
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/');
+    String? token = await getToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+    final body = jsonEncode({
+        'chatroomName': parameters.groupName,
+        'chatroomMembers': parameters.users,
+      });
+    final response = await http.post(
+      url,
+      body:body,
+      headers: headers,
+    );
+    if (response.statusCode == 201) {
+      print('chat room created successfully');
+    } else {
+      print('Failed to create chat room ');
+    }
+  } catch (e) {
+    print('Error creating chat room: $e');
+    throw Exception('Failed to create chat room: $e');
+  }
+});

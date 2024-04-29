@@ -76,6 +76,7 @@ dependencies:
   tuple: ^2.0.2
   path_provider: ^2.1.3
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -108,7 +109,7 @@ flutter:
     - assets/animation/loading.json
     - assets/images/avatar.png
     - assets/images/thinking-snoo.png
-    - assets/images/
+    - assets/images/group-avatars.png
    
 
 

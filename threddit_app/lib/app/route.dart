@@ -3,6 +3,8 @@ import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_sc
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
+import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
+import 'package:threddit_clone/features/chatting/view/screens/chat_room.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
@@ -65,7 +67,6 @@ class RouteClass {
   static const String communityScreen = "/community";
   static const String homeScreen = "/home";
   static const String appPostScreen = "/app_post_screen";
-  static const String chatScreen = "/chat";
   static const String inboxScreen = "/inbox";
   static const String mainCommunityScreen = "/communities";
   static const String notificationsScreen = "/notifications";
@@ -109,6 +110,8 @@ class RouteClass {
   static const String otherUsers = '/other-users';
   static const String messageScreen = '/message';
   static const String searchCommunity = '/serach-community';
+  static const String chatRoom = '/chat-room';
+
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -155,8 +158,6 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case appPostScreen:
         return MaterialPageRoute(builder: (_) => const AddPostScreen());
-      case chatScreen:
-        return MaterialPageRoute(builder: (_) => const ChatScreen());
       case inboxScreen:
         return MaterialPageRoute(builder: (_) => const MainInboxScreen());
       case mainCommunityScreen:
@@ -268,6 +269,9 @@ class RouteClass {
         );
       case moderatorsScreen:
         return MaterialPageRoute(builder: (_) => const ModeratorsScreen());
+      case chatRoom:
+      Chatroom chatroom = settings.arguments as Chatroom;
+        return MaterialPageRoute(builder: (_) => ChatRoomScreen(chatroom: chatroom,));
       case addModeratorScreen:
         return MaterialPageRoute(
             builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/new_chat.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
@@ -30,14 +31,35 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _fetchChatrooms();
+   _fetchChatrooms();
+    _initializeSocketConnection();
   }
+  void _initializeSocketConnection() async {
+  final url = 'http://${AppConstants.local}:8000'; 
+  
+ try {
+    socket = io(url, OptionBuilder().setTransports(['websocket']).build());
+    socket?.on('connect', (_) => print('Connected to Socket.IO server'));
+    socket?.on('disconnect', (_) => print('Disconnected from Socket.IO server'));
+
+    // Handle incoming events from the server 
+
+    socket?.connect(); // Connect to the server
+  } catch (error) {
+    print('Error connecting to Socket.IO: $error');
+  }
+}
 
   Future<void> _fetchChatrooms() async {
+
     String? token = await getToken();
-    final url = Uri.parse('http://${AppConstants.local}/api/v1/chatrooms/');
-    final response =
-        await http.get(url, headers: {'Authorization': 'Bearer $token'});
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/');
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+
+    try{final response = await http.get(url, headers: headers);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body)['data'];
@@ -48,19 +70,23 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
     } else {
       print('Error fetching chatrooms: ${response.statusCode}');
     }
+  } catch (error) {
+    // Handle any errors that might occur during the request
+    print('Error fetching chatrooms: $error');
   }
+}
 
   @override
   void dispose() {
     _tabController?.dispose();
-    socket?.disconnect(); // Disconnect from socket on dispose
+    socket?.disconnect(); 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
-    String uid = ref.read(userModelProvider)!.id!;
+    String uid = ref.read(userModelProvider)!.username!;
 
     return SafeArea(
       child: Scaffold(
@@ -85,19 +111,14 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
             SizedBox(width: 5.w),
           ],
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(110.h),
+            preferredSize: Size.fromHeight(40.h),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.0.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20.h),
-                  const Text("Discover Channels",
-                      style: TextStyle(
-                          color: Color.fromARGB(126, 255, 255, 255),
-                          fontSize: 16)),
-                  // Add more widgets or placeholders here for future content
-                  const SizedBox(height: 70),
+                 
                   TabBar(
                     controller: _tabController,
                     indicatorColor: const Color.fromARGB(255, 221, 106, 24),
@@ -125,7 +146,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
               builder: (context) {
                 return Padding(
                   padding: MediaQuery.of(context).viewInsets,
-                  child: const NewChat(),
+                  child: NewChat(uid:uid),
                 );
               },
             );
@@ -151,7 +172,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
                             ? const Text('No messages yet')
                             : Text(chatroom.latestMessage),
                         onTap: () {
-                          // Navigate to chat screen with chatroom details
+                          Navigator.pushNamed(context,RouteClass.chatRoom , arguments: chatroom);
                         },
                       );
                     },
