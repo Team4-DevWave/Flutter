@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/description.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/post_types.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
@@ -111,6 +113,10 @@ class RouteClass {
   static const String otherUsers = '/other-users';
   static const String messageScreen = '/message';
   static const String searchCommunity = '/serach-community';
+
+  static const String postTypes = '/post-types';
+  static const String description = '/decription';
+
   static const String searchResultsScreen = '/serach-results';
 
   /// Generates the appropriate route based on the provided [settings].
@@ -130,7 +136,8 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const StartScreen());
       case userProfileScreen:
         return MaterialPageRoute(builder: (_) => const UserProfile());
-
+      case postTypes:
+        return MaterialPageRoute(builder: (_) => const PostTypesScreen());
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
@@ -214,7 +221,8 @@ class RouteClass {
       case approveScreen:
         return MaterialPageRoute(
             builder: (_) => const ApproveScreen(), fullscreenDialog: true);
-
+      case description:
+        return MaterialPageRoute(builder: (_) => const DescriptionScreen());
       case updateBanScreen:
         List<String> input = settings.arguments as List<String>;
         return MaterialPageRoute(
@@ -280,16 +288,18 @@ class RouteClass {
             builder: (_) => EditModeratorScreen(moderator: user));
       case otherUsers:
         String uname = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) =>  OtherUsersProfile(
-          username: uname,
-        ));
+        return MaterialPageRoute(
+            builder: (_) => OtherUsersProfile(
+                  username: uname,
+                ));
       case searchCommunity:
         String community = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => SearchCommunityScreenPage(community: community));
       case searchResultsScreen:
         final args = settings.arguments as Map<String, dynamic>;
-        final searchModel = args['search'] as SearchModel; // Extract the community object
+        final searchModel =
+            args['search'] as SearchModel; // Extract the community object
         final searchText = args['text'] as String;
         return MaterialPageRoute(
           builder: (_) => SearchResultsScreen(
