@@ -3,26 +3,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/post/view/rules_screen.dart';
-import 'package:threddit_clone/features/post/view/widgets/classic_post_card.dart';
-import 'package:threddit_clone/features/post/view/widgets/onexit_share.dart';
-import 'package:threddit_clone/features/post/viewmodel/share_post.dart';
-import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
-import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/post/view/exit_edit.dart';
+import 'package:threddit_clone/features/post/view/widgets/add_edit_link.dart';
+import 'package:threddit_clone/features/post/viewmodel/edit_post.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
-class CrossPost extends ConsumerStatefulWidget {
-  const CrossPost({super.key});
+class EditPost extends ConsumerStatefulWidget {
+  const EditPost({super.key});
 
   @override
-  ConsumerState<CrossPost> createState() => _CrossPostState();
+  ConsumerState<EditPost> createState() => _EditPostState();
 }
 
-class _CrossPostState extends ConsumerState<CrossPost> {
-  String lastValue = '';
+class _EditPostState extends ConsumerState<EditPost> {
+  TextEditingController textBodyController = TextEditingController(text: "");
+  String initialValue = '';
   String? postingIn;
   bool isOn = false;
   bool isNSFW = false;
@@ -30,11 +29,18 @@ class _CrossPostState extends ConsumerState<CrossPost> {
   bool isNotProfile = true;
   bool _isLoading = false;
   bool _isValid = true;
+  bool _isChanged = false;
 
   void _updateFormValidity() {
-    setState(() {
-      _isValid = lastValue.trim().isNotEmpty ? true : false;
-    });
+    _isChanged = (textBodyController.text != initialValue);
+    setState(
+      () {
+        _isValid = textBodyController.text.trim().isNotEmpty &&
+                textBodyController.text.trim() != initialValue.trim()
+            ? true
+            : false;
+      },
+    );
   }
 
   void onIsOn() {
@@ -55,69 +61,80 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     });
   }
 
-  void openRulesOverlay() {
-    final shared = ref.read(sharedPostProvider);
-    showModalBottomSheet(
-      backgroundColor: AppColors.backgroundColor,
-      context: context,
-      builder: (ctx) {
-        return RulesPage(
-          communityName: shared.destination!,
-        );
-      },
-    );
-  }
-
-  Future<void> onPost() async {
-    ref.read(sharedPostProvider.notifier).setNSFW(isNSFW, isSpoiler);
-    ref.read(sharedPostProvider.notifier).setTitle(lastValue);
-    final shared = ref.read(sharedPostProvider);
-    final message =
-        shared.destination == '' ? 'your profile' : shared.destination;
-
-    //send shared post to backend and recieve the responsed from the provider
-    //to show user a message
-    final response = await ref.read(sharePostsProvider.notifier).sharePost();
-    response.fold(
+  void onSave() async {
+    ref.read(editPostProvider.notifier).updateNFSW(isNSFW);
+    ref
+        .read(editPostProvider.notifier)
+        .updatePostTextBody(textBodyController.text);
+    ref.read(editPostProvider.notifier).updateSpoiler(isSpoiler);
+    final respnose =
+        await ref.read(editPostProvider.notifier).editPostRequest();
+    respnose.fold(
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
         (post) {
       showSnackBar(
-          navigatorKey.currentContext!, 'Your post shared to $message');
-      Navigator.pushNamed(context, RouteClass.postScreen, arguments: {
-        'currentpost': post,
-        'uid': ref.read(userModelProvider)?.id
-      });
+          navigatorKey.currentContext!, "Post updated successfully");
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.popAndPushNamed(context, RouteClass.postScreen,
+          arguments: {'currentpost': post, 'uid': post.id});
     });
+  }
+
+  void onInsert(String name, String link) {
+    setState(() {
+      if (link.contains("http")) {
+        textBodyController.text = "${textBodyController.text}[$name]($link)";
+      } else {
+        textBodyController.text =
+            "${textBodyController.text}[$name](http://$link)";
+      }
+    });
+  }
+
+  void _setData() {
+    isNSFW = ref.read(editPostProvider).nsfw;
+    isSpoiler = ref.read(editPostProvider).spoiler;
+    textBodyController.text = ref.read(editPostProvider).textBody ?? "";
+    initialValue = ref.read(editPostProvider).textBody ?? "";
+    _isValid = textBodyController.text.trim().isNotEmpty &&
+            textBodyController.text.trim() != initialValue.trim()
+        ? true
+        : false;
+  }
+
+  @override
+  void initState() {
+    _setData();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    lastValue = ref.read(sharedPostProvider).post?.title ?? "";
-
-    _isLoading = ref.watch(sharePostsProvider);
-    ref.read(sharedPostProvider).destination == ''
-        ? postingIn = 'My Profile'
-        : postingIn = ref.read(sharedPostProvider).destination;
-
-    isNotProfile = (ref.read(sharedPostProvider).destination != '');
-
+    _updateFormValidity();
     return _isLoading
         ? const Loading()
         : Scaffold(
             appBar: AppBar(
-              leading: const ExitShare(),
+              leading: _isChanged
+                  ? const ExitEdit()
+                  : IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.close, size: 27.spMin)),
               backgroundColor: AppColors.backgroundColor,
               title: Text(
-                'Crosspost',
+                'Edit post',
                 style:
                     AppTextStyles.primaryTextStyle.copyWith(fontSize: 24.spMin),
               ),
               actions: [
                 TextButton(
-                  onPressed: _isValid ? onPost : null,
+                  onPressed: _isValid ? onSave : null,
                   child: Text(
-                    'Post',
+                    'Save',
                     style: AppTextStyles.primaryTextStyle.copyWith(
                         fontSize: 20.spMin,
                         color: _isValid
@@ -136,65 +153,25 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ListTile(
-                    onTap: () {
-                      ref
-                          .read(popCounter.notifier)
-                          .update((state) => state = state + 1);
-                      Navigator.pushNamed(context, RouteClass.chooseCommunity);
-                    },
-                    leading: Icon(Icons.account_circle,
-                        size: 38.spMin, color: AppColors.whiteColor),
-                    title: Row(
-                      children: [
-                        Text(
-                          postingIn!,
-                          style: AppTextStyles.primaryTextStyle.copyWith(
-                            fontSize: 20.spMin,
-                            color: AppColors.whiteColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_down_outlined,
-                          size: 38.spMin,
-                        ),
-                      ],
-                    ),
-                    trailing: isNotProfile
-                        ? TextButton(
-                            onPressed: () {
-                              openRulesOverlay();
-                            },
-                            child: Text(
-                              'Rules',
-                              style: AppTextStyles.primaryTextStyle.copyWith(
-                                  fontSize: 17.spMin,
-                                  color: AppColors.blueColor,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )
-                        : null,
-                  ),
-                  SizedBox(height: 10.h),
                   TextFormField(
+                    controller: textBodyController,
                     onChanged: (value) {
-                      ref
-                          .read(isFirstTimeEnter.notifier)
-                          .update((state) => false);
-                      ref.read(sharedPostProvider.notifier).setTitle(value);
+                      // ref
+                      //     .read(isEditFirstTime.notifier)
+                      //     .update((state) => false);
 
-                      lastValue = value;
+                      // lastValue = value;
+
+                      textBodyController.text = value;
                       _updateFormValidity();
                     },
-                    initialValue: ref.read(isFirstTimeEnter)
-                        ? lastValue =
-                            ref.read(sharedPostProvider).post?.title ?? ""
-                        : lastValue = ref.read(sharedPostProvider).title ?? "",
+                    // initialValue: ref.read(isEditFirstTime)
+                    //     ? lastValue = ref.read(editPostProvider).textBody ?? ""
+                    //     : lastValue,
                     style: AppTextStyles.primaryTextStyle
                         .copyWith(fontSize: 20.spMin),
                     decoration: InputDecoration(
-                      hintText: 'An interesting title',
+                      hintText: 'Your text post (optional)',
                       hintStyle: AppTextStyles.primaryTextStyle
                           .copyWith(fontSize: 20.spMin),
                       focusedBorder: const UnderlineInputBorder(
@@ -206,7 +183,6 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                     cursorColor: AppColors.blueColor,
                   ),
                   SizedBox(height: 30.h),
-                  PostClassic(post: ref.read(sharedPostProvider).post!),
                 ],
               ),
             ),
@@ -214,9 +190,11 @@ class _CrossPostState extends ConsumerState<CrossPost> {
               color: AppColors.backgroundColor,
               child: Row(
                 children: [
+                  EditLink(onInsert),
                   IconButton(
                     onPressed: onIsOn,
-                    icon: const Icon(Icons.more_vert),
+                    icon: const Icon(Icons.more_vert,
+                        color: AppColors.whiteHideColor),
                   ),
                   isOn
                       ? Row(
@@ -270,4 +248,9 @@ class _CrossPostState extends ConsumerState<CrossPost> {
             ),
           );
   }
+}
+
+void editPost(BuildContext context, WidgetRef ref, Post post) {
+  ref.read(editPostProvider.notifier).updatePostToBeEdited(post);
+  Navigator.pushNamed(context, RouteClass.editPostScreen);
 }

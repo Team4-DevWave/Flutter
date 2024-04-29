@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/communities_tiles.dart';
-import 'package:threddit_clone/features/home_page/view/widgets/favourites_tiles.dart';
+// import 'package:threddit_clone/features/home_page/view/widgets/favourites_tiles.dart';
 // import 'package:threddit_clone/features/home_page/view/widgets/favourites_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.dart';
 import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
@@ -46,7 +46,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                   .copyWith(fontWeight: FontWeight.bold),
             ),
           ),
-          favouritesList == [] ? const SizedBox() : const FavouriteTiles(),
+          //favouritesList == [] ? const SizedBox() : const FavouriteTiles(),
           const CommunitiesTiles(title: "Communities"),
           const FollowingTiles(title: "Following"),
         ],

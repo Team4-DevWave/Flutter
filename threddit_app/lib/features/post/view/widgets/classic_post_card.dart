@@ -5,7 +5,6 @@ import 'package:threddit_clone/features/community/view%20model/community_provide
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-
 import 'package:threddit_clone/theme/theme.dart';
 import 'package:video_player/video_player.dart';
 
@@ -149,7 +148,8 @@ class _PostClassicState extends ConsumerState<PostClassic> {
               ],
             ),
           ),
-          if (widget.post.video != null || widget.post.image != null)
+          if ((widget.post.video != null || widget.post.image != null) &&
+              (widget.post.video != '' || widget.post.image != ''))
             Column(
               children: [
                 Padding(

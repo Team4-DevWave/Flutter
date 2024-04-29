@@ -146,7 +146,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                       );
                     },
                     child: Text(
-                      'r/${widget.dataOfPost.userID?.username}',
+                      'u/${widget.dataOfPost.userID?.username}',
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),

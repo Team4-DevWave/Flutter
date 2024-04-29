@@ -16,6 +16,11 @@ import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// The `FeedUnitShare` class is a `ConsumerStatefulWidget` that represents a shared post in a feed.
+/// It displays the post's details, such as the title, body, and number of votes, and allows the user to upvote or downvote the post,
+/// mark it as NSFW or a spoiler, and share it.
+/// The class also provides methods for toggling the NSFW and spoiler statuses, upvoting and downvoting the post, and getting moderation options.
+/// The `FeedUnitShare` class takes a user ID, a `Post` object representing the shared post, and a `Post` object representing the parent post as parameters.
 class FeedUnitShare extends ConsumerStatefulWidget {
   final Post parentPost;
   final Post dataOfPost;
