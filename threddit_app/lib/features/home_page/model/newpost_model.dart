@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 class Post {
@@ -26,6 +28,7 @@ class Post {
   bool? hidden;
   bool? saved;
   String? userVote;
+
   final String? linkURL;
   Post({
     required this.id,
