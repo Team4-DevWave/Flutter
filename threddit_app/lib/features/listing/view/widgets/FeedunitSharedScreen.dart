@@ -234,7 +234,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                       },
                     ),
                   )
-                : SizedBox(),
+                : const SizedBox(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -307,7 +307,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                                 },
                               );
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.comment,
                               color: AppColors.whiteColor,
                             ),

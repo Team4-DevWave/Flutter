@@ -101,21 +101,30 @@ class _MainInboxScreenState extends ConsumerState<MainInboxScreen>
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
                           final message = messages[index];
-                          return GestureDetector(
-                              onTap: () {
-                                if (!message.read) {
-                                  ref.read(toggleRead(message.id));
-                                }
-                                Navigator.pushNamed(
-                                  context,
-                                  RouteClass.messageScreen,
-                                  arguments: {
-                                    'message': message,
-                                    'uid': uid,
+                          return Column(
+                            children: [
+                              GestureDetector(
+                                  onTap: () {
+                                    if (!message.read) {
+                                      ref.read(toggleRead(message.id));
+                                    }
+                                    Navigator.pushNamed(
+                                      context,
+                                      RouteClass.messageScreen,
+                                      arguments: {
+                                        'message': message,
+                                        'uid': uid,
+                                      },
+                                    );
                                   },
-                                );
-                              },
-                              child: MessageItem(message: message, uid: uid));
+                                  child:
+                                      MessageItem(message: message, uid: uid)),
+                              const Divider(
+                                color: Colors.grey, 
+                                thickness: 0.3, 
+                              ),
+                            ],
+                          );
                         },
                       );
                     },

@@ -89,7 +89,7 @@ Future<List<Comment>> fetchComments(String username) async {
   String? token = await getToken();
 
   final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/${username}/comments"),
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/$username/comments"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

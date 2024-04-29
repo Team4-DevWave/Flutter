@@ -49,7 +49,7 @@ class _PostClassicState extends ConsumerState<PostClassic> {
         final communityAsyncValue =
             ref.watch(fetchcommunityProvider(widget.post.subredditID!.name));
         communityAsyncValue.whenData((community) {
-          communityImage = community.srLooks.icon!;
+          communityImage = community.srLooks.icon;
         });
       }
     }

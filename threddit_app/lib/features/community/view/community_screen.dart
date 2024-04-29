@@ -101,12 +101,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   }
 
   Widget buildCommunityScreen(Subreddit community) {
-    community.srLooks.banner = (community.srLooks.banner == null ||
-            community.srLooks.banner == '')
+    community.srLooks.banner = (community.srLooks.banner == '')
         ? "https://htmlcolorcodes.com/assets/images/colors/bright-blue-color-solid-background-1920x1080.png"
         : community.srLooks.banner;
-    community.srLooks.icon = (community.srLooks.icon == null ||
-            community.srLooks.icon == '')
+    community.srLooks.icon = (community.srLooks.icon == '')
         ? "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg"
         : community.srLooks.icon;
     bool isCurrentUserModerator = community.moderators.contains(widget.uid);
@@ -159,7 +157,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               children: [
                 Positioned.fill(
                   child: Image.network(
-                    community.srLooks.banner!,
+                    community.srLooks.banner,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -231,7 +229,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
                           backgroundImage:
-                              NetworkImage(community.srLooks.icon!),
+                              NetworkImage(community.srLooks.icon),
                           radius: 30,
                         ),
                       ),

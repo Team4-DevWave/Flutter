@@ -1,4 +1,3 @@
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +7,6 @@ import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.da
 
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
 /// display a feed of posts. The widget takes a `feedID` as a parameter, which is used

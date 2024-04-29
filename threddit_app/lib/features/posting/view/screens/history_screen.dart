@@ -5,7 +5,6 @@ import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
 import 'package:threddit_clone/features/posting/view/widgets/shared_post_card.dart';
 
 import 'package:threddit_clone/features/posting/view_model/history_manager.dart';
-import 'package:threddit_clone/features/user_system/view/screens/about_you_screen.dart';
 
 /// This widget displays the history screen
 /// It displays the history of the user and which pots he had previously viewed 

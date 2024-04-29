@@ -45,7 +45,7 @@ class _SaveChangesState extends State<SaveChanges> {
               onPressed: widget.saveChanges,
               style: ElevatedButton.styleFrom(
                   shape: const StadiumBorder(),
-                  backgroundColor: Color.fromARGB(255, 255, 81, 0)),
+                  backgroundColor: const Color.fromARGB(255, 255, 81, 0)),
               child: Text(
                 "Save",
                 style: AppTextStyles.primaryButtonGlowTextStyle,
