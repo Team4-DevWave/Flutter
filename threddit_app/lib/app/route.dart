@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/description.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/screens/chat_room.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/post_types.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
@@ -16,6 +18,9 @@ import 'package:threddit_clone/features/Moderation/view/screens/banned_users_scr
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
+import 'package:threddit_clone/features/searching/model/search_model.dart';
+import 'package:threddit_clone/features/searching/view/screens/search_results_screen.dart';
+import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
 import 'package:threddit_clone/features/user_profile/view/other_users.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
@@ -33,7 +38,6 @@ import 'package:threddit_clone/features/home_page/view/screens/main_community_sc
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
-import 'package:threddit_clone/features/home_page/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/post/view/confirm_post.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
@@ -113,6 +117,11 @@ class RouteClass {
   static const String chatRoom = '/chat-room';
 
 
+  static const String postTypes = '/post-types';
+  static const String description = '/decription';
+
+  static const String searchResultsScreen = '/serach-results';
+
   /// Generates the appropriate route based on the provided [settings].
   ///
   /// The [settings] parameter contains the name of the route and optional arguments.
@@ -130,11 +139,12 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const StartScreen());
       case userProfileScreen:
         return MaterialPageRoute(builder: (_) => const UserProfile());
-
+      case postTypes:
+        return MaterialPageRoute(builder: (_) => const PostTypesScreen());
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
-        return MaterialPageRoute(builder: (_) => const SearchScreen());
+        return MaterialPageRoute(builder: (_) => SearchScreen());
       case communityInfo:
         final args = settings.arguments as Map<String, dynamic>;
         final community =
@@ -212,7 +222,8 @@ class RouteClass {
       case approveScreen:
         return MaterialPageRoute(
             builder: (_) => const ApproveScreen(), fullscreenDialog: true);
-
+      case description:
+        return MaterialPageRoute(builder: (_) => const DescriptionScreen());
       case updateBanScreen:
         List<String> input = settings.arguments as List<String>;
         return MaterialPageRoute(
@@ -284,13 +295,25 @@ class RouteClass {
             builder: (_) => EditModeratorScreen(moderator: user));
       case otherUsers:
         String uname = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) =>  OtherUsersProfile(
-          username: uname,
-        ));
+        return MaterialPageRoute(
+            builder: (_) => OtherUsersProfile(
+                  username: uname,
+                ));
       case searchCommunity:
         String community = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => SearchCommunityScreenPage(community: community));
+      case searchResultsScreen:
+        final args = settings.arguments as Map<String, dynamic>;
+        final searchModel =
+            args['search'] as SearchModel; // Extract the community object
+        final searchText = args['text'] as String;
+        return MaterialPageRoute(
+          builder: (_) => SearchResultsScreen(
+            searchResults: searchModel,
+            searchText: searchText,
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }

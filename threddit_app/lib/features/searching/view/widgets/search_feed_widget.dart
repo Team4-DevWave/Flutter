@@ -7,8 +7,11 @@ import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.da
 
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
+import 'package:threddit_clone/features/searching/model/search_model.dart';
+import 'package:threddit_clone/features/searching/view/widgets/search_post_feed_widget.dart';
+import 'package:threddit_clone/features/searching/view/widgets/search_shared_feed_unit.dart';
+import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
@@ -28,16 +31,15 @@ import 'package:url_launcher/url_launcher.dart';
 /// The `initState` method initializes the state of the widget by fetching the first set
 /// of posts. The `dispose` method is used to clean up the controller when the widget is
 /// removed from the widget tree.
-class FeedWidget extends ConsumerStatefulWidget {
-  final String feedID;
-  final String subreddit;
-  const FeedWidget({super.key, required this.feedID, required this.subreddit});
+class SearchFeedWidget extends ConsumerStatefulWidget {
+  final String searchText;
+  const SearchFeedWidget({super.key, required this.searchText});
 
   @override
-  ConsumerState<FeedWidget> createState() => _FeedWidgetState();
+  ConsumerState<SearchFeedWidget> createState() => _SearchFeedWidgetState();
 }
 
-class _FeedWidgetState extends ConsumerState<FeedWidget> {
+class _SearchFeedWidgetState extends ConsumerState<SearchFeedWidget> {
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
@@ -64,12 +66,16 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
   }
 
   Future _fetchPosts() async {
-    final response =
-        await fetchPosts(widget.feedID, widget.subreddit, _currentPage);
+    print("ALOOOOOOOOOOOOOOOOOOOOO11112323");
 
-    if (response.posts.isNotEmpty) {
+    final response = await searchTest(widget.searchText, _currentPage);
+
+    final SearchModel results = response;
+    print(results.posts.length);
+    print("HAMADAAAAAAAAAAAAAAAAAAHELOOOOOOOO");
+    if (results.posts.isNotEmpty) {
       setState(() {
-        _posts.addAll(response.posts);
+        _posts.addAll(results.posts);
         _currentPage++;
         _fetching = true;
       });
@@ -101,7 +107,6 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
         _fetchPosts();
       }
     });
-
     ref.listen(updatesEditProvider, (previous, next) {
       if (next != null) {
         setState(() {
@@ -139,11 +144,11 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
         itemBuilder: (context, index) {
           if (index < _posts.length) {
             return _posts[index].parentPost != null
-                ? FeedUnitShare(
+                ? SearchFeedUnitShare(
                     dataOfPost: _posts[index].parentPost!,
                     parentPost: _posts[index],
                     userId!)
-                : FeedUnit(_posts[index], userId!);
+                : SearchFeedUnit(_posts[index], userId!);
           } else {
             return _fetchingFinish
                 ? SizedBox(

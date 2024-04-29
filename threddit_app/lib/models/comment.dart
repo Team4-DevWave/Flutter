@@ -74,7 +74,7 @@ class Comment {
       content: json['content'],
       createdAt: DateTime.parse(json['createdAt']),
       votes: Vote.fromJson(json['votes']),
-      post: json['post'],
+      post: json['post'] ?? " ",
       hidden: json['hidden'],
       saved: json['saved'],
       collapsed: json['collapsed'],

@@ -31,6 +31,7 @@ class UserProfile extends ConsumerStatefulWidget {
 class _UserProfileState extends ConsumerState<UserProfile>
     with TickerProviderStateMixin {
   final _scrollController = ScrollController();
+  final _scrollControllerComments = ScrollController();
 
   final _posts = <Post>[];
   int _currentPage = 1;
@@ -43,6 +44,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   bool _fetchingComments = true;
   bool _fetchingPostsFinish = true;
   bool _fetchingCommentsFinish = true;
+
   UserModelMe? user;
   String? dis;
 
@@ -50,7 +52,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
     user = ref.read(userModelProvider)!;
     socialLinks = ref.read(userProfileProvider)?.socialLinks;
   }
-
 
   void setData() async {
     //getSettings function gets the user settings data and updates it in the provider
@@ -67,6 +68,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     setData();
     setData();
     _scrollController.addListener(_onScroll);
+    _scrollControllerComments.addListener(_onScrollComments);
 
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
@@ -124,48 +126,19 @@ class _UserProfileState extends ConsumerState<UserProfile>
     }
   }
 
-  Widget buildCommentsTab() {
-    return _comments.isEmpty
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.warning_amber,
-                color: AppColors.whiteGlowColor,
-              ),
-              Text(
-                "Wow, such empty in Comments!",
-                style: AppTextStyles.primaryTextStyle,
-              ),
-            ],
-          )
-        : ListView.builder(
-            controller: _scrollController,
-            itemCount: _comments.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      _comments[index].user.username,
-                      style: AppTextStyles.boldTextStyleNotifcation,
-                    )
-                  ],
-                ),
-              );
-            },
-          );
-  }
-
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       _fetchPosts();
     }
   }
-  
+
+  void _onScrollComments() {
+    if (_scrollControllerComments.position.pixels ==
+        _scrollControllerComments.position.maxScrollExtent) {
+      _fetchComments();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +177,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
         _fetchPosts();
       }
     });
-
 
     return DefaultTabController(
       length: tabs.length,
@@ -471,6 +443,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                               ],
                             )
                       : ListView.builder(
+                          controller: _scrollControllerComments,
                           itemCount: _comments.length + 1,
                           itemBuilder: (context, index) {
                             if (index < _comments.length) {

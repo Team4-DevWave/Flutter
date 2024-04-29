@@ -14,7 +14,8 @@ Future<PostApiResponse> fetchPostsByUsername(
       'Authorization': 'Bearer $token',
     },
   );
-
+  print("fetching posts for user22");
+  print(response.body);
   if (response.statusCode == 200) {
     return PostApiResponse.fromJson(jsonDecode(response.body));
   } else {

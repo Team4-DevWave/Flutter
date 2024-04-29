@@ -5,6 +5,8 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -17,23 +19,18 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String feedID = 'Best';
-  String? userId;
+  String? userID;
   final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
   @override
   void initState() {
     // TODO: implement  initState
+
     super.initState();
   }
 
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
   }
-
-  // Future<void> getUserName() async {
-  //   userId = await getUserID();
-  //   print("RRRRRRRRRRRRRRRRRRRRRRRRR");
-  //   print(userId);
-  // }
 
   @override
   Widget build(BuildContext context) {

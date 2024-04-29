@@ -13,44 +13,37 @@ import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
-import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-/// The `FeedUnitShare` class is a `ConsumerStatefulWidget` that represents a shared post in a feed.
+/// The `SearchFeedUnitShare` class is a `ConsumerStatefulWidget` that represents a shared post in a feed.
 /// It displays the post's details, such as the title, body, and number of votes, and allows the user to upvote or downvote the post,
 /// mark it as NSFW or a spoiler, and share it.
 /// The class also provides methods for toggling the NSFW and spoiler statuses, upvoting and downvoting the post, and getting moderation options.
-/// The `FeedUnitShare` class takes a user ID, a `Post` object representing the shared post, and a `Post` object representing the parent post as parameters.
-class FeedUnitShare extends ConsumerStatefulWidget {
+/// The `SearchFeedUnitShare` class takes a user ID, a `Post` object representing the shared post, and a `Post` object representing the parent post as parameters.
+class SearchFeedUnitShare extends ConsumerStatefulWidget {
   final Post parentPost;
   final Post dataOfPost;
   final String uid;
-  const FeedUnitShare(this.uid,
+  const SearchFeedUnitShare(this.uid,
       {super.key, required this.dataOfPost, required this.parentPost});
 
   @override
-  ConsumerState<FeedUnitShare> createState() => _FeedUnitShareState();
+  ConsumerState<SearchFeedUnitShare> createState() =>
+      _SearchFeedUnitShareState();
 }
 
-class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
+class _SearchFeedUnitShareState extends ConsumerState<SearchFeedUnitShare> {
   late int numbberOfvotes;
   late bool isLocked;
   late bool isSpam;
   int choiceBottum = -1; // 1 upvote 2 downvote
   final now = DateTime.now();
-  UserModelMe? user;
   @override
   void initState() {
     super.initState();
 
     numbberOfvotes = int.parse(widget.parentPost.numViews.toString());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    user = ref.read(userModelProvider)!;
   }
 
   Future getModOptions() async {
@@ -146,29 +139,6 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                     ),
                   ],
                 ),
-                InkWell(
-                  onTap: () {
-                    showBottomSheet(
-                        context: context,
-                        builder: (context) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              OptionsBotttomSheet(
-                                  post: widget.parentPost,
-                                  toggleSPOILER: toggleSPOILER,
-                                  toggleNsfw: toggleNsfw,
-                                  uid: widget.uid)
-                            ],
-                          );
-                        },
-                        backgroundColor: AppColors.backgroundColor);
-                  },
-                  child: const Icon(
-                    Icons.more_vert,
-                    color: AppColors.whiteHideColor,
-                  ),
-                )
               ],
             ),
             if (widget.dataOfPost.nsfw || widget.dataOfPost.spoiler)
@@ -225,14 +195,14 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
               padding: const EdgeInsets.all(6.0),
               child: GestureDetector(
                 onTap: () {
-                  user?.username == widget.dataOfPost.userID?.username
-                      ? Navigator.pushNamed(
-                          context, RouteClass.userProfileScreen)
-                      : Navigator.pushNamed(
-                          context,
-                          RouteClass.otherUsers,
-                          arguments: widget.dataOfPost.userID?.username,
-                        );
+                  Navigator.pushNamed(
+                    context,
+                    RouteClass.postScreen,
+                    arguments: {
+                      'currentpost': widget.parentPost.parentPost!,
+                      'uid': widget.uid,
+                    },
+                  );
                 },
                 child: FeedUnitSharedPost(widget.dataOfPost),
               ),
@@ -247,116 +217,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                       },
                     ),
                   )
-                : const SizedBox(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    AddRadiusBoarder(
-                      childWidget: Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              upVotePost(ref);
-                            },
-                            child: Icon(
-                              Icons.arrow_upward,
-                              color: widget.parentPost.userVote == 'upvoted'
-                                  ? AppColors.redditOrangeColor
-                                  : AppColors.whiteColor,
-                            ),
-                          ),
-                          const VerticalDivider(
-                            thickness: 1,
-                          ),
-                          Text(
-                            (widget.parentPost.votes!.upvotes -
-                                    widget.parentPost.votes!.downvotes)
-                                .toString(),
-                            style: AppTextStyles.secondaryTextStyle,
-                          ),
-                          const VerticalDivider(
-                            thickness: 1,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              downVotePost(ref);
-                            },
-                            child: Icon(
-                              Icons.arrow_downward,
-                              color: widget.parentPost.userVote == 'downvoted'
-                                  ? AppColors.blueColor
-                                  : AppColors.whiteColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15.w,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color.fromARGB(143, 255, 255, 255),
-                          width: 2.w,
-                        ),
-                        borderRadius: BorderRadius.circular(
-                            15), // Add this line to make the border circular
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 4.0),
-                      child: Row(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                RouteClass.postScreen,
-                                arguments: {
-                                  'currentpost': widget.dataOfPost,
-                                  'uid': widget.uid,
-                                },
-                              );
-                            },
-                            child: const Icon(
-                              Icons.comment,
-                              color: AppColors.whiteColor,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          Text(
-                            widget.parentPost.commentsCount.toString(),
-                            style: const TextStyle(color: AppColors.whiteColor),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                IconButton(
-                    onPressed: () {
-                      setState(() {
-                        getModOptions().then((value) =>
-                            moderation(context, ref, isSpam, isLocked));
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.shield,
-                      color: AppColors.realWhiteColor,
-                    )),
-                IconButton(
-                  icon:
-                      const Icon(Icons.share, color: AppColors.realWhiteColor),
-                  onPressed: () {
-                    share(context, ref, widget.dataOfPost);
-                  },
-                )
-              ],
-            ),
+                : SizedBox(),
             const Divider(color: AppColors.whiteHideColor),
           ],
         ),

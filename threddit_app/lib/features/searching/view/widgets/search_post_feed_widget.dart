@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +13,6 @@ import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
-import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -39,23 +36,23 @@ import 'package:video_player/video_player.dart';
 /// The `padding` property of the `Container` is set to symmetric horizontal padding of
 /// `16.0` and vertical padding of `4.0`. This adds space around the child of the
 /// `Container`, separating the child from the border.
-class FeedUnit extends ConsumerStatefulWidget {
+class SearchFeedUnit extends ConsumerStatefulWidget {
   final Post dataOfPost;
   final String uid;
   // ignore: lines_longer_than_80_chars
-  const FeedUnit(this.dataOfPost, this.uid, {super.key});
+  const SearchFeedUnit(this.dataOfPost, this.uid, {super.key});
 
   @override
-  ConsumerState<FeedUnit> createState() => _FeedUnitState();
+  ConsumerState<SearchFeedUnit> createState() => _SearchFeedUnitState();
 }
 
-class _FeedUnitState extends ConsumerState<FeedUnit> {
+class _SearchFeedUnitState extends ConsumerState<SearchFeedUnit> {
   late bool isSpam;
   late bool isLocked;
   late int numbberOfvotes;
   final now = DateTime.now();
   late VideoPlayerController _controller;
-  UserModelMe? user;
+
   @override
   void initState() {
     super.initState();
@@ -67,16 +64,6 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
           setState(() {});
         });
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    setUserModel();
-    super.didChangeDependencies();
-  }
-
-  Future<void> setUserModel() async {
-    user = ref.read(userModelProvider)!;
   }
 
   Future getModOptions() async {
@@ -149,14 +136,14 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      user?.username == widget.dataOfPost.userID?.username
-                          ? Navigator.pushNamed(
-                              context, RouteClass.userProfileScreen)
-                          : Navigator.pushNamed(
-                              context,
-                              RouteClass.otherUsers,
-                              arguments: widget.dataOfPost.userID?.username,
-                            );
+                      Navigator.pushNamed(
+                        context,
+                        RouteClass.postScreen,
+                        arguments: {
+                          'currentpost': widget.dataOfPost,
+                          'uid': widget.uid,
+                        },
+                      );
                     },
                     child: Text(
                       'u/${widget.dataOfPost.userID?.username}',
@@ -172,29 +159,6 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                   ),
                 ],
               )),
-              InkWell(
-                onTap: () {
-                  showBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            OptionsBotttomSheet(
-                                post: widget.dataOfPost,
-                                toggleSPOILER: toggleSPOILER,
-                                toggleNsfw: toggleNsfw,
-                                uid: widget.uid)
-                          ],
-                        );
-                      },
-                      backgroundColor: AppColors.backgroundColor);
-                },
-                child: const Icon(
-                  Icons.more_vert,
-                  color: AppColors.whiteHideColor,
-                ),
-              )
             ],
           ),
           if (widget.dataOfPost.nsfw || widget.dataOfPost.spoiler)
@@ -309,127 +273,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     },
                   ),
                 )
-              : const SizedBox(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  AddRadiusBoarder(
-                    childWidget: Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            upVotePost(ref);
-                          },
-                          child: Icon(
-                            Icons.arrow_upward,
-                            color: (widget.dataOfPost.userVote == 'upvoted')
-                                ? AppColors.redditOrangeColor
-                                : AppColors.whiteColor,
-                          ),
-                        ),
-                        const VerticalDivider(
-                          thickness: 1,
-                        ),
-                        Text(
-                          (widget.dataOfPost.votes!.upvotes -
-                                  widget.dataOfPost.votes!.downvotes)
-                              .toString(),
-                          style: AppTextStyles.secondaryTextStyle,
-                        ),
-                        const VerticalDivider(
-                          thickness: 1,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            downVotePost(ref);
-                          },
-                          child: Icon(
-                            Icons.arrow_downward,
-                            color: (widget.dataOfPost.userVote == 'downvoted')
-                                ? AppColors.blueColor
-                                : AppColors.whiteColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 15.w,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color.fromARGB(143, 255, 255, 255),
-                        width: 2.w,
-                      ),
-                      borderRadius: BorderRadius.circular(
-                          15), // Add this line to make the border circular
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 4.0),
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              RouteClass.postScreen,
-                              arguments: {
-                                'currentpost': widget.dataOfPost,
-                                'uid': widget.uid,
-                              },
-                            );
-                          },
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                RouteClass.postScreen,
-                                arguments: {
-                                  'currentpost': widget.dataOfPost,
-                                  'uid': widget.uid,
-                                },
-                              );
-                            },
-                            child: const Icon(
-                              Icons.comment,
-                              color: AppColors.whiteColor,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5.w,
-                        ),
-                        Text(
-                          widget.dataOfPost.commentsCount.toString(),
-                          style: const TextStyle(color: AppColors.whiteColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      getModOptions().then((value) =>
-                          moderation(context, ref, isSpam, isLocked));
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.shield,
-                    color: AppColors.realWhiteColor,
-                  )),
-              IconButton(
-                icon: const Icon(Icons.share, color: AppColors.realWhiteColor),
-                onPressed: () {
-                  share(context, ref, widget.dataOfPost);
-                },
-              )
-            ],
-          ),
+              : SizedBox(),
           const Divider(color: AppColors.whiteHideColor),
         ],
       ),

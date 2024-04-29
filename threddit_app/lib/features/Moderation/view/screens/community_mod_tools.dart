@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
+import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class CommunityModTools extends StatefulWidget {
@@ -42,7 +44,18 @@ class _CommunityModToolsState extends State<CommunityModTools> {
                 title: const Text("Description"),
                 titleTextStyle: AppTextStyles.primaryTextStyle,
                 trailing: const Icon(Icons.navigate_next),
-                onTap: () => ()),
+                onTap: () =>
+                    (Navigator.pushNamed(context, RouteClass.description))),
+            ListTile(
+                leading: const Icon(
+                  CupertinoIcons.doc_plaintext,
+                  color: AppColors.whiteHideColor,
+                ),
+                title: const Text("Post types"),
+                titleTextStyle: AppTextStyles.primaryTextStyle,
+                trailing: const Icon(Icons.navigate_next),
+                onTap: () =>
+                    Navigator.pushNamed(context, RouteClass.postTypes)),
             SizedBox(height: 10.h),
             const SettingsTitle(title: "USER MANAGEMENT"),
             ListTile(

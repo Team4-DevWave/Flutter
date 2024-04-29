@@ -33,7 +33,6 @@ class EditPost extends StateNotifier<Post> {
         );
 
   FutureEither<Post> editPostRequest() async {
-    print("heyyyyyyyyyyyyyyyyy text body = ${state.textBody}");
     final url = Uri.parse(
         "http://${AppConstants.local}:8000/api/v1/posts/${state.id}/edit");
     final token = await getToken();
