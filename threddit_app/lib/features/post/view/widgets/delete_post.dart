@@ -58,6 +58,8 @@ void delete(BuildContext context, WidgetRef ref, String postid) {
                 showSnackBar(navigatorKey.currentContext!,
                     'Your post deleted to succefully');
                 Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               });
             },
             style: const ButtonStyle(

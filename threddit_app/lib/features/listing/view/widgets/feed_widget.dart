@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 
 import 'package:lottie/lottie.dart';
+import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
@@ -25,22 +28,23 @@ import 'package:url_launcher/url_launcher.dart';
 /// The `initState` method initializes the state of the widget by fetching the first set
 /// of posts. The `dispose` method is used to clean up the controller when the widget is
 /// removed from the widget tree.
-class FeedWidget extends StatefulWidget {
+class FeedWidget extends ConsumerStatefulWidget {
   final String feedID;
   final String subreddit;
   const FeedWidget({super.key, required this.feedID, required this.subreddit});
 
   @override
-  _FeedWidgetState createState() => _FeedWidgetState();
+  ConsumerState<FeedWidget> createState() => _FeedWidgetState();
 }
 
-class _FeedWidgetState extends State<FeedWidget> {
+class _FeedWidgetState extends ConsumerState<FeedWidget> {
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
   bool _fetching = true;
   bool _fetchingFinish = true;
   String? userId;
+
   @override
   void initState() {
     super.initState();
@@ -86,6 +90,29 @@ class _FeedWidgetState extends State<FeedWidget> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(updatesDeleteProvider, (previous, next) {
+      if (next != null) {
+        setState(() {
+          _posts.clear();
+          _currentPage = 1;
+          _fetching = true;
+          _fetchingFinish = true;
+        });
+        _fetchPosts();
+      }
+    });
+
+    ref.listen(updatesEditProvider, (previous, next) {
+      if (next != null) {
+        setState(() {
+          _posts.clear();
+          _currentPage = 1;
+          _fetching = true;
+          _fetchingFinish = true;
+        });
+        _fetchPosts();
+      }
+    });
     if (_posts.isEmpty) {
       if (_fetching) {
         return Center(

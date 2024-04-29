@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/empty_notification.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/notification_feed_unit.dart';
+import 'package:threddit_clone/features/notifications/view_model/count_notifications.dart';
 import 'package:threddit_clone/features/notifications/view_model/fetching_notifications.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
-class NotificationFeed extends StatefulWidget {
+class NotificationFeed extends ConsumerStatefulWidget {
   final String userID;
-  const NotificationFeed({super.key, required this.userID});
+  const NotificationFeed({Key? key, required this.userID}) : super(key: key);
 
   @override
-  State<NotificationFeed> createState() => _NotificationFeedState();
+  _NotificationFeedState createState() => _NotificationFeedState();
 }
 
-class _NotificationFeedState extends State<NotificationFeed> {
+class _NotificationFeedState extends ConsumerState<NotificationFeed> {
   late Future<NotificationAPI> futuredata;
 
   @override
@@ -25,39 +29,58 @@ class _NotificationFeedState extends State<NotificationFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: AppColors.backgroundColor,
-        child: FutureBuilder<NotificationAPI>(
-          future: futuredata,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Lottie.asset(
-                  'assets/animation/loading.json',
-                  repeat: true,
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            } else if (snapshot.hasData) {
-              final countryData = snapshot.data!.notifications;
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 247, 33, 18),
+            borderRadius: BorderRadius.circular(10.r),
+          ),
+          child: Text(
+            ' Notifications unread',
+            style: TextStyle(fontSize: 16.sp, color: AppColors.whiteColor),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            color: AppColors.backgroundColor,
+            child: FutureBuilder<NotificationAPI>(
+              future: futuredata,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: Lottie.asset(
+                      'assets/animation/loading.json',
+                      repeat: true,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  final countryData = snapshot.data!.notifications;
 
-              return (countryData.length > 0)
-                  ? ListView.builder(
-                      itemCount: countryData.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return NotificationFeedUnit(
-                          data: countryData[index],
-                        );
-                      },
-                    )
-                  : const NoNotification();
-            } else {
-              return const Text(
-                'No data available.',
-              );
-            }
-          },
-        ));
+                  return (countryData.length > 0)
+                      ? ListView.builder(
+                          itemCount: countryData.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return NotificationFeedUnit(
+                              data: countryData[index],
+                            );
+                          },
+                        )
+                      : const NoNotification();
+                } else {
+                  return const Text(
+                    'No data available.',
+                  );
+                }
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

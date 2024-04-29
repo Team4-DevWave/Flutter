@@ -10,6 +10,7 @@ class Post {
   String? textBody;
   String? image;
   String? type;
+
   bool nsfw;
   bool spoiler;
   bool locked;
@@ -41,7 +42,7 @@ class Post {
     this.userID,
     this.subredditID,
     this.votes,
-    required this.linkURL,
+    this.linkURL,
     required this.commentsCount,
     this.parentPost,
     this.hidden,
@@ -116,7 +117,7 @@ class Post {
     String? title,
     String? textBody,
     String? image,
-    String? url,
+    String? linkURL,
     bool? nsfw,
     bool? spoiler,
     bool? locked,
@@ -255,7 +256,15 @@ Future<PostApiResponse> fetchPosts(
   if (feedID == 'Top Posts') {
     url = "http://10.0.2.2:8000/api/v1/r/$subreddit/top?page=$pageNumber";
   }
-
+  if (feedID == 'Hot') {
+    url = "http://10.0.2.2:8000/api/v1/posts/hot?page=$pageNumber";
+  }
+  if (feedID == 'New') {
+    url = "http://10.0.2.2:8000/api/v1/posts/new?page=$pageNumber";
+  }
+  if (feedID == 'Top') {
+    url = "http://10.0.2.2:8000/api/v1/posts/top?page=$pageNumber";
+  }
   final response = await http.get(
     Uri.parse(url),
     headers: {
@@ -263,8 +272,7 @@ Future<PostApiResponse> fetchPosts(
       'Authorization': 'Bearer $token',
     },
   );
-  print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-  print(response.body);
+
   if (response.statusCode == 200) {
     return PostApiResponse.fromJson(jsonDecode(response.body));
   } else {

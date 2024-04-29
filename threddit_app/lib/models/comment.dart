@@ -97,10 +97,11 @@ Future<List<Comment>> fetchComments(String username) async {
   );
 
   if (response.statusCode == 200) {
-    Iterable jsonResponse = jsonDecode(response.body);
-    List<Comment> commentsList = List<Comment>.from(
-        jsonResponse.map((model) => Comment.fromJson(model)));
-    return commentsList;
+    final List<dynamic> commentsJson =
+        json.decode(response.body)['data']['comments'];
+    return commentsJson
+        .map((commentJson) => Comment.fromJson(commentJson))
+        .toList();
   } else {
     throw Exception('Failed to load comments');
   }

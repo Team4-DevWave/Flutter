@@ -1,24 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final userModelNotMeProvider =
-    StateProvider<UserModelNotMe?>((ref) => UserModelNotMe());
+final userModelAboutProvider =
+    StateProvider<UserModelAbout?>((ref) => UserModelAbout());
 
-class UserModelNotMe {
+class UserModelAbout {
   final int? postKarma;
   final int? commentKarma;
   final DateTime? cakeDay;
 
-  UserModelNotMe({
+  UserModelAbout({
     this.postKarma,
     this.commentKarma,
     this.cakeDay,
   });
 
-  factory UserModelNotMe.fromJson(Map<String, dynamic> json) {
+  factory UserModelAbout.fromJson(Map<String, dynamic> json) {
     final userData = json['data'] as Map<String, dynamic>?;
 
     if (userData == null) {
-      return UserModelNotMe(); // Handle null user data
+      return UserModelAbout(); // Handle null user data
     }
 
     final postKarma = userData['postKarma'] as int? ?? 0;
@@ -30,7 +30,7 @@ class UserModelNotMe {
       cakeDay = DateTime.parse(cakeDayString);
     }
 
-    return UserModelNotMe(
+    return UserModelAbout(
       postKarma: postKarma,
       commentKarma: commentKarma,
       cakeDay: cakeDay,

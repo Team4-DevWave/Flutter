@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
-import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
-import 'package:threddit_clone/features/home_page/view_model/get_user_following.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/theme/colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class FollowingTiles extends ConsumerStatefulWidget {
@@ -16,142 +13,66 @@ class FollowingTiles extends ConsumerStatefulWidget {
 }
 
 class _FollowingTilesState extends ConsumerState<FollowingTiles> {
-  Future<List<String>>?_userFollowingData;
-  List<String>? _favouritesList;
-  Map<String, bool>? _isFavouriteFollowing;
+  final List<String> _followingList = [];
+  bool isLoading = false;
+  UserModelMe? user;
+
+  void _getUserData() async {
+    user = ref.read(userModelProvider)!;
+  }
 
   @override
   void initState() {
+    _getUserData();
     super.initState();
-    _isFavouriteFollowing = {};
-    _userFollowingData = UserFollowingAPI().getUserFollowing();
-    _userFollowingData?.then((value) {
-      for (String user in value) {
-        _isFavouriteFollowing![user] = _favouritesList!.contains(user);
-      }
-    });
-    
-    print(_userFollowingData);
-    ///fetches the data when the widget is intialized
-    _initializeData();
   }
 
-  
-
-  Future<void> _initializeData() async {
-    // await _getFavourites(); //
-    
-    // 
-    
-    //   setState(() {}); // Trigger a rebuild after initializing data
-    // });
-  }
-
-  Future<void> _getFavourites() async {
-    // prefs = await SharedPreferences.getInstance();
-    // _favouritesList = prefs?.getStringList(PrefConstants.favourites) ?? [];
-    // (ref
-    //     .read(favouriteListProvider.notifier)
-    //     .update((state) => _favouritesList!));
-  }
-
-  Future<void> _updateIsFavouriteSub() async {
-    // if (_favouritesList != null) {
-    //   _isFavouriteFollowing = {};
-    //   _userFollowingData?.then((value) {
-    //     for (String user in value) {
-    //       _isFavouriteFollowing![user] = _favouritesList!.contains(user);
-    //     }
-    //   });
-    //   setState(() {});
-    // }
-  }
-
-  void _removeFavourites(String toBeRemoved) async {
-    // prefs = await SharedPreferences.getInstance();
-    // if (prefs != null) {
-    //   _favouritesList?.removeWhere((element) => element == toBeRemoved);
-    //   prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-    //   (ref
-    //       .read(favouriteListProvider.notifier)
-    //       .update((state) => _favouritesList!));
-    // }
-  }
-
-  void _setFavourites(String favourite) async {
-    // prefs = await SharedPreferences.getInstance();
-    // if (prefs != null) {
-    //   _favouritesList?.add(favourite);
-    //   prefs!.setStringList(PrefConstants.favourites, _favouritesList!);
-    //   print("alo from set");
-    //   print(ref
-    //       .read(favouriteListProvider.notifier)
-    //       .update((state) => _favouritesList!));
-    // }
-  }
-
-  void _onStarPressed(String selected) {
+  @override
+  void didChangeDependencies() {
     setState(() {
-      if (_isFavouriteFollowing?[selected] == true) {
-        _isFavouriteFollowing![selected] = false;
-        _removeFavourites(selected);
-        _updateIsFavouriteSub();
-      } else {
-        _isFavouriteFollowing![selected] = true;
-        _setFavourites(selected);
-        _updateIsFavouriteSub();
-      }
+      isLoading = true;
     });
+    if (user != null && user!.followedUsers != null) {
+      for (var followedUser in user!.followedUsers!) {
+        String username = followedUser['username'];
+        _followingList.add(username);
+      }
+    }
+    print("FFFFFFFFFFFFFFFFFMMMMMMMMMMMLLLLLLLLLLLLLLLLLLLLL");
+    print(_followingList);
+    isLoading = false;
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<String>>(
-        future: _userFollowingData,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            List<String> dataList = snapshot.data ?? [];
-            return ExpansionTile(
-              title: Text(
-                widget.title,
-                style: AppTextStyles.primaryTextStyle,
-              ),
-              children: [
-                ListView.builder(
-                  itemCount: dataList.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      splashColor: AppColors.whiteColor,
-                      child: ListTile(
-                        title: Text(dataList[index],
-                            style: AppTextStyles.secondaryTextStyle
-                                .copyWith(fontSize: 14)),
-                        onTap: () {
-
-                        },
-                        trailing: IconButton(
-                          onPressed: () => _onStarPressed(dataList[index]),
-                          icon: _isFavouriteFollowing?[dataList[index]] == false
-                              ? const Icon(
-                                  Icons.star_border_rounded,
-                                  size: 24,
-                                )
-                              : const Icon(
-                                  Icons.star_rounded,
-                                  color: AppColors.whiteGlowColor,
-                                  size: 24,
-                                ),
-                        ),
-                      ),
-                    );
+    return  ExpansionTile(
+        title: Text(
+          widget.title,
+          style: AppTextStyles.primaryTextStyle,
+        ),
+        children: [
+          if (!isLoading)
+            ..._followingList.map((followed) => ListTile(
+                  onTap: () {
+                    ///go to the user's profile screen
+                    Navigator.pushNamed(context, RouteClass.otherUsers,
+                        arguments: {
+                          'username': followed,
+                        });
                   },
-                )
-              ],
-            );
-          }
-        });
+                  leading: const CircleAvatar(
+                    radius: 10,
+                    //backgroundImage: NetworkImage(community[1]),
+                    backgroundImage: AssetImage('assets/images/Default_Avatar.png'),
+                  ),
+                  title: Text(followed,
+                      maxLines: 1,
+                      style: AppTextStyles.primaryTextStyle.copyWith(
+                        fontSize: 17.spMin,
+                      )),
+                ))
+        ]);
   }
-}
+  }
+

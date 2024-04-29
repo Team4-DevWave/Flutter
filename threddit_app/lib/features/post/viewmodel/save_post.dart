@@ -130,3 +130,6 @@ class SavePost extends StateNotifier<bool> {
 }
 
 final updatesSaveProvider = StateProvider<String?>((ref) => null);
+final updatesEditProvider = StateProvider<String?>((ref) => null);
+final updatesDeleteProvider = StateProvider<String?>((ref) => null);
+final updatesFeedProvider = StateProvider<String?>((ref) => 'Best');

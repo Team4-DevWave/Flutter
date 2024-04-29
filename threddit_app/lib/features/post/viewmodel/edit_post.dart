@@ -3,30 +3,33 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 
 final editPostProvider =
-    StateNotifierProvider<EditPost, Post>((ref) => EditPost());
+    StateNotifierProvider<EditPost, Post>((ref) => EditPost(ref));
 
 class EditPost extends StateNotifier<Post> {
-  EditPost()
+  final Ref ref;
+  EditPost(this.ref)
       : super(
           Post(
-              id: "",
-              title: "",
-              nsfw: false,
-              spoiler: false,
-              locked: false,
-              approved: false,
-              postedTime: DateTime.now(),
-              numViews: 0,
-              commentsCount: 0,
-              linkURL: ''),
+            id: "",
+            title: "",
+            nsfw: false,
+            spoiler: false,
+            locked: false,
+            approved: false,
+            postedTime: DateTime.now(),
+            numViews: 0,
+            commentsCount: 0,
+          ),
         );
 
   FutureEither<Post> editPostRequest() async {
@@ -50,6 +53,8 @@ class EditPost extends StateNotifier<Post> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final post = Post.fromJson(responseData['data']['post']);
+
+        ref.read(updatesEditProvider.notifier).update((state) => post.id);
         return right(post);
       } else {
         return left(Failure(
