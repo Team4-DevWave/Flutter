@@ -31,6 +31,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
   void initState() {
     super.initState();
     getUserID();
+    _getUserData();
 
     _fetchUsers();
     _scrollController.addListener(_onScroll);
@@ -84,11 +85,6 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
 
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
-  }
-
-  @override
-  void didChangeDependencies() {
-    _getUserData();
     setState(() {
       isLoading = true;
     });

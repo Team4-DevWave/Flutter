@@ -76,12 +76,12 @@ class UserModelMe {
       interests: (user['interests'] as List<dynamic>?)
           ?.map((interest) => interest as String)
           .toList(),
-      // followedUsers: (user['followedUsers'] as List<dynamic>?)
-      //     ?.map<Map<String, dynamic>>((followedUser) => {
-      //           '_id': followedUser['_id'] as String?,
-      //           'username': followedUser['username'] as String?,
-      //         })
-      //     .toList(),
+      followedUsers: (user['followedUsers'] as List<dynamic>?)
+          ?.map<Map<String, dynamic>>((followedUser) => {
+                '_id': followedUser['_id'] as String?,
+                'username': followedUser['username'] as String?,
+              })
+          .toList(),
       blockedUsers: (user['blockedUsers'] as List<dynamic>?)
           ?.map((blockedUser) =>
               BlockedUsers.fromJson(blockedUser as Map<String, dynamic>))
