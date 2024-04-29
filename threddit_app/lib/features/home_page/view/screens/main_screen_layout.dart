@@ -30,7 +30,7 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
 
   Future<void> _setData() async {
     await ref.read(settingsFetchProvider.notifier).getMe();
-    print("ddddddddddddddddddddddd${await getToken()}");
+    print("TOKEN : ${await getToken()}");
   }
 
   @override

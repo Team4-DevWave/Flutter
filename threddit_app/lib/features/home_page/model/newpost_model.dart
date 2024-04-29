@@ -1,10 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 class Post {
@@ -13,7 +10,6 @@ class Post {
   String? textBody;
   String? image;
   String? type;
-  String? url;
   bool nsfw;
   bool spoiler;
   bool locked;
@@ -29,7 +25,6 @@ class Post {
   bool? hidden;
   bool? saved;
   String? userVote;
-
   final String? linkURL;
   Post({
     required this.id,
@@ -49,7 +44,6 @@ class Post {
     required this.linkURL,
     required this.commentsCount,
     this.parentPost,
-    this.url,
     this.hidden,
     this.saved,
     this.userVote,
@@ -62,7 +56,6 @@ class Post {
       title: json['title'],
       textBody: json['text_body'],
       image: json['image'],
-      url: json['url'],
       nsfw: json['nsfw'],
       spoiler: json['spoiler'],
       locked: json['locked'],
@@ -110,7 +103,6 @@ class Post {
       'subredditID': subredditID?.toJson(),
       'votes': votes?.toJson(),
       'parentPost': parentPost?.toJson(),
-      'url': url
       'hidden': hidden,
       'saved': saved,
       'userVote': userVote,
@@ -143,47 +135,7 @@ class Post {
       title: title ?? this.title,
       textBody: textBody ?? this.textBody,
       image: image ?? this.image,
-      url: url ?? this.url,
-      nsfw: nsfw ?? this.nsfw,
-      spoiler: spoiler ?? this.spoiler,
-      locked: locked ?? this.locked,
-      approved: approved ?? this.approved,
-      postedTime: postedTime ?? this.postedTime,
-      video: video ?? this.video,
-      numViews: numViews ?? this.numViews,
-      commentsCount: commentsCount ?? this.commentsCount,
-      userID: userID ?? this.userID,
-      subredditID: subredditID ?? this.subredditID,
-      votes: votes ?? this.votes,
-      parentPost: parentPost ?? this.parentPost,
-    );
-  }
-
-  Post copyWith({
-    String? id,
-    String? title,
-    String? textBody,
-    String? image,
-    String? url,
-    bool? nsfw,
-    bool? spoiler,
-    bool? locked,
-    bool? approved,
-    DateTime? postedTime,
-    String? video,
-    int? numViews,
-    int? commentsCount,
-    User? userID,
-    SubredditInfo? subredditID,
-    VotesList? votes,
-    Post? parentPost,
-  }) {
-    return Post(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      textBody: textBody ?? this.textBody,
-      image: image ?? this.image,
-      url: url ?? this.url,
+      linkURL: linkURL ?? this.linkURL,
       nsfw: nsfw ?? this.nsfw,
       spoiler: spoiler ?? this.spoiler,
       locked: locked ?? this.locked,

@@ -25,11 +25,11 @@ class EditPost extends StateNotifier<Post> {
               approved: false,
               postedTime: DateTime.now(),
               numViews: 0,
-              commentsCount: 0),
+              commentsCount: 0,
+              linkURL: ''),
         );
 
   FutureEither<Post> editPostRequest() async {
-    print("heyyyyyyyyyyyyyyyyy text body = ${state.textBody}");
     final url = Uri.parse(
         "http://${AppConstants.local}:8000/api/v1/posts/${state.id}/edit");
     final token = await getToken();
