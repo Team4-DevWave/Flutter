@@ -84,11 +84,23 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         body: communityAsyncValue.when(
           data: (community) => buildCommunityScreen(community),
           loading: () => Center(
-            child: Lottie.asset(
-              'assets/animation/loading.json',
-              repeat: true,
-            ),
-          ),
+              child: Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                SizedBox(
+                    height: 100.h,
+                    width: 150.w,
+                    child: Image.asset('assets/images/threaddit_web.png')),
+                SizedBox(
+                  height: 100.h,
+                  width: 150.w,
+                  child: Lottie.asset(
+                    'assets/animation/loading2.json',
+                    repeat: true,
+                  ),
+                )
+              ]))),
           error: (error, stack) => const Scaffold(
             body: Text(
               "community not found :( )",
@@ -380,10 +392,23 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               child: _posts.isEmpty
                   ? _fetching
                       ? Center(
-                          child: Lottie.asset(
-                          'assets/animation/loading.json',
-                          repeat: true,
-                        ))
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                              SizedBox(
+                                  height: 100.h,
+                                  width: 150.w,
+                                  child: Image.asset(
+                                      'assets/images/threaddit_web.png')),
+                              SizedBox(
+                                height: 100.h,
+                                width: 150.w,
+                                child: Lottie.asset(
+                                  'assets/animation/loading2.json',
+                                  repeat: true,
+                                ),
+                              )
+                            ]))
                       : Center(
                           child: Text(
                             'No feed available.',
@@ -408,7 +433,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                   height: 75.h,
                                   width: 75.w,
                                   child: Lottie.asset(
-                                    'assets/animation/loading.json',
+                                    'assets/animation/loading2.json',
                                     repeat: true,
                                   ),
                                 )

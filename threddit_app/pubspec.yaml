@@ -106,9 +106,10 @@ flutter:
     - assets/icons/arrow_down.png
     - assets/icons/arrow_up.png
     - assets/animation/loading.json
+    - assets/animation/loading2.json
     - assets/images/avatar.png
     - assets/images/thinking-snoo.png
-    - assets/images/
+    - assets/images/threaddit_web.png
    
 
 

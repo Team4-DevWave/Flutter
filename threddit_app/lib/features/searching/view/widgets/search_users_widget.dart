@@ -118,7 +118,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
       if (_fetching || isLoading) {
         return Center(
           child: Lottie.asset(
-            'assets/animation/loading.json',
+            'assets/animation/loading2.json',
             repeat: true,
           ),
         );
@@ -156,7 +156,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
                     height: 75.h,
                     width: 75.w,
                     child: Lottie.asset(
-                      'assets/animation/loading.json',
+                      'assets/animation/loading2.json',
                       repeat: true,
                     ),
                   )
