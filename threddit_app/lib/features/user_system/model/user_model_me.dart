@@ -153,14 +153,15 @@ class UserModelMe {
       hiddenPosts: hiddenPosts ?? this.hiddenPosts,
       posts: posts ?? this.posts,
       karma: karma ?? this.karma,
-      savedPostsAndComments: savedPostsAndComments ?? this.savedPostsAndComments,
+      savedPostsAndComments:
+          savedPostsAndComments ?? this.savedPostsAndComments,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       settings: settings ?? this.settings,
     );
   }
-  factory UserModelMe.fromJsonSearch(Map<String, dynamic> json) {
 
+  factory UserModelMe.fromJsonSearch(Map<String, dynamic> json) {
     if (json == null) return UserModelMe(); // Handle null user data
     return UserModelMe(
       id: json['_id'] as String?,
@@ -176,9 +177,9 @@ class UserModelMe {
       interests: (json['interests'] as List<dynamic>?)
           ?.map((interest) => interest as String)
           .toList(),
-      followedUsers: (json['followedUsers'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      // followedUsers: (json['followedUsers'] as List<dynamic>?)
+      //     ?.map((e) => e as String)
+      //     .toList(),
       joinedSubreddits: (json['joinedSubreddits'] as List<dynamic>?)
           ?.map((subreddit) => subreddit as String)
           .toList(),
@@ -199,7 +200,6 @@ class UserModelMe {
           json['savedPostsAndComments'] as Map<String, dynamic>),
       upvotes: Votes.fromJson(json['upvotes'] as Map<String, dynamic>),
       downvotes: Votes.fromJson(json['downvotes'] as Map<String, dynamic>),
-      v: json['__v'] as int?,
       settings: json['settings'] as String?,
     );
   }

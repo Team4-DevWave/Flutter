@@ -31,6 +31,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
   void initState() {
     super.initState();
     getUserID();
+
     _fetchUsers();
     _scrollController.addListener(_onScroll);
   }
@@ -77,10 +78,48 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
     }
   }
 
+  final List<String> _followingList = [];
+  bool isLoading = false;
+  UserModelMe? user;
+
+  void _getUserData() async {
+    user = ref.read(userModelProvider)!;
+  }
+
+  @override
+  void didChangeDependencies() {
+    _getUserData();
+    setState(() {
+      isLoading = true;
+    });
+    if (user != null && user!.followedUsers != null) {
+      for (var followedUser in user!.followedUsers!) {
+        String username = followedUser['username'];
+        _followingList.add(username);
+      }
+    }
+    print("FFFFFFFFFFFFFFFFFMMMMMMMMMMMLLLLLLLLLLLLLLLLLLLLL");
+    print(user!.username);
+    print(user!.followedUsers);
+
+    print(_followingList);
+    isLoading = false;
+    super.didChangeDependencies();
+  }
+
+  bool searchFollowed(String username) {
+    for (int i = 0; i < _followingList.length; i++) {
+      if (_followingList[i] == username) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_users.isEmpty) {
-      if (_fetching) {
+      if (_fetching || isLoading) {
         return Center(
           child: Lottie.asset(
             'assets/animation/loading.json',
@@ -104,9 +143,17 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
         itemCount: _users.length + 1,
         itemBuilder: (context, index) {
           if (index < _users.length) {
-            return SearchUserUnit(
-              user: _users[index],
-            );
+            if (searchFollowed(_users[index].username!)) {
+              return SearchUserUnit(
+                user: _users[index],
+                isFollowed: true,
+              );
+            } else {
+              return SearchUserUnit(
+                user: _users[index],
+                isFollowed: false,
+              );
+            }
           } else {
             return _fetchingFinish
                 ? SizedBox(

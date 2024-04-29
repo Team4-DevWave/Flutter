@@ -27,6 +27,7 @@ class SearchResultsScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchResultsScreenState extends ConsumerState<SearchResultsScreen> {
+  
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

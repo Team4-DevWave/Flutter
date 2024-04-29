@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_profile/view_model/follow_user.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -9,7 +10,8 @@ import 'package:threddit_clone/theme/text_styles.dart';
 
 class SearchUserUnit extends StatefulWidget {
   final UserModelMe user;
-  SearchUserUnit({super.key, required this.user});
+  final bool isFollowed;
+  SearchUserUnit({super.key, required this.user, required this.isFollowed});
 
   @override
   State<SearchUserUnit> createState() => _SearchUserUnitState();
@@ -47,12 +49,25 @@ class _SearchUserUnitState extends State<SearchUserUnit> {
                   borderRadius:
                       BorderRadius.circular(40), // Adjust the radius as needed
                 ),
-                child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Follow",
-                      style: AppTextStyles.primaryButtonGlowTextStyle,
-                    )),
+                child: widget.isFollowed
+                    ? TextButton(
+                        onPressed: () {
+                          unfollowUser(widget.user.username!);
+                          setState(() {});
+                        },
+                        child: Text(
+                          "Unfollow",
+                          style: AppTextStyles.primaryButtonGlowTextStyle,
+                        ))
+                    : TextButton(
+                        onPressed: () {
+                          followUser(widget.user.username!);
+                          setState(() {});
+                        },
+                        child: Text(
+                          "Follow",
+                          style: AppTextStyles.primaryButtonGlowTextStyle,
+                        )),
               )
             ],
           ),
