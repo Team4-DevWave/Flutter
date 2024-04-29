@@ -56,7 +56,16 @@ class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 builder:
                     (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
                   while (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return Row(
+                      children: [
+                        const Icon(
+                          Icons.person,
+                          color: AppColors.redditOrangeColor,
+                        ),
+                        Text("u/",
+                            style: AppTextStyles.primaryTextStyle),
+                      ],
+                    );
                   }
                   if (snapshot.hasError) {
                     return const Text("ERROR LOADING USER DATA");

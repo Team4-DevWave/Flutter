@@ -14,6 +14,9 @@ import 'package:threddit_clone/features/Moderation/view/screens/banned_users_scr
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
+import 'package:threddit_clone/features/searching/model/search_model.dart';
+import 'package:threddit_clone/features/searching/view/screens/search_results_screen.dart';
+import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
 import 'package:threddit_clone/features/user_profile/view/other_users.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
@@ -31,7 +34,6 @@ import 'package:threddit_clone/features/home_page/view/screens/main_community_sc
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
-import 'package:threddit_clone/features/home_page/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/post/view/confirm_post.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
@@ -109,6 +111,7 @@ class RouteClass {
   static const String otherUsers = '/other-users';
   static const String messageScreen = '/message';
   static const String searchCommunity = '/serach-community';
+  static const String searchResultsScreen = '/serach-results';
 
   /// Generates the appropriate route based on the provided [settings].
   ///
@@ -131,7 +134,7 @@ class RouteClass {
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
-        return MaterialPageRoute(builder: (_) => const SearchScreen());
+        return MaterialPageRoute(builder: (_) => SearchScreen());
       case communityInfo:
         final args = settings.arguments as Map<String, dynamic>;
         final community =
@@ -284,6 +287,16 @@ class RouteClass {
         String community = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => SearchCommunityScreenPage(community: community));
+      case searchResultsScreen:
+        final args = settings.arguments as Map<String, dynamic>;
+        final searchModel = args['search'] as SearchModel; // Extract the community object
+        final searchText = args['text'] as String;
+        return MaterialPageRoute(
+          builder: (_) => SearchResultsScreen(
+            searchResults: searchModel,
+            searchText: searchText,
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }

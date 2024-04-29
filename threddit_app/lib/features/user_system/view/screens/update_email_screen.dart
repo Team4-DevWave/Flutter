@@ -53,7 +53,23 @@ class _UpdateEmailScreenState extends ConsumerState<UpdateEmailScreen> {
               future: fetchUser(),
               builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
                 while (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return Row(
+                    children: [
+                      const Icon(
+                        Icons.person,
+                        color: AppColors.redditOrangeColor,
+                      ),
+                      SizedBox(
+                        width: 15.w,
+                      ),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("u/",
+                                style: AppTextStyles.primaryTextStyle),
+                          ])
+                    ],
+                  );
                 }
                 if (snapshot.hasError) {
                   return const Text("ERROR LOADING USER DATA");
