@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
+import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
@@ -53,3 +54,33 @@ final createChatroom=FutureProvider.family<void,ChatRoomParameters>((ref,paramet
     throw Exception('Failed to create chat room: $e');
   }
 });
+
+final getChatMessages=FutureProvider.family<List<ChatMessage>,String>((ref,chatrommId) async {
+  try {
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/$chatrommId/messages/');
+    String? token = await getToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+    
+    final response = await http.get(
+      url,
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+      print('messages fetched successfully');
+      final List<dynamic> messagesJson = json.decode(response.body)['data']['chatMessages'];
+        List<ChatMessage> messages = messagesJson.map((messageJson) => ChatMessage.fromJson(messageJson)).toList();
+        return messages;
+      
+    } else {
+      throw Exception('Failed to load messages. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error fteching room messages: $e');
+    throw Exception('Failed to ftech room messages: $e');
+  }
+});
+
+

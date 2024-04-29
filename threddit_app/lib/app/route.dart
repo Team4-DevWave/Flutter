@@ -270,8 +270,11 @@ class RouteClass {
       case moderatorsScreen:
         return MaterialPageRoute(builder: (_) => const ModeratorsScreen());
       case chatRoom:
-      Chatroom chatroom = settings.arguments as Chatroom;
-        return MaterialPageRoute(builder: (_) => ChatRoomScreen(chatroom: chatroom,));
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; // Extract the community object
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => ChatRoomScreen(chatroom: chatroom,username: username,));
       case addModeratorScreen:
         return MaterialPageRoute(
             builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);

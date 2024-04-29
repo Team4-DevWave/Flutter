@@ -8,6 +8,7 @@ import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
+import 'package:threddit_clone/features/chatting/view/widgets/chat_room_preview.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/new_chat.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
@@ -31,55 +32,59 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-   _fetchChatrooms();
+    _fetchChatrooms();
     _initializeSocketConnection();
   }
+
   void _initializeSocketConnection() async {
-  final url = 'http://${AppConstants.local}:8000'; 
-  
- try {
-    socket = io(url, OptionBuilder().setTransports(['websocket']).build());
-    socket?.on('connect', (_) => print('Connected to Socket.IO server'));
-    socket?.on('disconnect', (_) => print('Disconnected from Socket.IO server'));
+    final url = 'http://${AppConstants.local}:8000';
 
-    // Handle incoming events from the server 
+    try {
+      socket = io(url, OptionBuilder().setTransports(['websocket']).build());
+      socket?.on('connect', (_) => print('Connected to Socket.IO server'));
+      socket?.on(
+          'disconnect', (_) => print('Disconnected from Socket.IO server'));
 
-    socket?.connect(); // Connect to the server
-  } catch (error) {
-    print('Error connecting to Socket.IO: $error');
+      // Handle incoming events from the server
+
+      socket?.connect(); // Connect to the server
+    } catch (error) {
+      print('Error connecting to Socket.IO: $error');
+    }
   }
-}
 
   Future<void> _fetchChatrooms() async {
-
     String? token = await getToken();
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/');
+    final url =
+        Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/');
     final headers = {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $token",
     };
 
-    try{final response = await http.get(url, headers: headers);
+    try {
+      final response = await http.get(url, headers: headers);
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data'];
-      final chatrooms = data['chatrooms'] as List;
-      setState(() {
-        _chatrooms = chatrooms.map((json) => Chatroom.fromJson(json)).toList();
-      });
-    } else {
-      print('Error fetching chatrooms: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body)['data'];
+        final chatrooms = data['chatrooms'] as List;
+        setState(() {
+          _chatrooms =
+              chatrooms.map((json) => Chatroom.fromJson(json)).toList();
+        });
+      } else {
+        print('Error fetching chatrooms: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle any errors that might occur during the request
+      print('Error fetching chatrooms: $error');
     }
-  } catch (error) {
-    // Handle any errors that might occur during the request
-    print('Error fetching chatrooms: $error');
   }
-}
 
   @override
   void dispose() {
     _tabController?.dispose();
-    socket?.disconnect(); 
+    socket?.disconnect();
     super.dispose();
   }
 
@@ -118,7 +123,6 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 20.h),
-                 
                   TabBar(
                     controller: _tabController,
                     indicatorColor: const Color.fromARGB(255, 221, 106, 24),
@@ -146,7 +150,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
               builder: (context) {
                 return Padding(
                   padding: MediaQuery.of(context).viewInsets,
-                  child: NewChat(uid:uid),
+                  child: NewChat(uid: uid),
                 );
               },
             );
@@ -160,24 +164,45 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
           controller: _tabController,
           children: [
             _chatrooms.isEmpty
-                ? const Center(child: Text('No chatrooms found'))
-                : ListView.builder(
-                    itemCount: _chatrooms.length,
-                    itemBuilder: (context, index) {
-                      final chatroom = _chatrooms[index];
-                      return ListTile(
-                        title: Text(chatroom
-                            .chatroomName), //to be modified to the actual chatroom
-                        subtitle: chatroom.latestMessage == null
-                            ? const Text('No messages yet')
-                            : Text(chatroom.latestMessage),
-                        onTap: () {
-                          Navigator.pushNamed(context,RouteClass.chatRoom , arguments: chatroom);
-                        },
-                      );
-                    },
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image(
+                          image: const AssetImage('assets/images/thinking-snoo.png'),
+                          height: 180.h,
+                        ),
+                        Text('No open chatrooms,\n    Start Chatting?',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold)
+                        ),
+                      ],
+                    
+                    ),
+                  )
+                : Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 10.0.h, horizontal: 8.0.w),
+                    child: ListView.builder(
+                      itemCount: _chatrooms.length,
+                      itemBuilder: (context, index) {
+                        final chatroom = _chatrooms[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RouteClass.chatRoom,
+                              arguments: {'chatroom':chatroom,'username':uid}
+                            );
+                          },
+                          child: ChatPreview(chat: chatroom),
+                        );
+                      },
+                    ),
                   ),
-            Center(child: Text('Requests Page')),
+            const Center(child: Text('Requests Page')),
           ],
         ),
       ),

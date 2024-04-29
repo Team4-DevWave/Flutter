@@ -1,3 +1,5 @@
+import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
+
 class Chatroom {
   final String id;
   final DateTime dateCreated;
@@ -5,7 +7,7 @@ class Chatroom {
   final List<ChatroomMember> chatroomMembers;
   final ChatroomMember chatroomAdmin;
   final bool isGroup;
-  final dynamic latestMessage; // Can be null for new groups or deleted messages
+  final ChatMessage? latestMessage; // Can be null for new groups or deleted messages
   final int v; // Version number (assuming "_v" refers to version)
 
   Chatroom({
@@ -19,7 +21,13 @@ class Chatroom {
     required this.v,
   });
 
-  factory Chatroom.fromJson(Map<String, dynamic> json) => Chatroom(
+  factory Chatroom.fromJson(Map<String, dynamic> json) {
+     final latestMessageJson = json['latestMessage'];
+    ChatMessage? latestMessage;
+    if (latestMessageJson != null) {
+      latestMessage = ChatMessage.fromJson(latestMessageJson);
+    }
+    return Chatroom(
         id: json['_id'],
         dateCreated: DateTime.parse(json['dateCreated']),
         chatroomName: json['chatroomName'],
@@ -27,9 +35,10 @@ class Chatroom {
             json['chatroomMembers'].map((x) => ChatroomMember.fromJson(x))),
         chatroomAdmin: ChatroomMember.fromJson(json['chatroomAdmin']),
         isGroup: json['isGroup'],
-        latestMessage: json['latestMessage'],
+        latestMessage: latestMessage,
         v: json['__v'],
       );
+  }
 
   Map<String, dynamic> toJson() => {
         '_id': id,
@@ -38,7 +47,7 @@ class Chatroom {
         'chatroomMembers': chatroomMembers.map((x) => x.toJson()).toList(),
         'chatroomAdmin': chatroomAdmin.toJson(),
         'isGroup': isGroup,
-        'latestMessage': latestMessage,
+        'latestMessage': latestMessage?.toJson(),
         '__v': v,
       };
 }
