@@ -29,15 +29,15 @@ Future<void> removeSearchHistory(String historyToDelete) async {
 
 List<String> addingHistory(String history, List<String>? currentHistory) {
   if (currentHistory != null) {
-    if (currentHistory.length > 3) {
-      currentHistory.removeAt(1);
-      currentHistory.add(history);
+    if (currentHistory.length >= 3) {
+      currentHistory.removeAt(2);
+      currentHistory.insert(0, history);
     } else {
-      currentHistory.add(history);
+      currentHistory.insert(0, history);
     }
   } else {
     currentHistory = [];
-    currentHistory.add(history);
+    currentHistory.insert(0, history);
   }
   return currentHistory;
 }

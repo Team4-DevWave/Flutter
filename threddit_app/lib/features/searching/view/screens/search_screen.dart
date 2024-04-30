@@ -13,6 +13,7 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -32,7 +33,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void initState() {
     super.initState();
     getUserId();
-    getSearchHistory();
     searchController.addListener(onChange);
   }
 
@@ -72,13 +72,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     super.dispose();
   }
 
-  Future fetchHistory() async {
-    final response = await getSearchHistory();
-    if (response != null) {
-      localSearchHistory = response;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final futureData = ref.watch(trendingFutureProvider);
@@ -105,7 +98,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             Navigator.pushNamed(context, RouteClass.searchResultsScreen,
                     arguments: arguements)
                 .then((test) => setState(() {
-                      localSearchHistory.add(value);
+                      localSearchHistory =
+                          addingHistory(value, localSearchHistory);
+                      print(
+                          "PRINTING LOCAL SEARCH HISTORY > !! > >!!! $localSearchHistory ");
                     }));
           },
         ),
@@ -155,12 +151,21 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             onTap: () {
                               print(userId);
                               print(search.subreddits[index].name);
+                              saveSearchHistory(
+                                  "r/${search.subreddits[index].name}");
+
                               Navigator.pushNamed(
                                   context, RouteClass.communityScreen,
                                   arguments: {
                                     'id': search.subreddits[index].name,
                                     'uid': " "
-                                  });
+                                  }).then((value) => setState(() {
+                                    localSearchHistory = addingHistory(
+                                        "r/${search.subreddits[index].name}",
+                                        localSearchHistory);
+                                    print(
+                                        "PRINTING LOCAL SEARCH HISTORY > !! > >!!! $localSearchHistory ");
+                                  }));
                             },
                           );
                         },
@@ -171,36 +176,69 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 )
               : SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       history.when(
                           data: (data) {
+                            localSearchHistory = data;
+
                             return ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                return ListTile(
-                                  trailing: IconButton(
-                                      onPressed: () {
-                                        removeSearchHistory(data[index]);
-                                        setState(() {
-                                          localSearchHistory.remove(localSearchHistory[index]);
-                                        });
-                                      },
-                                      icon: Icon(Icons.clear)),
-                                  onTap: () {
-                                    final arguements = {
-                                      'search': search,
-                                      'text': data[index],
-                                    };
-                                    Navigator.pushNamed(
-                                        context, RouteClass.searchResultsScreen,
-                                        arguments: arguements);
-                                  },
-                                  title: Text(
-                                    "${localSearchHistory[index]}",
-                                    style: AppTextStyles.primaryTextStyle,
-                                  ),
-                                );
+                                print(
+                                    "PRINTING LOCAL SEARCH HISTORY > !! > >!!! $localSearchHistory ");
+                                if (localSearchHistory[index].startsWith("r")) {
+                                  return ListTile(
+                                    trailing: IconButton(
+                                        onPressed: () {
+                                          removeSearchHistory(data[index]);
+                                          setState(() {
+                                            localSearchHistory.remove(
+                                                localSearchHistory[index]);
+                                          });
+                                        },
+                                        icon: const Icon(Icons.clear)),
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, RouteClass.communityScreen,
+                                          arguments: {
+                                            'id': localSearchHistory[index],
+                                            'uid': " "
+                                          });
+                                    },
+                                    title: Text(
+                                      localSearchHistory[index],
+                                      style: AppTextStyles.boldTextStyle
+                                          .copyWith(fontSize: 15.sp),
+                                    ),
+                                  );
+                                } else {
+                                  return ListTile(
+                                    trailing: IconButton(
+                                        onPressed: () {
+                                          removeSearchHistory(data[index]);
+                                          setState(() {
+                                            localSearchHistory.remove(
+                                                localSearchHistory[index]);
+                                          });
+                                        },
+                                        icon: const Icon(Icons.clear)),
+                                    onTap: () {
+                                      final arguements = {
+                                        'search': search,
+                                        'text': data[index],
+                                      };
+                                      Navigator.pushNamed(context,
+                                          RouteClass.searchResultsScreen,
+                                          arguments: arguements);
+                                    },
+                                    title: Text(
+                                      localSearchHistory[index],
+                                      style: AppTextStyles.primaryTextStyle,
+                                    ),
+                                  );
+                                }
                               },
                               itemCount: localSearchHistory.length,
                             );
@@ -213,6 +251,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                   repeat: true,
                                 ),
                               )),
+                      SizedBox(height: 10.h),
+                      Text(
+                        "Trending Today",
+                        style: AppTextStyles.boldTextStyle
+                            .copyWith(fontSize: 15.sp),
+                      ),
+                      SizedBox(height: 10.h),
                       futureData.when(
                           data: (data) {
                             return ListView.builder(
@@ -220,6 +265,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return ListTile(
+                                  contentPadding: const EdgeInsets.all(0),
                                   onTap: () {
                                     final arguements = {
                                       'search': search,
@@ -231,7 +277,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                   },
                                   title: Text(
                                     "${data[index].title}",
-                                    style: AppTextStyles.primaryTextStyle,
+                                    style: AppTextStyles.primaryTextStyle
+                                        .copyWith(
+                                            color: const Color.fromARGB(
+                                                255, 98, 161, 255)),
                                   ),
                                   subtitle: Text(
                                     "${data[index].subtitle}",
