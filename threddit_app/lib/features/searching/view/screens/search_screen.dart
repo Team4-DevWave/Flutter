@@ -183,7 +183,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                       onPressed: () {
                                         removeSearchHistory(data[index]);
                                         setState(() {
-                                          localSearchHistory.remove(localSearchHistory[index]);
+                                          localSearchHistory.remove(
+                                              localSearchHistory[index]);
                                         });
                                       },
                                       icon: Icon(Icons.clear)),
@@ -209,7 +210,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               child: Text("Error is ${error.toString()}"))),
                           loading: () => Center(
                                 child: Lottie.asset(
-                                  'assets/animation/loading.json',
+                                  'assets/animation/loading2.json',
                                   repeat: true,
                                 ),
                               )),
@@ -249,7 +250,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               ))),
                           loading: () => Center(
                                 child: Lottie.asset(
-                                  'assets/animation/loading.json',
+                                  'assets/animation/loading2.json',
                                   repeat: true,
                                 ),
                               )),

@@ -356,14 +356,25 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                       child: TabBarView(controller: _tabController, children: [
                         _posts.isEmpty
                             ? _fetchingPosts
-                                ? SizedBox(
-                                    height: 75.h,
-                                    width: 75.w,
-                                    child: Lottie.asset(
-                                      'assets/animation/loading.json',
-                                      repeat: true,
-                                    ),
-                                  )
+                                ? Center(
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                        SizedBox(
+                                            height: 100.h,
+                                            width: 150.w,
+                                            child: Image.asset(
+                                                'assets/images/threaddit_web.png')),
+                                        SizedBox(
+                                          height: 100.h,
+                                          width: 150.w,
+                                          child: Lottie.asset(
+                                            'assets/animation/loading2.json',
+                                            repeat: true,
+                                          ),
+                                        )
+                                      ]))
                                 : Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -397,7 +408,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                                             height: 75.h,
                                             width: 75.w,
                                             child: Lottie.asset(
-                                              'assets/animation/loading.json',
+                                              'assets/animation/loading2.json',
                                               repeat: true,
                                             ),
                                           )
@@ -423,7 +434,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                                     height: 75.h,
                                     width: 75.w,
                                     child: Lottie.asset(
-                                      'assets/animation/loading.json',
+                                      'assets/animation/loading2.json',
                                       repeat: true,
                                     ),
                                   )

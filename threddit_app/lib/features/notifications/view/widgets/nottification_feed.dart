@@ -52,7 +52,7 @@ class _NotificationFeedState extends ConsumerState<NotificationFeed> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
                     child: Lottie.asset(
-                      'assets/animation/loading.json',
+                      'assets/animation/loading2.json',
                       repeat: true,
                     ),
                   );
