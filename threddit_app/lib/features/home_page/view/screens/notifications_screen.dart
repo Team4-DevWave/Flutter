@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/nottification_feed.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
-import 'package:threddit_clone/theme/colors.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
@@ -28,8 +27,8 @@ class _NotificationsScreen extends ConsumerState<NotificationsScreen> {
       appBar: AppBar(
         title: Center(
           child: Title(
-              color: Color.fromARGB(255, 253, 243, 243),
-              child: Text("Notifications")),
+              color: const Color.fromARGB(255, 253, 243, 243),
+              child: const Text("Notifications")),
         ),
       ),
       body: NotificationFeed(

@@ -9,7 +9,7 @@ class UserModelMe {
   final String? id;
   final String? username;
   final String? displayName;
-  //final String? profilePicture;
+  final String? profilePicture;
   final String? email;
   final bool? verified;
   final String? verificationToken;
@@ -34,7 +34,7 @@ class UserModelMe {
     this.id,
     this.username,
     this.email,
-    //this.profilePicture,
+    this.profilePicture,
     this.displayName,
     this.verified,
     this.verificationToken,
@@ -66,7 +66,7 @@ class UserModelMe {
       email: user['email'] as String?,
       verified: user['verified'] as bool?,
       displayName: user['displayName'] as String?,
-      //profilePicture: user['profilePicture'] as String,
+      profilePicture: user['profilePicture'] as String,
       verificationToken: user['verificationToken'] as String?,
       dateJoined: user['dateJoined'] != null
           ? DateTime.parse(user['dateJoined'] as String)

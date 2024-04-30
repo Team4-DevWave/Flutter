@@ -39,8 +39,8 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
           child: Container(
               decoration: BoxDecoration(
                 color: !_seen
-                    ? Color.fromARGB(24, 255, 255, 255)
-                    : Color.fromARGB(0, 255, 255, 255),
+                    ? const Color.fromARGB(24, 255, 255, 255)
+                    : const Color.fromARGB(0, 255, 255, 255),
                 borderRadius: BorderRadius.circular(10.sp),
               ),
               height: 75.h,

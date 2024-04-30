@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/models/subreddit.dart';
@@ -9,7 +8,7 @@ import 'package:threddit_clone/theme/text_styles.dart';
 class CommunityUnit extends StatefulWidget {
   final Subreddit subreddit;
   final String userID;
-  CommunityUnit({super.key, required this.subreddit, required this.userID});
+  const CommunityUnit({super.key, required this.subreddit, required this.userID});
 
   @override
   State<CommunityUnit> createState() => _CommunityUnitState();
@@ -93,7 +92,7 @@ class _CommunityUnitState extends State<CommunityUnit> {
               style: AppTextStyles.secondaryTextStyle,
             ),
           ),
-          Divider(
+          const Divider(
             color: Color.fromRGBO(233, 93, 95, 0.573),
             thickness: 1,
           )

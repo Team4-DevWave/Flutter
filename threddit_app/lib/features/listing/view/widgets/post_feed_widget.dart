@@ -309,7 +309,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     },
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
