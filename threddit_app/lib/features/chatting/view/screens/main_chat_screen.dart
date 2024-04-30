@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +26,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
   List<Chatroom> _chatrooms = [];
-  Socket? socket;
+  IO.Socket? socket;
 
   @override
   void initState() {
@@ -37,22 +37,23 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
   }
 
   void _initializeSocketConnection() async {
-    final url = 'http://${AppConstants.local}:8000';
-
-    try {
-      socket = io(url, OptionBuilder().setTransports(['websocket']).build());
-      socket?.on('connect', (_) => print('Connected to Socket.IO server'));
-      socket?.on(
-          'disconnect', (_) => print('Disconnected from Socket.IO server'));
-
-      // Handle incoming events from the server
-
-      socket?.connect(); // Connect to the server
-    } catch (error) {
-      print('Error connecting to Socket.IO: $error');
-    }
+    socket = IO.io("http://${AppConstants.local}:3005", <String, dynamic>{
+      "transports": ["websocket"],
+      "autoConnect": false,
+    });
+    socket?.connect();
+    socket?.onConnect((data) {
+      print("Connected");
+      socket?.on("message", (msg) {
+        print(msg);
+        //implement updating the screen
+      });
+    });
+    print(socket?.connected);
   }
 
+  
+  
   Future<void> _fetchChatrooms() async {
     String? token = await getToken();
     final url =
@@ -146,7 +147,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
               useSafeArea: true,
               isScrollControlled: true,
               scrollControlDisabledMaxHeightRatio: double.infinity,
-              backgroundColor: Color.fromARGB(255, 56, 56, 56),
+              backgroundColor: const Color.fromARGB(255, 56, 56, 56),
               builder: (context) {
                 return Padding(
                   padding: MediaQuery.of(context).viewInsets,
@@ -156,7 +157,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
             );
           },
           icon: const Icon(
-            Icons.chat_bubble,
+            Icons.add_comment,
             color: Color.fromARGB(255, 163, 151, 239),
           ),
         ),
@@ -188,7 +189,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
                     child: ListView.builder(
                       itemCount: _chatrooms.length,
                       itemBuilder: (context, index) {
-                        final chatroom = _chatrooms[index];
+                        var chatroom = _chatrooms[_chatrooms.length-index-1]; // Reverse the list
                         return GestureDetector(
                           onTap: () {
                             Navigator.pushNamed(
@@ -197,7 +198,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
                               arguments: {'chatroom':chatroom,'username':uid}
                             );
                           },
-                          child: ChatPreview(chat: chatroom),
+                          child: ChatPreview(chat: chatroom,username: uid,),
                         );
                       },
                     ),

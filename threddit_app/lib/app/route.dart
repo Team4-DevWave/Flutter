@@ -5,8 +5,10 @@ import 'package:threddit_clone/features/Moderation/view/screens/description.dart
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
+import 'package:threddit_clone/features/chatting/view/screens/chat_options_screen.dart';
 import 'package:threddit_clone/features/chatting/view/screens/chat_room.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/post_types.dart';
+import 'package:threddit_clone/features/chatting/view/screens/rename_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
@@ -33,7 +35,6 @@ import 'package:threddit_clone/features/user_system/view/screens/settings_screen
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
-import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
@@ -115,6 +116,8 @@ class RouteClass {
   static const String messageScreen = '/message';
   static const String searchCommunity = '/serach-community';
   static const String chatRoom = '/chat-room';
+  static const String chatRoomOptions = '/chat-room-options';
+  static const String renameChatroom = '/rename-chatroom';
 
 
   static const String postTypes = '/post-types';
@@ -283,9 +286,21 @@ class RouteClass {
       case chatRoom:
        final args = settings.arguments as Map<String, dynamic>;
      final chatroom =
-            args['chatroom'] as Chatroom; // Extract the community object
+            args['chatroom'] as Chatroom; 
         final username = args['username'] as String;
         return MaterialPageRoute(builder: (_) => ChatRoomScreen(chatroom: chatroom,username: username,));
+      case chatRoomOptions:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => ChatOptionsScreen(chatroom: chatroom,username: username,));
+      case renameChatroom:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => RenameChatroom(chatroom: chatroom,username: username,));
       case addModeratorScreen:
         return MaterialPageRoute(
             builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);

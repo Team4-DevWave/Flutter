@@ -4,11 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/pref_constants.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/UserProfile.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 
 class NewChat extends ConsumerStatefulWidget {
-  const NewChat({super.key,required this.uid});
+  const NewChat({super.key, required this.uid});
   final String uid;
   @override
   _NewChatState createState() => _NewChatState();
@@ -16,7 +17,7 @@ class NewChat extends ConsumerStatefulWidget {
 
 class _NewChatState extends ConsumerState<NewChat> {
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController  _groupNameController = TextEditingController();
+  final TextEditingController _groupNameController = TextEditingController();
   String _foundUsername = '';
   List<String> _selectedUsers = [];
   String groupName = '';
@@ -49,6 +50,50 @@ class _NewChatState extends ConsumerState<NewChat> {
         _foundUsername = '';
       });
       print('Error searching users: ${response.statusCode}');
+    }
+  }
+
+  void createChatroomfn(BuildContext context,List<String>_selectedUsers,String groupName ) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dialog from being dismissed
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('redirecting to chatroom...'),
+            ],
+          ),
+        );
+      },
+    );
+
+    try {
+      final chatCreationResult = await ref.read(
+          createChatroom((users: _selectedUsers, groupName: groupName)).future);
+      // Close the loading indicator dialog
+      Navigator.pop(context);
+
+      Navigator.pop(context);
+      Navigator.pushNamed(
+        context,
+        RouteClass.chatRoom,
+        arguments: {
+          'chatroom': chatCreationResult,
+          'username': widget.uid,
+        },
+      );
+    } catch (e) {
+      // Handle error
+      print('Error creating chatroom: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('An error occurred while creating the chatroom'),
+        ),
+      );
     }
   }
 
@@ -101,36 +146,36 @@ class _NewChatState extends ConsumerState<NewChat> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if(_selectedUsers.length>1)
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 8.0.h),
-                      child: TextField(
-                        controller: _groupNameController,
-                        onEditingComplete: () => FocusScope.of(context)
-                            .nextFocus(), // Focus next field
-                        style: const TextStyle(color: Colors.white),
-                        onChanged: (value) {
-                          setState(() {
-                            groupName = value;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          fillColor: const Color.fromARGB(255, 19, 19, 19),
-                          filled: true,
-                          hintText: 'Group Name*',
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.0.w,
-                            vertical: 14.0.h,
-                          ), // Adjust padding as needed
+                    if (_selectedUsers.length > 1)
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 8.0.h),
+                        child: TextField(
+                          controller: _groupNameController,
+                          onEditingComplete: () => FocusScope.of(context)
+                              .nextFocus(), // Focus next field
+                          style: const TextStyle(color: Colors.white),
+                          onChanged: (value) {
+                            setState(() {
+                              groupName = value;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            fillColor: const Color.fromARGB(255, 19, 19, 19),
+                            filled: true,
+                            hintText: 'Group Name*',
+                            hintStyle: const TextStyle(color: Colors.grey),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0.w,
+                              vertical: 14.0.h,
+                            ), // Adjust padding as needed
 
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide.none, // Remove border
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none, // Remove border
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     const Text(
                       "Search for people by username to chat with them.",
                       style: TextStyle(
@@ -189,10 +234,10 @@ class _NewChatState extends ConsumerState<NewChat> {
                       children: _selectedUsers.map((user) {
                         return Chip(
                           backgroundColor: Colors.grey,
-                          avatar:const CircleAvatar(
+                          avatar: const CircleAvatar(
                             backgroundColor: Colors.transparent,
-                            backgroundImage: AssetImage(
-                                    'assets/images/Default_Avatar.png'),
+                            backgroundImage:
+                                AssetImage('assets/images/Default_Avatar.png'),
                           ),
                           label: Text(user),
                           deleteIcon: const Icon(Icons.cancel),
@@ -227,79 +272,79 @@ class _NewChatState extends ConsumerState<NewChat> {
                                     style: const TextStyle(color: Colors.white),
                                   ),
                                   const Spacer(),
-                                 _foundUsername==widget.uid? const Text('It\'s You',style: TextStyle(color: Colors.white),):
-                                  Checkbox(
-                                    value: _selectedUsers.contains(_foundUsername),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isSelected = value ?? false;
-                                        if (value == true) {
-                                          _selectedUsers.add(_foundUsername);
-                                        } else {
-                                          _selectedUsers.remove(_foundUsername);
-                                        }
-                                      });
-                                    },
-                                  ),
+                                  _foundUsername == widget.uid
+                                      ? const Text(
+                                          'It\'s You',
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                      : Checkbox(
+                                          value: _selectedUsers
+                                              .contains(_foundUsername),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isSelected = value ?? false;
+                                              if (value == true) {
+                                                _selectedUsers
+                                                    .add(_foundUsername);
+                                              } else {
+                                                _selectedUsers
+                                                    .remove(_foundUsername);
+                                              }
+                                            });
+                                          },
+                                        ),
                                 ],
                               ),
                             ),
                     ),
-                    _selectedUsers.length<=1? ElevatedButton(
-                      onPressed: () {
-                        if (_selectedUsers.isEmpty) {
-                          return;
-                        }
-                        else
-                        {
-                           ref.read(createChatroom((
-                            users: _selectedUsers,
-                            groupName: 'New Chat',
-                          )));
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _selectedUsers.isNotEmpty
-                            ? Colors.blue
-                            : const Color.fromARGB(175, 90, 89,
-                                89), // Change color based on enabled state
-                      ), // Handle button press
-                      child: Text(
-                        'Start Chat',
-                        style: TextStyle(
-                            color: _selectedUsers.isNotEmpty
-                                ? Colors.white
-                                : const Color.fromARGB(81, 255, 255, 255)),
-                      ),
-                    ):
-                    ElevatedButton(
-                      onPressed: () {
-                        if (groupName=='') {
-                          return;
-                        }
-                        else
-                        {
-                          ref.read(createChatroom((
-                            users: _selectedUsers,
-                            groupName: groupName,
-                          )));
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:groupName != ''
-                            ? Colors.blue
-                            : const Color.fromARGB(175, 90, 89,
-                                89), // Change color based on enabled state
-                      ), // Handle button press
-                      child: Text(
-                        'Start Group Chat',
-                        style: TextStyle(
-                            color: groupName != ''
-                                ? Colors.white
-                                : const Color.fromARGB(81, 255, 255, 255)),
-                      ),
-                    )
-                    ,
+                    _selectedUsers.length <= 1
+                        ? ElevatedButton(
+                            onPressed: () async {
+                              if (_selectedUsers.isEmpty) {
+                                return;
+                              } else {
+                                createChatroomfn(context,_selectedUsers,'New Chat');
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _selectedUsers.isNotEmpty
+                                  ? Colors.blue
+                                  : const Color.fromARGB(175, 90, 89,
+                                      89), // Change color based on enabled state
+                            ), // Handle button press
+                            child: Text(
+                              'Start Chat',
+                              style: TextStyle(
+                                  color: _selectedUsers.isNotEmpty
+                                      ? Colors.white
+                                      : const Color.fromARGB(
+                                          81, 255, 255, 255)),
+                            ),
+                          )
+                        : ElevatedButton(
+                            onPressed: () async {
+                              if (groupName == '') {
+                                return;
+                              } else {
+                                createChatroomfn(context,_selectedUsers,groupName);
+                              }
+                            },
+
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: groupName != ''
+                                  ? Colors.blue
+                                  : const Color.fromARGB(175, 90, 89,
+                                      89), // Change color based on enabled state
+                            ), // Handle button press
+                            child: Text(
+                              'Start Group Chat',
+                              style: TextStyle(
+                                  color: groupName != ''
+                                      ? Colors.white
+                                      : const Color.fromARGB(
+                                          81, 255, 255, 255)),
+                            ),
+                          ),
                   ],
                 ),
               ),

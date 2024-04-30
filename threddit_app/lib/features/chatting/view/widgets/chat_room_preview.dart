@@ -3,21 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
+
 String formatDateTime(DateTime dateTime) {
   final now = DateTime.now();
   final difference = now.difference(dateTime);
 
   if (difference.inDays == 0) {
-   
     return DateFormat('HH:mm').format(dateTime);
   } else {
-    
     return DateFormat('yMMMEd').format(dateTime);
   }
 }
+
 class ChatPreview extends ConsumerStatefulWidget {
-  const ChatPreview({super.key, required this.chat});
-  final Chatroom chat;
+  ChatPreview({super.key, required this.chat,required this.username});
+  Chatroom chat;
+  final String username;
   @override
   // ignore: library_private_types_in_public_api
   _ChatPreviewState createState() => _ChatPreviewState();
@@ -39,7 +40,7 @@ class _ChatPreviewState extends ConsumerState<ChatPreview> {
               color: Colors.transparent,
             ),
             child: Padding(
-              padding: EdgeInsets.only(bottom:5.0.h),
+              padding: EdgeInsets.only(bottom: 5.0.h),
               child: Row(
                 children: [
                   widget.chat.chatroomMembers.length > 2
@@ -55,41 +56,46 @@ class _ChatPreviewState extends ConsumerState<ChatPreview> {
                           backgroundImage:
                               AssetImage('assets/images/Default_Avatar.png'),
                         ),
-                         SizedBox(width: 15.w),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.chat.chatroomMembers.length > 2
-                            ? widget.chat.chatroomName
-                            : widget.chat.chatroomMembers[0].username,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        widget.chat.latestMessage != null
-                            ? '${widget.chat.latestMessage!.sender.username}: ${widget.chat.latestMessage!.message.length > 30
-                                    ? '${widget.chat.latestMessage!.message
-                                            .substring(0, 30)}...'
-                                    : widget.chat.latestMessage!.message}'
-                            : 'No messages yet',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
+                  SizedBox(width: 15.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.chat.chatroomMembers.length > 2
+                              ? widget.chat.chatroomName
+                              :( widget.chat.chatroomMembers[0].username!=widget.username?widget.chat.chatroomMembers[0].username:widget.chat.chatroomMembers[1].username),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    ],
+                        Text(
+                          widget.chat.latestMessage != null
+                              ? '${widget.chat.latestMessage!.sender.username}: ${widget.chat.latestMessage!.message}'
+                              : 'No messages yet',
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const Spacer(),
-                  if(widget.chat.latestMessage != null)
-                  Text(formatDateTime(DateTime.parse(widget.chat.latestMessage!.dateSent),),
+                  if (widget.chat.latestMessage != null)
+                    Text(
+                      formatDateTime(
+                        DateTime.parse(widget.chat.latestMessage!.dateSent),
+                      ),
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
-                          fontWeight: FontWeight.normal),),
+                          fontWeight: FontWeight.normal),
+                    ),
                 ],
               ),
             )),

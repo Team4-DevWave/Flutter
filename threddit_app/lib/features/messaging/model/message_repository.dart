@@ -7,7 +7,7 @@ import 'package:threddit_clone/models/message.dart';
 
 class MessageRepository {
   Future<List<Message>> fetchUserMessages() async {
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/messages/sent');
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/messages/allmessages');
     String? token = await getToken();
     final headers = {
       "Authorization": "Bearer $token",

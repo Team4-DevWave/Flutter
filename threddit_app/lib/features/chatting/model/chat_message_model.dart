@@ -29,7 +29,7 @@ class ChatMessage {
   Map<String, dynamic> toJson() => {
         '_id': id,
         'dateSent': dateSent,
-        'sender': sender?.toJson(),
+        'sender': sender.toJson(),
         'message': message,
         'chatID': chatID?.toJson(),
         '__v': v,

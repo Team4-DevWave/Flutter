@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
+import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/theme/theme.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
+
+// ignore: must_be_immutable
 class ChatRoomScreen extends StatelessWidget {
-  final Chatroom chatroom;
+   Chatroom chatroom;
   final String username;
   @override
-  const ChatRoomScreen(
+  ChatRoomScreen(
       {super.key, required this.chatroom, required this.username});
   @override
   Widget build(BuildContext context) {
@@ -20,7 +27,7 @@ class ChatRoomScreen extends StatelessWidget {
         title: Text(
           chatroom.chatroomMembers.length > 2
               ? chatroom.chatroomName
-              : chatroom.chatroomMembers[0].username,
+              : ( chatroom.chatroomMembers[0].username!=username?chatroom.chatroomMembers[0].username:chatroom.chatroomMembers[1].username),
           style: const TextStyle(
             fontSize: 17.0,
             fontWeight: FontWeight.bold,
@@ -43,7 +50,16 @@ class ChatRoomScreen extends StatelessWidget {
               Icons.more_horiz,
               color: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(
+        context,
+        RouteClass.chatRoomOptions,
+        arguments: {
+          'chatroom': chatroom,
+          'username': username,
+        },
+      );
+            },
           ),
         ],
       ),
@@ -57,9 +73,10 @@ class ChatRoomScreen extends StatelessWidget {
 
 class ChatBody extends ConsumerStatefulWidget {
   @override
-  const ChatBody({super.key, required this.chatroom, required this.username});
+  ChatBody({super.key, required this.chatroom, required this.username});
   final String username;
-  final Chatroom chatroom;
+  Chatroom chatroom;
+  
   @override
   // ignore: library_private_types_in_public_api
   _ChatBodyState createState() => _ChatBodyState();
@@ -67,6 +84,44 @@ class ChatBody extends ConsumerStatefulWidget {
 
 class _ChatBodyState extends ConsumerState<ChatBody> {
   final TextEditingController _messageController = TextEditingController();
+  Socket? socket;
+  List<ChatMessage> messages = [];
+void sendChat()
+{
+  socket?.emit('new message', {
+  'chat': widget.chatroom.id,
+  'message': _messageController.text,
+});
+  ref.read(sendChatMessage((message: _messageController.text, chatroomId: widget.chatroom.id)));
+}
+  @override
+  void initState() {
+    super.initState();
+    _initializeSocketConnection();
+    socket?.on('new message', (newMessageReceived) {
+      // Process the received message data
+      
+      String senderID = newMessageReceived['senderID'];
+      String message = newMessageReceived['message'];
+      print("new message received: $message");
+      // Update UI with the new message
+    });
+  
+}
+ void _initializeSocketConnection() async {
+    socket = IO.io("http://${AppConstants.local}:3005", <String, dynamic>{
+      "transports": ["websocket"],
+      "autoConnect": false,
+    });
+    socket?.connect();
+    socket?.onConnect((data) {
+      print("Connected");
+      socket?.on("message", (msg) {
+        print(msg);
+      });
+    });
+   socket?.emit('join room', widget.chatroom.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +158,7 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
                     Text(
                       widget.chatroom.chatroomMembers.length > 2
                           ? widget.chatroom.chatroomName
-                          : widget.chatroom.chatroomMembers[0].username,
+                          : ( widget.chatroom.chatroomMembers[0].username!=widget.username?widget.chatroom.chatroomMembers[0].username:widget.chatroom.chatroomMembers[1].username),
                       style: const TextStyle(
                         fontSize: 17.0,
                         fontWeight: FontWeight.bold,
@@ -159,12 +214,13 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
                             ref.watch(getChatMessages(widget.chatroom.id));
                 
                         return messagesAsyncValue.when(
-                          data: (messages) {
+                          data: (listmessages) {
+                            messages = listmessages;
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 ListView.builder(
-                                  reverse: true,
+                                  
                                   shrinkWrap: true,
                                   itemCount: messages.length,
                                   itemBuilder: (context, index) {
@@ -202,6 +258,12 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
               Expanded(
                 child: TextField(
                   controller: _messageController,
+                  onChanged: (value)
+                  {
+                    setState(() {
+                      
+                    });
+                  },
                   onEditingComplete: () => FocusScope.of(context).nextFocus(),
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
@@ -233,9 +295,9 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
                 },
               ),
               IconButton(
-                icon: const Icon(Icons.send),
+                icon: Icon(Icons.send,color: _messageController.text==''?const Color.fromARGB(85, 255, 255, 255):Colors.white,),
                 onPressed: () {
-                  // Handle send button press
+                  sendChat();
                   _messageController
                       .clear(); // Clear the text field after sending message
                 },

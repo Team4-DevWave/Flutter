@@ -3,7 +3,7 @@ import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
 class Chatroom {
   final String id;
   final DateTime dateCreated;
-  final String chatroomName;
+  String chatroomName;
   final List<ChatroomMember> chatroomMembers;
   final ChatroomMember chatroomAdmin;
   final bool isGroup;
