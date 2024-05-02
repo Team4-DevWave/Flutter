@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
-import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 FutureEither<bool> updateProfilePicture(String?image, WidgetRef ref)async{
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
