@@ -352,14 +352,9 @@ class SettingsFetch extends StateNotifier<bool> {
     );
     if (response.statusCode == 200) {
       user = UserModelMe.fromJson(jsonDecode(response.body));
-      print("AAAAAAAAAAALLLLLLLLLLLLLLOOOOOOOOOOOOO");
-      // print(user.displayName);
-      print(user.username);
-      print(user.displayName);
-      print(user.email);
       ref.read(userModelProvider.notifier).update((state) => user);
     } else {
-      print("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+      
     }
     return UserModelMe.fromJson(jsonDecode(response.body));
   }

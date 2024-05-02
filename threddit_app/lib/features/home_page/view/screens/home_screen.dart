@@ -20,6 +20,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String? userId;
   final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
   @override
+  
   void initState() {
     // TODO: implement  initState
     super.initState();
@@ -28,12 +29,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
   }
-
-  // Future<void> getUserName() async {
-  //   userId = await getUserID();
-  //   print("RRRRRRRRRRRRRRRRRRRRRRRRR");
-  //   print(userId);
-  // }
 
   @override
   Widget build(BuildContext context) {

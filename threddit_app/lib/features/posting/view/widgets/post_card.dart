@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
@@ -34,6 +35,7 @@ class PostCard extends ConsumerStatefulWidget {
 
 class _PostCardState extends ConsumerState<PostCard> {
   late VideoPlayerController _controller;
+  UserModelMe? user;
   @override
   void initState() {
     super.initState();
@@ -50,6 +52,12 @@ class _PostCardState extends ConsumerState<PostCard> {
   void dispose() {
     _controller.dispose(); // Dispose the controller when the widget is removed
     super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    user = ref.read(userModelProvider)!;
+    super.didChangeDependencies();
   }
 
   @override
@@ -149,8 +157,12 @@ class _PostCardState extends ConsumerState<PostCard> {
                       children: [
                         InkWell(
                           onTap: () {
-                            Navigator.pushNamed(context, RouteClass.otherUsers,
-                                arguments: widget.post.userID!.username);
+                            widget.post.userID!.username == user?.username
+                                ? Navigator.pushNamed(
+                                    context, RouteClass.userProfileScreen)
+                                : Navigator.pushNamed(
+                                    context, RouteClass.otherUsers,
+                                    arguments: widget.post.userID!.username);
                           },
                           child: Text(
                             'u/${widget.post.userID!.username}',

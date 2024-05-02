@@ -276,10 +276,23 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => EditModeratorScreen(moderator: user));
       case otherUsers:
-        String uname = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) =>  OtherUsersProfile(
-          username: uname,
-        ));
+        // Map<String, dynamic> arguments =
+        //     settings.arguments as Map<String, dynamic>;
+        //String uname = settings.arguments as String;
+        String?uname;
+        if (settings.arguments is String) {
+          // If arguments is a string directly, use it as the username
+          uname = settings.arguments as String;
+        } else if (settings.arguments is Map<String, dynamic>) {
+          // If arguments is a map, extract the username from it
+          Map<String, dynamic> arguments =
+              settings.arguments as Map<String, dynamic>;
+          uname = arguments['username'] as String;
+        }
+        return MaterialPageRoute(
+            builder: (_) => OtherUsersProfile(
+                  username: uname!,
+                ));
       case searchCommunity:
         String community = settings.arguments as String;
         return MaterialPageRoute(

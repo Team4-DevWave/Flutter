@@ -8,27 +8,25 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
-FutureEither<bool> updateDisplayName(String dispName, WidgetRef ref)async{
+FutureEither<bool> updateProfilePicture(String?image, WidgetRef ref)async{
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
 final token = await getToken();
-final  url = "http://$local:8000/api/v1/users/me/changeDisplayName";
+final  url = "http://$local:8000/api/v1/users/me/changeProfilePic";
 final headers = {
             
             'Authorization': 'Bearer $token',
           };
 
   try{
-    final response = await http.patch(Uri.parse(url), headers: headers, body: { "displayName" : dispName });
-
+    final response = await http.patch(Uri.parse(url), headers: headers, body: { "image" : image });
     if(response.statusCode == 200)
     {
-      ref.read(userModelProvider.notifier).update((state) => state?.copyWith(displayName: dispName));
       return right(true);
     }
     else
     {
-      return left(Failure("Failed to update display name"));
+      return left(Failure("Failed to update profile picture"));
     }
   }
   catch(e){

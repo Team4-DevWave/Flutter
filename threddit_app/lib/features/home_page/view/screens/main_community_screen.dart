@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/community/view%20model/get_community.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/community_feed_unit.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -26,8 +27,9 @@ class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
     super.initState();
   }
 
-  Future<void> setUserid() async {
-    userId = (await getUserId())!;
+  void setUserid() {
+    //userId = (await getUserId())!;
+    userId = ref.read(userModelProvider)!.id!;
   }
 
   @override

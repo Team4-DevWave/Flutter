@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_profile/models/other_user_data.dart';
+import 'package:threddit_clone/features/user_profile/view_model/get_user.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -16,9 +18,11 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
   final List<String> _followingList = [];
   bool isLoading = false;
   UserModelMe? user;
+  UserModelNotMe? someone;
 
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
+    someone = ref.read(getUserProvider);
   }
 
   @override
@@ -38,7 +42,6 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
         _followingList.add(username);
       }
     }
-    print("FFFFFFFFFFFFFFFFFMMMMMMMMMMMLLLLLLLLLLLLLLLLLLLLL");
     print(_followingList);
     isLoading = false;
     super.didChangeDependencies();
@@ -46,6 +49,17 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider putProfilepic(){
+      if(user!.profilePicture == "")
+      {
+        return const AssetImage('assets/images/Default_Avatar.png');
+      }
+      else{
+        return NetworkImage(someone!.profilePicture!);
+      }
+                  
+    }
+
     return  ExpansionTile(
         title: Text(
           widget.title,
@@ -57,14 +71,13 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                   onTap: () {
                     ///go to the user's profile screen
                     Navigator.pushNamed(context, RouteClass.otherUsers,
-                        arguments: {
-                          'username': followed,
+                        arguments: <String, dynamic>{
+                          'username': followed.toString(),
                         });
                   },
-                  leading: const CircleAvatar(
+                  leading: CircleAvatar(  
                     radius: 10,
-                    //backgroundImage: NetworkImage(community[1]),
-                    backgroundImage: AssetImage('assets/images/Default_Avatar.png'),
+                    backgroundImage: putProfilepic()
                   ),
                   title: Text(followed,
                       maxLines: 1,

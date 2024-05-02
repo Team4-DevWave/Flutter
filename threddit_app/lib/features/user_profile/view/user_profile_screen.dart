@@ -1,4 +1,3 @@
-// ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,31 +37,37 @@ class _UserProfileState extends ConsumerState<UserProfile>
   bool _fetchingPosts = true;
   bool _fetchingPostsFinish = true;
   UserModelMe? user;
-  String? dis;
+  String? pfp;
+  String? displayName;
+  bool isLoading = true;
 
-  void _getUserData() async {
-    user = ref.read(userModelProvider)!;
-    socialLinks = ref.read(userProfileProvider)?.socialLinks;
+  void _getUserData() {
+    user = ref.watch(userModelProvider)!;
+    socialLinks = ref.watch(userProfileProvider)?.socialLinks;
+    pfp = ref.watch(userProfileProvider)?.profilePicture;
   }
 
-
   void setData() async {
-    //getSettings function gets the user settings data and updates it in the provider
+    //getSettings function gets the user settings data and updates it in the userProfileProivder
     await ref.read(settingsFetchProvider.notifier).getSettings();
-    dis = ref.read(userModelProvider)?.displayName;
+    await ref.read(settingsFetchProvider.notifier).getMe();
   }
 
   String? uid;
   @override
   void initState() {
-    _getUserData();
     _fetchPosts();
-    setData();
-    setData();
     _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    setData();
+    _getUserData();
+    super.didChangeDependencies();
   }
 
   Future<void> setUserid() async {
@@ -134,17 +139,26 @@ class _UserProfileState extends ConsumerState<UserProfile>
       _fetchPosts();
     }
   }
-  
+
+  bool isLink(String value) {
+    // Regular expression for URL validation
+    final urlRegex = RegExp(r'^(http|https):\/\/[^ "]+$', caseSensitive: false);
+
+    // Check if the input string matches the URL format
+    return urlRegex.hasMatch(value);
+  }
 
   @override
   Widget build(BuildContext context) {
     final List<String> tabs = <String>['Posts', 'Comments', 'About'];
     final settings = ref.watch(userProfileProvider);
-    final imageFile = ref.watch(imagePathProvider);
+    // final imageFile = ref.watch(imagePathProvider);
 
     ImageProvider setProfilePic() {
-      if (imageFile != null) {
-        return FileImage(imageFile);
+      print("image");
+      print(user!.profilePicture);
+      if (user!.profilePicture!.isNotEmpty && isLink(user!.profilePicture!)) {
+        return NetworkImage(user!.profilePicture!);
       } else {
         return const AssetImage('assets/images/Default_Avatar.png');
       }
@@ -174,7 +188,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
       }
     });
 
-
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
@@ -187,6 +200,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 handle:
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
+                  stretch: true,
                   title: Text(
                     "u/${user?.username}",
                     style: AppTextStyles.secondaryTextStyle,
@@ -226,9 +240,11 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                 Navigator.pushNamed(
                                         context, RouteClass.editUser)
                                     .then((value) => setState(() {
-                                          socialLinks = ref
-                                              .read(userProfileProvider)
-                                              ?.socialLinks;
+                                          // socialLinks = ref
+                                          //     .read(userProfileProvider)
+                                          //     ?.socialLinks;
+                                          setData();
+                                          _getUserData();
                                         }));
                               },
                               child: Text(
@@ -241,9 +257,9 @@ class _UserProfileState extends ConsumerState<UserProfile>
                               height: 5.h,
                             ),
                             Text(
-                              settings!.displayName == ""
+                              user!.displayName == ""
                                   ? "u/${user?.username}"
-                                  : "u/${settings.displayName}",
+                                  : "u/${user!.displayName}",
                               style: AppTextStyles.primaryTextStyle
                                   .copyWith(fontSize: 20.spMin),
                             ),
@@ -264,7 +280,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                             SizedBox(
                               height: 5.h,
                             ),
-                            if (settings.about != "")
+                            if (settings!.about != "")
                               Text(
                                 settings.about,
                                 style: AppTextStyles.secondaryTextStyle,
@@ -321,15 +337,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
                       },
                       icon: const Icon(
                         Icons.search_outlined,
-                        color: AppColors.whiteGlowColor,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        //share profile modal bottom sheet
-                      },
-                      icon: const Icon(
-                        Icons.share,
                         color: AppColors.whiteGlowColor,
                       ),
                     ),

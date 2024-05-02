@@ -16,7 +16,6 @@ final headers = {
             'Authorization': 'Bearer $token',
           };
            try{
-
     final response = await http.post(Uri.parse(url), headers: headers);
     if(response.statusCode == 200)
     {
@@ -49,7 +48,6 @@ final headers = {
             'Authorization': 'Bearer $token',
           };
            try{
-
     final response = await http.delete(Uri.parse(url), headers: headers);
     if(response.statusCode == 204)
     {

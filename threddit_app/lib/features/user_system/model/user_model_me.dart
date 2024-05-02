@@ -9,7 +9,7 @@ class UserModelMe {
   final String? id;
   final String? username;
   final String? displayName;
-  //final String? profilePicture;
+  final String? profilePicture;
   final String? email;
   final bool? verified;
   final String? verificationToken;
@@ -34,7 +34,7 @@ class UserModelMe {
     this.id,
     this.username,
     this.email,
-    //this.profilePicture,
+    this.profilePicture,
     this.displayName,
     this.verified,
     this.verificationToken,
@@ -66,7 +66,7 @@ class UserModelMe {
       email: user['email'] as String?,
       verified: user['verified'] as bool?,
       displayName: user['displayName'] as String?,
-      //profilePicture: user['profilePicture'] as String,
+      profilePicture: user['profilePicture'] as String,
       verificationToken: user['verificationToken'] as String?,
       dateJoined: user['dateJoined'] != null
           ? DateTime.parse(user['dateJoined'] as String)
@@ -76,12 +76,12 @@ class UserModelMe {
       interests: (user['interests'] as List<dynamic>?)
           ?.map((interest) => interest as String)
           .toList(),
-      // followedUsers: (user['followedUsers'] as List<dynamic>?)
-      //     ?.map<Map<String, dynamic>>((followedUser) => {
-      //           '_id': followedUser['_id'] as String?,
-      //           'username': followedUser['username'] as String?,
-      //         })
-      //     .toList(),
+      followedUsers: (user['followedUsers'] as List<dynamic>?)
+          ?.map<Map<String, dynamic>>((followedUser) => {
+                '_id': followedUser['_id'] as String?,
+                'username': followedUser['username'] as String?,
+              })
+          .toList(),
       blockedUsers: (user['blockedUsers'] as List<dynamic>?)
           ?.map((blockedUser) =>
               BlockedUsers.fromJson(blockedUser as Map<String, dynamic>))
@@ -129,6 +129,7 @@ class UserModelMe {
     List<String>? hiddenPosts,
     List<String>? posts,
     Karma? karma,
+    String? profilePicture,
     SavedPostsAndComments? savedPostsAndComments,
     Votes? upvotes,
     Votes? downvotes,
@@ -157,6 +158,7 @@ class UserModelMe {
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       settings: settings ?? this.settings,
+      profilePicture: profilePicture ?? this.profilePicture
     );
   }
 }
