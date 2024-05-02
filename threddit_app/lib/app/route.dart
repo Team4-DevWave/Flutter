@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/description.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
+import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
+import 'package:threddit_clone/features/chatting/view/screens/chat_options_screen.dart';
+import 'package:threddit_clone/features/chatting/view/screens/chat_room.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/post_types.dart';
+import 'package:threddit_clone/features/chatting/view/screens/invite_screen.dart';
+import 'package:threddit_clone/features/chatting/view/screens/member_screen.dart';
+import 'package:threddit_clone/features/chatting/view/screens/rename_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
@@ -29,7 +37,6 @@ import 'package:threddit_clone/features/user_system/view/screens/settings_screen
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
 import 'package:threddit_clone/features/community/view/community_screen.dart';
 import 'package:threddit_clone/features/community/view/create_community.dart';
-import 'package:threddit_clone/features/home_page/view/screens/chat_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
@@ -67,7 +74,6 @@ class RouteClass {
   static const String communityScreen = "/community";
   static const String homeScreen = "/home";
   static const String appPostScreen = "/app_post_screen";
-  static const String chatScreen = "/chat";
   static const String inboxScreen = "/inbox";
   static const String mainCommunityScreen = "/communities";
   static const String notificationsScreen = "/notifications";
@@ -111,6 +117,16 @@ class RouteClass {
   static const String otherUsers = '/other-users';
   static const String messageScreen = '/message';
   static const String searchCommunity = '/serach-community';
+  static const String chatRoom = '/chat-room';
+  static const String chatRoomOptions = '/chat-room-options';
+  static const String renameChatroom = '/rename-chatroom';
+  static const String chatMembers = '/chat-members';
+  static const String inviteMembers = '/invite-members';
+
+
+  static const String postTypes = '/post-types';
+  static const String description = '/decription';
+
   static const String searchResultsScreen = '/serach-results';
 
   /// Generates the appropriate route based on the provided [settings].
@@ -130,7 +146,8 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const StartScreen());
       case userProfileScreen:
         return MaterialPageRoute(builder: (_) => const UserProfile());
-
+      case postTypes:
+        return MaterialPageRoute(builder: (_) => const PostTypesScreen());
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
@@ -158,8 +175,6 @@ class RouteClass {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case appPostScreen:
         return MaterialPageRoute(builder: (_) => const AddPostScreen());
-      case chatScreen:
-        return MaterialPageRoute(builder: (_) => const ChatScreen());
       case inboxScreen:
         return MaterialPageRoute(builder: (_) => const MainInboxScreen());
       case mainCommunityScreen:
@@ -214,7 +229,8 @@ class RouteClass {
       case approveScreen:
         return MaterialPageRoute(
             builder: (_) => const ApproveScreen(), fullscreenDialog: true);
-
+      case description:
+        return MaterialPageRoute(builder: (_) => const DescriptionScreen());
       case updateBanScreen:
         List<String> input = settings.arguments as List<String>;
         return MaterialPageRoute(
@@ -271,6 +287,36 @@ class RouteClass {
         );
       case moderatorsScreen:
         return MaterialPageRoute(builder: (_) => const ModeratorsScreen());
+      case chatRoom:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => ChatRoomScreen(chatroom: chatroom,username: username,));
+      case chatRoomOptions:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => ChatOptionsScreen(chatroom: chatroom,username: username,));
+      case chatMembers:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => MembersScreen(chatroom: chatroom,username: username,));
+      case renameChatroom:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => RenameChatroom(chatroom: chatroom,username: username,));
+      case inviteMembers:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => InviteScreen(chatroom: chatroom,username: username,));
       case addModeratorScreen:
         return MaterialPageRoute(
             builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);
@@ -280,16 +326,18 @@ class RouteClass {
             builder: (_) => EditModeratorScreen(moderator: user));
       case otherUsers:
         String uname = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) =>  OtherUsersProfile(
-          username: uname,
-        ));
+        return MaterialPageRoute(
+            builder: (_) => OtherUsersProfile(
+                  username: uname,
+                ));
       case searchCommunity:
         String community = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => SearchCommunityScreenPage(community: community));
       case searchResultsScreen:
         final args = settings.arguments as Map<String, dynamic>;
-        final searchModel = args['search'] as SearchModel; // Extract the community object
+        final searchModel =
+            args['search'] as SearchModel; // Extract the community object
         final searchText = args['text'] as String;
         return MaterialPageRoute(
           builder: (_) => SearchResultsScreen(

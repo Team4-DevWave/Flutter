@@ -247,7 +247,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               child: Text("Error is ${error.toString()}"))),
                           loading: () => Center(
                                 child: Lottie.asset(
-                                  'assets/animation/loading.json',
+                                  'assets/animation/loading2.json',
                                   repeat: true,
                                 ),
                               )),
@@ -298,7 +298,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               ))),
                           loading: () => Center(
                                 child: Lottie.asset(
-                                  'assets/animation/loading.json',
+                                  'assets/animation/loading2.json',
                                   repeat: true,
                                 ),
                               )),

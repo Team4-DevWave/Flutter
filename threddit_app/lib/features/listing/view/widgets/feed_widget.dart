@@ -116,11 +116,21 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
     if (_posts.isEmpty) {
       if (_fetching) {
         return Center(
-          child: Lottie.asset(
-            'assets/animation/loading.json',
-            repeat: true,
-          ),
-        );
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          SizedBox(
+              height: 100.h,
+              width: 150.w,
+              child: Image.asset('assets/images/threaddit_web.png')),
+          SizedBox(
+            height: 100.h,
+            width: 150.w,
+            child: Lottie.asset(
+              'assets/animation/loading2.json',
+              repeat: true,
+            ),
+          )
+        ]));
       } else {
         return Center(
           child: Text(
@@ -146,14 +156,15 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
                 : FeedUnit(_posts[index], userId!);
           } else {
             return _fetchingFinish
-                ? SizedBox(
+                ? Center(
+                    child: SizedBox(
                     height: 75.h,
                     width: 75.w,
                     child: Lottie.asset(
-                      'assets/animation/loading.json',
+                      'assets/animation/loading2.json',
                       repeat: true,
                     ),
-                  )
+                  ))
                 : SizedBox(
                     child: Padding(
                     padding: const EdgeInsets.all(8.0),

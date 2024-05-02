@@ -14,7 +14,8 @@ class SearchCommunityWidget extends ConsumerStatefulWidget {
   const SearchCommunityWidget({super.key, required this.searchText});
 
   @override
-  ConsumerState<SearchCommunityWidget> createState() => _SearchCommunityScreenState();
+  ConsumerState<SearchCommunityWidget> createState() =>
+      _SearchCommunityScreenState();
 }
 
 class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
@@ -83,7 +84,7 @@ class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
       if (_fetching) {
         return Center(
           child: Lottie.asset(
-            'assets/animation/loading.json',
+            'assets/animation/loading2.json',
             repeat: true,
           ),
         );
@@ -104,7 +105,6 @@ class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
         itemCount: _subreddits.length + 1,
         itemBuilder: (context, index) {
           if (index < _subreddits.length) {
-           
             return CommunityUnit(
               subreddit: _subreddits[index],
               userID: userId!,
@@ -115,7 +115,7 @@ class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
                     height: 75.h,
                     width: 75.w,
                     child: Lottie.asset(
-                      'assets/animation/loading.json',
+                      'assets/animation/loading2.json',
                       repeat: true,
                     ),
                   )
