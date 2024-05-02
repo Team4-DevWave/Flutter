@@ -109,10 +109,6 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
       state = state.copyWith(contentVisibility: vis);
   void updateActiveCom(bool active) =>
       state = state.copyWith(activeCommunitiesVisibility: active);
-  // void updateProfilePic(String pic) =>
-  //     state = state.copyWith(profilePicture: pic);
-  // void updateImagePath(File?imgePath) =>
-  //     state = state.copyWith(imagePath: imgePath);
   void updateSocialLinks(List<List<String>>?social) =>
       state = state.copyWith(socialLinks: social);
   void addLink(List<String>link) => state.socialLinks.add(link);

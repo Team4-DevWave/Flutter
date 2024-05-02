@@ -38,15 +38,13 @@ FutureEither<bool> followUser(String userName) async {
 FutureEither<bool> unfollowUser(String userName) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
-  final token = await getToken();
-  print(userName);
-  final url = "http://$local:8000/api/v1/users/me/friend/$userName";
-  final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $token',
-  };
-  try {
-    
+final token = await getToken();
+final  url = "http://$local:8000/api/v1/users/me/friend/$userName";
+final headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          };
+           try{
     final response = await http.delete(Uri.parse(url), headers: headers);
     print(response.statusCode);
     if (response.statusCode == 204) {

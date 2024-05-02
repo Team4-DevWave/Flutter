@@ -129,6 +129,7 @@ class UserModelMe {
     List<String>? hiddenPosts,
     List<String>? posts,
     Karma? karma,
+    String? profilePicture,
     SavedPostsAndComments? savedPostsAndComments,
     Votes? upvotes,
     Votes? downvotes,
@@ -158,6 +159,7 @@ class UserModelMe {
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       settings: settings ?? this.settings,
+      profilePicture: profilePicture ?? this.profilePicture
     );
   }
 
