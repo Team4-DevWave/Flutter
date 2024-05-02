@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_room_preview.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/new_chat.dart';
@@ -14,6 +15,7 @@ import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart'
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
 class MainChatScreen extends ConsumerStatefulWidget {
   const MainChatScreen({super.key});
@@ -32,7 +34,6 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _fetchChatrooms();
     _initializeSocketConnection();
   }
 
@@ -53,34 +54,6 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
   }
 
   
-  
-  Future<void> _fetchChatrooms() async {
-    String? token = await getToken();
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/');
-    final headers = {
-      'Content-Type': 'application/json',
-      "Authorization": "Bearer $token",
-    };
-
-    try {
-      final response = await http.get(url, headers: headers);
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body)['data'];
-        final chatrooms = data['chatrooms'] as List;
-        setState(() {
-          _chatrooms =
-              chatrooms.map((json) => Chatroom.fromJson(json)).toList();
-        });
-      } else {
-        print('Error fetching chatrooms: ${response.statusCode}');
-      }
-    } catch (error) {
-      // Handle any errors that might occur during the request
-      print('Error fetching chatrooms: $error');
-    }
-  }
 
   @override
   void dispose() {
@@ -164,45 +137,61 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            _chatrooms.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image(
-                          image: const AssetImage('assets/images/thinking-snoo.png'),
-                          height: 180.h,
-                        ),
-                        Text('No open chatrooms,\n    Start Chatting?',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold)
-                        ),
-                      ],
-                    
-                    ),
-                  )
-                : Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: 10.0.h, horizontal: 8.0.w),
-                    child: ListView.builder(
-                      itemCount: _chatrooms.length,
-                      itemBuilder: (context, index) {
-                        var chatroom = _chatrooms[_chatrooms.length-index-1]; // Reverse the list
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              RouteClass.chatRoom,
-                              arguments: {'chatroom':chatroom,'username':uid}
-                            );
-                          },
-                          child: ChatPreview(chat: chatroom,username: uid,),
-                        );
-                      },
-                    ),
-                  ),
+            Center(
+              child: Consumer(
+                builder: (context, watch, child) {
+                  final chatroomsAsyncValue = ref.watch(fetchChatRooms);
+
+                  return chatroomsAsyncValue.when(
+                    data: (chatrooms) {
+                      return ListView.builder(
+                        itemCount: chatrooms.length,
+                        itemBuilder: (context, index) {
+                          final chatroom = chatrooms[index];
+                          return chatrooms.isNotEmpty
+                              ? Column(
+                                  children: [
+                                    GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                              context, RouteClass.chatRoom,
+                                              arguments: {
+                                                'chatroom': chatroom,
+                                                'username': uid
+                                              });
+                                        },
+                                        child: ChatPreview(
+                                          chat: chatroom,
+                                          username: uid,
+                                        )),
+                                   
+                                  ],
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image(
+                                      image: const AssetImage(
+                                          'assets/images/thinking-snoo.png'),
+                                      height: 180.h,
+                                    ),
+                                    Text(
+                                        'No open chatrooms,\n    Start Chatting?',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.sp,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                );
+                        },
+                      );
+                    },
+                    loading: () => const Loading(),
+                    error: (error, stack) => Text('Error: $error'),
+                  );
+                },
+              ),
+            ),
             const Center(child: Text('Requests Page')),
           ],
         ),

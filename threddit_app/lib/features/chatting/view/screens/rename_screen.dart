@@ -57,7 +57,7 @@ class _RenameChatroomState extends ConsumerState<RenameChatroom>
       await ref.read(renameChatroom((
         chatName: _groupNameController.text,
         chatroomId: widget.chatroom.id
-      )));
+      )).future);
       widget.chatroom.chatroomName = editedName;
       Navigator.pop(context);
       showSnackBar(context, "renamed chatroom to $editedName");

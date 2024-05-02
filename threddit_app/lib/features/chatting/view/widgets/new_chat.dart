@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/chatting/model/UserProfile.dart';
+import 'package:threddit_clone/features/chatting/model/UserModel.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 
 class NewChat extends ConsumerStatefulWidget {

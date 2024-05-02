@@ -11,23 +11,23 @@ import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/theme/theme.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
-
 // ignore: must_be_immutable
 class ChatRoomScreen extends StatelessWidget {
-   Chatroom chatroom;
+  Chatroom chatroom;
   final String username;
   @override
-  ChatRoomScreen(
-      {super.key, required this.chatroom, required this.username});
+  ChatRoomScreen({super.key, required this.chatroom, required this.username});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(199, 10, 10, 10),
       appBar: AppBar(
         title: Text(
-          chatroom.chatroomMembers.length > 2
+          chatroom.chatroomName != "New Chat"
               ? chatroom.chatroomName
-              : ( chatroom.chatroomMembers[0].username!=username?chatroom.chatroomMembers[0].username:chatroom.chatroomMembers[1].username),
+              : (chatroom.chatroomMembers[0].username != username
+                  ? chatroom.chatroomMembers[0].username
+                  : chatroom.chatroomMembers[1].username),
           style: const TextStyle(
             fontSize: 17.0,
             fontWeight: FontWeight.bold,
@@ -52,13 +52,13 @@ class ChatRoomScreen extends StatelessWidget {
             ),
             onPressed: () {
               Navigator.pushNamed(
-        context,
-        RouteClass.chatRoomOptions,
-        arguments: {
-          'chatroom': chatroom,
-          'username': username,
-        },
-      );
+                context,
+                RouteClass.chatRoomOptions,
+                arguments: {
+                  'chatroom': chatroom,
+                  'username': username,
+                },
+              );
             },
           ),
         ],
@@ -71,12 +71,13 @@ class ChatRoomScreen extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class ChatBody extends ConsumerStatefulWidget {
   @override
   ChatBody({super.key, required this.chatroom, required this.username});
   final String username;
   Chatroom chatroom;
-  
+
   @override
   // ignore: library_private_types_in_public_api
   _ChatBodyState createState() => _ChatBodyState();
@@ -86,29 +87,30 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
   final TextEditingController _messageController = TextEditingController();
   Socket? socket;
   List<ChatMessage> messages = [];
-void sendChat()
-{
-  socket?.emit('new message', {
-  'chat': widget.chatroom.id,
-  'message': _messageController.text,
-});
-  ref.read(sendChatMessage((message: _messageController.text, chatroomId: widget.chatroom.id)));
-}
+  void sendChat() {
+    socket?.emit('new message', {
+      'chat': widget.chatroom.id,
+      'message': _messageController.text,
+    });
+    ref.read(sendChatMessage(
+        (message: _messageController.text, chatroomId: widget.chatroom.id)));
+  }
+
   @override
   void initState() {
     super.initState();
     _initializeSocketConnection();
     socket?.on('new message', (newMessageReceived) {
       // Process the received message data
-      
+
       String senderID = newMessageReceived['senderID'];
       String message = newMessageReceived['message'];
       print("new message received: $message");
       // Update UI with the new message
     });
-  
-}
- void _initializeSocketConnection() async {
+  }
+
+  void _initializeSocketConnection() async {
     socket = IO.io("http://${AppConstants.local}:3005", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
@@ -120,17 +122,15 @@ void sendChat()
         print(msg);
       });
     });
-   socket?.emit('join room', widget.chatroom.id);
+    socket?.emit('join room', widget.chatroom.id);
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-     
       children: [
         Expanded(
-
           child: ListView(
             reverse: true,
             children: [
@@ -144,7 +144,7 @@ void sendChat()
                         Positioned(
                           child: CircleAvatar(
                             backgroundImage:
-                                widget.chatroom.chatroomMembers.length > 2
+                                widget.chatroom.chatroomName != "New Chat"
                                     ? const AssetImage(
                                         'assets/images/group-avatars.png')
                                     : const AssetImage(
@@ -156,23 +156,34 @@ void sendChat()
                       ],
                     ),
                     Text(
-                      widget.chatroom.chatroomMembers.length > 2
+                      widget.chatroom.chatroomName != "New Chat"
                           ? widget.chatroom.chatroomName
-                          : ( widget.chatroom.chatroomMembers[0].username!=widget.username?widget.chatroom.chatroomMembers[0].username:widget.chatroom.chatroomMembers[1].username),
+                          : (widget.chatroom.chatroomMembers[0].username !=
+                                  widget.username
+                              ? widget.chatroom.chatroomMembers[0].username
+                              : widget.chatroom.chatroomMembers[1].username),
                       style: const TextStyle(
                         fontSize: 17.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
-                    if (widget.chatroom.chatroomMembers.length > 2)
+                    if (widget.chatroom.chatroomName != "New Chat")
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  RouteClass.chatMembers,
+                                  arguments: {
+                                    'chatroom': widget.chatroom,
+                                    'username': widget.username,
+                                  },
+                                );
+                              },
                               child: Column(
-                               
                                 children: [
                                   const Icon(
                                     Icons.person,
@@ -189,9 +200,17 @@ void sendChat()
                             Padding(
                               padding: EdgeInsets.only(left: 8.0.w),
                               child: TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    RouteClass.inviteMembers,
+                                    arguments: {
+                                      'chatroom': widget.chatroom,
+                                      'username': widget.username,
+                                    },
+                                  );
+                                },
                                 child: Column(
-                                 
                                   children: [
                                     const Icon(
                                       Icons.person_add_alt_rounded,
@@ -207,12 +226,14 @@ void sendChat()
                               ),
                             ),
                           ]),
-                          SizedBox(height: 60.h,),
+                    SizedBox(
+                      height: 60.h,
+                    ),
                     Consumer(
                       builder: (context, watch, child) {
                         final messagesAsyncValue =
                             ref.watch(getChatMessages(widget.chatroom.id));
-                
+
                         return messagesAsyncValue.when(
                           data: (listmessages) {
                             messages = listmessages;
@@ -220,7 +241,6 @@ void sendChat()
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 ListView.builder(
-                                  
                                   shrinkWrap: true,
                                   itemCount: messages.length,
                                   itemBuilder: (context, index) {
@@ -258,11 +278,8 @@ void sendChat()
               Expanded(
                 child: TextField(
                   controller: _messageController,
-                  onChanged: (value)
-                  {
-                    setState(() {
-                      
-                    });
+                  onChanged: (value) {
+                    setState(() {});
                   },
                   onEditingComplete: () => FocusScope.of(context).nextFocus(),
                   style: const TextStyle(color: Colors.white),
@@ -295,7 +312,12 @@ void sendChat()
                 },
               ),
               IconButton(
-                icon: Icon(Icons.send,color: _messageController.text==''?const Color.fromARGB(85, 255, 255, 255):Colors.white,),
+                icon: Icon(
+                  Icons.send,
+                  color: _messageController.text == ''
+                      ? const Color.fromARGB(85, 255, 255, 255)
+                      : Colors.white,
+                ),
                 onPressed: () {
                   sendChat();
                   _messageController
