@@ -69,6 +69,15 @@ class _SearchMediaFeedState extends State<SearchMediaFeed> {
     if (results.medias.isNotEmpty) {
       setState(() {
         _media.addAll(results.medias);
+        _media.forEach((element) {
+          if (element.video != null) {
+            _controller = VideoPlayerController.networkUrl(
+              Uri.parse(element.video!),
+            )..initialize().then((_) {
+                setState(() {});
+              });
+          }
+        });
         _currentPage++;
         _fetching = true;
         if (_media.length < 10) {
