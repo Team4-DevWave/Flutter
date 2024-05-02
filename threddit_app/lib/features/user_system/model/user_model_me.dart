@@ -164,7 +164,7 @@ class UserModelMe {
   }
 
   factory UserModelMe.fromJsonSearch(Map<String, dynamic> json) {
-    if (json == null) return UserModelMe(); // Handle null user data
+    //if (json == null) return UserModelMe(); // Handle null user data
     return UserModelMe(
       id: json['_id'] as String?,
       username: json['username'] as String?,
