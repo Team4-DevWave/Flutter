@@ -43,7 +43,7 @@ class _ChatPreviewState extends ConsumerState<ChatPreview> {
               padding: EdgeInsets.only(bottom: 5.0.h),
               child: Row(
                 children: [
-                  widget.chat.chatroomMembers.length > 2
+                 widget.chat.chatroomName!="New Chat"
                       ? const CircleAvatar(
                           radius: 23.0,
                           backgroundColor: Colors.transparent,
@@ -62,7 +62,7 @@ class _ChatPreviewState extends ConsumerState<ChatPreview> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.chat.chatroomMembers.length > 2
+                          widget.chat.chatroomName!="New Chat"
                               ? widget.chat.chatroomName
                               :( widget.chat.chatroomMembers[0].username!=widget.username?widget.chat.chatroomMembers[0].username:widget.chat.chatroomMembers[1].username),
                           style: const TextStyle(
