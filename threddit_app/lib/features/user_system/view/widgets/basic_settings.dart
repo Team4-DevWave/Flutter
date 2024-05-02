@@ -31,7 +31,7 @@ class BasicSettings extends ConsumerStatefulWidget {
 class _BasicSettingsState extends ConsumerState<BasicSettings> {
   final client = http.Client();
   String? token;
-  String pickedGender = genders.first;
+  String pickedGender = "I prefer not to say";
   Country selectedCountry = Country.worldWide;
 
   void _selectBasicSetting(BuildContext context, String settingName) {
@@ -62,7 +62,17 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
             future: fetchUser(),
             builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
               while (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
+                return ListView(shrinkWrap: true, children: [
+                  ListTile(
+                    leading: const Icon(Icons.settings),
+                    title: const Text("Update email address"),
+                    titleTextStyle: AppTextStyles.primaryTextStyle,
+                    trailing: const Icon(Icons.navigate_next),
+                    onTap: () {
+                      _selectBasicSetting(context, "email");
+                    },
+                  ),
+                ]);
               }
               if (snapshot.hasError) {
                 return const Text("ERROR LOADING USER DATA");
@@ -96,7 +106,45 @@ class _BasicSettingsState extends ConsumerState<BasicSettings> {
           future: fetchUser(),
           builder: (BuildContext ctx, AsyncSnapshot<UserModelMe> snapshot) {
             while (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              return ListView(shrinkWrap: true, children: [
+                ListTile(
+                  leading: const Icon(Icons.location_pin),
+                  title: const Text("Country"),
+                  subtitle: Text(selectedCountry.displayName),
+                  titleTextStyle: AppTextStyles.primaryTextStyle,
+                  trailing: const Icon(Icons.navigate_next),
+                  onTap: () {
+                    showCountryPicker(
+                        context: context,
+                        onSelect: (Country country) {
+                        },
+                        countryListTheme: CountryListThemeData(
+                            searchTextStyle: AppTextStyles.primaryTextStyle,
+                            backgroundColor: AppColors.backgroundColor,
+                            textStyle: AppTextStyles.primaryTextStyle));
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text("Gender"),
+                  titleTextStyle: AppTextStyles.primaryTextStyle,
+                  trailing: DropdownButton(
+                    dropdownColor: AppColors.backgroundColor,
+                    style: AppTextStyles.primaryTextStyle,
+                    icon: const Icon(Icons.arrow_downward),
+                    onChanged: (String? value) {
+                    },
+                    value: pickedGender,
+                    items:
+                        genders.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                )
+              ]);
             }
             if (snapshot.hasError) {
               return const Text("ERROR LOADING USER DATA");

@@ -13,6 +13,7 @@ import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -38,11 +39,18 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
   late bool isSpam;
   int choiceBottum = -1; // 1 upvote 2 downvote
   final now = DateTime.now();
+  UserModelMe? user;
   @override
   void initState() {
     super.initState();
 
     numbberOfvotes = int.parse(widget.parentPost.numViews.toString());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    user = ref.read(userModelProvider)!;
   }
 
   Future getModOptions() async {
@@ -217,14 +225,14 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
               padding: const EdgeInsets.all(6.0),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    RouteClass.postScreen,
-                    arguments: {
-                      'currentpost': widget.parentPost.parentPost!,
-                      'uid': widget.uid,
-                    },
-                  );
+                  user?.username == widget.dataOfPost.userID?.username
+                      ? Navigator.pushNamed(
+                          context, RouteClass.userProfileScreen)
+                      : Navigator.pushNamed(
+                          context,
+                          RouteClass.otherUsers,
+                          arguments: widget.dataOfPost.userID?.username,
+                        );
                 },
                 child: FeedUnitSharedPost(widget.dataOfPost),
               ),
@@ -239,7 +247,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                       },
                     ),
                   )
-                : SizedBox(),
+                : const SizedBox(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -312,7 +320,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                                 },
                               );
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.comment,
                               color: AppColors.whiteColor,
                             ),

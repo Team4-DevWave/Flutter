@@ -49,7 +49,7 @@ class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: Lottie.asset(
-                    'assets/animation/loading.json',
+                    'assets/animation/loading2.json',
                     repeat: true,
                   ),
                 );

@@ -346,7 +346,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                                         ),
                                       )
                                     : const CircularProgressIndicator()
-                                : SizedBox(),
+                                : const SizedBox(),
                           ),
                         SizedBox(
                           height: 5.h,
@@ -409,7 +409,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                       },
                     ),
                   )
-                : SizedBox(),
+                : const SizedBox(),
             Row(
               children: [
                 IconButton(

@@ -84,11 +84,23 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         body: communityAsyncValue.when(
           data: (community) => buildCommunityScreen(community),
           loading: () => Center(
-            child: Lottie.asset(
-              'assets/animation/loading.json',
-              repeat: true,
-            ),
-          ),
+              child: Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                SizedBox(
+                    height: 100.h,
+                    width: 150.w,
+                    child: Image.asset('assets/images/threaddit_web.png')),
+                SizedBox(
+                  height: 100.h,
+                  width: 150.w,
+                  child: Lottie.asset(
+                    'assets/animation/loading2.json',
+                    repeat: true,
+                  ),
+                )
+              ]))),
           error: (error, stack) => const Scaffold(
             body: Text(
               "community not found :( )",
@@ -101,12 +113,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   }
 
   Widget buildCommunityScreen(Subreddit community) {
-    community.srLooks.banner = (community.srLooks.banner == null ||
-            community.srLooks.banner == '')
+    community.srLooks.banner = (community.srLooks.banner == '')
         ? "https://htmlcolorcodes.com/assets/images/colors/bright-blue-color-solid-background-1920x1080.png"
         : community.srLooks.banner;
-    community.srLooks.icon = (community.srLooks.icon == null ||
-            community.srLooks.icon == '')
+    community.srLooks.icon = (community.srLooks.icon == '')
         ? "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg"
         : community.srLooks.icon;
     bool isCurrentUserModerator = community.moderators.contains(widget.uid);
@@ -159,7 +169,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               children: [
                 Positioned.fill(
                   child: Image.network(
-                    community.srLooks.banner!,
+                    community.srLooks.banner,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -173,9 +183,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         children: [
                           IconButton.filled(
                             onPressed: () {
-
-                               Navigator.pushNamed(context, RouteClass.searchCommunity,
-                    arguments: widget.id);
+                              Navigator.pushNamed(
+                                  context, RouteClass.searchCommunity,
+                                  arguments: widget.id);
                             },
                             icon: const Icon(Icons.search),
                             style: ButtonStyle(
@@ -193,18 +203,20 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           ),
                           IconButton.filled(
                             onPressed: () {
-                               showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: context,
-                          backgroundColor: AppColors.backgroundColor,
-                          builder: (context) {
-                            return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children:[CommunityOptionsBotttomSheet(uid: widget.uid, community: community),],
-                            );
-                          }
-                               );
-
+                              showModalBottomSheet(
+                                  isScrollControlled: true,
+                                  context: context,
+                                  backgroundColor: AppColors.backgroundColor,
+                                  builder: (context) {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        CommunityOptionsBotttomSheet(
+                                            uid: widget.uid,
+                                            community: community),
+                                      ],
+                                    );
+                                  });
                             },
                             icon: const Icon(Icons.more_horiz),
                             style: ButtonStyle(
@@ -231,7 +243,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
                           backgroundImage:
-                              NetworkImage(community.srLooks.icon!),
+                              NetworkImage(community.srLooks.icon),
                           radius: 30,
                         ),
                       ),
@@ -378,10 +390,23 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               child: _posts.isEmpty
                   ? _fetching
                       ? Center(
-                          child: Lottie.asset(
-                          'assets/animation/loading.json',
-                          repeat: true,
-                        ))
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                              SizedBox(
+                                  height: 100.h,
+                                  width: 150.w,
+                                  child: Image.asset(
+                                      'assets/images/threaddit_web.png')),
+                              SizedBox(
+                                height: 100.h,
+                                width: 150.w,
+                                child: Lottie.asset(
+                                  'assets/animation/loading2.json',
+                                  repeat: true,
+                                ),
+                              )
+                            ]))
                       : Center(
                           child: Text(
                             'No feed available.',
@@ -406,7 +431,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                   height: 75.h,
                                   width: 75.w,
                                   child: Lottie.asset(
-                                    'assets/animation/loading.json',
+                                    'assets/animation/loading2.json',
                                     repeat: true,
                                   ),
                                 )

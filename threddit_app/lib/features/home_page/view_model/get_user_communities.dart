@@ -31,6 +31,7 @@ class UserCommunities extends StateNotifier<bool> {
         'Content-Type': 'application/json',
         "Authorization": "Bearer $token",
       });
+
       if (res.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(res.body);
         List<List<String>> communitiedData =

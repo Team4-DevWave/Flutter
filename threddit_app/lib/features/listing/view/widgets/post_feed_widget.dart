@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +15,7 @@ import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -52,7 +55,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
   late int numbberOfvotes;
   final now = DateTime.now();
   late VideoPlayerController _controller;
-
+  UserModelMe? user;
   @override
   void initState() {
     super.initState();
@@ -64,6 +67,16 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
           setState(() {});
         });
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    setUserModel();
+    super.didChangeDependencies();
+  }
+
+  Future<void> setUserModel() async {
+    user = ref.read(userModelProvider)!;
   }
 
   Future getModOptions() async {
@@ -136,14 +149,14 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        RouteClass.postScreen,
-                        arguments: {
-                          'currentpost': widget.dataOfPost,
-                          'uid': widget.uid,
-                        },
-                      );
+                      user?.username == widget.dataOfPost.userID?.username
+                          ? Navigator.pushNamed(
+                              context, RouteClass.userProfileScreen)
+                          : Navigator.pushNamed(
+                              context,
+                              RouteClass.otherUsers,
+                              arguments: widget.dataOfPost.userID?.username,
+                            );
                     },
                     child: Text(
                       'u/${widget.dataOfPost.userID?.username}',
@@ -296,7 +309,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     },
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

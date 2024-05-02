@@ -74,7 +74,7 @@ class Comment {
       content: json['content'],
       createdAt: DateTime.parse(json['createdAt']),
       votes: Vote.fromJson(json['votes']),
-      post: json['post'],
+      post: json['post'] ?? " ",
       hidden: json['hidden'],
       saved: json['saved'],
       collapsed: json['collapsed'],
@@ -89,7 +89,7 @@ Future<List<Comment>> fetchComments(String username) async {
   String? token = await getToken();
 
   final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/${username}/comments"),
+    Uri.parse("http://10.0.2.2:8000/api/v1/users/$username/comments"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -97,10 +97,11 @@ Future<List<Comment>> fetchComments(String username) async {
   );
 
   if (response.statusCode == 200) {
-    Iterable jsonResponse = jsonDecode(response.body);
-    List<Comment> commentsList = List<Comment>.from(
-        jsonResponse.map((model) => Comment.fromJson(model)));
-    return commentsList;
+    final List<dynamic> commentsJson =
+        json.decode(response.body)['data']['comments'];
+    return commentsJson
+        .map((commentJson) => Comment.fromJson(commentJson))
+        .toList();
   } else {
     throw Exception('Failed to load comments');
   }

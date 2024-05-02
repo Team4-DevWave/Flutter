@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/models/subreddit.dart';
@@ -89,7 +88,7 @@ class CommunityInfo extends ConsumerWidget {
                                     Expanded(
                                       child: Text(
                                         rule as String,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.white, fontSize: 15),
                                       ),
                                     ),
@@ -117,7 +116,7 @@ class CommunityInfo extends ConsumerWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           opacity: 0.7,
-          image: NetworkImage(community.srLooks.banner!),
+          image: NetworkImage(community.srLooks.banner),
           fit: BoxFit.cover,
         ),
       ),

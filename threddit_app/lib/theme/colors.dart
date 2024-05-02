@@ -13,4 +13,6 @@ class AppColors {
   static const Color realWhiteColor = Color.fromARGB(185, 255, 255, 255);
   static const Color mainColor = Color.fromARGB(255, 19, 19, 19);
   static const Color blueColor = Colors.blue;
+  static const Color blueHideColor = Color.fromARGB(113, 33, 149, 243);
+  static const Color switchOff = Color.fromARGB(255, 50, 44, 44);
 }

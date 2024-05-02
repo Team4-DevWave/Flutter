@@ -4,12 +4,10 @@ import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/saved_post.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
-import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_clone/models/votes.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 

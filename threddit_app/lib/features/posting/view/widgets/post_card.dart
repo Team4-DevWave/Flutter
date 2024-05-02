@@ -293,7 +293,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                               )
                             : const CircularProgressIndicator(),
                       )
-                    : SizedBox(),
+                    : const SizedBox(),
             widget.post.type == 'url'
                 ? Center(
                     child: AnyLinkPreview(
@@ -303,7 +303,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                       },
                     ),
                   )
-                : SizedBox(),
+                : const SizedBox(),
             Row(
               children: [
                 IconButton(
