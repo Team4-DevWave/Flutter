@@ -1,20 +1,37 @@
 import 'dart:convert';
 
+class UserModel {
+  final String id;
+  final String username;
+
+  UserModel({required this.id, required this.username});
+   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is UserModel && other.id == id;
+  }
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['_id'],
+      username: json['username'],
+    );
+  }
+}
+
 class Subreddit {
   final String id;
   final String name;
-  final List<String> moderators;
-  final List<String> members;
+  final List<UserModel> moderators;
+  final List<UserModel> members;
   final String status;
   final SubredditSettings srSettings;
   final SubredditLooks srLooks;
   final SubredditUserManagement userManagement;
-  List<dynamic>? postsToBeApproved;
-  List<dynamic>? posts;
   final List<dynamic> rules;
   final List<dynamic> invitedUsers;
   final int version;
-  String? description;
 
   Subreddit({
     required this.id,
@@ -25,31 +42,27 @@ class Subreddit {
     required this.srSettings,
     required this.srLooks,
     required this.userManagement,
-    this.postsToBeApproved,
-    this.posts,
     required this.rules,
     required this.invitedUsers,
     required this.version,
-    this.description,
   });
 
   factory Subreddit.fromJson(Map<String, dynamic> json) {
     return Subreddit(
       id: json['_id'],
       name: json['name'],
-      moderators: List<String>.from(json['moderators'] ?? []),
-      members: List<String>.from(json['members'] ?? []),
+      moderators: List<UserModel>.from(
+          json['moderators'].map((i) => UserModel.fromJson(i)).toList()),
+      members: List<UserModel>.from(
+          json['members'].map((i) => UserModel.fromJson(i)).toList()),
       status: json['status'] ?? "",
       srSettings: SubredditSettings.fromJson(json['srSettings'] ?? {}),
       srLooks: SubredditLooks.fromJson(json['srLooks'] ?? {}),
       userManagement:
           SubredditUserManagement.fromJson(json['userManagement'] ?? {}),
-      postsToBeApproved: List<dynamic>.from(json['postsToBeApproved'] ?? []),
-      posts: List<dynamic>.from(json['posts'] ?? []),
       rules: List<dynamic>.from(json['rules'] ?? []),
       invitedUsers: List<dynamic>.from(json['invitedUsers'] ?? []),
       version: json['__v'] ?? 0,
-      description: json['description'],
     );
   }
 }

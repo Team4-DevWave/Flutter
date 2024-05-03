@@ -37,7 +37,7 @@ class CommunityRepository {
 
       if (response.statusCode == 201) {
         jsonDecode(response.body);
-
+print('coomunity created successfully');
         return 201;
       }
       if (response.statusCode == 409) {
@@ -62,13 +62,13 @@ class CommunityRepository {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final Map<String, dynamic> data = responseData['data'];
         final Map<String, dynamic> communityData = data['subreddit'];
-
+        print("community fetched successfully");
         return Subreddit.fromJson(communityData);
       } else {
-        throw Exception('Failed to fetch subreddit info');
+        throw Exception('Failed to fetch subreddit info,');
       }
     } catch (e) {
-      throw Exception('Community not found');
+      throw Exception('Community not found , $e');
     }
   }
 

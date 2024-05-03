@@ -47,8 +47,6 @@ class Comment {
   final DateTime createdAt;
   Vote votes;
   final String post;
-  final bool hidden;
-  final bool saved;
   final bool collapsed;
   final List<String> mentioned;
   final String id;
@@ -60,8 +58,6 @@ class Comment {
     required this.createdAt,
     required this.votes,
     required this.post,
-    required this.hidden,
-    required this.saved,
     required this.collapsed,
     required this.mentioned,
     required this.id,
@@ -75,8 +71,6 @@ class Comment {
       createdAt: DateTime.parse(json['createdAt']),
       votes: Vote.fromJson(json['votes']),
       post: json['post'] ?? " ",
-      hidden: json['hidden'],
-      saved: json['saved'],
       collapsed: json['collapsed'],
       mentioned: List<String>.from(json['mentioned']),
       id: json['_id'],
