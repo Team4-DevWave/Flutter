@@ -39,33 +39,7 @@ class CommunityInfo extends ConsumerWidget {
                             )
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        if (community.description != null)
-                          Column(
-                            children: [
-                              const Row(
-                                children: [
-                                  Text(
-                                    'Description',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Text(
-                                    community.description!,
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 15),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
+                        
                         const SizedBox(height: 15),
                         if (community.rules.isNotEmpty)
                           Column(
