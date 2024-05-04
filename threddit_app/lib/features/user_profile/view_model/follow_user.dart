@@ -17,7 +17,6 @@ FutureEither<bool> followUser(String userName) async {
   };
   try {
     final response = await http.post(Uri.parse(url), headers: headers);
-    print(response.statusCode);
     if (response.statusCode == 200) {
       return right(true);
     } else if (response.statusCode == 400) {
@@ -45,7 +44,6 @@ final headers = {
           };
            try{
     final response = await http.delete(Uri.parse(url), headers: headers);
-    print(response.statusCode);
     if (response.statusCode == 204) {
       return right(true);
     } else {

@@ -56,6 +56,16 @@ class _CommunityModToolsState extends State<CommunityModTools> {
                 trailing: const Icon(Icons.navigate_next),
                 onTap: () =>
                     Navigator.pushNamed(context, RouteClass.postTypes)),
+            ListTile(
+                leading: const Icon(
+                  CupertinoIcons.lock,
+                  color: AppColors.whiteHideColor,
+                ),
+                title: const Text("Community types"),
+                titleTextStyle: AppTextStyles.primaryTextStyle,
+                trailing: const Icon(Icons.navigate_next),
+                onTap: () =>
+                    Navigator.pushNamed(context, RouteClass.communityTypes)),
             SizedBox(height: 10.h),
             const SettingsTitle(title: "USER MANAGEMENT"),
             ListTile(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/community_types.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/description.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
@@ -126,6 +127,7 @@ class RouteClass {
 
   static const String postTypes = '/post-types';
   static const String description = '/decription';
+  static const String communityTypes = '/community-types';
 
   static const String searchResultsScreen = '/serach-results';
 
@@ -324,6 +326,8 @@ class RouteClass {
         String user = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => EditModeratorScreen(moderator: user));
+      case communityTypes:
+        return MaterialPageRoute(builder: (_) => const CommunityTypes());
       case otherUsers:
 
         String?uname;

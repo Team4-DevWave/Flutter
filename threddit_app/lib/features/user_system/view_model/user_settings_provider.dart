@@ -13,13 +13,11 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
   UserProfileNotifier()
       : super(
           UserProfile(
-            displayName: "",
             about: "",
             nsfw: false,
             allowFollowers: true,
             contentVisibility: true,
             activeCommunitiesVisibility: true,
-            profilePicture: "",
             socialLinks: [],
           ),
         );

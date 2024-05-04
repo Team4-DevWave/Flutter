@@ -51,7 +51,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   void _getUserData() {
     user = ref.watch(userModelProvider)!;
     socialLinks = ref.watch(userProfileProvider)?.socialLinks;
-    pfp = ref.watch(userProfileProvider)?.profilePicture;
+    pfp = ref.watch(userModelProvider)?.profilePicture;
   }
 
   void setData() async {
@@ -270,17 +270,26 @@ class _UserProfileState extends ConsumerState<UserProfile>
                             SizedBox(
                               height: 5.h,
                             ),
-                            Text(
+                            Row(
+                              children: [
+                                 Text(
                               "${user?.followedUsers?.length} following",
                               style: AppTextStyles.primaryTextStyle,
                             ),
                             SizedBox(
-                              height: 5.h,
+                              width: 5.w,
+                            ),
+                            Icon(Icons.circle, color: Colors.white, size: 5.r,),
+                            SizedBox(
+                              width: 5.w,
                             ),
                             Text(
                               "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
                               style: AppTextStyles.secondaryTextStyle,
                             ),
+                              ],
+                            ),
+                           
                             SizedBox(
                               height: 5.h,
                             ),
