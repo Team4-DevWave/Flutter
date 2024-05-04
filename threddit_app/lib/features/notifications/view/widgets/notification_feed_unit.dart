@@ -5,8 +5,21 @@ import 'package:threddit_clone/features/notifications/view_model/fetching_notifi
 import 'package:threddit_clone/features/notifications/view_model/methods.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A stateful widget that displays a single notification.
+///
+/// The `NotificationFeedUnit` widget takes a `NotificationData` object as a parameter
+/// and displays the data in a `Column` widget. The `NotificationData` object includes
+/// the details of the notification, such as whether it has been read.
+///
+/// The `NotificationFeedUnit` widget is typically used in a notifications feed to display
+/// individual notifications.
 class NotificationFeedUnit extends StatefulWidget {
+  /// The data for the notification to display.
   final NotificationData data;
+
+  /// Creates a `NotificationFeedUnit` widget.
+  ///
+  /// The [data] parameter must not be null.
   const NotificationFeedUnit({super.key, required this.data});
 
   @override
