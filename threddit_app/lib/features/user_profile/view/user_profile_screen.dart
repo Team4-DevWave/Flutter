@@ -66,7 +66,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     _fetchPosts();
 
     setData();
-    setData();
+
     _scrollController.addListener(_onScroll);
     _scrollControllerComments.addListener(_onScrollComments);
 

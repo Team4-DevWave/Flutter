@@ -142,7 +142,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                       width: 7.w,
                     ),
                     Text(
-                      '${hoursSincePost}h ago',
+                      '${hoursSincePost}',
                       style: const TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],

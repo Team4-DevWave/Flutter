@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
@@ -62,8 +63,8 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
 
   @override
   Widget build(BuildContext context) {
-    final difference = now.difference(widget.dataOfPost.postedTime);
-    final hoursSincePost = difference.inHours;
+    final hoursSincePost = formatDateTime(widget.dataOfPost.postedTime);
+
     return Container(
       padding: const EdgeInsets.all(6.0),
       decoration: BoxDecoration(
@@ -93,7 +94,7 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                       width: 7.w,
                     ),
                     Text(
-                      '${hoursSincePost}h ago',
+                      '${hoursSincePost}',
                       style: const TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],

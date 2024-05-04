@@ -315,7 +315,7 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
                 icon: Icon(
                   Icons.send,
                   color: _messageController.text == ''
-                      ? const Color.fromARGB(85, 255, 255, 255)
+                      ? Color.fromARGB(235, 243, 51, 3)
                       : Colors.white,
                 ),
                 onPressed: () {
