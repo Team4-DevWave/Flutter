@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/empty_notification.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/notification_feed_unit.dart';
-import 'package:threddit_clone/features/notifications/view_model/count_notifications.dart';
+
 import 'package:threddit_clone/features/notifications/view_model/fetching_notifications.dart';
-import 'package:threddit_clone/features/notifications/view_model/notification_optian.dart';
+
 import 'package:threddit_clone/theme/colors.dart';
 
 class NotificationFeed extends ConsumerStatefulWidget {

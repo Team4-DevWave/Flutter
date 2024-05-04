@@ -2,9 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 
-// final markAllNotificationsAsReadProvider = FutureProvider<void>((ref) async {
-
-// });
 final markAllNotificationsAsReadProvider = FutureProvider<void>((ref) async {
   try {
     final url =
@@ -18,6 +15,7 @@ final markAllNotificationsAsReadProvider = FutureProvider<void>((ref) async {
       url,
       headers: headers,
     );
+
     if (response.statusCode == 200) {
       print('All messages marked as read');
     } else {

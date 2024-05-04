@@ -51,11 +51,11 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
                 children: [
                   InkWell(
                     onTap: () {
-                      if (widget.data.type == "follow") {
-                        Navigator.pushNamed(context, RouteClass.otherUsers,
-                            arguments:
-                                widget.data.content.split(' ')[0].substring(2));
-                      }
+                      // if (widget.data.type == "follow") {
+                      Navigator.pushNamed(context, RouteClass.otherUsers,
+                          arguments:
+                              widget.data.content.split(' ')[0].substring(2));
+                      //}
                     },
                     child: Container(
                       padding:

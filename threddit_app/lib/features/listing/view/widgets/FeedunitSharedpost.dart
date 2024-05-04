@@ -83,8 +83,7 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                    child: Row(
+                Row(
                   children: [
                     Text(
                       'r/${widget.dataOfPost.userID?.username}',
@@ -94,11 +93,12 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                       width: 7.w,
                     ),
                     Text(
+                      // ignore: unnecessary_brace_in_string_interps
                       '${hoursSincePost}',
                       style: const TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],
-                )),
+                ),
               ],
             ),
             Padding(
@@ -178,22 +178,20 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                     SizedBox(
                       width: 20.w,
                     ),
-                    Container(
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.comment,
-                            color: AppColors.whiteColor,
-                          ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          Text(
-                            widget.dataOfPost.commentsCount.toString(),
-                            style: const TextStyle(color: AppColors.whiteColor),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.comment,
+                          color: AppColors.whiteColor,
+                        ),
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        Text(
+                          widget.dataOfPost.commentsCount.toString(),
+                          style: const TextStyle(color: AppColors.whiteColor),
+                        ),
+                      ],
                     ),
                   ],
                 ),

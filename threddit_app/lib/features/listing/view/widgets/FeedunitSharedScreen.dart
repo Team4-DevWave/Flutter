@@ -132,11 +132,9 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      child: Text(
-                        'r/${widget.parentPost.userID!.username}',
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                    Text(
+                      'r/${widget.parentPost.userID!.username}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                     SizedBox(
                       width: 7.w,
