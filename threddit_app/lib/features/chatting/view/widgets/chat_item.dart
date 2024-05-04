@@ -80,6 +80,7 @@ class _ChatItemState extends ConsumerState<ChatItem> {
 
                   Navigator.pop(context);
                   Navigator.pop(context);
+                  Navigator.pop(context);
                 } catch (e) {
                   // Handle error
                   print('Error deleting message: $e');
