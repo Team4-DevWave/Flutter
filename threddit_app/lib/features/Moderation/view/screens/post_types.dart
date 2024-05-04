@@ -12,6 +12,19 @@ import 'package:threddit_clone/theme/theme.dart';
 
 enum PostTypeOption { any, linkOnly, textOnly }
 
+String textDisplayed(String postType) {
+  switch (postType) {
+    case 'any':
+      return "Any";
+    case 'linkOnly':
+      return "Link";
+    case 'textOnly':
+      return "Text";
+    default:
+      return "Any";
+  }
+}
+
 class PostTypesScreen extends ConsumerStatefulWidget {
   const PostTypesScreen({super.key});
 
@@ -56,19 +69,6 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
         videoPosts != postTypesData.videoPosts ||
         pollPosts != postTypesData.pollPosts ||
         _selectedPostType.name != postTypesData.postTypesOptions;
-  }
-
-  String _textDisplayed() {
-    switch (_selectedPostType.name) {
-      case 'any':
-        return "Any";
-      case 'linkOnly':
-        return "Link";
-      case 'textOnly':
-        return "Text";
-      default:
-        return "Any";
-    }
   }
 
   Future<void> _setData() async {
@@ -150,7 +150,7 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(_textDisplayed(),
+                      Text(textDisplayed(_selectedPostType.name),
                           style: AppTextStyles.primaryTextStyle.copyWith(
                               fontSize: 16.spMin,
                               color: AppColors.whiteHideColor)),

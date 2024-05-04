@@ -5,6 +5,10 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/screens/register_screen.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// The [StartScreen] is the main logic of our application that plays the most
+/// important role in our application.
+///
+/// This logic class
 class StartScreen extends ConsumerWidget {
   const StartScreen({super.key});
   @override
