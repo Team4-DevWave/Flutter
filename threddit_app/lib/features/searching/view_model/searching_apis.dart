@@ -72,7 +72,7 @@ class SearchingApis extends StateNotifier<bool> {
     print(response.statusCode);
     print(response.body);
     Map<String, dynamic> data = jsonDecode(response.body);
-    List<dynamic> trendsData = data['data']['restOfTrends'];
+    List<dynamic> trendsData = data['data']['trends'];
     List<Trend> trends =
         trendsData.map((json) => Trend.fromJson(json)).toList();
     return trends;

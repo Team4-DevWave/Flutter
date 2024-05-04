@@ -9,6 +9,8 @@ import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/screens/chat_options_screen.dart';
 import 'package:threddit_clone/features/chatting/view/screens/chat_room.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/post_types.dart';
+import 'package:threddit_clone/features/chatting/view/screens/invite_screen.dart';
+import 'package:threddit_clone/features/chatting/view/screens/member_screen.dart';
 import 'package:threddit_clone/features/chatting/view/screens/rename_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
@@ -119,6 +121,8 @@ class RouteClass {
   static const String chatRoom = '/chat-room';
   static const String chatRoomOptions = '/chat-room-options';
   static const String renameChatroom = '/rename-chatroom';
+  static const String chatMembers = '/chat-members';
+  static const String inviteMembers = '/invite-members';
 
 
   static const String postTypes = '/post-types';
@@ -297,12 +301,24 @@ class RouteClass {
             args['chatroom'] as Chatroom; 
         final username = args['username'] as String;
         return MaterialPageRoute(builder: (_) => ChatOptionsScreen(chatroom: chatroom,username: username,));
+      case chatMembers:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => MembersScreen(chatroom: chatroom,username: username,));
       case renameChatroom:
        final args = settings.arguments as Map<String, dynamic>;
      final chatroom =
             args['chatroom'] as Chatroom; 
         final username = args['username'] as String;
         return MaterialPageRoute(builder: (_) => RenameChatroom(chatroom: chatroom,username: username,));
+      case inviteMembers:
+       final args = settings.arguments as Map<String, dynamic>;
+     final chatroom =
+            args['chatroom'] as Chatroom; 
+        final username = args['username'] as String;
+        return MaterialPageRoute(builder: (_) => InviteScreen(chatroom: chatroom,username: username,));
       case addModeratorScreen:
         return MaterialPageRoute(
             builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);

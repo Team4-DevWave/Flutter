@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,36 +42,48 @@ class User {
   }
 }
 
-class Comment {
+class SearchCommentModel {
   final User user;
   final String content;
   final DateTime createdAt;
   Vote votes;
-  final String post;
+  final Post? post;
+  final bool hidden;
+  final bool saved;
   final bool collapsed;
   final List<String> mentioned;
   final String id;
   final int version;
 
-  Comment({
+  SearchCommentModel({
     required this.user,
     required this.content,
     required this.createdAt,
     required this.votes,
     required this.post,
+    required this.hidden,
+    required this.saved,
     required this.collapsed,
     required this.mentioned,
     required this.id,
     required this.version,
   });
 
-  factory Comment.fromJson(Map<String, dynamic> json) {
-    return Comment(
+  factory SearchCommentModel.fromJson(Map<String, dynamic> json) {
+    Post? tempPost;
+    if (json["post"] == null) {
+      tempPost = null;
+    } else {
+      tempPost = Post.fromJson(json['post']);
+    }
+    return SearchCommentModel(
       user: User.fromJson(json['user']),
       content: json['content'],
       createdAt: DateTime.parse(json['createdAt']),
       votes: Vote.fromJson(json['votes']),
-      post: json['post'] ?? " ",
+      post: tempPost,
+      hidden: json['hidden'],
+      saved: json['saved'],
       collapsed: json['collapsed'],
       mentioned: List<String>.from(json['mentioned']),
       id: json['_id'],
@@ -79,24 +92,17 @@ class Comment {
   }
 }
 
-Future<List<Comment>> fetchComments(String username) async {
-  String? token = await getToken();
+class SearchCommentsList {
+  final List<SearchCommentModel> comments;
 
-  final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/$username/comments"),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-  );
+  SearchCommentsList({required this.comments});
 
-  if (response.statusCode == 200) {
-    final List<dynamic> commentsJson =
-        json.decode(response.body)['data']['comments'];
-    return commentsJson
-        .map((commentJson) => Comment.fromJson(commentJson))
-        .toList();
-  } else {
-    throw Exception('Failed to load comments');
+  factory SearchCommentsList.fromJson(List<dynamic> json) {
+    List<SearchCommentModel> comments =
+        json.map((i) => SearchCommentModel.fromJson(i)).toList();
+
+    return SearchCommentsList(
+      comments: comments,
+    );
   }
 }

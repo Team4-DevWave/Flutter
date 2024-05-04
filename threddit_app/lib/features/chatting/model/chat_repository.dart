@@ -7,25 +7,37 @@ import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 
-final fetchChatRooms = FutureProvider<List<Chatroom>>((ref) async {
-   String? token = await getToken();
-    final url = Uri.parse('http://${AppConstants.local}/api/v1/chatrooms/');
-    final response = await http.get(url, headers: {'Authorization': 'Bearer $token'});
+Future<List<Chatroom>> fetchUserChatrooms() async {
+  String? token = await getToken();
+    final url =
+        Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/');
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['data'];
-      final chatrooms = data['chatrooms'] as List;
-      
-        return chatrooms.map((json) => Chatroom.fromJson(json)).toList();
-      
-    } else {
-      
-      print('Error fetching chatrooms: ${response.statusCode}');
-      return [];
+    try {
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body)['data'];
+        final chatrooms = data['chatrooms'] as List;
+        return chatrooms.map((chatroom) => Chatroom.fromJson(chatroom)).toList();
+      } else {
+        throw Exception("failed to fetch chatrooms");
+      }
+    } catch (error) {
+      // Handle any errors that might occur during the request
+     throw Exception("failed to fetch chatrooms");
     }
-
+}
+final fetchChatRooms =
+    StreamProvider<List<Chatroom>>((ref) {
+      return Stream.periodic(const Duration(seconds: 1), (_) {
+      return fetchUserChatrooms();
+    }).asyncMap((_) async => fetchUserChatrooms());
+  
 });
-
 
 typedef ChatRoomParameters = ({List<String> users, String groupName});
 final createChatroom=FutureProvider.family<Chatroom,ChatRoomParameters>((ref,parameters) async {
@@ -75,9 +87,9 @@ final createChatroom=FutureProvider.family<Chatroom,ChatRoomParameters>((ref,par
   }
 });
 
-final getChatMessages=FutureProvider.family<List<ChatMessage>,String>((ref,chatrommId) async {
+Future<List<ChatMessage>> fetchChatMessages(String chatroomId) async {
   try {
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/$chatrommId/messages/');
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/$chatroomId/messages/');
     String? token = await getToken();
     final headers = {
       'Content-Type': 'application/json',
@@ -101,6 +113,13 @@ final getChatMessages=FutureProvider.family<List<ChatMessage>,String>((ref,chatr
     print('Error fteching room messages: $e');
     throw Exception('Failed to ftech room messages: $e');
   }
+}
+final getChatMessages =
+    StreamProvider.family<List<ChatMessage>,String>((ref,chatroomId) {
+      return Stream.periodic(const Duration(seconds: 1), (_) {
+      return fetchUserChatrooms();
+    }).asyncMap((_) async => fetchChatMessages(chatroomId));
+  
 });
 typedef SendChatParameters = ({String message, String chatroomId});
 final sendChatMessage=FutureProvider.family<void,SendChatParameters>((ref,parameters) async {
@@ -153,6 +172,53 @@ final deleteChatRoom=FutureProvider.family<void,String>((ref,chatroomId) async {
     throw Exception('Failed to delete chatroom: $e');
   }
 });
+final leaveChatRoom=FutureProvider.family<int,String>((ref,chatroomId) async {
+  try {
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/$chatroomId/leave');
+    String? token = await getToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+    final response = await http.delete(
+      url,
+      headers: headers
+    );
+    if (response.statusCode == 204) {
+      print('left chatroom successfully');
+      return response.statusCode;
+      
+    } else {
+      throw Exception('Failed to leave chatroom. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error leaving chatroom: $e');
+    throw Exception('Failed to leave chatroom: $e');
+  }
+});
+final deleteMessage=FutureProvider.family<void,String>((ref,messageId) async {
+  try {
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatmessages/$messageId');
+    String? token = await getToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+    final response = await http.delete(
+      url,
+      headers: headers
+    );
+    if (response.statusCode == 204) {
+      print('message deleted successfully');
+      
+    } else {
+      throw Exception('Failed to delete message. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error deleting message: $e');
+    throw Exception('Failed to delete message : $e');
+  }
+});
 typedef RenameChatParameters = ({String chatName, String chatroomId});
 final renameChatroom=FutureProvider.family<void,RenameChatParameters>((ref,parameters) async {
   try {
@@ -181,5 +247,65 @@ final renameChatroom=FutureProvider.family<void,RenameChatParameters>((ref,param
     throw Exception('Failed to edit chatroom name: $e');
   }
 });
+typedef RemoveMemberParameters = ({String memberName, String chatroomId});
+final removeMember=FutureProvider.family<void,RemoveMemberParameters>((ref,parameters) async {
+  try {
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/${parameters.chatroomId}/removemember');
+    String? token = await getToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+    final body = jsonEncode({
+        'member': parameters.memberName,
+      });
+    final response = await http.delete(
+      url,
+      headers: headers,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      print('member removed successfully');
+      
+    } else {
+      throw Exception('Failed to remove member. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error removing member: $e');
+    throw Exception('Failed to remove member: $e');
+  }
+});
+typedef AddMemberParameters = ({List<String> memberName, String chatroomId});
+final addMember=FutureProvider.family<void,AddMemberParameters>((ref,parameters) async {
+  try {
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatrooms/${parameters.chatroomId}/addmember');
+    String? token = await getToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+    for(int i=0;i<parameters.memberName.length;i++)
+{
+    final body = jsonEncode({
+        'member': parameters.memberName,
+      });
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      print('member $i added successfully');
+      
+    } else {
+      throw Exception('Failed to add member $i. Status code: ${response.statusCode}');
+    }
+}
+  } catch (e) {
+    print('Error adding member: $e');
+    throw Exception('Failed to add member: $e');
+  }
+});
+
 
 
