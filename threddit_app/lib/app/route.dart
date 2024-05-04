@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_types.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/community_types.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/description.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
@@ -329,7 +330,6 @@ class RouteClass {
       case communityTypes:
         return MaterialPageRoute(builder: (_) => const CommunityTypes());
       case otherUsers:
-
         String?uname;
         if (settings.arguments is String) {
           // If arguments is a string directly, use it as the username

@@ -9,13 +9,13 @@ import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 FutureEither<bool> followUser(String userName) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
-  final token = await getToken();
-  final url = "http://$local:8000/api/v1/users/me/friend/$userName";
-  final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $token',
-  };
-  try {
+final token = await getToken();
+final  url = "http://$local:8000/api/v1/users/me/friend/$userName";
+final headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          };
+           try{
     final response = await http.post(Uri.parse(url), headers: headers);
     if (response.statusCode == 200) {
       return right(true);
