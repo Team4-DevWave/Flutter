@@ -14,8 +14,13 @@ import 'package:threddit_clone/features/user_system/view_model/sign_in_with_goog
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
 import 'package:threddit_clone/features/user_system/view_model/window_auth_service.dart';
 
+///This provider is mainly used in all the registeration process to make validations,
+///send and receive data from the backend server.
 final authProvider = StateNotifierProvider<Auth, bool>((ref) => Auth(ref));
 
+///This class is a [StateNotifier] class, its state is a [bool] type, where this state
+///is and indicator wheather the application is making any contact with the backend server
+///so, a loading action is made.
 class Auth extends StateNotifier<bool> {
   final Ref ref;
   Auth(this.ref) : super(false);

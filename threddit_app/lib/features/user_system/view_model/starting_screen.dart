@@ -13,7 +13,6 @@ class StartScreen extends ConsumerWidget {
     ref.watch(textSizeProvider.notifier).getTextSize();
 
     Future<String?> getUserData() async {
-      //await ref.read(settingsFetchProvider.notifier).getMe();
       return getToken();
     }
 

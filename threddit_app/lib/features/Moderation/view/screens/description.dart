@@ -100,13 +100,19 @@ class _DescriptionScreen extends ConsumerState<DescriptionScreen> {
               ],
             ),
             body: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
               margin: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.h),
               height: MediaQuery.of(context).size.height.h,
               width: MediaQuery.of(context).size.width.w,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    'Describe your community',
+                    style: AppTextStyles.primaryTextStyle.copyWith(
+                        fontSize: 20.spMin, color: AppColors.blueColor),
+                  ),
                   Flexible(
                     child: TextFormField(
                       controller: textBodyController,
@@ -116,16 +122,13 @@ class _DescriptionScreen extends ConsumerState<DescriptionScreen> {
                       },
                       style: AppTextStyles.primaryTextStyle
                           .copyWith(fontSize: 20.spMin),
-                      decoration: InputDecoration(
-                        hintText: 'Describe your community',
-                        hintStyle: AppTextStyles.primaryTextStyle.copyWith(
-                            fontSize: 20.spMin, color: AppColors.blueColor),
-                        enabledBorder: const UnderlineInputBorder(
+                      decoration: const InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: AppColors.blueColor,
                           ),
                         ),
-                        focusedBorder: const UnderlineInputBorder(
+                        focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: AppColors.blueColor,
                           ),

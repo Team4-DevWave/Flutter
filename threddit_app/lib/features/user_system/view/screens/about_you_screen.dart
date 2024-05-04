@@ -11,6 +11,13 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+///This is screen is one of the registration process screens, where here in the [AboutYou] screen.
+///
+///user can choose option from the user types list; "man", "woman", and "I prefer not to say".
+///
+///By choosing an answer the screen waits 2 secs then
+///the chosen answer is stored to the usermodel provider that holds an object from the userModel
+///and the screen is pushed to the next step
 class AboutYou extends ConsumerStatefulWidget {
   const AboutYou({super.key});
 

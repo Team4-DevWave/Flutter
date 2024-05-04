@@ -134,7 +134,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                     Row(
                       children: [
                         Text(
-                          'u/${widget.post.userID!.id}',
+                          'u/${widget.post.userID!.username}',
                           style: AppTextStyles.primaryTextStyle.copyWith(
                               fontSize: 12,
                               color: const Color.fromARGB(206, 20, 113, 190)),

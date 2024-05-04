@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart'
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
@@ -23,7 +24,7 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
   List<List<String>> _communitiesData = [[]];
   bool _isLoading = false;
 
-  void onProfile(String username) {
+  void onProfile() {
     ref.watch(sharedPostProvider.notifier).setDestination("");
     Navigator.pushReplacementNamed(context, RouteClass.crossPost);
   }
@@ -90,7 +91,7 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
                     SizedBox(height: 5.h),
                     ListTile(
                       onTap: () {
-                        onProfile('She3bo');
+                        onProfile();
                       },
                       leading: Icon(Icons.account_circle,
                           size: 38.spMin, color: AppColors.whiteColor),
@@ -108,10 +109,14 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
                         onTap: () {
                           onCommunity(community[0]);
                         },
-                        leading: CircleAvatar(
-                          radius: 10.r,
-                          backgroundImage: NetworkImage(community[1]),
-                        ),
+                        leading: community[1].isEmpty
+                            ? const CircleAvatar(
+                                radius: 10,
+                                backgroundImage:
+                                    AssetImage(Photos.communityDefault))
+                            : CircleAvatar(
+                                radius: 10,
+                                backgroundImage: NetworkImage(community[1])),
                         title: Text(community[0],
                             style: AppTextStyles.primaryTextStyle.copyWith(
                               fontSize: 20.spMin,

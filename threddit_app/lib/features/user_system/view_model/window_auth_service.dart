@@ -11,7 +11,6 @@ class AuthService {
       idToken: credentials.idToken,
       accessToken: credentials.accessToken,
     );
-    // final userCredential = await _auth.signInWithCredential(authCredential);
     return authCredential.accessToken;
   }
 
