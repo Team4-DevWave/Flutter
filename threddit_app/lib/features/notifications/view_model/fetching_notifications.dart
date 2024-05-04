@@ -3,6 +3,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
+/// Fetches notifications for a specific user from an API.
+///
+/// This function takes a user ID as a parameter and sends a GET request to an API to fetch
+/// the notifications for that user. The API's URL is hardcoded.
+///
+/// If the request is successful, the function returns a `NotificationAPI` object that represents
+/// the fetched notifications. If the request fails, the function throws an exception.
 Future<NotificationAPI> fetchDataNotifications(String id) async {
   // user id
   String urlLocal = 'http://10.0.2.2:8000/api/v1/notifications';
@@ -21,6 +28,10 @@ Future<NotificationAPI> fetchDataNotifications(String id) async {
   throw Exception('Failed to load album');
 }
 
+/// Represents a single notification.
+///
+/// This class includes several fields that represent the details of a notification, such as
+/// the ID of the recipient, the content of the notification, and whether the notification has been read.
 class NotificationData {
   final String id;
   final String recipient;

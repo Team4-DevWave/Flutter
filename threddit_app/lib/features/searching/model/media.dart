@@ -1,23 +1,23 @@
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
 class Media {
-  final String id;
+  final String? id;
   final VotesList? votes;
   final int commentsCount;
   final User? userID;
-  final String postedTime;
+  final DateTime? postedTime;
   final int numViews;
   final SubredditInfo? subredditID;
-  final String title;
-  final String type;
+  final String? title;
+  final String? type;
   final bool spoiler;
   final bool nsfw;
-  final String image;
-  final String video;
+  final String? image;
+  final String? video;
   final bool locked;
-  final List<dynamic> mentioned;
+  final List<String>? mentioned;
   final bool approved;
-  final String textBody;
+  final String? textBody;
 
   Media({
     required this.id,
@@ -39,6 +39,8 @@ class Media {
     required this.textBody,
   });
   factory Media.fromJson(Map<String, dynamic> json) {
+    print(json['mentioned']); // Add this line
+
     return Media(
       id: json['_id'],
       votes: json['votes'] != null
@@ -48,7 +50,9 @@ class Media {
       userID: json['userID'] != null
           ? User.fromJson(json['userID'] as Map<String, dynamic>)
           : null,
-      postedTime: json["postedTime"],
+      postedTime: json['postedTime'] != null
+          ? DateTime.parse(json['postedTime'])
+          : DateTime.now(),
       numViews: json['numViews'],
       subredditID: json['subredditID'] != null
           ? SubredditInfo.fromJson(json['subredditID'] as Map<String, dynamic>)
@@ -60,7 +64,9 @@ class Media {
       image: json['image'],
       video: json['video'],
       locked: json['locked'],
-      mentioned: List<String>.from(json['mentioned']),
+      mentioned: json['mentioned'] != null
+          ? List<String>.from(json['mentioned'])
+          : null,
       approved: json['approved'],
       textBody: json['textBody'],
     );

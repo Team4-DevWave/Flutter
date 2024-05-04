@@ -8,8 +8,6 @@ import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.da
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
 /// display a feed of posts. The widget takes a `feedID` as a parameter, which is used
@@ -51,6 +49,19 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
     getUserID();
     _fetchPosts();
     _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void didUpdateWidget(covariant FeedWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.feedID != widget.feedID) {
+      _posts.clear();
+      _currentPage = 1;
+      _fetching = true;
+      _fetchingFinish = true;
+      _fetchPosts();
+      _scrollController.addListener(_onScroll);
+    }
   }
 
   @override
@@ -116,11 +127,21 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
     if (_posts.isEmpty) {
       if (_fetching) {
         return Center(
-          child: Lottie.asset(
-            'assets/animation/loading.json',
-            repeat: true,
-          ),
-        );
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          SizedBox(
+              height: 100.h,
+              width: 150.w,
+              child: Image.asset('assets/images/threaddit_web.png')),
+          SizedBox(
+            height: 100.h,
+            width: 150.w,
+            child: Lottie.asset(
+              'assets/animation/loading2.json',
+              repeat: true,
+            ),
+          )
+        ]));
       } else {
         return Center(
           child: Text(
@@ -146,14 +167,15 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
                 : FeedUnit(_posts[index], userId!);
           } else {
             return _fetchingFinish
-                ? SizedBox(
+                ? Center(
+                    child: SizedBox(
                     height: 75.h,
                     width: 75.w,
                     child: Lottie.asset(
-                      'assets/animation/loading.json',
+                      'assets/animation/loading2.json',
                       repeat: true,
                     ),
-                  )
+                  ))
                 : SizedBox(
                     child: Padding(
                     padding: const EdgeInsets.all(8.0),

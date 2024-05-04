@@ -4,11 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/models/message.dart';
-import 'package:flutter/material.dart';
 
 class MessageRepository {
   Future<List<Message>> fetchUserMessages() async {
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/messages/sent');
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/messages/allmessages');
     String? token = await getToken();
     final headers = {
       "Authorization": "Bearer $token",

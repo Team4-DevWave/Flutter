@@ -15,7 +15,7 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 final createPost =
     StateNotifierProvider<PostProvider, bool>((ref) => PostProvider(ref));
 
-String local = Platform.isAndroid ? '${AppConstants.local}' : 'localhost';
+String local = Platform.isAndroid ? AppConstants.local : 'localhost';
 
 class PostProvider extends StateNotifier<bool> {
   final Ref ref;

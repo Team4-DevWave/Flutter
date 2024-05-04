@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/messaging/model/message_repository.dart';
 import 'package:threddit_clone/features/messaging/view/widgets/new_message_bottom_sheet.dart';
+import 'package:threddit_clone/features/notifications/view_model/notification_optian.dart';
 
 class InboxOptionsBotttomSheet extends ConsumerStatefulWidget {
   const InboxOptionsBotttomSheet({
@@ -12,9 +13,7 @@ class InboxOptionsBotttomSheet extends ConsumerStatefulWidget {
       _InboxOptionsBotttomSheetState();
 }
 
-class _InboxOptionsBotttomSheetState
-    extends ConsumerState
-{
+class _InboxOptionsBotttomSheetState extends ConsumerState {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -49,6 +48,7 @@ class _InboxOptionsBotttomSheetState
           leading: const Icon(Icons.mark_chat_read_outlined),
           onTap: () {
             ref.read(markAllMessagesAsReadProvider);
+            ref.read(markAllNotificationsAsReadProvider);
             Navigator.pop(context);
           },
         ),

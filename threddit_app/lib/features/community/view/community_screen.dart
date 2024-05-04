@@ -10,6 +10,7 @@ import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScree
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
@@ -28,6 +29,7 @@ class CommunityScreen extends ConsumerStatefulWidget {
 
 class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   String _selectedItem = 'New Posts'; // Initial selected item
+  
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
@@ -77,22 +79,37 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
+   
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
-
     return ScreenUtilInit(
       child: Scaffold(
         body: communityAsyncValue.when(
           data: (community) => buildCommunityScreen(community),
           loading: () => Center(
-            child: Lottie.asset(
-              'assets/animation/loading.json',
-              repeat: true,
+              child: Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                SizedBox(
+                    height: 100.h,
+                    width: 150.w,
+                    child: Image.asset('assets/images/threaddit_web.png')),
+                SizedBox(
+                  height: 100.h,
+                  width: 150.w,
+                  child: Lottie.asset(
+                    'assets/animation/loading2.json',
+                    repeat: true,
+                  ),
+                )
+              ]))),
+          error: (error, stack) => Scaffold(
+            appBar: AppBar(
+              title: const Text('Error'),
             ),
-          ),
-          error: (error, stack) => const Scaffold(
             body: Text(
-              "community not found :( )",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+              "community not found :( ,$error)",
+              style: const TextStyle(color: Colors.white, fontSize: 20),
             ),
           ),
         ),
@@ -101,24 +118,24 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   }
 
   Widget buildCommunityScreen(Subreddit community) {
-    community.srLooks.banner = (community.srLooks.banner == null ||
-            community.srLooks.banner == '')
+     String username = ref.read(userModelProvider)!.username!;
+    final newUser=UserModel(id: widget.uid, username: username);
+    community.srLooks.banner = (community.srLooks.banner == '')
         ? "https://htmlcolorcodes.com/assets/images/colors/bright-blue-color-solid-background-1920x1080.png"
         : community.srLooks.banner;
-    community.srLooks.icon = (community.srLooks.icon == null ||
-            community.srLooks.icon == '')
+    community.srLooks.icon = (community.srLooks.icon == '')
         ? "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg"
         : community.srLooks.icon;
-    bool isCurrentUserModerator = community.moderators.contains(widget.uid);
+    bool isCurrentUserModerator = community.moderators.contains(UserModel(id: widget.uid, username: username));
 
-    bool isCurrentUser = community.members.contains(widget.uid);
+    bool isCurrentUser = community.members.contains(UserModel(id: widget.uid, username: username));
 
     bool getUserState(Subreddit community) {
-      if (community.moderators.contains(widget.uid)) {
+      if (community.moderators.contains(newUser)) {
         Navigator.pushNamed(context, RouteClass.communityModTools);
         return true;
       } else {
-        if (community.members.contains(widget.uid)) {
+        if (community.members.contains(newUser)) {
           showModalBottomSheet(
               context: context,
               builder: (context) {
@@ -130,7 +147,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         title: const Text('Leave Community'),
                         onTap: () {
                           ref.watch(unjoinCommunityProvider(widget.id));
-                          community.members.remove(widget.uid);
+                          community.members.remove(newUser);
                           setState(() {});
                           Navigator.pop(context);
                         }),
@@ -140,7 +157,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           return true;
         } else {
           ref.watch(joinCommunityProvider(widget.id));
-          community.members.add(widget.uid);
+          
+          
+          community.members.add(newUser);
           setState(() {});
 
           return true;
@@ -159,7 +178,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               children: [
                 Positioned.fill(
                   child: Image.network(
-                    community.srLooks.banner!,
+                    community.srLooks.banner,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -233,7 +252,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
                           backgroundImage:
-                              NetworkImage(community.srLooks.icon!),
+                              NetworkImage(community.srLooks.icon),
                           radius: 30,
                         ),
                       ),
@@ -289,15 +308,6 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  community.description != null
-                      ? Text(
-                          community.description!,
-                          style: const TextStyle(color: Colors.white),
-                        )
-                      : const Text(
-                          '',
-                          style: TextStyle(color: Colors.white),
-                        ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -380,10 +390,23 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               child: _posts.isEmpty
                   ? _fetching
                       ? Center(
-                          child: Lottie.asset(
-                          'assets/animation/loading.json',
-                          repeat: true,
-                        ))
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                              SizedBox(
+                                  height: 100.h,
+                                  width: 150.w,
+                                  child: Image.asset(
+                                      'assets/images/threaddit_web.png')),
+                              SizedBox(
+                                height: 100.h,
+                                width: 150.w,
+                                child: Lottie.asset(
+                                  'assets/animation/loading2.json',
+                                  repeat: true,
+                                ),
+                              )
+                            ]))
                       : Center(
                           child: Text(
                             'No feed available.',
@@ -408,7 +431,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                   height: 75.h,
                                   width: 75.w,
                                   child: Lottie.asset(
-                                    'assets/animation/loading.json',
+                                    'assets/animation/loading2.json',
                                     repeat: true,
                                   ),
                                 )

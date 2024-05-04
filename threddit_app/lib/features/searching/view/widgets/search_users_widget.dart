@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:threddit_clone/features/home_page/view/widgets/community_feed_unit.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_user_unit.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
-import 'package:threddit_clone/models/subreddit.dart';
 
 class SearchUserWidget extends ConsumerStatefulWidget {
   final String searchText;
@@ -118,7 +116,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
       if (_fetching || isLoading) {
         return Center(
           child: Lottie.asset(
-            'assets/animation/loading.json',
+            'assets/animation/loading2.json',
             repeat: true,
           ),
         );
@@ -136,6 +134,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
     } else {
       return ListView.builder(
         controller: _scrollController,
+        
         itemCount: _users.length + 1,
         itemBuilder: (context, index) {
           if (index < _users.length) {
@@ -156,7 +155,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
                     height: 75.h,
                     width: 75.w,
                     child: Lottie.asset(
-                      'assets/animation/loading.json',
+                      'assets/animation/loading2.json',
                       repeat: true,
                     ),
                   )
