@@ -9,7 +9,7 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 
 final getUserProvider =
-    StateNotifierProvider<GetUserNotifier, UserModelNotMe>((ref) => GetUserNotifier(ref));
+    StateNotifierProvider<GetUserNotifier, UserModelNotMe>((ref ) => GetUserNotifier(ref));
 
 class GetUserNotifier extends StateNotifier<UserModelNotMe> {
   final Ref ref;
@@ -40,3 +40,4 @@ class GetUserNotifier extends StateNotifier<UserModelNotMe> {
   }
 
 }
+  

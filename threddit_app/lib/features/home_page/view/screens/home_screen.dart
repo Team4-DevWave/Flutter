@@ -19,14 +19,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String feedID = 'Best';
   String? userID;
   final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
-  @override
   
-  void initState() {
-    // TODO: implement  initState
-
-    super.initState();
-  }
-
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
   }
