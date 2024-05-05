@@ -4,7 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A widget for displaying an exit button when editing a post.
+///
+/// This widget displays an IconButton that, when pressed, shows a dialog
+/// asking the user if they want to discard their changes or keep editing.
 class ExitEdit extends ConsumerWidget {
+  /// Constructs a [ExitEdit] widget.
   const ExitEdit({super.key});
 
   @override

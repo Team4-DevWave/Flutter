@@ -18,6 +18,15 @@ import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A StatefulWidget responsible for confirming and posting a new content.
+///
+/// This widget allows users to confirm their post content before submitting
+/// it to the application. Users can input a title, body text, add images,
+/// videos, or links to their post, and select tags. They can also view the
+/// rules of the community they are posting in.
+///
+/// This widget listens to the changes in the [PostDataProvider] to update the
+/// content accordingly.
 class ConfirmPost extends ConsumerStatefulWidget {
   const ConfirmPost({super.key});
 
@@ -34,14 +43,25 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   late String postTitle;
   late String postBody;
 
-  ///add image picker data
+  /// Image picker instance for selecting images from the device gallery.
   final ImagePicker picker = ImagePicker();
+
+  /// Base64 encoded string representation of the selected image.
   String? image;
+
+  /// Base64 encoded string representation of the selected video.
   String? video;
+
+  /// Represnets where the post will be posted.
   String? whereTo;
+
+  /// File representing the selected video.
   File? videoFile;
+
+  /// File representing the selected image.
   File? imageFile;
 
+  /// Picks an image from the device gallery and updates the selected image.
   Future<void> _pickImage() async {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
@@ -61,6 +81,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
+  /// Picks a video from the device gallery and updates the selected video.
   Future<void> _pickVideo() async {
     final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
     // If the user does not select a video then return null.
@@ -75,6 +96,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
+  /// Removes the selected image.
   Future<void> _removeImage() async {
     setState(() {
       image = null;
@@ -82,12 +104,14 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
+  /// Adds a link to the post.
   Future<void> _addLink() async {
     setState(() {
       isLink = true;
     });
   }
 
+  /// Removes the selected video.
   Future<void> _removeVideo() async {
     setState(() {
       video = null;
@@ -95,12 +119,14 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
+  /// Removes the added link.
   Future<void> _removeLink() async {
     setState(() {
       isLink = false;
     });
   }
 
+  /// Initializes the data for the post including title, body, image, video, and link.
   void intializeData() {
     final intialData = ref.watch(postDataProvider);
     _titleController = TextEditingController(text: intialData?.title ?? '');
@@ -138,6 +164,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     super.dispose();
   }
 
+  /// Resets all data in the widget including title, body, and attachments.
   void resetAll() {
     _titleController = TextEditingController(text: '');
     _bodytextController = TextEditingController(text: '');
@@ -145,6 +172,9 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     ref.read(postDataProvider.notifier).resetAll();
   }
 
+  /// Callback function for title field change.
+  ///
+  /// Updates the title in the `PostDataProvider` if it has changed.
   void onTitleChanged(String value) {
     final post = ref.watch(postDataProvider);
     if (post!.title != value) {
@@ -152,6 +182,9 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     }
   }
 
+  /// Callback function for body text field change.
+  ///
+  /// Updates the body text in the `PostDataProvider` if it has changed.
   void onBodyChanged(String value) {
     final post = ref.watch(postDataProvider);
     if (post!.text_body != value) {

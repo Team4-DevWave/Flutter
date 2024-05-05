@@ -11,11 +11,15 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 
+/// A provider responsible for managing the editing of posts.
 final editPostProvider =
     StateNotifierProvider<EditPost, Post>((ref) => EditPost(ref));
 
+/// A state notifier responsible for managing the editing of posts.
 class EditPost extends StateNotifier<Post> {
   final Ref ref;
+
+  /// Constructs a new [EditPost] instance for the provider state.
   EditPost(this.ref)
       : super(
           Post(
@@ -31,6 +35,10 @@ class EditPost extends StateNotifier<Post> {
           ),
         );
 
+  /// Initiates a request to edit a post.
+  ///
+  /// This method sends a PATCH request to the server to edit the post with the specified ID.
+  /// If the request is successful, the updated post is returned.
   FutureEither<Post> editPostRequest() async {
     final url = Uri.parse(
         "http://${AppConstants.local}:8000/api/v1/posts/${state.id}/edit");
@@ -68,9 +76,16 @@ class EditPost extends StateNotifier<Post> {
     }
   }
 
+  /// Updates the post to be edited.
   void updatePostToBeEdited(Post post) => state = post;
+
+  /// Updates the NSFW flag of the post.
   void updateNFSW(bool nfsw) => state = state.copyWith(nsfw: nfsw);
+
+  /// Updates the spoiler flag of the post.
   void updateSpoiler(bool spoiler) => state = state.copyWith(spoiler: spoiler);
+
+  /// Updates the text body of the post.
   void updatePostTextBody(String textBody) =>
       state = state.copyWith(textBody: textBody);
 }
