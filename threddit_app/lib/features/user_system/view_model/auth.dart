@@ -248,6 +248,7 @@ class Auth extends StateNotifier<bool> {
             'username': user.username,
             'email': user.email,
             'password': user.password,
+            //todo
           },
         ),
       );
@@ -293,6 +294,7 @@ class Auth extends StateNotifier<bool> {
             'country': user.country,
             'gender': user.gender,
             'interests': user.interests,
+            //todo
           },
         ),
       );
@@ -331,6 +333,7 @@ class Auth extends StateNotifier<bool> {
             'country': 'Egypt',
             'gender': user.gender,
             'interests': user.interests,
+            //Todo
           },
         ),
       );
@@ -427,7 +430,6 @@ class Auth extends StateNotifier<bool> {
       Uri.parse(
           'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=$userToken'),
     );
-
     //200 for exisiting users
     //400 new users
     if (response.statusCode == 200 || response.statusCode == 201) {
