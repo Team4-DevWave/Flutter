@@ -7,11 +7,20 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
+/// A widget for saving user data changes.
+///
+/// This widget displays a button that allows the user to save changes made
+/// to their profile data. It handles the logic for updating user data and
+/// display name.
 class SaveButton extends ConsumerStatefulWidget {
   const SaveButton({super.key, required this.changed, required this.dis});
+
+  /// A boolean flag indicating whether there are changes to be saved.
   final bool changed;
+
+  /// The display name of the user.
   final String dis;
-  
+
   @override
   ConsumerState<SaveButton> createState() => _SaveButtonState();
 }
@@ -40,8 +49,9 @@ class _SaveButtonState extends ConsumerState<SaveButton> {
               final response2 = await updateDisplayName(widget.dis, ref);
               response2.fold((l) {
                 showSnackBar(navigatorKey.currentContext!, l.message);
-              } , (r) {
-                showSnackBar(navigatorKey.currentContext!, "User display name Saved!");
+              }, (r) {
+                showSnackBar(
+                    navigatorKey.currentContext!, "User display name Saved!");
               });
             }
           : null,

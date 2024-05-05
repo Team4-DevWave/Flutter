@@ -9,6 +9,12 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// A screen for editing and saving the description of a community.
+///
+/// This screen allows the user to edit the description of a community. It provides
+/// a text field where the user can input the description, and buttons to save or exit
+/// the editing process. It also displays a loading indicator while the description
+/// data is being fetched.
 class DescriptionScreen extends ConsumerStatefulWidget {
   const DescriptionScreen({super.key});
 
@@ -22,6 +28,7 @@ class _DescriptionScreen extends ConsumerState<DescriptionScreen> {
   bool _isLoading = false;
   bool _isValid = false;
 
+  /// Updates the validity of the form based on the text field's content.
   void _updateFormValidity() {
     setState(() {
       _isValid = textBodyController.text.trim().isNotEmpty &&
@@ -29,6 +36,7 @@ class _DescriptionScreen extends ConsumerState<DescriptionScreen> {
     });
   }
 
+  /// Handles the save action when the save button is pressed.
   Future<void> onSave() async {
     ref
         .read(descriptionProvider.notifier)
@@ -43,6 +51,7 @@ class _DescriptionScreen extends ConsumerState<DescriptionScreen> {
     });
   }
 
+  /// Fetches the initial description data when the screen is initialized.
   Future<void> _setData() async {
     setState(() {
       _isLoading = true;

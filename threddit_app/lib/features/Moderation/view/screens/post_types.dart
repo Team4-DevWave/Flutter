@@ -10,8 +10,10 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// Enum representing different options for post types.
 enum PostTypeOption { any, linkOnly, textOnly }
 
+/// Helper function to display text for a given post type option.
 String textDisplayed(String postType) {
   switch (postType) {
     case 'any':
@@ -25,6 +27,7 @@ String textDisplayed(String postType) {
   }
 }
 
+/// Screen for managing post types and their settings.
 class PostTypesScreen extends ConsumerStatefulWidget {
   const PostTypesScreen({super.key});
 
@@ -41,6 +44,7 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
   bool pollPosts = false;
   late PostTypes postTypesData;
 
+  /// Saves the changes made to post types settings.
   Future<void> onSave() async {
     ref
         .read(postTypesProvider.notifier)
@@ -64,6 +68,7 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
         (success) => Navigator.pop(context));
   }
 
+  /// Updates the validity of the form based on the changes made.
   void _updateValidaty() {
     isValid = imagePosts != postTypesData.imagePosts ||
         videoPosts != postTypesData.videoPosts ||
@@ -71,6 +76,7 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
         _selectedPostType.name != postTypesData.postTypesOptions;
   }
 
+  /// Fetches the initial data for post types settings.
   Future<void> _setData() async {
     setState(() {
       _isLoading = true;

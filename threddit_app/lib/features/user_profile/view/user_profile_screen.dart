@@ -21,7 +21,13 @@ import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A widget responsible for displaying the user profile.
+///
+/// This widget provides a detailed view of the user profile, including their posts, comments,
+/// about section, social links, and karma statistics. It also allows users to edit their profile,
+/// add new posts, search, and share their profile.
 class UserProfile extends ConsumerStatefulWidget {
+  /// Constructs an instance of [UserProfile].
   const UserProfile({super.key});
   @override
   ConsumerState<UserProfile> createState() => _UserProfileState();
@@ -47,11 +53,13 @@ class _UserProfileState extends ConsumerState<UserProfile>
   UserModelMe? user;
   String? dis;
 
+  /// Method to get user data.
   void _getUserData() async {
     user = ref.read(userModelProvider)!;
     socialLinks = ref.read(userProfileProvider)?.socialLinks;
   }
 
+  /// Method to set data.
   void setData() async {
     //getSettings function gets the user settings data and updates it in the provider
     await ref.read(settingsFetchProvider.notifier).getSettings();
@@ -75,6 +83,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     super.initState();
   }
 
+  /// Method to set user ID.
   Future<void> setUserid() async {
     uid = await getUserId();
   }
@@ -85,6 +94,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     super.dispose();
   }
 
+  /// Method to fetch posts.
   Future _fetchPosts() async {
     final response =
         await fetchPostsByUsername(user!.username ?? '', _currentPage);
@@ -103,6 +113,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     }
   }
 
+  /// Method to fetch posts.
   Future _fetchComments() async {
     final response = await fetchComments(
       user!.username ?? '',
@@ -125,6 +136,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     }
   }
 
+  /// Method to handle scrolling.
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
