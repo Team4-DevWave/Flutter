@@ -4,7 +4,6 @@ import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/home_page/view_model/saved_post.dart';
-import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
 
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_post_feed_widget.dart';

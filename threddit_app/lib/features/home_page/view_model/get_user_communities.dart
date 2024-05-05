@@ -21,7 +21,7 @@ class UserCommunities extends StateNotifier<bool> {
   // static String local = Platform.isAndroid ? '${AppConstants.local}' : 'localhost';
 
   final String communitiesURL =
-      "http://${AppConstants.local}:8000/api/v1/r/user_subreddits";
+      "https://www.threadit.tech/api/v1/r/user_subreddits";
 
   ///The function returns the names of the user's communities
   FutureEither<List<List<String>>> getUserCommunities() async {

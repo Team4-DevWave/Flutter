@@ -38,15 +38,14 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
         _followingList.add(username);
       }
     }
-    print("FFFFFFFFFFFFFFFFFMMMMMMMMMMMLLLLLLLLLLLLLLLLLLLLL");
-    print(_followingList);
+
     isLoading = false;
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    return  ExpansionTile(
+    return ExpansionTile(
         title: Text(
           widget.title,
           style: AppTextStyles.primaryTextStyle,
@@ -64,7 +63,8 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                   leading: const CircleAvatar(
                     radius: 10,
                     //backgroundImage: NetworkImage(community[1]),
-                    backgroundImage: AssetImage('assets/images/Default_Avatar.png'),
+                    backgroundImage:
+                        AssetImage('assets/images/Default_Avatar.png'),
                   ),
                   title: Text(followed,
                       maxLines: 1,
@@ -74,5 +74,4 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                 ))
         ]);
   }
-  }
-
+}

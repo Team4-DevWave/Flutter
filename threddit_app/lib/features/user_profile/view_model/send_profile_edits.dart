@@ -20,10 +20,8 @@ import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 /// Returns:
 ///   A [FutureEither] containing a boolean value indicating whether the update was successful or not.
 FutureEither<bool> updateUserData(UserProfile user) async {
-  String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
-
   final token = await getToken();
-  final url = "http://$local:8000/api/v1/users/me/settings";
+  final url = "https://www.threadit.tech/api/v1/users/me/settings";
   final headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer $token',

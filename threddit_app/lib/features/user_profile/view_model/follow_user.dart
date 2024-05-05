@@ -17,17 +17,15 @@ import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 ///   A [FutureEither] object representing either a success or a failure.
 ///   If successful, it returns `true`, otherwise it returns a [Failure] object.
 FutureEither<bool> followUser(String userName) async {
-  String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
-
   final token = await getToken();
-  final url = "http://$local:8000/api/v1/users/me/friend/$userName";
+  final url = "https://www.threadit.tech/api/v1/users/me/friend/$userName";
   final headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer $token',
   };
   try {
     final response = await http.post(Uri.parse(url), headers: headers);
-    print(response.statusCode);
+
     if (response.statusCode == 200) {
       return right(true);
     } else if (response.statusCode == 400) {
@@ -58,15 +56,15 @@ FutureEither<bool> unfollowUser(String userName) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
   final token = await getToken();
-  print(userName);
-  final url = "http://$local:8000/api/v1/users/me/friend/$userName";
+
+  final url = "https://www.threadit.tech/api/v1/users/me/friend/$userName";
   final headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer $token',
   };
   try {
     final response = await http.delete(Uri.parse(url), headers: headers);
-    print(response.statusCode);
+
     if (response.statusCode == 204) {
       return right(true);
     } else {

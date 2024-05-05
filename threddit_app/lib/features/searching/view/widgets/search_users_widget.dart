@@ -8,7 +8,6 @@ import 'package:threddit_clone/features/searching/view_model/searching_apis.dart
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
-
 class SearchUserWidget extends ConsumerStatefulWidget {
   final String searchText;
   const SearchUserWidget({super.key, required this.searchText});
@@ -46,12 +45,9 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
   }
 
   Future _fetchUsers() async {
-    print("ALOOOOOOOOOOOOOOOOOOOOO1111");
-
     final response = await searchTest(widget.searchText, _currentPage);
 
     final SearchModel results = response;
-    print(results.users.length);
 
     if (results.users.isNotEmpty) {
       setState(() {
@@ -92,11 +88,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
         _followingList.add(username);
       }
     }
-    print("FFFFFFFFFFFFFFFFFMMMMMMMMMMMLLLLLLLLLLLLLLLLLLLLL");
-    print(user!.username);
-    print(user!.followedUsers);
 
-    print(_followingList);
     isLoading = false;
     super.didChangeDependencies();
   }
@@ -134,7 +126,6 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
     } else {
       return ListView.builder(
         controller: _scrollController,
-        
         itemCount: _users.length + 1,
         itemBuilder: (context, index) {
           if (index < _users.length) {

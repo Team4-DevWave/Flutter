@@ -30,8 +30,7 @@ class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
   void initState() {
     super.initState();
     getUserID();
-    print("I AM THE USER ID HELLO !: ");
-    print(userId);
+
     _fetchSubreddits();
     _scrollController.addListener(_onScroll);
   }
@@ -47,8 +46,6 @@ class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
   }
 
   Future _fetchSubreddits() async {
-    print("ALOOOOOOOOOOOOOOOOOOOOO1111");
-
     final response = await searchTest(widget.searchText, _currentPage);
 
     final SearchModel results = response;

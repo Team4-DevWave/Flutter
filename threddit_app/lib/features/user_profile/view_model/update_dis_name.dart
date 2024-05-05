@@ -22,10 +22,8 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 ///   A [FutureEither] containing a boolean value indicating whether the update was successful or not.
 
 FutureEither<bool> updateDisplayName(String dispName, WidgetRef ref) async {
-  String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
-
   final token = await getToken();
-  final url = "http://$local:8000/api/v1/users/me/changeDisplayName";
+  final url = "https://www.threadit.tech/api/v1/users/me/changeDisplayName";
   final headers = {
     'Authorization': 'Bearer $token',
   };
@@ -34,8 +32,6 @@ FutureEither<bool> updateDisplayName(String dispName, WidgetRef ref) async {
     final response = await http.patch(Uri.parse(url),
         headers: headers, body: {"displayName": dispName});
 
-    print("ALOOOOOOOO");
-    print(response.statusCode);
     if (response.statusCode == 200) {
       ref
           .read(userModelProvider.notifier)

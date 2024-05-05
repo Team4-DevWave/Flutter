@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/app.dart';
 import 'package:threddit_clone/app/global_keys.dart';
-import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
+
 import 'package:threddit_clone/features/notifications/view_model/methods.dart';
 import 'package:threddit_clone/features/notifications/view_model/providers.dart';
 import 'package:threddit_clone/firebase_options.dart';

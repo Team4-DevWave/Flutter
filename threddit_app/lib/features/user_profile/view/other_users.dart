@@ -153,41 +153,6 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     }
   }
 
-  Widget buildCommentsTab() {
-    return _comments.isEmpty
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.warning_amber,
-                color: AppColors.whiteGlowColor,
-              ),
-              Text(
-                "Wow, such empty in Comments!",
-                style: AppTextStyles.primaryTextStyle,
-              ),
-            ],
-          )
-        : ListView.builder(
-            controller: _scrollController,
-            itemCount: _comments.length,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Text(
-                      _comments[index].user.username,
-                      style: AppTextStyles.boldTextStyleNotifcation,
-                    )
-                  ],
-                ),
-              );
-            },
-          );
-  }
-
   /// Method to handle scrolling.
   void _onScroll() {
     if (_scrollController.position.pixels ==
@@ -477,19 +442,28 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                                     return CommentItemForProfile(
                                         comment: _comments[index], uid: uid!);
                                   } else {
-                                    return SizedBox(
-                                        child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          'No more Comments ',
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ));
+                                    return _fetchingCommentsFinish
+                                        ? SizedBox(
+                                            height: 75.h,
+                                            width: 75.w,
+                                            child: Lottie.asset(
+                                              'assets/animation/loading2.json',
+                                              repeat: true,
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: Text(
+                                                'No more Comments ',
+                                                style: TextStyle(
+                                                  fontSize: 16.sp,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ));
                                   }
                                 },
                               ),

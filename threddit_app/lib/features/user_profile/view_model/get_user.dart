@@ -37,19 +37,16 @@ class GetUserNotifier extends StateNotifier<UserModelNotMe> {
     String? token = await getToken();
     try {
       http.Response response = await http.get(
-        Uri.parse("http://${AppConstants.local}:8000/api/v1/users/$username"),
+        Uri.parse("https://www.threadit.tech/api/v1/users/$username"),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
       );
       if (response.statusCode == 200) {
-        print("SUUUUUUUUUCCCCCCCEEEEEEEESSSSSSSSSSSSSS");
         final jsonBody = UserModelNotMe.fromJson(jsonDecode(response.body));
         state = jsonBody;
-        print("SSSSSSSSSSSSSSSSSSSSSSSSSSsss");
-        print(state.username);
-        print(state.userProfileSettings?.about);
+
         return right(state);
       } else {
         return left(Failure("Getting user data failed :( "));

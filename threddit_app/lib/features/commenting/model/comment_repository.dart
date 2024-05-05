@@ -18,8 +18,8 @@ class CommentRepository {
   var uuid = const Uuid();
 
   Future<List<Comment>> fetchAllComments(String postId) async {
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postId/comments/');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postId/comments/');
     String? token = await getToken();
     final headers = {
       "Authorization": "Bearer $token",
@@ -49,8 +49,8 @@ class CommentRepository {
 
   Future<void> createComment(String postId, String content) async {
     String? token = await getToken();
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postId/comments/');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postId/comments/');
     final headers = {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $token",
@@ -73,8 +73,7 @@ class CommentRepository {
 
   Future<void> voteComment(String commentId, int voteType) async {
     try {
-      final url =
-          'http://${AppConstants.local}:8000/api/v1/comments/$commentId/vote';
+      final url = 'https://www.threadit.tech/api/v1/comments/$commentId/vote';
       final token = await getToken();
       final Map<String, String> headers = {
         'Content-Type': 'application/json',
@@ -98,8 +97,7 @@ class CommentRepository {
 
   Future<void> editComment(String commentId, String newContent) async {
     try {
-      String url =
-          'http://${AppConstants.local}:8000/api/v1/comments/$commentId';
+      String url = 'https://www.threadit.tech/api/v1/comments/$commentId';
       final token = await getToken();
       Map<String, String> headers = {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -125,7 +123,7 @@ class CommentRepository {
 
   Future<void> deleteComment(String postId, String commentId) async {
     final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postId/comments/$commentId');
+        'https://www.threadit.tech/api/v1/posts/$postId/comments/$commentId');
     final token = await getToken();
 
     final headers = {

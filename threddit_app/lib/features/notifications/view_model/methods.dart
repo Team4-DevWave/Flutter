@@ -87,7 +87,7 @@ Future<void> markAsRead(String id) async {
   String? token = await getToken();
   final response = await http.patch(
     Uri.parse(
-      'http://10.0.2.2:8000/api/v1/notifications/read/$id',
+      'https://www.threadit.tech/api/v1/notifications/read/$id',
     ),
     headers: {
       'Content-Type': 'application/json',

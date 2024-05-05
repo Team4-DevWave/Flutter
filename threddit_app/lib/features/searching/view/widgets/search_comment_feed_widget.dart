@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
-import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
-import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 
 import 'package:lottie/lottie.dart';
-import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
+
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_comment_item.dart';
-import 'package:threddit_clone/features/searching/view/widgets/search_post_feed_widget.dart';
-import 'package:threddit_clone/features/searching/view/widgets/search_shared_feed_unit.dart';
+
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
 /// display a feed of posts. The widget takes a `feedID` as a parameter, which is used
@@ -70,13 +65,10 @@ class _SearchCommentFeedWidgetState
   }
 
   Future _fetchComments() async {
-    print("ALOOOOOOOOOOOOOOOOOOOOO11112323");
-
     final response = await searchTest(widget.searchText, _currentPage);
 
     final SearchModel results = response;
-    print(results.comments.length);
-    print("HAMADAAAAAAAAAAAAAAAAAAHELOOOOOOOO ${results.comments.length}");
+
     if (results.comments.isNotEmpty) {
       setState(() {
         _comments.addAll(results.comments);

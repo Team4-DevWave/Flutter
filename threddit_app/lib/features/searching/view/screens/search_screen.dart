@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/community/view/search_community.dart';
+
 import 'package:threddit_clone/features/searching/model/search_model.dart';
-import 'package:threddit_clone/features/searching/model/trends.dart';
+
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_function.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
-import 'package:threddit_clone/theme/colors.dart';
+
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:threddit_clone/theme/theme.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -44,15 +42,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void fetchSearch(String query) async {
     final response =
         await ref.watch(searchingApisProvider.notifier).search(query, 1);
-    print("THE NUMBER OF SUBREDDITS IS:     ");
-    print(response.posts.length);
+
     setState(() {
       search = response;
     });
   }
 
   void onChange() {
-    print("the text is ${searchController.text}");
     if (searchController.text.isNotEmpty) {
       setState(() {
         fetchSearch(searchController.text);
@@ -100,8 +96,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 .then((test) => setState(() {
                       localSearchHistory =
                           addingHistory(value, localSearchHistory);
-                      print(
-                          "PRINTING LOCAL SEARCH HISTORY > !! > >!!! $localSearchHistory ");
                     }));
           },
         ),
@@ -149,8 +143,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                   .copyWith(fontSize: 15.sp),
                             ),
                             onTap: () {
-                              print(userId);
-                              print(search.subreddits[index].name);
                               saveSearchHistory(
                                   "r/${search.subreddits[index].name}");
 

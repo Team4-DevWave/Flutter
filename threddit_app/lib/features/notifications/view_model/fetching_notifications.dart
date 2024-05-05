@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
+
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
@@ -13,7 +13,7 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 /// the fetched notifications. If the request fails, the function throws an exception.
 Future<NotificationAPI> fetchDataNotifications(String id) async {
   // user id
-  String urlLocal = 'http://10.0.2.2:8000/api/v1/notifications';
+  String urlLocal = 'https://www.threadit.tech/api/v1/notifications';
   String? token = await getToken();
   final response = await http.get(
     Uri.parse(urlLocal),
@@ -23,8 +23,6 @@ Future<NotificationAPI> fetchDataNotifications(String id) async {
     },
   );
 
-  print("RESSSSSSSSSSSSSSSS");
-  print(response.body);
   if (response.statusCode == 200) {
     return NotificationAPI.fromJson(jsonDecode(response.body));
   }

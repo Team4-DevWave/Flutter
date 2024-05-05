@@ -32,8 +32,7 @@ class _NewChatState extends ConsumerState<NewChat> {
 
   Future<void> _searchUsers(String username) async {
     // You can customize the URL based on your API endpoint
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/users/$username');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/users/$username');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -53,7 +52,8 @@ class _NewChatState extends ConsumerState<NewChat> {
     }
   }
 
-  void createChatroomfn(BuildContext context,List<String>_selectedUsers,String groupName ) async {
+  void createChatroomfn(BuildContext context, List<String> _selectedUsers,
+      String groupName) async {
     showDialog(
       context: context,
       barrierDismissible: false, // Prevent dialog from being dismissed
@@ -303,7 +303,8 @@ class _NewChatState extends ConsumerState<NewChat> {
                               if (_selectedUsers.isEmpty) {
                                 return;
                               } else {
-                                createChatroomfn(context,_selectedUsers,'New Chat');
+                                createChatroomfn(
+                                    context, _selectedUsers, 'New Chat');
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -326,7 +327,8 @@ class _NewChatState extends ConsumerState<NewChat> {
                               if (groupName == '') {
                                 return;
                               } else {
-                                createChatroomfn(context,_selectedUsers,groupName);
+                                createChatroomfn(
+                                    context, _selectedUsers, groupName);
                               }
                             },
 

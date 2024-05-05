@@ -44,7 +44,8 @@ Future<int> changePasswordFunction(
   }
   String? token = await getToken();
   http.Response response = await http.patch(
-    Uri.parse("$url:8000/api/v1/users/me/settings/changepassword"),
+    Uri.parse(
+        "https://www.threadit.tech/api/v1/users/me/settings/changepassword"),
     headers: {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -102,7 +103,7 @@ Future<int> changeEmailFunction({
 
   String bodyEncoded = jsonEncode(body);
   http.Response response = await http.patch(
-    Uri.parse("$url:8000/api/v1/users/me/settings/changeemail"),
+    Uri.parse("https://www.threadit.tech/api/v1/users/me/settings/changeemail"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -132,7 +133,7 @@ Future<int> changeGenderFunction({
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await http.patch(
-    Uri.parse("$url:8000/api/v1/users/me/changeGender"),
+    Uri.parse("https://www.threadit.tech/api/v1/users/me/changeGender"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -192,7 +193,7 @@ Future<int> blockUser({
     url = urlAndroid;
   }
   http.Response response = await http.post(
-    Uri.parse("$url:8000/api/v1/users/me/block/$userToBlock"),
+    Uri.parse("https://www.threadit.tech/api/v1/users/me/block/$userToBlock"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -218,7 +219,7 @@ Future<int> notificationOn(
   }
 
   http.Response response = await client.post(
-    Uri.parse("$url/api/notification?user_id=1"),
+    Uri.parse("https://www.threadit.tech/api/notification?user_id=1"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -240,7 +241,7 @@ Future<int> unblockUser(
     url = urlAndroid;
   }
   http.Response response = await client.delete(
-    Uri.parse("$url:8000/api/v1/users/me/block/$userToUnBlock"),
+    Uri.parse("https://www.threadit.tech/api/v1/users/me/block/$userToUnBlock"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -346,7 +347,7 @@ class SettingsFetch extends StateNotifier<bool> {
     UserModelMe user = ref.read(userModelProvider)!;
     String? token = await getToken();
     http.Response response = await http.get(
-      Uri.parse("$url:8000/api/v1/users/me/current"),
+      Uri.parse("https://www.threadit.tech/api/v1/users/me/current"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -354,14 +355,8 @@ class SettingsFetch extends StateNotifier<bool> {
     );
     if (response.statusCode == 200) {
       user = UserModelMe.fromJson(jsonDecode(response.body));
-      print("AAAAAAAAAAALLLLLLLLLLLLLLOOOOOOOOOOOOO");
-      // print(user.displayName);
-      print(user.username);
-      print(user.displayName);
-      print(user.email);
+
       ref.read(userModelProvider.notifier).update((state) => user);
-    } else {
-      print("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
     }
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
@@ -376,7 +371,7 @@ class SettingsFetch extends StateNotifier<bool> {
     }
     String? token = await getToken();
     http.Response response = await http.get(
-      Uri.parse("$url:8000/api/v1/users/me/settings"),
+      Uri.parse("https://www.threadit.tech/api/v1/users/me/settings"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -397,7 +392,7 @@ class SettingsFetch extends StateNotifier<bool> {
     }
     String? token = await getToken();
     http.Response response = await client.get(
-      Uri.parse("$url:8000/api/v1/notifications/settings"),
+      Uri.parse("https://www.threadit.tech/api/v1/notifications/settings"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -406,7 +401,7 @@ class SettingsFetch extends StateNotifier<bool> {
     print(response.body);
     print(response.statusCode);
     print("Above are the responses");
-    
+
     return NotificationsSettingsModel.fromJson(jsonDecode(response.body));
   }
 
@@ -450,7 +445,7 @@ Future<int> changeSetting({
     url = urlAndroid;
   }
   http.Response response = await http.patch(
-    Uri.parse("$url:8000/api/v1/users/me/settings"),
+    Uri.parse("https://www.threadit.tech/api/v1/users/me/settings"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -475,7 +470,8 @@ Future<int> changeCountry({
     url = urlAndroid;
   }
   http.Response response = await http.patch(
-    Uri.parse("$url:8000/api/v1/users/me/settings/changecountry"),
+    Uri.parse(
+        "https://www.threadit.tech/api/v1/users/me/settings/changecountry"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

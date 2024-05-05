@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/model/trends.dart';
-import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
+
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
-const String urlAndroid = "http://10.0.2.2";
-const String urlWindows = "http://localhost";
+const String urlAndroid = "https://www.threadit.tech/";
+const String urlWindows = "https://www.threadit.tech/";
 final searchInputProvider = StateProvider<String>((ref) => '');
 
 final searchingApisProvider =
@@ -29,24 +29,19 @@ Future<SearchModel> searchTest(String query, int page) async {
   } else {
     url = urlAndroid;
   }
-  print("TESSSSSSSSSSSSSSSST before");
 
   String? token = await getToken();
   http.Response response = await http.get(
-    Uri.parse("$url:8000/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
+    Uri.parse(
+        "https://www.threadit.tech/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
   );
-  print(response.statusCode);
-  print("TESSSSSSSSSSSSSSSST after");
-  print(response.body);
+
   final search = SearchModel.fromJson(jsonDecode(response.body));
-  print("Subbredits: ");
-  print(search.subreddits.length);
-  print("Posts: ");
-  print(search.posts.length);
+
   return SearchModel.fromJson(jsonDecode(response.body));
 }
 
@@ -63,7 +58,7 @@ class SearchingApis extends StateNotifier<bool> {
     String? token = await getToken();
 
     final response = await http.get(
-      Uri.parse('$url:8000/api/v1/homepage/trending'),
+      Uri.parse('https://www.threadit.tech/api/v1/homepage/trending'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
@@ -85,25 +80,19 @@ class SearchingApis extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    print("TESSSSSSSSSSSSSSSST before");
 
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse(
-          "$url:8000/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
+          "https://www.threadit.tech/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
-    print(response.statusCode);
-    print("TESSSSSSSSSSSSSSSST after");
-    print(response.body);
+
     final search = SearchModel.fromJson(jsonDecode(response.body));
-    print("Subbredits: ");
-    print(search.subreddits.length);
-    print("Posts: ");
-    print(search.posts.length);
+
     return SearchModel.fromJson(jsonDecode(response.body));
   }
 }

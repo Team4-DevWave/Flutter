@@ -8,7 +8,8 @@ Future<PostApiResponse> fetchPostsByUsername(
     String name, int pageNumber) async {
   String? token = await getToken();
   final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/$name/posts?page=$pageNumber"),
+    Uri.parse(
+        "https://www.threadit.tech/api/v1/users/$name/posts?page=$pageNumber"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
