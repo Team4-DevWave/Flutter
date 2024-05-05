@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_profile/view_model/update_dis_name.dart';
 import 'package:threddit_clone/features/user_profile/view_model/update_pfp.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -39,15 +40,13 @@ class _SaveButtonState extends ConsumerState<SaveButton> {
                 final response2 = await updateDisplayName(widget.dis, ref);
                 response2.fold((l) {
                   showSnackBar(navigatorKey.currentContext!, l.message);
-                }, (r) {
-                });
+                }, (r) {});
               }
               if (widget.image != oldPfp) {
                 final response3 = await updateProfilePicture(widget.image, ref);
                 response3.fold((l) {
                   showSnackBar(navigatorKey.currentContext!, l.message);
-                }, (r) {
-                });
+                }, (r) {});
               }
               final response =
                   await ref.read(userProfileProvider.notifier).updateUserData();
@@ -58,7 +57,8 @@ class _SaveButtonState extends ConsumerState<SaveButton> {
                 setState(() {
                   _isLoading = false;
                 });
-                Navigator.pop(context);
+                Navigator.pushReplacementNamed(
+                    context, RouteClass.userProfileScreen);
               });
             }
           : null,

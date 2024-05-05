@@ -31,6 +31,12 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
   }
 
   @override
+  void didChangeDependencies() {
+    _getUserData();
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -29,6 +30,9 @@ class _CommunityUnitState extends ConsumerState<CommunityUnit> {
 
   @override
   Widget build(BuildContext context) {
+    String username = ref.read(userModelProvider)!.username!;
+    final newUser = UserModel(id: widget.userID, username: username);
+
     return SizedBox(
       height: 150.h,
       child: GridView.builder(
@@ -41,7 +45,7 @@ class _CommunityUnitState extends ConsumerState<CommunityUnit> {
           itemCount: widget.subreddit.length,
           itemBuilder: (context, index) {
             bool isCurrentUser =
-                widget.subreddit[index].members.contains(widget.userID);
+                widget.subreddit[index].members.contains(newUser);
             return InkWell(
               onTap: () {
                 Navigator.pushNamed(context, RouteClass.communityScreen,
@@ -99,14 +103,14 @@ class _CommunityUnitState extends ConsumerState<CommunityUnit> {
                                   ref.watch(joinCommunityProvider(
                                       widget.subreddit[index].name));
                                   widget.subreddit[index].members
-                                      .add(widget.userID);
+                                      .add(newUser);
                                   isCurrentUser = true;
                                   setState(() {});
                                 } else {
                                   ref.watch(unjoinCommunityProvider(
                                       widget.subreddit[index].name));
                                   widget.subreddit[index].members
-                                      .remove(widget.userID);
+                                      .remove(newUser);
                                   isCurrentUser = false;
 
                                   setState(() {});

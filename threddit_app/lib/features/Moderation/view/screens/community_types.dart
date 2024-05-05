@@ -6,6 +6,7 @@ import 'package:threddit_clone/features/Moderation/view_model/community_types.da
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
 class CommunityTypes extends ConsumerStatefulWidget {
   const CommunityTypes({super.key});
@@ -15,8 +16,8 @@ class CommunityTypes extends ConsumerStatefulWidget {
 }
 
 class _CommunityTypesState extends ConsumerState<CommunityTypes> {
-  double _currentValue = 0;
-  bool _switchValue = false;
+  double? _currentValue;
+  bool? _switchValue;
   List<String> values = ["Public", "Restricted", "Private"];
   List<String> description = [
     "Anyone can see and participate in this community.",
@@ -25,18 +26,21 @@ class _CommunityTypesState extends ConsumerState<CommunityTypes> {
   ];
   bool isAnythingChanged = false;
   bool isLoading = true;
-  int?initRestriction;
-  bool?initIsAdult;
+  int? initRestriction;
+  bool? initIsAdult;
 
-  void _getData()async {
+  void _getData() async {
     setState(() {
       isLoading = true;
     });
-    final response = await ref.read(communityTypesProvider.notifier).getCommunityTypes();
-    response.fold((l) => showSnackBar(navigatorKey.currentContext!, l.message), 
-    (r) {
+    final response =
+        await ref.read(communityTypesProvider.notifier).getCommunityTypes();
+    response.fold((l) => showSnackBar(navigatorKey.currentContext!, l.message),
+        (r) {
       setState(() {
         initRestriction = r.restriction;
+        _currentValue = r.restriction!.toDouble();
+        _switchValue = r.isAdult;
         initIsAdult = r.isAdult;
       });
     });
@@ -51,106 +55,116 @@ class _CommunityTypesState extends ConsumerState<CommunityTypes> {
     super.initState();
   }
 
+  void onSaved() {
+    ref.read(communityTypesProvider.notifier).updateAdult(_switchValue!);
+    ref
+        .read(communityTypesProvider.notifier)
+        .updateRestrction(_currentValue!.toInt());
+    ref.read(communityTypesProvider.notifier).updateCommunityTypes();
+    showSnackBar(navigatorKey.currentContext!, "Changes updated successfully!");
+
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Community Types",
-          style: AppTextStyles.primaryTextStyle,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              //send data
-            },
-            child: Text(
-              "Save",
-              style: AppTextStyles.primaryButtonHideTextStyle,
+    return !isLoading
+        ? Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "Community Types",
+                style: AppTextStyles.primaryTextStyle,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    isAnythingChanged ? onSaved() : null;
+                  },
+                  child: Text(
+                    "Save",
+                    style: AppTextStyles.primaryButtonGlowTextStyle,
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Slider(
-            value: _currentValue,
-            divisions: 2,
-            max: 2,
-            activeColor: _currentValue == 0.0
-                ? Colors.green
-                : _currentValue == 1.0
-                    ? Colors.yellow
-                    : Colors.red,
-            onChanged: (double val) {
-              setState(() {
-                  _currentValue = val;
-                if (_currentValue != initRestriction) {
-                  isAnythingChanged = true;
-                }
-                else
-                {
-                  isAnythingChanged = false;
-                }
-              });
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: Column(
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  values[_currentValue.toInt()],
-                  style: TextStyle(
-                      color: _currentValue == 0.0
-                          ? Colors.green
-                          : _currentValue == 1.0
-                              ? Colors.yellow
-                              : Colors.red,
-                      fontSize: 25.spMin,
-                      fontWeight: FontWeight.bold),
+                Slider(
+                  value: _currentValue!,
+                  divisions: 2,
+                  max: 2,
+                  activeColor: _currentValue == 0.0
+                      ? Colors.green
+                      : _currentValue == 1.0
+                          ? Colors.yellow
+                          : Colors.red,
+                  onChanged: (double val) {
+                    setState(() {
+                      _currentValue = val;
+                      if (_currentValue != initRestriction) {
+                        isAnythingChanged = true;
+                      } else {
+                        isAnythingChanged = false;
+                      }
+                    });
+                  },
                 ),
-                Text(
-                  description[_currentValue.toInt()],
-                  style: AppTextStyles.primaryButtonHideTextStyle,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        values[_currentValue!.toInt()],
+                        style: TextStyle(
+                            color: _currentValue == 0.0
+                                ? Colors.green
+                                : _currentValue == 1.0
+                                    ? Colors.yellow
+                                    : Colors.red,
+                            fontSize: 25.spMin,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        description[_currentValue!.toInt()],
+                        style: AppTextStyles.primaryButtonHideTextStyle,
+                      ),
+                      SizedBox(height: 10.h),
+                      const Divider()
+                    ],
+                  ),
                 ),
-                SizedBox(height: 10.h),
-                const Divider()
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 15.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "18+ community",
-                  style: AppTextStyles.boldTextStyle,
-                ),
-                Switch(
-                    value: _switchValue,
-                    activeColor: AppColors.blueColor,
-                    onChanged: (bool val) {
-                      setState(() {
-                        _switchValue = val;
-                        if (_switchValue != initIsAdult) {
-                          isAnythingChanged = true;
-                        }
-                        else{
-                          isAnythingChanged = false;
-                        }
-                      });
-                    })
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 8.h, horizontal: 15.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "18+ community",
+                        style: AppTextStyles.boldTextStyle,
+                      ),
+                      Switch(
+                          value: _switchValue!,
+                          activeColor: AppColors.blueColor,
+                          onChanged: (bool val) {
+                            setState(() {
+                              _switchValue = val;
+                              if (_switchValue != initIsAdult) {
+                                isAnythingChanged = true;
+                              } else {
+                                isAnythingChanged = false;
+                              }
+                            });
+                          })
+                    ],
+                  ),
+                )
               ],
             ),
           )
-        ],
-      ),
-    );
+        : const Loading();
   }
 }

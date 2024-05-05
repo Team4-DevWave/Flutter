@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_types.dart';
-import 'package:threddit_clone/features/Moderation/view/screens/community_types.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/description.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/schedule_post_screen.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/scheduled_posts.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/screens/chat_options_screen.dart';
 import 'package:threddit_clone/features/chatting/view/screens/chat_room.dart';
@@ -125,10 +126,11 @@ class RouteClass {
   static const String chatMembers = '/chat-members';
   static const String inviteMembers = '/invite-members';
 
-
   static const String postTypes = '/post-types';
   static const String description = '/decription';
   static const String communityTypes = '/community-types';
+  static const String scheduledPosts = '/scheduled-posts';
+  static const String postSchedule = '/post-schedule';
 
   static const String searchResultsScreen = '/serach-results';
 
@@ -163,7 +165,11 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => CommunityInfo(community: community, uid: uid));
       case communityModTools:
-        return MaterialPageRoute(builder: (_) => const CommunityModTools());
+        final args = settings.arguments as Map<String, dynamic>;
+        final community =
+            args['communityName'] as String; // Extract the community object
+        return MaterialPageRoute(
+            builder: (_) => CommunityModTools(community: community));
       case chooseCommunity:
         return MaterialPageRoute(builder: (_) => const ChooseCommunity());
       case crossPost:
@@ -291,35 +297,50 @@ class RouteClass {
       case moderatorsScreen:
         return MaterialPageRoute(builder: (_) => const ModeratorsScreen());
       case chatRoom:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => ChatRoomScreen(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => ChatRoomScreen(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case chatRoomOptions:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => ChatOptionsScreen(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => ChatOptionsScreen(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case chatMembers:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => MembersScreen(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => MembersScreen(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case renameChatroom:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => RenameChatroom(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => RenameChatroom(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case inviteMembers:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => InviteScreen(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => InviteScreen(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case addModeratorScreen:
         return MaterialPageRoute(
             builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);
@@ -330,7 +351,7 @@ class RouteClass {
       case communityTypes:
         return MaterialPageRoute(builder: (_) => const CommunityTypes());
       case otherUsers:
-        String?uname;
+        String? uname;
         if (settings.arguments is String) {
           // If arguments is a string directly, use it as the username
           uname = settings.arguments as String;
@@ -359,6 +380,17 @@ class RouteClass {
             searchText: searchText,
           ),
         );
+      case scheduledPosts:
+        final args = settings.arguments as Map<String, dynamic>;
+        final communityName =
+            args['communityName'] as String; // Extract the community object
+        return MaterialPageRoute(builder: (_) =>  ScheduledPosts(communityName: communityName));
+      case postSchedule:
+        final args = settings.arguments as Map<String, dynamic>;
+        final communityName =
+            args['communityName'] as String; // Extract the community object
+        return MaterialPageRoute(builder: (_) =>  PostSchedule(communityName: communityName));
+
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }

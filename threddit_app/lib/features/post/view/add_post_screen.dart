@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
+import 'package:threddit_clone/features/post/view/widgets/add_poll.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_video.dart';
 import 'package:threddit_clone/features/post/view/widgets/close_button.dart';
 import 'package:threddit_clone/features/post/view/widgets/next_button.dart';
@@ -29,6 +30,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   bool isImage = false;
   bool isLink = false;
   bool isVideo = false;
+  bool isPoll = false;
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
@@ -86,9 +88,21 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
+  Future<void> _addPoll() async {
+    setState(() {
+      isPoll = true;
+    });
+  }
+
   Future<void> _removeLink() async {
     setState(() {
       isLink = false;
+    });
+  }
+
+  void _removePoll() {
+    setState(() {
+      isPoll = false;
     });
   }
 
@@ -135,7 +149,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       }
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
-  
+
     Widget buildVideoContent() {
       if (video == null || isLink || isImage) {
         return const SizedBox();
@@ -152,16 +166,24 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       return const SizedBox();
     }
 
+    Widget buildPoll() {
+      if (isPoll) {
+        return AddPoll(removePoll: _removePoll);
+      }
+      return const SizedBox();
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: ClosedButton(
             resetAll: resetAll,
-            firstScreen: true,
+            firstScreen: 1,
             titleController: _titleController,
             isImage: isImage,
             isLink: isLink,
-            isVideo: isVideo),
+            isVideo: isVideo,
+            isPoll : isPoll),
         actions: [
           NextButton(titleController: _titleController),
         ],
@@ -200,6 +222,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                     buildImageContent(),
                     buildLink(),
                     buildVideoContent(),
+                    buildPoll(),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
                       child: TextField(
@@ -236,23 +259,30 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         child: Row(
           children: [
             IconButton(
-              onPressed: (!isLink && !isVideo) ? _pickImage : () {},
+              onPressed: (!isLink && !isVideo && !isPoll) ? _pickImage : () {},
               icon: const Icon(Icons.image),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isLink && !isImage) ? _pickVideo : () {},
+              onPressed: (!isLink && !isImage & !isPoll) ? _pickVideo : () {},
               icon: const Icon(Icons.video_library_outlined),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isImage && !isVideo) ? _addLink : () {},
+              onPressed: (!isImage && !isVideo && !isPoll) ? _addLink : () {},
               icon: const Icon(Icons.link),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll
+                  ? AppColors.whiteHideColor
+                  : AppColors.whiteGlowColor,
+            ),
+            IconButton(
+              onPressed: (!isImage && !isVideo && !isLink) ? _addPoll : () {},
+              icon: const Icon(Icons.poll_outlined),
+              color: isLink || isImage || isVideo || isPoll
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),

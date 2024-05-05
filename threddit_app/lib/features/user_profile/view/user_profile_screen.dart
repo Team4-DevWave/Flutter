@@ -19,6 +19,7 @@ import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
 class UserProfile extends ConsumerStatefulWidget {
   const UserProfile({super.key});
@@ -46,12 +47,18 @@ class _UserProfileState extends ConsumerState<UserProfile>
   UserModelMe? user;
   String? pfp;
   String? displayName;
-  bool isLoading = true;
+  bool isLoading = false;
 
   void _getUserData() {
+    setState(() {
+      isLoading = true;
+    });
     user = ref.watch(userModelProvider)!;
     socialLinks = ref.watch(userProfileProvider)?.socialLinks;
     pfp = ref.watch(userModelProvider)?.profilePicture;
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void setData() async {
@@ -66,7 +73,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
     _fetchPosts();
     _scrollController.addListener(_onScroll);
     _scrollControllerComments.addListener(_onScrollComments);
-
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
     _fetchComments();
@@ -192,7 +198,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
       }
     });
 
-    return DefaultTabController(
+    return !isLoading? DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -241,7 +247,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                   backgroundColor: MaterialStatePropertyAll(
                                       AppColors.whiteHideColor)),
                               onPressed: () {
-                                Navigator.pushNamed(
+                                Navigator.pushReplacementNamed(
                                         context, RouteClass.editUser)
                                     .then((value) => setState(() {
                                           // socialLinks = ref
@@ -548,6 +554,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
           ),
         ),
       ),
-    );
+    ): const Loading();
   }
 }

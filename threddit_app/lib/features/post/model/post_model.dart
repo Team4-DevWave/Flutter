@@ -8,7 +8,6 @@ class PostData {
   final String? url;
   final bool NSFW;
   final bool spoiler;
-  //final ByteData? image;
   final String?image;
   final String?video;
   final String type;
@@ -16,9 +15,11 @@ class PostData {
   final String? community;
   final File? imagePath;
   final File? videoPath;
-  //final ByteData? video;
   final String? imageURL;
   final String? videoURL;
+  final int? duration;
+  final bool? availableForVoting;
+  final Map<String, dynamic>? poll;
 
   PostData({
     required this.title,
@@ -35,6 +36,9 @@ class PostData {
     this.video,
     this.imageURL,
     this.videoURL,
+    this.availableForVoting,
+    this.duration,
+    this.poll,
   });
 
   PostData copyWith({
@@ -49,7 +53,10 @@ class PostData {
     String? community,
     String? video,
     File? imagePath,
-    File? videoPath
+    File? videoPath,
+    bool? availableForVoting,
+    int? duration,
+    Map<String,dynamic>? poll
   }) {
     return PostData(
       title: title ?? this.title,
@@ -63,7 +70,10 @@ class PostData {
       community: community ?? this.community,
       video: video ?? this.video,
       imagePath: imagePath ?? this.imagePath,
-      videoPath: videoPath ?? this.videoPath
+      videoPath: videoPath ?? this.videoPath,
+      availableForVoting: availableForVoting ?? this.availableForVoting,
+      duration: duration ?? this.duration,
+      poll: poll ?? this.poll,
     );
   }
 
@@ -79,6 +89,9 @@ class PostData {
       'locked': locked,
       'community': community,
       'video': video,
+      'availableForVoting': availableForVoting,
+      'duration': duration,
+      'poll' : poll
     };
   }
 
@@ -94,6 +107,9 @@ class PostData {
       locked: map['locked'] as bool,
       community: map['community'] != null ? map['community'] as String : null,
       videoURL: map['video'] != null ? map['video']as String : null,
+      availableForVoting: map['availableForVoting'] as bool,
+      duration: map['duration'] as int,
+      poll : map['poll'] as Map<String, dynamic>
     );
   }
 

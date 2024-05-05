@@ -7,6 +7,7 @@ import 'package:threddit_clone/features/user_profile/models/other_user_data.dart
 import 'package:threddit_clone/features/user_profile/view_model/get_user.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
+import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
@@ -18,13 +19,15 @@ class FollowingTiles extends ConsumerStatefulWidget {
 }
 
 class _FollowingTilesState extends ConsumerState<FollowingTiles> {
-  final List<Map<String, String>> _followingList = [];
+  List<Map<String, dynamic>> _followingList = [];
   bool isLoading = false;
   UserModelMe? user;
   UserModelNotMe? someone;
 
   void _getUserData() async {
     user = ref.watch(userModelProvider)!;
+    print("UUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
+    print(user!.followedUsers);
   }
 
   @override
@@ -60,10 +63,9 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
 
         _followingList.add(userMap);
       }
-      print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFfff");
+      print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
       print(_followingList);
-    }
-
+    }                   
     setState(() {
       isLoading = false;
     });
@@ -80,33 +82,47 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
       }
     }
 
-    return ExpansionTile(
-        title: Text(
-          widget.title,
-          style: AppTextStyles.primaryTextStyle,
-        ),
-        children: [
-          if (!isLoading)
-            ..._followingList.map((followed) => ListTile(
-                  onTap: () {
-                    ///go to the user's profile screen
-                    Navigator.pushNamed(context, RouteClass.otherUsers,
-                        arguments: <String, dynamic>{
-                          'username': followed['username'].toString(),
-                        });
-                  },
-                  leading: CircleAvatar(
-                      radius: 15,
-                      backgroundImage:
-                          putProfilepic(followed['profilePicture']!)),
-                  title: Text(followed['username']!,
-                      maxLines: 1,
-                      style: AppTextStyles.primaryTextStyle.copyWith(
-                        fontSize: 17.spMin,
-                      )),
-                ))
-          else
-            const Loading(),
-        ]);
+    return isLoading
+        ? const Loading()
+        : ExpansionTile(
+            title: Text(
+              widget.title,
+              style: AppTextStyles.primaryTextStyle,
+            ),
+            children: [
+                if (!isLoading)
+                  ..._followingList.map((followed) => ListTile(
+                        onTap: () {
+                          ///go to the user's profile screen
+                          Navigator.pushNamed(context, RouteClass.otherUsers,
+                              arguments: <String, dynamic>{
+                                'username': followed['username'].toString(),
+                              }).then((value) {
+                            setState(() {
+                              isLoading = true;
+                            });
+
+                            _followingList =
+                                ref.watch(userModelProvider)!.followedUsers!;
+
+                            setState(() {
+                              isLoading = false;
+                            });
+                            
+                          });
+                        },
+                        leading: CircleAvatar(
+                            radius: 15,
+                            backgroundImage:
+                                putProfilepic(followed['profilePicture']!)),
+                        title: Text(followed['username']!,
+                            maxLines: 1,
+                            style: AppTextStyles.primaryTextStyle.copyWith(
+                              fontSize: 17.spMin,
+                            )),
+                      ))
+                else
+                  const Loading(),
+              ]);
   }
 }

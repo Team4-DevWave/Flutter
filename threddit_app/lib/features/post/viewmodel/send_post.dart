@@ -25,9 +25,13 @@ class PostProvider extends StateNotifier<bool> {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
     final user = ref.read(userModelProvider)!.username;
+    final Map<String, List<String>> pollValue = {
+      for (var value in post!.poll!.values)
+        value: [] 
+    };
 
     final whereTo =
-        post?.community == null ? 'u/$user' : 'r/${post?.community}';
+        post.community == null ? 'u/$user' : 'r/${post.community}';
 
     try {
       final response = await http.post(
@@ -37,15 +41,17 @@ class PostProvider extends StateNotifier<bool> {
             'Authorization': 'Bearer $token',
           },
           body: json.encode({
-            "title": post?.title,
-            "url": post?.url,
+            "title": post.title,
+            "url": post.url,
             "type": type,
-            "spoiler": post?.spoiler,
-            "nsfw": post?.NSFW,
-            "locked": post?.locked,
-            "text_body": post?.text_body ?? "",
-            "image": post?.image ?? "",
-            "video": post?.video ?? ""
+            "spoiler": post.spoiler,
+            "nsfw": post.NSFW,
+            "locked": post.locked,
+            "text_body": post.text_body ?? "",
+            "image": post.image ?? "",
+            "video": post.video ?? "",
+            "duration": post.duration ?? 1,
+            "poll": pollValue
           }));
 
       if (response.statusCode == 201) {

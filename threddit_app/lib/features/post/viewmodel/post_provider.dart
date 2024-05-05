@@ -14,7 +14,10 @@ class PostNotifier extends StateNotifier<PostData> {
             NSFW: false,
             spoiler: false,
             type: "",
-            locked: false));
+            locked: false,
+            availableForVoting: true,
+            duration: 1,
+            poll: null));
 
   void updateTitle(String newTitle) => state = state.copyWith(title: newTitle);
 
@@ -35,12 +38,25 @@ class PostNotifier extends StateNotifier<PostData> {
 
   void updateLink(String newLink) => state = state.copyWith(url: newLink);
 
+  void updatePoll(Map<String, dynamic> newPoll) {
+    state = state.copyWith(poll: newPoll );
+  }
+
+  Map<String, dynamic> returnPoll() {
+    return state.poll!;
+  }
+
   void updateCommunityName(String newCommunity) =>
       state = state.copyWith(community: newCommunity);
 
   void updateType(String type) => state = state.copyWith(type: type);
 
   void updateVideo(String newVideo) => state = state.copyWith(video: newVideo);
+
+  void updateDuration(int newDuration) =>
+      state = state.copyWith(duration: newDuration);
+
+  void removePoll() => state = state.copyWith(poll: null);
 
   void removeLink() => state = state.copyWith(url: null);
 
@@ -64,7 +80,9 @@ class PostNotifier extends StateNotifier<PostData> {
         NSFW: false,
         spoiler: false,
         type: "",
-        locked: false);
+        locked: false,
+        duration: 1,
+        poll: null);
   }
 }
 
