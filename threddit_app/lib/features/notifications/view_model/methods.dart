@@ -17,7 +17,7 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 ///
 void requestPermisseion() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
+  await messaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -25,13 +25,6 @@ void requestPermisseion() async {
       criticalAlert: false,
       provisional: false,
       sound: true);
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print("User Granted permissions");
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    print("User Granted provisional permission");
-  } else {
-    print("User declined or has not accpet permission");
-  }
 }
 
 /// Sends a push notification to the specified FCM token.

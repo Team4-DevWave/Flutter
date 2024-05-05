@@ -90,7 +90,7 @@ class _MainInboxScreenState extends ConsumerState<MainInboxScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            Center(child: NotificationFeed(userID: uid)),
+            NotificationFeed(userID: uid),
             Center(
               child: Consumer(
                 builder: (context, watch, child) {
@@ -121,8 +121,8 @@ class _MainInboxScreenState extends ConsumerState<MainInboxScreen>
                                   child:
                                       MessageItem(message: message, uid: uid)),
                               const Divider(
-                                color: Colors.grey, 
-                                thickness: 0.3, 
+                                color: Colors.grey,
+                                thickness: 0.3,
                               ),
                             ],
                           );

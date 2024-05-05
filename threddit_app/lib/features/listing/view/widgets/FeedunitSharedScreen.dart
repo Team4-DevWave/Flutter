@@ -115,14 +115,13 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            RouteClass.postScreen,
-            arguments: {
-              'currentpost': widget.parentPost,
-              'uid': widget.uid,
-            },
-          );
+          user?.username == widget.dataOfPost.userID?.username
+              ? Navigator.pushNamed(context, RouteClass.userProfileScreen)
+              : Navigator.pushNamed(
+                  context,
+                  RouteClass.otherUsers,
+                  arguments: widget.dataOfPost.userID?.username,
+                );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
