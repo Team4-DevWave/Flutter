@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/app.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/notifications/view_model/methods.dart';
+import 'package:threddit_clone/features/notifications/view_model/providers.dart';
 import 'package:threddit_clone/firebase_options.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -17,7 +18,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
+  String? mtoken = "NONE";
   if (Platform.isWindows) {
     await windowManager.ensureInitialized();
     WindowManager.instance.setMinimumSize(const Size(690, 500));
@@ -41,7 +42,6 @@ void main() async {
       } catch (e) {}
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print(message);
       String? targetScreen = message.data['screen'];
       if (targetScreen != null) {
         navigatorKey.currentState?.pushNamed(targetScreen);
@@ -65,7 +65,7 @@ void main() async {
           message.notification?.body, platformChannelSpecifics,
           payload: message.data['body']);
     });
-    String? mtoken = " ";
+
     await FirebaseMessaging.instance.getToken().then((value) {
       mtoken = value;
     });
@@ -77,5 +77,7 @@ void main() async {
     // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
-  runApp(const ProviderScope(child: App()));
+  runApp(ProviderScope(
+      overrides: [mtokenProvider.overrideWith((ref) => mtoken ?? " ")],
+      child: const App()));
 }
