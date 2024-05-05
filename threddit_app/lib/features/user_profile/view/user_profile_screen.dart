@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,14 +54,9 @@ class _UserProfileState extends ConsumerState<UserProfile>
   String? displayName;
   bool isLoading = false;
 
-  void _getUserData() {
-    setState(() {
-      isLoading = true;
-    });
-    user = ref.watch(userModelProvider)!;
-    setState(() {
-      isLoading = false;
-    });
+  void _getUserData() async {
+    user = ref.read(userModelProvider)!;
+    socialLinks = ref.read(userProfileProvider)?.socialLinks;
   }
 
   /// Method to set data.
@@ -75,8 +69,8 @@ class _UserProfileState extends ConsumerState<UserProfile>
   String? uid;
   @override
   void initState() {
+    _getUserData();
     _fetchPosts();
-
     setData();
 
     _scrollController.addListener(_onScroll);
@@ -96,7 +90,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
     print(user!.profilePicture);
     super.didChangeDependencies();
   }
-
 
   /// Method to set user ID.
   Future<void> setUserid() async {
@@ -214,362 +207,377 @@ class _UserProfileState extends ConsumerState<UserProfile>
       }
     });
 
-    return !isLoading? DefaultTabController(
-      length: tabs.length,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              SliverOverlapAbsorber(
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverAppBar(
-                  stretch: true,
-                  title: Text(
-                    "u/${user?.username}",
-                    style: AppTextStyles.secondaryTextStyle,
-                  ),
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: Container(
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                        colors: const [
-                          Color.fromARGB(255, 0, 99, 145),
-                          Color.fromARGB(255, 2, 55, 99),
-                          Color.fromARGB(221, 14, 13, 13),
-                          Colors.black,
-                        ],
-                        stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      )),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.w, vertical: 75.h),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CircleAvatar(
-                                radius: 45.spMin,
-                                backgroundImage: setProfilePic()),
-                            SizedBox(
-                              height: 5.h,
+    return !isLoading
+        ? DefaultTabController(
+            length: tabs.length,
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              body: NestedScrollView(
+                floatHeaderSlivers: true,
+                headerSliverBuilder: (context, innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverOverlapAbsorber(
+                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                          context),
+                      sliver: SliverAppBar(
+                        stretch: true,
+                        title: Text(
+                          "u/${user?.username}",
+                          style: AppTextStyles.secondaryTextStyle,
+                        ),
+                        flexibleSpace: FlexibleSpaceBar(
+                          collapseMode: CollapseMode.parallax,
+                          background: Container(
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                              colors: const [
+                                Color.fromARGB(255, 0, 99, 145),
+                                Color.fromARGB(255, 2, 55, 99),
+                                Color.fromARGB(221, 14, 13, 13),
+                                Colors.black,
+                              ],
+                              stops: [0.0.sp, 0.25.sp, 0.6.sp, 1.0.sp],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            )),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w, vertical: 75.h),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                      radius: 45.spMin,
+                                      backgroundImage: setProfilePic()),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  ElevatedButton(
+                                    style: const ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStatePropertyAll(
+                                                AppColors.whiteHideColor)),
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                              context, RouteClass.editUser)
+                                          .then((value) => setState(() {
+                                                socialLinks = ref
+                                                    .read(userProfileProvider)
+                                                    ?.socialLinks;
+                                                setData();
+                                                _getUserData();
+                                              }));
+                                    },
+                                    child: Text(
+                                      "Edit",
+                                      style: AppTextStyles.buttonTextStyle
+                                          .copyWith(
+                                              backgroundColor:
+                                                  Colors.transparent),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Text(
+                                    user!.displayName == ""
+                                        ? "u/${user?.username}"
+                                        : "u/${user!.displayName}",
+                                    style: AppTextStyles.primaryTextStyle
+                                        .copyWith(fontSize: 20.spMin),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${user?.followedUsers?.length} following",
+                                        style: AppTextStyles.primaryTextStyle,
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Icon(
+                                        Icons.circle,
+                                        color: Colors.white,
+                                        size: 5.r,
+                                      ),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Text(
+                                        "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
+                                        style: AppTextStyles.secondaryTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  if (settings!.about != "")
+                                    Text(
+                                      settings.about,
+                                      style: AppTextStyles.secondaryTextStyle,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  Expanded(
+                                    child: Wrap(
+                                      spacing: 7.0.w,
+                                      runSpacing: 5.0.h,
+                                      children: socialLinks!
+                                          .map(
+                                            (link) => ElevatedButton(
+                                              style: AppButtons.interestsButtons
+                                                  .copyWith(
+                                                      minimumSize:
+                                                          const MaterialStatePropertyAll(
+                                                              Size(20, 25))),
+                                              onPressed: () {
+                                                onLink(link);
+                                              },
+                                              child: Text(
+                                                link[1],
+                                                style: AppTextStyles
+                                                    .primaryTextStyle
+                                                    .copyWith(
+                                                        fontSize: 13.spMin),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            ElevatedButton(
-                              style: const ButtonStyle(
-                                  backgroundColor: MaterialStatePropertyAll(
-                                      AppColors.whiteHideColor)),
+                          ),
+                        ),
+                        expandedHeight: 340.h,
+                        actions: [
+                          const Align(
+                            alignment: Alignment.centerRight,
+                          ),
+                          IconButton(
                               onPressed: () {
                                 Navigator.pushNamed(
-                                        context, RouteClass.editUser)
-                                    .then((value) => setState(() {
-                                          socialLinks = ref
-                                              .read(userProfileProvider)
-                                              ?.socialLinks;
-                                          setData();
-                                          _getUserData();
-                                        }));
+                                    context, RouteClass.confirmPostScreen);
                               },
-                              child: Text(
-                                "Edit",
-                                style: AppTextStyles.buttonTextStyle.copyWith(
-                                    backgroundColor: Colors.transparent),
-                              ),
+                              icon: const Icon(
+                                Icons.add,
+                                color: AppColors.whiteGlowColor,
+                              )),
+                          IconButton(
+                            onPressed: () {
+                              //open search screen
+                            },
+                            icon: const Icon(
+                              Icons.search_outlined,
+                              color: AppColors.whiteGlowColor,
                             ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Text(
-                              user!.displayName == ""
-                                  ? "u/${user?.username}"
-                                  : "u/${user!.displayName}",
-                              style: AppTextStyles.primaryTextStyle
-                                  .copyWith(fontSize: 20.spMin),
-                            ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            Row(
-                              children: [
-                                 Text(
-                              "${user?.followedUsers?.length} following",
-                              style: AppTextStyles.primaryTextStyle,
-                            ),
-                            SizedBox(
-                              width: 5.w,
-                            ),
-                            Icon(Icons.circle, color: Colors.white, size: 5.r,),
-                            SizedBox(
-                              width: 5.w,
-                            ),
-                            Text(
-                              "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
-                              style: AppTextStyles.secondaryTextStyle,
-                            ),
-                              ],
-                            ),
-                           
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            if (settings!.about != "")
-                              Text(
-                                settings.about,
-                                style: AppTextStyles.secondaryTextStyle,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            Expanded(
-                              child: Wrap(
-                                spacing: 7.0.w,
-                                runSpacing: 5.0.h,
-                                children: socialLinks!
-                                    .map(
-                                      (link) => ElevatedButton(
-                                        style: AppButtons.interestsButtons
-                                            .copyWith(
-                                                minimumSize:
-                                                    const MaterialStatePropertyAll(
-                                                        Size(20, 25))),
-                                        onPressed: () {
-                                          onLink(link);
-                                        },
-                                        child: Text(
-                                          link[1],
-                                          style: AppTextStyles.primaryTextStyle
-                                              .copyWith(fontSize: 13.spMin),
-                                        ),
+                          ),
+                        ],
+                        pinned: true,
+                        forceElevated: innerBoxIsScrolled,
+                        bottom: TabBar(
+                            controller: _tabController,
+                            indicatorColor: AppColors.redditOrangeColor,
+                            labelStyle: AppTextStyles.buttonTextStyle,
+                            tabs: tabs
+                                .map((name) => Tab(
+                                      text: name,
+                                    ))
+                                .toList()),
+                      ),
+                    )
+                  ];
+                },
+                body: Stack(
+                  children: [
+                    Positioned.fill(
+                      top: 100.h,
+                      child: TabBarView(controller: _tabController, children: [
+                        _posts.isEmpty
+                            ? _fetchingPosts
+                                ? Center(
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                        SizedBox(
+                                            height: 100.h,
+                                            width: 150.w,
+                                            child: Image.asset(
+                                                'assets/images/threaddit_web.png')),
+                                        SizedBox(
+                                          height: 100.h,
+                                          width: 150.w,
+                                          child: Lottie.asset(
+                                            'assets/animation/loading2.json',
+                                            repeat: true,
+                                          ),
+                                        )
+                                      ]))
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.warning_amber,
+                                        color: AppColors.whiteGlowColor,
                                       ),
-                                    )
-                                    .toList(),
+                                      Text(
+                                        "Wow, such empty in Posts!",
+                                        style: AppTextStyles.primaryTextStyle,
+                                      ),
+                                    ],
+                                  )
+                            : ListView.builder(
+                                controller: _scrollController,
+                                itemCount: _posts.length + 1,
+                                itemBuilder: (context, index) {
+                                  if (index < _posts.length) {
+                                    return _posts[index].parentPost != null
+                                        ? FeedUnitShare(
+                                            dataOfPost:
+                                                _posts[index].parentPost!,
+                                            parentPost: _posts[index],
+                                            uid!)
+                                        : FeedUnit(_posts[index], uid!);
+                                  } else {
+                                    return _fetchingPostsFinish
+                                        ? SizedBox(
+                                            height: 75.h,
+                                            width: 75.w,
+                                            child: Lottie.asset(
+                                              'assets/animation/loading2.json',
+                                              repeat: true,
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: Text(
+                                                'No more posts available.',
+                                                style: TextStyle(
+                                                  fontSize: 20.sp,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ));
+                                  }
+                                },
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  expandedHeight: 340.h,
-                  actions: [
-                    const Align(
-                      alignment: Alignment.centerRight,
-                    ),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(
-                              context, RouteClass.confirmPostScreen);
-                        },
-                        icon: const Icon(
-                          Icons.add,
-                          color: AppColors.whiteGlowColor,
-                        )),
-                    IconButton(
-                      onPressed: () {
-                        //open search screen
-                      },
-                      icon: const Icon(
-                        Icons.search_outlined,
-                        color: AppColors.whiteGlowColor,
-                      ),
-                    ),
-                  ],
-                  pinned: true,
-                  forceElevated: innerBoxIsScrolled,
-                  bottom: TabBar(
-                      controller: _tabController,
-                      indicatorColor: AppColors.redditOrangeColor,
-                      labelStyle: AppTextStyles.buttonTextStyle,
-                      tabs: tabs
-                          .map((name) => Tab(
-                                text: name,
-                              ))
-                          .toList()),
-                ),
-              )
-            ];
-          },
-          body: Stack(
-            children: [
-              Positioned.fill(
-                top: 100.h,
-                child: TabBarView(controller: _tabController, children: [
-                  _posts.isEmpty
-                      ? _fetchingPosts
-                          ? Center(
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                  SizedBox(
-                                      height: 100.h,
-                                      width: 150.w,
-                                      child: Image.asset(
-                                          'assets/images/threaddit_web.png')),
-                                  SizedBox(
-                                    height: 100.h,
-                                    width: 150.w,
+                        _comments.isEmpty
+                            ? _fetchingComments
+                                ? SizedBox(
+                                    height: 75.h,
+                                    width: 75.w,
                                     child: Lottie.asset(
                                       'assets/animation/loading2.json',
                                       repeat: true,
                                     ),
                                   )
-                                ]))
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.warning_amber,
-                                  color: AppColors.whiteGlowColor,
-                                ),
-                                Text(
-                                  "Wow, such empty in Posts!",
-                                  style: AppTextStyles.primaryTextStyle,
-                                ),
-                              ],
-                            )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          itemCount: _posts.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index < _posts.length) {
-                              return _posts[index].parentPost != null
-                                  ? FeedUnitShare(
-                                      dataOfPost: _posts[index].parentPost!,
-                                      parentPost: _posts[index],
-                                      uid!)
-                                  : FeedUnit(_posts[index], uid!);
-                            } else {
-                              return _fetchingPostsFinish
-                                  ? SizedBox(
-                                      height: 75.h,
-                                      width: 75.w,
-                                      child: Lottie.asset(
-                                        'assets/animation/loading2.json',
-                                        repeat: true,
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.warning_amber,
+                                        color: AppColors.whiteGlowColor,
                                       ),
-                                    )
-                                  : SizedBox(
-                                      child: Padding(
+                                      Text(
+                                        "Wow, such empty in Comments!",
+                                        style: AppTextStyles.primaryTextStyle,
+                                      ),
+                                    ],
+                                  )
+                            : ListView.builder(
+                                controller: _scrollControllerComments,
+                                itemCount: _comments.length + 1,
+                                itemBuilder: (context, index) {
+                                  if (index < _comments.length) {
+                                    return CommentItemForProfile(
+                                        comment: _comments[index], uid: uid!);
+                                  } else {
+                                    return SizedBox(
+                                        child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Center(
                                         child: Text(
-                                          'No more posts available.',
+                                          'No more Comments ',
                                           style: TextStyle(
-                                            fontSize: 20.sp,
+                                            fontSize: 16.sp,
                                             color: Colors.white,
                                           ),
                                         ),
                                       ),
                                     ));
-                            }
-                          },
-                        ),
-                  _comments.isEmpty
-                      ? _fetchingComments
-                          ? SizedBox(
-                              height: 75.h,
-                              width: 75.w,
-                              child: Lottie.asset(
-                                'assets/animation/loading2.json',
-                                repeat: true,
+                                  }
+                                },
                               ),
-                            )
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.warning_amber,
-                                  color: AppColors.whiteGlowColor,
-                                ),
-                                Text(
-                                  "Wow, such empty in Comments!",
-                                  style: AppTextStyles.primaryTextStyle,
-                                ),
-                              ],
-                            )
-                      : ListView.builder(
-                          controller: _scrollControllerComments,
-                          itemCount: _comments.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index < _comments.length) {
-                              return CommentItemForProfile(
-                                  comment: _comments[index], uid: uid!);
-                            } else {
-                              return SizedBox(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Text(
-                                    'No more Comments ',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      color: Colors.white,
-                                    ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 30.h),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "${user?.karma?.posts}",
+                                        style: AppTextStyles.boldTextStyle,
+                                      ),
+                                      Text(
+                                        "Post karma",
+                                        style: AppTextStyles
+                                            .primaryButtonHideTextStyle,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ));
-                            }
-                          },
-                        ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 30.h),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  "${user?.karma?.posts}",
-                                  style: AppTextStyles.boldTextStyle,
-                                ),
-                                Text(
-                                  "Post karma",
-                                  style:
-                                      AppTextStyles.primaryButtonHideTextStyle,
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 50.w,
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  "${user?.karma?.comments}",
-                                  style: AppTextStyles.boldTextStyle,
-                                ),
-                                Text(
-                                  "Comments karma",
-                                  style:
-                                      AppTextStyles.primaryButtonHideTextStyle,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const Divider(),
-                        Text(
-                          "${settings?.about}",
-                          style: AppTextStyles.secondaryTextStyle,
-                        ),
-                      ],
+                                  SizedBox(
+                                    width: 50.w,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        "${user?.karma?.comments}",
+                                        style: AppTextStyles.boldTextStyle,
+                                      ),
+                                      Text(
+                                        "Comments karma",
+                                        style: AppTextStyles
+                                            .primaryButtonHideTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const Divider(),
+                              Text(
+                                "${settings?.about}",
+                                style: AppTextStyles.secondaryTextStyle,
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
                     ),
-                  )
-                ]),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-    ): const Loading();
+            ),
+          )
+        : const Loading();
   }
 }
