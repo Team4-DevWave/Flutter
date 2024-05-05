@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/features/user_system/model/notification_settings_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/enable_setting.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
@@ -20,237 +21,115 @@ class _NotificationsSettingsScreenState
     extends ConsumerState<NotificationsSettingsScreen> {
   final client = http.Client();
   String? token;
-  Future<bool> isNotificationEnabled() async {
+  Future<NotificationsSettingsModel> isNotificationEnabled() async {
     setState(() {
-      ref.watch(settingsFetchProvider.notifier).getNotificationSetting(client: client, token: token!);
+      ref
+          .watch(settingsFetchProvider.notifier)
+          .getNotificationSetting(client: client);
     });
     return ref
         .watch(settingsFetchProvider.notifier)
-        .getNotificationSetting(client: client, token: token!);
+        .getNotificationSetting(client: client);
   }
-  Future getUserToken() async {
-    String? result = await getToken();
-    setState(() {
-      token = result!;
-    });
-  }
+
   @override
   void initState() {
-    getUserToken();
     super.initState();
   }
 
   void toggleNotificationSettings(bool isEnabled) async {
     notificationOn(client: client, isEnabled: isEnabled, token: token!);
     setState(() {
-      ref.watch(settingsFetchProvider.notifier).getNotificationSetting(client: client, token: token!);
+      ref
+          .watch(settingsFetchProvider.notifier)
+          .getNotificationSetting(client: client);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    getUserToken();
     return Scaffold(
       appBar: AppBar(title: const Text("Notifications")),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SettingsTitle(title: "MESSAGES"),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                    isEnabled: isEnabled,
-                    optionName: "Private messages",
-                    settingIcon: Icons.mail,
-                    enable: () => toggleNotificationSettings(!isEnabled),
-                  );
-                }
-              },
-            ),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Chat messages",
-                      settingIcon: Icons.chat,
-                      enable: () {});
-                }
-              },
-            ),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Chat requests",
-                      settingIcon: Icons.chat_bubble_outline,
-                      enable: () {});
-                }
-              },
-            ),
-            const SettingsTitle(title: "ACTIVITY"),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Mentions of u/username",
+        child: FutureBuilder<NotificationsSettingsModel>(
+          future: isNotificationEnabled(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()),);
+            } else {
+              final isEnabled = snapshot.data!;
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SettingsTitle(title: "MESSAGES"),
+                    EnableSetting(
+                      isEnabled: isEnabled.privateMessages,
+                      optionName: "Private messages",
+                      settingIcon: Icons.mail,
+                      enable: () => toggleNotificationSettings(
+                          !isEnabled.privateMessages),
+                    ),
+                    EnableSetting(
+                        isEnabled: isEnabled.chatMessages,
+                        optionName: "Chat messages",
+                        settingIcon: Icons.chat,
+                        enable: () {}),
+                    EnableSetting(
+                        isEnabled: isEnabled.chatRequests,
+                        optionName: "Chat requests",
+                        settingIcon: Icons.chat_bubble_outline,
+                        enable: () {}),
+                    const SettingsTitle(title: "ACTIVITY"),
+                    EnableSetting(
+                        isEnabled: isEnabled.mentionsOfUsername,
+                        optionName: "Mentions of u/username",
+                        settingIcon: Icons.person,
+                        enable: () {}),
+                    EnableSetting(
+                        isEnabled: isEnabled.commentsOnYourPost,
+                        optionName: "Comments on your posts",
+                        settingIcon: Icons.comment,
+                        enable: () {}),
+                    EnableSetting(
+                        isEnabled: isEnabled.upvotesOnYourPost,
+                        optionName: "Upvotes on your posts",
+                        settingIcon: Icons.arrow_upward,
+                        enable: () {}),
+                    EnableSetting(
+                    isEnabled: isEnabled.upvotesOnYourComments,
+                    optionName: "Upvotes on your comments",
+                    settingIcon: Icons.arrow_upward_sharp,
+                    enable: () {}),
+                    // EnableSetting(
+                    //     isEnabled: isEnabled.repliesToYourComments,
+                    //     optionName: "Replies to your comments",
+                    //     settingIcon: Icons.reply,
+                    //     enable: () {}),
+                    EnableSetting(
+                      isEnabled: isEnabled.newFollowers,
+                      optionName: "New followers",
                       settingIcon: Icons.person,
-                      enable: () {});
-                }
-              },
-            ),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Comments on your posts",
-                      settingIcon: Icons.comment,
-                      enable: () {});
-                }
-              },
-            ),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Upvotes on your posts",
-                      settingIcon: Icons.arrow_upward,
-                      enable: () {});
-                }
-              },
-            ),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Upvotes on your comments",
-                      settingIcon: Icons.arrow_upward_sharp,
-                      enable: () {});
-                }
-              },
-            ),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Replies to your comments",
-                      settingIcon: Icons.reply,
-                      enable: () {});
-                }
-              },
-            ),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                    isEnabled: isEnabled,
-                    optionName: "New followers",
-                    settingIcon: Icons.person,
-                    enable: () {},
-                  );
-                }
-              },
-            ),
-            const SettingsTitle(title: "UPDATES"),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Cake day",
-                      settingIcon: Icons.cake,
-                      enable: () {});
-                }
-              },
-            ),
-            const SettingsTitle(title: "MODERATION"),
-            FutureBuilder<bool>(
-              future: isNotificationEnabled(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const CircularProgressIndicator();
-                } else {
-                  final isEnabled = snapshot.data!;
-                  return EnableSetting(
-                      isEnabled: isEnabled,
-                      optionName: "Mod notifications",
-                      settingIcon: Icons.shield,
-                      enable: () {});
-                }
-              },
-            ),
-          ]),
+                      enable: () {},
+                    ),
+                    // EnableSetting(
+                    //     isEnabled: isEnabled,
+                    //     optionName: "Cake day",
+                    //     settingIcon: Icons.cake,
+                    //     enable: () {}),
+                    const SettingsTitle(title: "MODERATION"),
+                    EnableSetting(
+                        isEnabled: isEnabled.modNotifications,
+                        optionName: "Mod notifications",
+                        settingIcon: Icons.shield,
+                        enable: () {}),
+                  ],
+                ),
+              );
+            }
+          },
         ),
       ),
     );
