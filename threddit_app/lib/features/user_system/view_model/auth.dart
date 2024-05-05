@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/pref_constants.dart';
+import 'package:threddit_clone/features/notifications/view_model/providers.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
@@ -323,6 +324,7 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> login() async {
     state = true;
     final user = ref.watch(userProvider)!;
+    final String? mtoken = ref.watch(mtokenProvider);
     try {
       final response = await http.post(
         Uri.parse("http://${AppConstants.local}:8000/api/v1/users/login"),
@@ -334,6 +336,7 @@ class Auth extends StateNotifier<bool> {
             'username': user.username,
             'email': user.email,
             'password': user.password,
+            'mtoken': mtoken
           },
         ),
       );
@@ -381,6 +384,7 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> signUp() async {
     state = true;
     final UserModel user = ref.watch(userProvider)!;
+    final String? mtoken = ref.watch(mtokenProvider);
     try {
       final response = await http.post(
         Uri.parse('http://${AppConstants.local}:8000/api/v1/users/signup'),
@@ -396,6 +400,7 @@ class Auth extends StateNotifier<bool> {
             'country': user.country,
             'gender': user.gender,
             'interests': user.interests,
+            'mtoken': mtoken
           },
         ),
       );
@@ -438,6 +443,7 @@ class Auth extends StateNotifier<bool> {
   FutureEmailCheck<bool> signUpWithGoogle() async {
     state = true;
     final UserModel user = ref.watch(userProvider)!;
+    final String? mtoken = ref.watch(mtokenProvider);
     try {
       final response = await http.post(
         Uri.parse(
@@ -451,6 +457,7 @@ class Auth extends StateNotifier<bool> {
             'country': 'Egypt',
             'gender': user.gender,
             'interests': user.interests,
+            'mtoken': mtoken
           },
         ),
       );
@@ -583,7 +590,6 @@ class Auth extends StateNotifier<bool> {
       Uri.parse(
           'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=$userToken'),
     );
-
     //200 for exisiting users
     //400 new users
     if (response.statusCode == 200 || response.statusCode == 201) {
