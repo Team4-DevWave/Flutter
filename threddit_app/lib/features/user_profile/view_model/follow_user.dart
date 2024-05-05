@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:fpdart/fpdart.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 /// Follows a user by sending a POST request to the API endpoint.
 ///
@@ -16,7 +19,7 @@ import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 /// Returns:
 ///   A [FutureEither] object representing either a success or a failure.
 ///   If successful, it returns `true`, otherwise it returns a [Failure] object.
-FutureEither<bool> followUser(String userName) async {
+FutureEither<bool> followUser(String userName, WidgetRef ref) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
   final token = await getToken();
@@ -27,8 +30,16 @@ FutureEither<bool> followUser(String userName) async {
   };
   try {
     final response = await http.post(Uri.parse(url), headers: headers);
-    print(response.statusCode);
     if (response.statusCode == 200) {
+
+    // Decode the JSON string
+    var decodedResponse = jsonDecode(response.body);
+
+    // Get the followedUsers list from the decoded response
+    var followedUsers = decodedResponse['data']['user']['followedUsers'];
+
+    ref.read(userModelProvider.notifier).update((state) => state!.copyWith(followedUsers: followedUsers));
+
       return right(true);
     } else if (response.statusCode == 400) {
       return left(Failure("user already followed"));
@@ -58,7 +69,6 @@ FutureEither<bool> unfollowUser(String userName) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
   final token = await getToken();
-  print(userName);
   final url = "http://$local:8000/api/v1/users/me/friend/$userName";
   final headers = {
     'Content-Type': 'application/json',
@@ -66,7 +76,6 @@ FutureEither<bool> unfollowUser(String userName) async {
   };
   try {
     final response = await http.delete(Uri.parse(url), headers: headers);
-    print(response.statusCode);
     if (response.statusCode == 204) {
       return right(true);
     } else {

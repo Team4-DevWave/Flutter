@@ -50,7 +50,7 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
     // Check if the input string matches the URL format
     return urlRegex.hasMatch(value);
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final ref = this.ref;
@@ -102,5 +102,5 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
         ),
       ),
     );
-  }
+  } 
 }

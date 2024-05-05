@@ -31,17 +31,18 @@ class PostData {
   final String? url;
   final bool NSFW;
   final bool spoiler;
-  //final ByteData? image;
-  final String? image;
-  final String? video;
+  final String?image;
+  final String?video;
   final String type;
   final bool locked;
   final String? community;
   final File? imagePath;
   final File? videoPath;
-  //final ByteData? video;
   final String? imageURL;
   final String? videoURL;
+  final int? duration;
+  final bool? availableForVoting;
+  final Map<String, dynamic>? poll;
 
   PostData({
     required this.title,
@@ -58,35 +59,45 @@ class PostData {
     this.video,
     this.imageURL,
     this.videoURL,
+    this.availableForVoting,
+    this.duration,
+    this.poll,
   });
 
-  /// Creates a copy of the instance with optional new values for its fields.
-  PostData copyWith(
-      {String? title,
-      String? text_body,
-      String? url,
-      bool? NSFW,
-      bool? spoiler,
-      String? image,
-      String? type,
-      bool? locked,
-      String? community,
-      String? video,
-      File? imagePath,
-      File? videoPath}) {
+  PostData copyWith({
+    String? title,
+    String? text_body,
+    String? url,
+    bool? NSFW,
+    bool? spoiler,
+    String? image,
+    String? type,
+    bool? locked,
+    String? community,
+    String? video,
+    File? imagePath,
+    File? videoPath,
+    bool? availableForVoting,
+    int? duration,
+    Map<String,dynamic>? poll
+  }) {
     return PostData(
-        title: title ?? this.title,
-        text_body: text_body ?? this.text_body,
-        url: url ?? this.url,
-        NSFW: NSFW ?? this.NSFW,
-        spoiler: spoiler ?? this.spoiler,
-        image: image ?? this.image,
-        type: type ?? this.type,
-        locked: locked ?? this.locked,
-        community: community ?? this.community,
-        video: video ?? this.video,
-        imagePath: imagePath ?? this.imagePath,
-        videoPath: videoPath ?? this.videoPath);
+      title: title ?? this.title,
+      text_body: text_body ?? this.text_body,
+      url: url ?? this.url,
+      NSFW: NSFW ?? this.NSFW,
+      spoiler: spoiler ?? this.spoiler,
+      image: image ?? this.image,
+      type: type ?? this.type,
+      locked: locked ?? this.locked,
+      community: community ?? this.community,
+      video: video ?? this.video,
+      imagePath: imagePath ?? this.imagePath,
+      videoPath: videoPath ?? this.videoPath,
+      availableForVoting: availableForVoting ?? this.availableForVoting,
+      duration: duration ?? this.duration,
+      poll: poll ?? this.poll,
+    );
   }
 
   /// Converts the post data into a map.
@@ -102,6 +113,9 @@ class PostData {
       'locked': locked,
       'community': community,
       'video': video,
+      'availableForVoting': availableForVoting,
+      'duration': duration,
+      'poll' : poll
     };
   }
 
@@ -117,7 +131,10 @@ class PostData {
       type: map['type'] as String,
       locked: map['locked'] as bool,
       community: map['community'] != null ? map['community'] as String : null,
-      videoURL: map['video'] != null ? map['video'] as String : null,
+      videoURL: map['video'] != null ? map['video']as String : null,
+      availableForVoting: map['availableForVoting'] as bool,
+      duration: map['duration'] as int,
+      poll : map['poll'] as Map<String, dynamic>
     );
   }
 

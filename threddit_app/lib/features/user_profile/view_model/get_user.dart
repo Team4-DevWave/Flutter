@@ -44,12 +44,8 @@ class GetUserNotifier extends StateNotifier<UserModelNotMe> {
         },
       );
       if (response.statusCode == 200) {
-        print("SUUUUUUUUUCCCCCCCEEEEEEEESSSSSSSSSSSSSS");
         final jsonBody = UserModelNotMe.fromJson(jsonDecode(response.body));
         state = jsonBody;
-        print("SSSSSSSSSSSSSSSSSSSSSSSSSSsss");
-        print(state.username);
-        print(state.userProfileSettings?.about);
         return right(state);
       } else {
         return left(Failure("Getting user data failed :( "));
@@ -59,3 +55,4 @@ class GetUserNotifier extends StateNotifier<UserModelNotMe> {
     }
   }
 }
+  
