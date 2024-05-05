@@ -113,14 +113,6 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
     super.didChangeDependencies();
   }
 
-  ImageProvider putProfilepic(String commLink) {
-      if (commLink == "") {
-      return const NetworkImage("https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg");
-      } else {
-        return NetworkImage(commLink);
-      }
-    }
-
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(

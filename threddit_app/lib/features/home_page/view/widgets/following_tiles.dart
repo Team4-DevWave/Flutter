@@ -7,7 +7,6 @@ import 'package:threddit_clone/features/user_profile/models/other_user_data.dart
 import 'package:threddit_clone/features/user_profile/view_model/get_user.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
-import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
@@ -26,8 +25,6 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
 
   void _getUserData() async {
     user = ref.watch(userModelProvider)!;
-    print("UUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
-    print(user!.followedUsers);
   }
 
   @override
@@ -48,8 +45,6 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
       isLoading = true;
     });
     _getUserData();
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    print(user!.followedUsers);
     if (user != null && user!.followedUsers != null) {
       for (var followedUser in user!.followedUsers!) {
         String username = followedUser['username'];
@@ -63,8 +58,6 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
 
         _followingList.add(userMap);
       }
-      print("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-      print(_followingList);
     }                   
     setState(() {
       isLoading = false;

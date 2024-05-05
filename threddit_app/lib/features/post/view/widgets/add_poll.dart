@@ -56,13 +56,10 @@ class _AddPollState extends ConsumerState<AddPoll> {
         choices.add(choiceControllers[index].text);
         final newPoll = <String, dynamic>{'option${index + 1}': choices[index]};
         poll.addEntries(newPoll.entries);
-        print("AFTER ADDING ENTRIESSS");
-        print(poll);
+
       });
 
       ref.read(postDataProvider.notifier).updatePoll(poll);
-      print("PROVIDERRRRRRRR from add");
-      print(ref.read(postDataProvider)?.poll);
     }
   }
 
@@ -79,8 +76,6 @@ class _AddPollState extends ConsumerState<AddPoll> {
       });
     }
     ref.read(postDataProvider.notifier).updatePoll(poll);
-    print("PROVIDERRRRRRRR from remove");
-    print(ref.watch(postDataProvider)!.poll);
   }
 
   void clearAll() {
@@ -125,8 +120,7 @@ class _AddPollState extends ConsumerState<AddPoll> {
                       duration = value!;
                       ref
                           .read(postDataProvider.notifier)
-                          .updateDuration(duration!);
-                      print(ref.read(postDataProvider)!.duration);
+                          .updateDuration(duration);
                     });
                   },
                 ),
@@ -202,7 +196,6 @@ class _AddPollState extends ConsumerState<AddPoll> {
                           choices[actualIndex] = value;
                           poll['option${actualIndex + 1}'] = value;
                           ref.read(postDataProvider.notifier).updatePoll(poll);
-                          print(poll);
                         },
                         maxLines: 1,
                         style: AppTextStyles.primaryTextStyle,
