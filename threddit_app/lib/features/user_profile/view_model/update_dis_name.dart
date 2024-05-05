@@ -34,13 +34,9 @@ FutureEither<bool> updateDisplayName(String dispName, WidgetRef ref) async {
     final response = await http.patch(Uri.parse(url),
         headers: headers, body: {"displayName": dispName});
 
-    print("ALOOOOOOOO");
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      ref
-          .read(userModelProvider.notifier)
-          .update((state) => state?.copyWith(displayName: dispName));
-      print("ana el function elli bet send");
+    if(response.statusCode == 200)
+    {
+      ref.read(userModelProvider.notifier).update((state) => state?.copyWith(displayName: dispName));
       return right(true);
     } else {
       return left(Failure("Failed to update display name"));

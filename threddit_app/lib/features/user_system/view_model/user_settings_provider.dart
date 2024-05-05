@@ -16,13 +16,11 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
   UserProfileNotifier()
       : super(
           UserProfile(
-            displayName: "",
             about: "",
             nsfw: false,
             allowFollowers: true,
             contentVisibility: true,
             activeCommunitiesVisibility: true,
-            profilePicture: "",
             socialLinks: [],
           ),
         );
@@ -128,13 +126,7 @@ class UserProfileNotifier extends StateNotifier<UserProfile> {
   /// Updates the visibility of active communities of the [UserProfile]
   void updateActiveCom(bool active) =>
       state = state.copyWith(activeCommunitiesVisibility: active);
-  // void updateProfilePic(String pic) =>
-  //     state = state.copyWith(profilePicture: pic);
-  // void updateImagePath(File?imgePath) =>
-  //     state = state.copyWith(imagePath: imgePath);
-
-  /// Updates the social links in the [UserProfile] state.
-  void updateSocialLinks(List<List<String>>? social) =>
+  void updateSocialLinks(List<List<String>>?social) =>
       state = state.copyWith(socialLinks: social);
 
   /// Adds a new social link to the user's profile.

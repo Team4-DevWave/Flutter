@@ -6,7 +6,6 @@ import 'package:threddit_clone/features/home_page/view/screens/saved_screen.dart
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
-import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
@@ -32,13 +31,19 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
   }
 
   @override
+  void didChangeDependencies() {
+    _getUserData();
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
-    final imageFile = ref.watch(imagePathProvider);
+    
 
     ImageProvider setProfilePic() {
-      if (imageFile != null) {
-        return FileImage(imageFile);
+      if (user!.profilePicture != "") {
+        return NetworkImage(user!.profilePicture!);
       } else {
         return const AssetImage('assets/images/Default_Avatar.png');
       }

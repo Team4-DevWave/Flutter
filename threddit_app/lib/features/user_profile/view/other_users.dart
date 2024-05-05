@@ -11,12 +11,14 @@ import 'package:threddit_clone/features/user_profile/models/other_user_data.dart
 import 'package:threddit_clone/features/user_profile/view_model/fetchingPostForUser.dart';
 import 'package:threddit_clone/features/user_profile/view_model/follow_user.dart';
 import 'package:threddit_clone/features/user_profile/view_model/get_user.dart';
+import 'package:threddit_clone/features/user_profile/view_model/on_link.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
+import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/models/comment.dart';
+import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:threddit_clone/theme/theme.dart';
 
 /// A widget responsible for displaying the profile of other users.
 ///
@@ -47,6 +49,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   bool _fetchingComments = true;
   bool _fetchingCommentsFinish = true;
   TabController? _tabController;
+  // List<List<String>>? socialLinks;
 
   UserModelNotMe? user;
   bool isLoading = true;
@@ -63,7 +66,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     res.fold((l) => showSnackBar(navigatorKey.currentContext!, l.message), (r) {
       user = r;
     });
-    final response = await followUser(user!.username!);
+    final response = await followUser(user!.username!, ref);
     response.fold((l) {
       if (l.message == "user already followed") {
         setState(() {
@@ -192,24 +195,28 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername(user?.username ?? '', _currentPage);
+      fetchPostsByUsername(user?.username ?? '', _currentPage); 
     }
   }
 
-  /// Method to handle follow/unfollow action.
-  void _onFollow() {
+  void _onFollow() async {
     if (!isFollowed!) {
-      followUser(user!.username!);
-      setState(() {
-        isFollowed = true;
+      final res = await followUser(user!.username!,ref);
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        setState(() {
+          isFollowed = true;
+        });
+        showSnackBar(context, "${user!.username} followed successfully");
       });
-      showSnackBar(context, "${user!.username} followed successfully");
     } else {
-      unfollowUser(user!.username!);
-      setState(() {
-        isFollowed = false;
+      final response = await unfollowUser(user!.username!);
+      response.fold((l) => showSnackBar(context, l.message), (r) {
+        setState(() {
+          isFollowed = false;
+        });
+        showSnackBar(context, "${user!.username} unfollowed successfully");
       });
-      showSnackBar(context, "${user!.username} unfollowed successfully");
+      await ref.read(settingsFetchProvider.notifier).getMe();
     }
   }
 
@@ -226,11 +233,15 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     final List<String> tabs = <String>['Posts', 'Comments', 'About'];
 
     ImageProvider setProfilePic() {
-      // if (imageFile != null) {
-      //   return FileImage(imageFile);
-      // } else {
-      // }
-      return const AssetImage('assets/images/Default_Avatar.png');
+      if (user != null) {
+        if (user!.profilePicture != "") {
+          return NetworkImage(user!.profilePicture!);
+        } else {
+          return const AssetImage('assets/images/Default_Avatar.png');
+        }
+      } else {
+        return const AssetImage('assets/images/Default_Avatar.png');
+      }
     }
 
     return !isLoading
@@ -298,7 +309,6 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                                   Row(
                                     children: [
                                       Text(
-                                        //"u/User",
                                         user?.displayName == ""
                                             ? "u/${user?.username}"
                                             : "u/${user?.displayName}",
@@ -330,12 +340,40 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
+                                  Expanded(
+                                    child: Wrap(
+                                      spacing: 7.0.w,
+                                      runSpacing: 5.0.h,
+                                      children: user!
+                                          .userProfileSettings!.socialLinks
+                                          .map(
+                                            (link) => ElevatedButton(
+                                              style: AppButtons.interestsButtons
+                                                  .copyWith(
+                                                      minimumSize:
+                                                          const MaterialStatePropertyAll(
+                                                              Size(20, 25))),
+                                              onPressed: () {
+                                                onLink(link);
+                                              },
+                                              child: Text(
+                                                link[1],
+                                                style: AppTextStyles
+                                                    .primaryTextStyle
+                                                    .copyWith(
+                                                        fontSize: 13.spMin),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
                         ),
-                        expandedHeight: 340.h,
+                        expandedHeight: 300.h,
                         actions: [
                           const Align(
                             alignment: Alignment.centerRight,
@@ -550,6 +588,11 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
               ),
             ),
           )
-        : const Loading();
+        : Center(
+            child: Lottie.asset(
+              'assets/animation/loading2.json',
+              repeat: true,
+            ),
+          );
   }
 }
