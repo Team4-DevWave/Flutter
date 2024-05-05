@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/notifications/view_model/fetching_notifications.dart';
 import 'package:threddit_clone/features/notifications/view_model/methods.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -16,11 +17,13 @@ import 'package:threddit_clone/theme/text_styles.dart';
 class NotificationFeedUnit extends StatefulWidget {
   /// The data for the notification to display.
   final NotificationData data;
+  final String userID;
 
   /// Creates a `NotificationFeedUnit` widget.
   ///
   /// The [data] parameter must not be null.
-  const NotificationFeedUnit({super.key, required this.data});
+  const NotificationFeedUnit(
+      {super.key, required this.data, required this.userID});
 
   @override
   State<NotificationFeedUnit> createState() => _NotificationFeedUnitState();
@@ -31,7 +34,6 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _seen = widget.data.read;
     super.initState();
   }
@@ -64,11 +66,18 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
                 children: [
                   InkWell(
                     onTap: () {
-                      // if (widget.data.type == "follow") {
-                      Navigator.pushNamed(context, RouteClass.otherUsers,
-                          arguments:
-                              widget.data.content.split(' ')[0].substring(2));
-                      //}
+                      if (widget.data.type == "follow") {
+                        Navigator.pushNamed(context, RouteClass.otherUsers,
+                            arguments:
+                                widget.data.content.split(' ')[0].substring(2));
+                      } else if (widget.data.type == "comment" ||
+                          widget.data.type == "post") {
+                        Navigator.pushNamed(
+                            context, RouteClass.postScreen, arguments: {
+                          "currentpost": Post.fromJson(widget.data.contentID),
+                          "uid": widget.userID
+                        });
+                      }
                     },
                     child: Container(
                       padding:

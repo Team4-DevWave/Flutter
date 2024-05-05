@@ -14,6 +14,7 @@ import 'package:threddit_clone/features/chatting/view/screens/rename_screen.dart
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
+import 'package:threddit_clone/features/notifications/view/screens/notifications_Screen.dart';
 import 'package:threddit_clone/features/post/view/cross_post.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approve_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approved_users_screen.dart';
@@ -28,9 +29,14 @@ import 'package:threddit_clone/features/searching/view/screens/search_screen.dar
 import 'package:threddit_clone/features/user_profile/view/edit_profile.dart';
 import 'package:threddit_clone/features/user_profile/view/other_users.dart';
 import 'package:threddit_clone/features/user_profile/view/user_profile_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/activity_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
+import 'package:threddit_clone/features/user_system/view/screens/mod_mail_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/mod_notifications_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/posts_notifcation_screen.dart';
+import 'package:threddit_clone/features/user_system/view/screens/reports_screen.dart';
 import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
@@ -123,6 +129,11 @@ class RouteClass {
   static const String chatMembers = '/chat-members';
   static const String inviteMembers = '/invite-members';
 
+  static const String modNotificationsSettings = '/mod-notifications';
+  static const String activitySettings = '/activity-settings';
+  static const String modMail = '/mod-mail';
+  static const String reportSettings = '/report-settings';
+  static const String postNotifications = '/post-notifications';
 
   static const String postTypes = '/post-types';
   static const String description = '/decription';
@@ -180,7 +191,11 @@ class RouteClass {
       case mainCommunityScreen:
         return MaterialPageRoute(builder: (_) => const MainCommunityScreen());
       case notificationsScreen:
-        return MaterialPageRoute(builder: (_) => const NotificationsScreen());
+        String input = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (_) => NotificationTempScreen(
+                  usedID: input,
+                ));
       case notificationsSettingsScreen:
         return MaterialPageRoute(
             builder: (_) => const NotificationsSettingsScreen());
@@ -288,35 +303,50 @@ class RouteClass {
       case moderatorsScreen:
         return MaterialPageRoute(builder: (_) => const ModeratorsScreen());
       case chatRoom:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => ChatRoomScreen(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => ChatRoomScreen(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case chatRoomOptions:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => ChatOptionsScreen(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => ChatOptionsScreen(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case chatMembers:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => MembersScreen(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => MembersScreen(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case renameChatroom:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => RenameChatroom(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => RenameChatroom(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case inviteMembers:
-       final args = settings.arguments as Map<String, dynamic>;
-     final chatroom =
-            args['chatroom'] as Chatroom; 
+        final args = settings.arguments as Map<String, dynamic>;
+        final chatroom = args['chatroom'] as Chatroom;
         final username = args['username'] as String;
-        return MaterialPageRoute(builder: (_) => InviteScreen(chatroom: chatroom,username: username,));
+        return MaterialPageRoute(
+            builder: (_) => InviteScreen(
+                  chatroom: chatroom,
+                  username: username,
+                ));
       case addModeratorScreen:
         return MaterialPageRoute(
             builder: (_) => const AddModeratorScreen(), fullscreenDialog: true);
@@ -345,6 +375,35 @@ class RouteClass {
             searchText: searchText,
           ),
         );
+      case modNotificationsSettings:
+        final args = settings.arguments as Map<String, dynamic>;
+        final subredditName = args['subredditName'] as String;
+        return MaterialPageRoute(
+            builder: (_) =>
+                ModNotificationsSettingsScreen(subredditName: subredditName));
+      case activitySettings:
+        final args = settings.arguments as Map<String, dynamic>;
+        final subredditName = args['subredditName'] as String;
+        return MaterialPageRoute(
+            builder: (_) => ActivityScreen(subredditName: subredditName));
+      case postNotifications:
+        final args = settings.arguments as Map<String, dynamic>;
+        final subredditName = args['subredditName'] as String;
+        final title = args['title'] as String;
+        return MaterialPageRoute(
+            builder: (_) => PostsNotifcationScreen(
+                title: title, subredditName: subredditName));
+      case modMail:
+        final args = settings.arguments as Map<String, dynamic>;
+        final subredditName = args['subredditName'] as String;
+        return MaterialPageRoute(
+            builder: (_) => ModMailScreen(subredditName: subredditName));
+      case reportSettings:
+        final args = settings.arguments as Map<String, dynamic>;
+        final subredditName = args['subredditName'] as String;
+        return MaterialPageRoute(
+            builder: (_) => ReportsScreen(subredditName: subredditName));
+
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
     }

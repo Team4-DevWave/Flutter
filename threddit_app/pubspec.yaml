@@ -78,6 +78,7 @@ dependencies:
   mockito: ^5.4.4
   intl: ^0.19.0
   web_socket_channel: ^2.2.1
+  syncfusion_flutter_sliders: ^25.1.42
 
 
 dev_dependencies:
@@ -117,6 +118,7 @@ flutter:
     - assets/images/
     - assets/images/group-avatars.png
     - assets/images/threaddit_web.png
+    - assets/images/snoovatar-full-hi.png
    
 
 
