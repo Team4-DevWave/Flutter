@@ -17,7 +17,12 @@ import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A widget responsible for allowing users to edit their profile information.
+///
+/// This widget provides an interface for users to modify various aspects of their profile,
+/// including display name, about section, social links, content visibility, and active community display.
 class EditProfile extends ConsumerStatefulWidget {
+  /// Constructs an instance of [EditProfile].
   const EditProfile({super.key});
   @override
   ConsumerState<EditProfile> createState() => _EditProfileState();

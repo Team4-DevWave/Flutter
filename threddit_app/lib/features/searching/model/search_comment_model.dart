@@ -48,8 +48,8 @@ class SearchCommentModel {
   final DateTime createdAt;
   Vote votes;
   final Post? post;
-  final bool hidden;
-  final bool saved;
+  // final bool hidden;
+  // final bool saved;
   final bool collapsed;
   final List<String> mentioned;
   final String id;
@@ -61,8 +61,8 @@ class SearchCommentModel {
     required this.createdAt,
     required this.votes,
     required this.post,
-    required this.hidden,
-    required this.saved,
+    // required this.hidden,
+    // required this.saved,
     required this.collapsed,
     required this.mentioned,
     required this.id,
@@ -82,8 +82,8 @@ class SearchCommentModel {
       createdAt: DateTime.parse(json['createdAt']),
       votes: Vote.fromJson(json['votes']),
       post: tempPost,
-      hidden: json['hidden'],
-      saved: json['saved'],
+      // hidden: json['hidden'],
+      // saved: json['saved'],
       collapsed: json['collapsed'],
       mentioned: List<String>.from(json['mentioned']),
       id: json['_id'],

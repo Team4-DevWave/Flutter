@@ -2,11 +2,13 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/features/user_system/model/notification_settings_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -380,24 +382,27 @@ class SettingsFetch extends StateNotifier<bool> {
     return userSettings;
   }
 
-  Future<bool> getNotificationSetting(
-      {required http.Client client, required String token}) async {
+  Future<NotificationsSettingsModel> getNotificationSetting(
+      {required http.Client client}) async {
     final String url;
     if (Platform.isWindows) {
       url = urlWindows;
     } else {
       url = urlAndroid;
     }
+    String? token = await getToken();
     http.Response response = await client.get(
-      Uri.parse("$url:3001/api/user-info?user_id=1"),
+      Uri.parse("$url:8000/api/v1/notifications/settings"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
-    Map<String, dynamic> userData = jsonDecode(response.body);
-    final bool isNotificationEnabled = userData['notification'];
-    return isNotificationEnabled;
+    print(response.body);
+    print(response.statusCode);
+    print("Above are the responses");
+    
+    return NotificationsSettingsModel.fromJson(jsonDecode(response.body));
   }
 
   Future<bool> getFollowableSetting() async {

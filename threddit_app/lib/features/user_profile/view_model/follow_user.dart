@@ -9,6 +9,16 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
+/// Follows a user by sending a POST request to the API endpoint.
+///
+/// This function sends an HTTP POST request to follow a specified user.
+///
+/// Parameters:
+///   - userName: The username of the user to follow.
+///
+/// Returns:
+///   A [FutureEither] object representing either a success or a failure.
+///   If successful, it returns `true`, otherwise it returns a [Failure] object.
 FutureEither<bool> followUser(String userName, WidgetRef ref) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
@@ -45,6 +55,16 @@ FutureEither<bool> followUser(String userName, WidgetRef ref) async {
   }
 }
 
+/// Unfollows a user by sending a DELETE request to the API endpoint.
+///
+/// This function sends an HTTP DELETE request to unfollow a specified user.
+///
+/// Parameters:
+///   - userName: The username of the user to unfollow.
+///
+/// Returns:
+///   A [FutureEither] object representing either a success or a failure.
+///   If successful, it returns `true`, otherwise it returns a [Failure] object.
 FutureEither<bool> unfollowUser(String userName) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 

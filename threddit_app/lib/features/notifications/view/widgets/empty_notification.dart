@@ -4,7 +4,16 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A stateless widget that displays a message when there are no notifications.
+///
+/// The `EmptyNotification` widget includes an image, a title, a description,
+/// and a container with a border radius. The image is loaded from the assets,
+/// and the title and description are hardcoded.
+///
+/// The `EmptyNotification` widget is typically used in a notifications screen
+/// to display a message when the user doesn't have any notifications.
 class NoNotification extends StatelessWidget {
+  /// Creates an `EmptyNotification` widget.
   const NoNotification({super.key});
 
   @override
@@ -31,6 +40,7 @@ class NoNotification extends StatelessWidget {
           height: 10.h,
         ),
         Text(
+          key: const Key('fortest'),
           "That's okay, maybe you just need the right inspiration. Check out a popular community for discussion.",
           style: AppTextStyles.secondaryTextStyle,
           textAlign: TextAlign.center,

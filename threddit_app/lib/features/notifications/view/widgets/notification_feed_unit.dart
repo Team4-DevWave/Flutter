@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/notifications/view_model/fetching_notifications.dart';
 import 'package:threddit_clone/features/notifications/view_model/methods.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A stateful widget that displays a single notification.
+///
+/// The `NotificationFeedUnit` widget takes a `NotificationData` object as a parameter
+/// and displays the data in a `Column` widget. The `NotificationData` object includes
+/// the details of the notification, such as whether it has been read.
+///
+/// The `NotificationFeedUnit` widget is typically used in a notifications feed to display
+/// individual notifications.
 class NotificationFeedUnit extends StatefulWidget {
+  /// The data for the notification to display.
   final NotificationData data;
-  const NotificationFeedUnit({super.key, required this.data});
+  final String userID;
+
+  /// Creates a `NotificationFeedUnit` widget.
+  ///
+  /// The [data] parameter must not be null.
+  const NotificationFeedUnit(
+      {super.key, required this.data, required this.userID});
 
   @override
   State<NotificationFeedUnit> createState() => _NotificationFeedUnitState();
@@ -17,7 +34,6 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _seen = widget.data.read;
     super.initState();
   }
@@ -50,8 +66,18 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
                 children: [
                   InkWell(
                     onTap: () {
-                      //username  widget.data.content.split(' ')[0].substring(2)
-                      // print(widget.data.content.split(' ')[0].substring(2));
+                      if (widget.data.type == "follow") {
+                        Navigator.pushNamed(context, RouteClass.otherUsers,
+                            arguments:
+                                widget.data.content.split(' ')[0].substring(2));
+                      } else if (widget.data.type == "comment" ||
+                          widget.data.type == "post") {
+                        Navigator.pushNamed(
+                            context, RouteClass.postScreen, arguments: {
+                          "currentpost": Post.fromJson(widget.data.contentID),
+                          "uid": widget.userID
+                        });
+                      }
                     },
                     child: Container(
                       padding:
@@ -59,14 +85,14 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
                       child: Stack(
                         children: [
                           ClipOval(
-                            child: Image.network(
-                              "https://images.unsplash.com/photo-1712460842246-0a79c9bd48e7?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                              fit: BoxFit.cover,
-                              width: 45
-                                  .w, // You can adjust width and height to your needs
-                              height: 45.h,
-                            ),
-                          ),
+                              child: Image(
+                            image:
+                                AssetImage('assets/images/Default_Avatar.png'),
+                            fit: BoxFit.cover,
+                            width: 45
+                                .w, // You can adjust width and height to your needs
+                            height: 45.h,
+                          )),
                           Positioned(
                             bottom: -5,
                             right: -5,

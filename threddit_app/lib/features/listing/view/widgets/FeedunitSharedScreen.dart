@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
+import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedpost.dart';
@@ -108,20 +109,19 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
   @override
   Widget build(BuildContext context) {
     getModOptions();
-    final difference = now.difference(widget.dataOfPost.postedTime);
-    final hoursSincePost = difference.inHours;
+
+    final hoursSincePost = formatDateTime(widget.dataOfPost.postedTime);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            RouteClass.postScreen,
-            arguments: {
-              'currentpost': widget.parentPost,
-              'uid': widget.uid,
-            },
-          );
+          user?.username == widget.dataOfPost.userID?.username
+              ? Navigator.pushNamed(context, RouteClass.userProfileScreen)
+              : Navigator.pushNamed(
+                  context,
+                  RouteClass.otherUsers,
+                  arguments: widget.dataOfPost.userID?.username,
+                );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,17 +131,15 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
               children: [
                 Row(
                   children: [
-                    Container(
-                      child: Text(
-                        'r/${widget.parentPost.userID!.username}',
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                    Text(
+                      'r/${widget.parentPost.userID!.username}',
+                      style: const TextStyle(color: Colors.white),
                     ),
                     SizedBox(
                       width: 7.w,
                     ),
                     Text(
-                      '${hoursSincePost}h ago',
+                      '${hoursSincePost}',
                       style: const TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],
@@ -303,7 +301,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                           width: 2.w,
                         ),
                         borderRadius: BorderRadius.circular(
-                            15), // Add this line to make the border circular
+                            15.sp), // Add this line to make the border circular
                       ),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: 4.0),

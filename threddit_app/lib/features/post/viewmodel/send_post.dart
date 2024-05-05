@@ -12,15 +12,28 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
+/// A provider responsible for managing the creation and submission of posts.
 final createPost =
     StateNotifierProvider<PostProvider, bool>((ref) => PostProvider(ref));
 
 String local = Platform.isAndroid ? AppConstants.local : 'localhost';
 
+/// A provider for managing the creation and submission of posts.
+///
+/// This class handles the process of submitting a new post to the server.
+/// It sends a POST request with the post data to the appropriate endpoint
+/// based on the post type and destination (user profile or community).
 class PostProvider extends StateNotifier<bool> {
   final Ref ref;
+
+  /// Constructs a new [PostProvider] instance.
   PostProvider(this.ref) : super(false);
 
+  /// Submits a new post to the server.
+  ///
+  /// This method sends a POST request to the server with the post data
+  /// to create and submit a new post. It returns a [Post] object if
+  /// the submission is successful, or a [Failure] object if it fails.
   FutureEither<Post> submitPost(String type) async {
     final post = ref.watch(postDataProvider);
     final token = await getToken();

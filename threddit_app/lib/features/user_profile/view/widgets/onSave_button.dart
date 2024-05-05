@@ -10,6 +10,11 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
+/// A widget for saving user data changes.
+///
+/// This widget displays a button that allows the user to save changes made
+/// to their profile data. It handles the logic for updating user data and
+/// display name.
 class SaveButton extends ConsumerStatefulWidget {
   const SaveButton(
       {super.key,
@@ -17,6 +22,8 @@ class SaveButton extends ConsumerStatefulWidget {
       required this.dis,
       required this.image});
   final bool changed;
+
+  /// The display name of the user.
   final String dis;
   final String image;
 
