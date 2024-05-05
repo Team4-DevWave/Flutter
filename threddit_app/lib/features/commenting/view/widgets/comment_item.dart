@@ -52,7 +52,6 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     super.initState();
     _setVariables();
     _commentController = TextEditingController(text: widget.comment.content);
-    
   }
 
   void upVoteComment(WidgetRef ref) async {
@@ -62,7 +61,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   void downVoteComment(WidgetRef ref) async {
     ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
-       
+
     setState(() {});
   }
 
@@ -547,7 +546,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_upward_outlined,
                         size: 30.spMin,
                       ),
-                      color:  Colors.white,
+                      color: Colors.white,
                     ),
                     Text(
                       '${widget.comment.votes.upvotes - widget.comment.votes.downvotes == 0 ? "vote" : widget.comment.votes.upvotes - widget.comment.votes.downvotes}',

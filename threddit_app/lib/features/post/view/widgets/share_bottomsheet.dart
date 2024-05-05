@@ -9,6 +9,16 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// Displays a modal bottom sheet for sharing a post.
+///
+/// This function displays a modal bottom sheet for sharing a post with options
+/// to share it in a community or on the user's profile.
+///
+/// [context] is the BuildContext used to show the modal bottom sheet.
+///
+/// [ref] is the WidgetRef used to access Riverpod providers.
+///
+/// [post] is the Post object to be shared.
 void share(BuildContext context, WidgetRef ref, Post post) {
   ref.watch(isFirstTimeEnter.notifier).update((state) => true);
   ref.watch(isChanged.notifier).update((state) => false);

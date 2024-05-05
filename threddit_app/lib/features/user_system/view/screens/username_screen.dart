@@ -12,6 +12,15 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+///This screen is designed and implemented to take and validate the user username
+///in the registration process.
+///
+///It renders only one text field and a continue button that is enabled only
+///when there is input in the text field
+///
+///When the continue button is pressed the value in the username text field is validated by
+///checking if this username is free to be used, if so the username is saved to
+///the user model provider and interest screen is pushed
 class UserName extends ConsumerStatefulWidget {
   const UserName({super.key});
 

@@ -1,10 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+///This provider is user for making applying the right state managment for the user data
+///where it will hold the all the user data fetched
 final userModelProvider = StateProvider<UserModelMe?>(
   (ref) => UserModelMe(),
 );
 
+///The class of [UserModelMe] is a data model class that holds all the parameteres of the user
+///fetched from the backend and could be used to fill all the user depend on screen and widgets
+///such as the user profile data, feed and making app functionalites
 class UserModelMe {
   final String? id;
   final String? username;

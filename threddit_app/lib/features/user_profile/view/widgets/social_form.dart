@@ -1,5 +1,4 @@
 // ignore_for_file: unused_result
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,10 +8,25 @@ import 'package:threddit_clone/features/user_system/view_model/user_settings_pro
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A form widget for adding or editing social links.
+///
+/// This widget provides a form interface for users to add or edit social links.
+/// It includes fields for entering the display name (e.g., username) and the
+/// link associated with the social account.
+///
+/// The [typePressed] parameter specifies the type of social link being added
+/// or edited, which determines the behavior and appearance of the form.
+///
+/// The [initial] parameter contains the initial data for the social link. It
+/// is used to pre-fill the form fields when editing an existing social link.
 class SocialForm extends ConsumerStatefulWidget {
   const SocialForm(
       {super.key, required this.typePressed, required this.initial});
+
+  /// The type of social link being added or edited.
   final String typePressed;
+
+  /// The initial data for the social link.
   final List<String> initial;
 
   @override
@@ -32,6 +46,11 @@ class _SocialForm extends ConsumerState<SocialForm> {
   bool _isValid = false;
   bool _isUrlExist = false;
 
+  /// Determines the appropriate hint text for the display name field based on the type of social link.
+  ///
+  /// This method returns the hint text for the display name field based on the type of social link
+  /// being added or edited. For example, for Instagram or Twitter links, the hint text is "username",
+  /// while for Reddit links, it may be "r/Community, u/Username".
   String _hintText() {
     switch (widget.typePressed) {
       case "Instagram" || "instagram":
@@ -50,6 +69,12 @@ class _SocialForm extends ConsumerState<SocialForm> {
     }
   }
 
+  /// Checks the validity of the form fields and updates the validation status.
+  ///
+  /// This method is called whenever the form fields are changed. It validates the input
+  /// and updates the [_validate] and [_isValid] flags accordingly. The [_validate] flag
+  /// ensures that validation is performed, while [_isValid] indicates whether the input
+  /// is currently valid.
   void _checkValidity() {
     setState(() {
       _validate = false;
@@ -70,6 +95,11 @@ class _SocialForm extends ConsumerState<SocialForm> {
     });
   }
 
+  /// Sets initial data and state for the form.
+  ///
+  /// This method initializes the form with the initial data provided by the `initial`
+  /// parameter. It also determines whether the form is in edit mode based on the presence
+  /// of initial data
   void _setData() {
     final userProfile = ref.read(userProfileProvider);
     socialLinksData = userProfile?.socialLinks;
@@ -88,6 +118,11 @@ class _SocialForm extends ConsumerState<SocialForm> {
     }
   }
 
+  /// Handles the "Done" button press event and updates the social links.
+  ///
+  /// This method is called when the user presses the "Done" button to save or update
+  /// the social link. It performs validation, updates the social link data, and triggers
+  /// the appropriate actions to add or update the link.
   void _onDonePressed() async {
     _validate = true;
 

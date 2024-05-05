@@ -18,8 +18,17 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// A widget responsible for displaying the profile of other users.
+///
+/// This widget provides a detailed view of the profile of other users, including their posts, comments,
+/// about section, and karma statistics. It also allows users to follow or unfollow the displayed user.
 class OtherUsersProfile extends ConsumerStatefulWidget {
+  /// Constructs an instance of [OtherUsersProfile].
+  ///
+  /// [username] : The username of the user whose profile is being displayed.
   const OtherUsersProfile({super.key, required this.username});
+
+  /// The username of the user whose profile is being displayed.
   final String username;
   @override
   ConsumerState<OtherUsersProfile> createState() => _OtherUsersProfileState();
@@ -43,6 +52,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   bool isLoading = true;
   bool? isFollowed;
 
+  /// Method to set user data.
   void setData() async {
     //getUser function gets the user data and updates it in the provider
     setState(() {
@@ -84,6 +94,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     super.initState();
   }
 
+  /// Method to fetch comments.
   Future _fetchComments() async {
     final response = await fetchComments(
       widget.username,
@@ -113,6 +124,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     super.didChangeDependencies();
   }
 
+  /// Method to set user ID.
   Future<void> setUserid() async {
     uid = await getUserId();
   }
@@ -123,6 +135,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     super.dispose();
   }
 
+  /// Method to fetch posts.
   Future _fetchPosts() async {
     final response = await fetchPostsByUsername(widget.username, _currentPage);
 
@@ -175,6 +188,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
           );
   }
 
+  /// Method to handle scrolling.
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
@@ -182,6 +196,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     }
   }
 
+  /// Method to handle follow/unfollow action.
   void _onFollow() {
     if (!isFollowed!) {
       followUser(user!.username!);
@@ -198,6 +213,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     }
   }
 
+  /// Method to handle scrolling for comments.
   void _onScrollComments() {
     if (_scrollControllerComments.position.pixels ==
         _scrollControllerComments.position.maxScrollExtent) {
