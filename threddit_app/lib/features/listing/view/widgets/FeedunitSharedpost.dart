@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
@@ -62,8 +63,8 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
 
   @override
   Widget build(BuildContext context) {
-    final difference = now.difference(widget.dataOfPost.postedTime);
-    final hoursSincePost = difference.inHours;
+    final hoursSincePost = formatDateTime(widget.dataOfPost.postedTime);
+
     return Container(
       padding: const EdgeInsets.all(6.0),
       decoration: BoxDecoration(
@@ -82,8 +83,7 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                    child: Row(
+                Row(
                   children: [
                     Text(
                       'r/${widget.dataOfPost.userID?.username}',
@@ -93,11 +93,12 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                       width: 7.w,
                     ),
                     Text(
-                      '${hoursSincePost}h ago',
+                      // ignore: unnecessary_brace_in_string_interps
+                      '${hoursSincePost}',
                       style: const TextStyle(color: AppColors.whiteHideColor),
                     ),
                   ],
-                )),
+                ),
               ],
             ),
             Padding(
@@ -177,22 +178,20 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                     SizedBox(
                       width: 20.w,
                     ),
-                    Container(
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.comment,
-                            color: AppColors.whiteColor,
-                          ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
-                          Text(
-                            widget.dataOfPost.commentsCount.toString(),
-                            style: const TextStyle(color: AppColors.whiteColor),
-                          ),
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.comment,
+                          color: AppColors.whiteColor,
+                        ),
+                        SizedBox(
+                          width: 5.w,
+                        ),
+                        Text(
+                          widget.dataOfPost.commentsCount.toString(),
+                          style: const TextStyle(color: AppColors.whiteColor),
+                        ),
+                      ],
                     ),
                   ],
                 ),

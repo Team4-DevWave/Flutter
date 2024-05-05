@@ -106,13 +106,14 @@ class _testScreenState extends State<testScreen> {
               'status': 'done',
               //payload
               'body': body,
-              'title': title
+              'title': title,
             },
             "notification": <String, dynamic>{
               "title": title,
               "body": body,
               "android_channel_id": "threddit_app"
             },
+            //Hard coding
             "to": token,
           }));
       // ignore: empty_catches
@@ -147,7 +148,6 @@ class _testScreenState extends State<testScreen> {
                     .doc(name)
                     .get();
                 String token = snap["token"];
-                print(token);
                 //Send notification
                 sendPushNotification(token, bodytext, titletext);
               }
