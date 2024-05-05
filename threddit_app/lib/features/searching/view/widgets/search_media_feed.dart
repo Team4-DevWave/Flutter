@@ -110,7 +110,7 @@ class _SearchMediaFeedState extends ConsumerState<SearchMediaFeed> {
       if (_fetching) {
         return Center(
           child: Lottie.asset(
-            'assets/animation/loading.json',
+            'assets/animation/loading2.json',
             repeat: true,
           ),
         );
@@ -166,7 +166,7 @@ class _SearchMediaFeedState extends ConsumerState<SearchMediaFeed> {
                           ? Image(
                               height: 200.h,
                               width: 300.w,
-                              fit: BoxFit.fitWidth,
+                              fit: BoxFit.fill,
                               image:
                                   NetworkImage(_media[index].image.toString()),
                             )
@@ -205,7 +205,7 @@ class _SearchMediaFeedState extends ConsumerState<SearchMediaFeed> {
                           height: 75.h,
                           width: 75.w,
                           child: Lottie.asset(
-                            'assets/animation/loading.json',
+                            'assets/animation/loading2.json',
                             repeat: true,
                           ),
                         )

@@ -117,7 +117,7 @@ class _SearchCommentFeedWidgetState
       if (_fetching) {
         return Center(
           child: Lottie.asset(
-            'assets/animation/loading.json',
+            'assets/animation/loading2.json',
             repeat: true,
           ),
         );
@@ -178,7 +178,7 @@ class _SearchCommentFeedWidgetState
                           height: 75.h,
                           width: 75.w,
                           child: Lottie.asset(
-                            'assets/animation/loading.json',
+                            'assets/animation/loading2.json',
                             repeat: true,
                           ),
                         )

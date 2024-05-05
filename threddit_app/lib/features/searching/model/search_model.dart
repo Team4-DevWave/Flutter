@@ -26,6 +26,7 @@ class SearchModel {
 
     print(parsedPosts.length);
     List<dynamic> commentsList = json['data']['comments'];
+    print(commentsList);
     final List<SearchCommentModel> parsedComments =
         SearchCommentsList.fromJson(commentsList).comments;
 

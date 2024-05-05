@@ -183,9 +183,11 @@ class _SearchFeedWidgetState extends ConsumerState<SearchFeedWidget> {
               itemCount: _posts.length + 1,
               itemBuilder: (context, index) {
                 if (index < _posts.length) {
+                  print(userId);
                   return _posts[index].parentPost != null
                       ? Column(
                           children: [
+                            
                             SearchFeedUnitShare(
                                 dataOfPost: _posts[index].parentPost!,
                                 parentPost: _posts[index],
