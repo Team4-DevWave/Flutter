@@ -24,22 +24,17 @@ class SearchModel {
   factory SearchModel.fromJson(Map<String, dynamic> json) {
     final List<Post> parsedPosts = PostApiResponse.fromJson(json).posts;
 
-    print(parsedPosts.length);
     List<dynamic> commentsList = json['data']['comments'];
-    print(commentsList);
     final List<SearchCommentModel> parsedComments =
         SearchCommentsList.fromJson(commentsList).comments;
 
     List<dynamic> subredditList = json['data']['subreddits'];
     final List<Subreddit> parsedSubreddits =
         SubredditList.fromJson(subredditList).subreddits;
-    print(
-        "INSIDE SEAERCHMODEL FROM JSON !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-    print(parsedSubreddits.length);
+   
     final List<Media> parsedMedias = [];
     if (json['data']['media'] is List) {
       for (var mediaJson in json['data']['media'] as List) {
-        print(mediaJson);
         parsedMedias.add(Media.fromJson(mediaJson));
       }
     }
