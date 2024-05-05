@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/notification_settings_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/view/screens/mod_notifications_screen.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/enable_setting.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
@@ -32,6 +34,22 @@ class _NotificationsSettingsScreenState
         .getNotificationSetting(client: client);
   }
 
+  List<Widget> buildListTileWidgets(
+      Map<String, SubredditSettings> subredditUserMods) {
+    return subredditUserMods.entries.map((entry) {
+      final subredditName = entry.key;
+      return ListTile(
+          title: Text("r/$subredditName"),
+          onTap: () {
+            final arguements = {
+              'subredditName': subredditName,
+            };
+            Navigator.pushNamed(context, RouteClass.modNotificationsSettings,
+                arguments: arguements);
+          });
+    }).toList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -58,7 +76,9 @@ class _NotificationsSettingsScreenState
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Center(child: Text(snapshot.error.toString()),);
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
             } else {
               final isEnabled = snapshot.data!;
               return SingleChildScrollView(
@@ -99,10 +119,10 @@ class _NotificationsSettingsScreenState
                         settingIcon: Icons.arrow_upward,
                         enable: () {}),
                     EnableSetting(
-                    isEnabled: isEnabled.upvotesOnYourComments,
-                    optionName: "Upvotes on your comments",
-                    settingIcon: Icons.arrow_upward_sharp,
-                    enable: () {}),
+                        isEnabled: isEnabled.upvotesOnYourComments,
+                        optionName: "Upvotes on your comments",
+                        settingIcon: Icons.arrow_upward_sharp,
+                        enable: () {}),
                     // EnableSetting(
                     //     isEnabled: isEnabled.repliesToYourComments,
                     //     optionName: "Replies to your comments",
@@ -125,6 +145,10 @@ class _NotificationsSettingsScreenState
                         optionName: "Mod notifications",
                         settingIcon: Icons.shield,
                         enable: () {}),
+                    Column(
+                      children:
+                          buildListTileWidgets(isEnabled.subredditsUserMods),
+                    )
                   ],
                 ),
               );
