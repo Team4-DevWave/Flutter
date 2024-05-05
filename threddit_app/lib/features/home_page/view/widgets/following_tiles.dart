@@ -75,9 +75,7 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
       }
     }
 
-    return isLoading
-        ? const Loading()
-        : ExpansionTile(
+    return ExpansionTile(
             title: Text(
               widget.title,
               style: AppTextStyles.primaryTextStyle,
@@ -90,19 +88,7 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                           Navigator.pushNamed(context, RouteClass.otherUsers,
                               arguments: <String, dynamic>{
                                 'username': followed['username'].toString(),
-                              }).then((value) {
-                            setState(() {
-                              isLoading = true;
-                            });
-
-                            _followingList =
-                                ref.watch(userModelProvider)!.followedUsers!;
-
-                            setState(() {
-                              isLoading = false;
-                            });
-                            
-                          });
+                              });
                         },
                         leading: CircleAvatar(
                             radius: 15,

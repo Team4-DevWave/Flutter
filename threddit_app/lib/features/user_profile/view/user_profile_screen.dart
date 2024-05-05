@@ -60,8 +60,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
       isLoading = true;
     });
     user = ref.watch(userModelProvider)!;
-    socialLinks = ref.watch(userProfileProvider)?.socialLinks;
-    pfp = ref.watch(userModelProvider)?.profilePicture;
     setState(() {
       isLoading = false;
     });
@@ -70,8 +68,8 @@ class _UserProfileState extends ConsumerState<UserProfile>
   /// Method to set data.
   void setData() async {
     //getSettings function gets the user settings data and updates it in the userProfileProivder
-    await ref.read(settingsFetchProvider.notifier).getSettings();
-    await ref.read(settingsFetchProvider.notifier).getMe();
+    await ref.watch(settingsFetchProvider.notifier).getSettings();
+    await ref.watch(settingsFetchProvider.notifier).getMe();
   }
 
   String? uid;
@@ -92,7 +90,10 @@ class _UserProfileState extends ConsumerState<UserProfile>
   @override
   void didChangeDependencies() {
     setData();
+    print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEeee");
+    socialLinks = ref.watch(userProfileProvider)?.socialLinks;
     _getUserData();
+    print(user!.profilePicture);
     super.didChangeDependencies();
   }
 
@@ -262,12 +263,12 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                   backgroundColor: MaterialStatePropertyAll(
                                       AppColors.whiteHideColor)),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(
+                                Navigator.pushNamed(
                                         context, RouteClass.editUser)
                                     .then((value) => setState(() {
-                                          // socialLinks = ref
-                                          //     .read(userProfileProvider)
-                                          //     ?.socialLinks;
+                                          socialLinks = ref
+                                              .read(userProfileProvider)
+                                              ?.socialLinks;
                                           setData();
                                           _getUserData();
                                         }));
