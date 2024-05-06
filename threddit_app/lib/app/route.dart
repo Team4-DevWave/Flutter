@@ -27,6 +27,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/banned_users_scr
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
+import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view/screens/search_results_screen.dart';
 import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
@@ -278,7 +279,7 @@ class RouteClass {
         final communityName=args['communityName'] as String;
         final searchedItem=args['searchedItem'] as String;
         final posts=args['posts'] as List<Post>;
-        final comments=args['comments'] as List<Comment>;
+        final comments=args['comments'] as List<SearchCommentModel>;
         return MaterialPageRoute(
           builder: (_) => SearchResultsCommunity(
            communityName: communityName,

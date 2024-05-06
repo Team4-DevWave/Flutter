@@ -30,6 +30,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   bool _isLoading = false;
   bool _isSaved = false;
+  
   void _setVariables() async {
     setState(() {
       _isLoading = true;
@@ -55,15 +56,37 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   }
 
   void upVoteComment(WidgetRef ref) async {
-    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
-    setState(() {});
-  }
+      ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
+      if (widget.comment.userVote == 'upvoted') {
+        widget.comment.votes!.upvotes--;
+        widget.comment.userVote = 'none';
+      } else if (widget.comment.userVote == 'downvoted') {
+        widget.comment.votes!.downvotes--;
+        widget.comment.votes!.upvotes++;
+        widget.comment.userVote = 'upvoted';
+      } else {
+        widget.comment.votes!.upvotes++;
+        widget.comment.userVote = 'upvoted';
+      }
+      setState(() {});
+    }
 
-  void downVoteComment(WidgetRef ref) async {
-    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
-
-    setState(() {});
-  }
+    void downVoteComment(WidgetRef ref) async {
+      ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
+      if (widget.comment.userVote == 'downvoted') {
+        widget.comment.votes!.downvotes--;
+        widget.comment.userVote = 'none';
+      }
+      if (widget.comment.userVote == 'upvoted') {
+        widget.comment.votes!.upvotes--;
+        widget.comment.votes!.downvotes++;
+        widget.comment.userVote = 'downvoted';
+      } else {
+        widget.comment.votes!.downvotes++;
+        widget.comment.userVote = 'downvoted';
+      }
+      setState(() {});
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -546,8 +569,10 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_upward_outlined,
                         size: 30.spMin,
                       ),
-                      color: Colors.white,
-                    ),
+                      color: widget.comment.userVote == 'upvoted'
+                        ? Colors.red
+                        : Colors.white),
+                    
                     Text(
                       '${widget.comment.votes.upvotes - widget.comment.votes.downvotes == 0 ? "vote" : widget.comment.votes.upvotes - widget.comment.votes.downvotes}',
                       style: AppTextStyles.primaryTextStyle
@@ -561,7 +586,9 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_downward_outlined,
                         size: 30.spMin,
                       ),
-                      color: Colors.white,
+                      color: widget.comment.userVote == 'downvoted'
+                      ? Colors.blue
+                      : Colors.white,
                     ),
                   ],
                 )

@@ -51,7 +51,7 @@ class SearchCommentModel {
   // final bool hidden;
   // final bool saved;
   final bool collapsed;
-  final List<String> mentioned;
+  final List<User> mentioned;
   final String id;
   final int version;
 
@@ -85,7 +85,8 @@ class SearchCommentModel {
       // hidden: json['hidden'],
       // saved: json['saved'],
       collapsed: json['collapsed'],
-      mentioned: List<String>.from(json['mentioned']),
+      mentioned: List<User>.from(
+          json['mentioned'].map((i) => User.fromJson(i)).toList()),
       id: json['_id'],
       version: json['__v'],
     );

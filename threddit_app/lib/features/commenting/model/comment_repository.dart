@@ -82,14 +82,14 @@ class CommentRepository {
       };
       final response = await http.patch(
         Uri.parse(url),
-        body: jsonEncode({'voteType': voteType}),
+        body: jsonEncode({"voteType": voteType}),
         headers: headers,
       );
 
       if (response.statusCode == 200) {
         print("voted successfully");
       } else {
-        print('Failed to vote on comment: ${response.statusCode}');
+        print('Failed to vote on comment: ${response.body}');
       }
     } catch (e) {
       print('Error voting on comment: $e');

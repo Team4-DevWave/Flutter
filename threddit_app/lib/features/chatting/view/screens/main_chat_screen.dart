@@ -74,8 +74,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
           ),
           centerTitle: true,
           actions: [
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.filter_alt_sharp)),
+           
             Builder(
               builder: (context) => IconButton(
                 icon: const Icon(Icons.person_rounded),

@@ -79,7 +79,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
+    var communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
     return ScreenUtilInit(
       child: Scaffold(
         body: communityAsyncValue.when(
