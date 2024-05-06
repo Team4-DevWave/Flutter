@@ -15,6 +15,10 @@ import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
+/// The `SearchScreen` widget provides functionality for searching and browsing communities, posts, and trending topics within the Threddit app. 
+/// Users can enter search queries to find relevant communities and posts, view trending topics, and access their search history. 
+/// This widget integrates with various features such as community browsing, search functionality, and trend tracking to enhance the user experience.
+/// It has two modes, a mode for the trending and search history and a mode for when a search is entered and it shows the list of Subreddits.
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);

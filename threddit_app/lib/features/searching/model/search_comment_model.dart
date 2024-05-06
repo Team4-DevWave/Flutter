@@ -4,6 +4,8 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 
+/// Mention class responsible for holding and parsing the mentioned users data in the comment search result.
+
 class Mention {
   final String id;
   final String username;
@@ -20,6 +22,8 @@ class Mention {
     );
   }
 }
+
+/// Vote class responsible for holding and parsing the votes data in the comment search result.
 
 class Vote {
   int upvotes;
@@ -45,6 +49,7 @@ class Vote {
   }
 }
 
+/// User class responsible for holding and parsing the user data in the comment search result.
 class User {
   final String id;
   final String username;
@@ -59,6 +64,8 @@ class User {
   }
 }
 
+/// Comments Model for the search comment model results
+
 class SearchCommentModel {
   final User user; //
   final String content; //
@@ -71,7 +78,6 @@ class SearchCommentModel {
   final List<Mention> mentioned; //
   final String id; //
   final int version; //
-
   SearchCommentModel({
     required this.user,
     required this.content,

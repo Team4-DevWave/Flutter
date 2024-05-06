@@ -15,23 +15,26 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
 
-/// The selected code in the `post_feed_widget.dart` file is responsible for decorating a
-/// `Container` widget. The `BoxDecoration` class is used to provide a border and a
-/// circular border radius to the `Container`.
-
-/// The `border` property of `BoxDecoration` is set to a `Border` object that is created
-/// using the `Border.all` method. This method creates a uniform border around the
-/// `Container`. The color of the border is set to a semi-transparent white color, and
-/// the width of the border is set to `2.w`, which is a width relative to the screen
-/// width.
-
-/// The `borderRadius` property of `BoxDecoration` is set to a `BorderRadius` object
-/// that is created using the `BorderRadius.circular` method. This method creates a
-/// circular border radius with a radius of 15.
-
-/// The `padding` property of the `Container` is set to symmetric horizontal padding of
-/// `16.0` and vertical padding of `4.0`. This adds space around the child of the
-/// `Container`, separating the child from the border.
+/// The `SearchFeedUnit` widget is responsible for rendering a single post in the search feed. 
+/// It displays various details such as the post author, posting time, post content (text and/or image/video), and any additional attributes like NSFW or spoiler tags.
+/// 
+/// The widget takes a [dataOfPost] parameter representing the post data to be displayed and a [uid] parameter representing the user ID. 
+/// 
+/// The `build` method of the widget constructs the UI layout for the post, 
+/// including the post author, posting time, content (title and text body), and any media content (image or video). Additionally, 
+/// it handles rendering of NSFW or spoiler tags if present.
+/// 
+/// The post content is displayed within a `Container`, which is decorated with a `BoxDecoration` to provide a border and circular border radius. 
+/// The border color is set to a semi-transparent white color, and the width is adjusted based on screen width.
+///  Horizontal and vertical padding is applied to create space around the content.
+/// 
+/// If the post contains an image or video, it is displayed using the `Image` or `VideoPlayer` widget, respectively.
+///  Users can play/pause videos by tapping on the video player.
+/// 
+/// If the post type is a URL, the `AnyLinkPreview` widget is used to display a preview of the linked content. 
+/// Tapping on the preview opens the link in the default browser.
+/// 
+/// The widget also listens for user interactions such as tapping on the author's username or tapping on the post content to navigate to the post details screen.
 class SearchFeedUnit extends ConsumerStatefulWidget {
   final Post dataOfPost;
   final String uid;

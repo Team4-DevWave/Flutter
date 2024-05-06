@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/searching/view/widgets/search_user_unit.
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class SearchUserWidget extends ConsumerStatefulWidget {
@@ -85,7 +86,7 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
   UserModelMe? user;
 
   void _getUserData() async {
-    user = ref.read(userModelProvider)!;
+    user = await ref.read(settingsFetchProvider.notifier).getMe();
     setState(() {
       isLoading = true;
     });
@@ -96,8 +97,8 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
       }
     }
     print("FFFFFFFFFFFFFFFFFMMMMMMMMMMMLLLLLLLLLLLLLLLLLLLLL");
-    print(user!.username);
-    print(user!.followedUsers);
+    print("Username is: ${user!.username}");
+    print("users Followed  are : ${user!.followedUsers}");
 
     print(_followingList);
     isLoading = false;

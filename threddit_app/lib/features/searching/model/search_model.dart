@@ -6,7 +6,14 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/models/community.dart';
 import 'package:threddit_clone/models/subreddit.dart';
-
+/// Search Model class responsible for holding the results from the search API
+/// Contains List of:
+/// Posts
+/// Comments
+/// Subreddits
+/// Media
+/// Users
+/// fromJSON functions to parse the data.
 class SearchModel {
   List<Post> posts = [];
   List<SearchCommentModel> comments = [];
