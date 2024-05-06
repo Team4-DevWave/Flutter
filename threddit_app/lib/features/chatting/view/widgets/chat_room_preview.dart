@@ -15,6 +15,7 @@ String formatDateTime(DateTime dateTime) {
   }
 }
 
+// ignore: must_be_immutable
 class ChatPreview extends ConsumerStatefulWidget {
   ChatPreview({super.key, required this.chat,required this.username});
   Chatroom chat;

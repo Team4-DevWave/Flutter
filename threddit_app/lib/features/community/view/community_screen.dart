@@ -79,7 +79,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
+    var communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
     return ScreenUtilInit(
       child: Scaffold(
         body: communityAsyncValue.when(
@@ -203,14 +203,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                   const Color.fromARGB(223, 49, 49, 49)),
                             ),
                           ),
-                          IconButton.filled(
-                            onPressed: () {},
-                            icon: const Icon(Icons.share_rounded),
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  const Color.fromARGB(223, 49, 49, 49)),
-                            ),
-                          ),
+                    
                           IconButton.filled(
                             onPressed: () {
                               showModalBottomSheet(

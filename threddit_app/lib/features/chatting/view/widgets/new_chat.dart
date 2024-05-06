@@ -214,12 +214,12 @@ class _NewChatState extends ConsumerState<NewChat> {
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 16.0.w,
                                     vertical: 14.0.h,
-                                  ), // Adjust padding as needed
+                                  ), 
 
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                     borderSide:
-                                        BorderSide.none, // Remove border
+                                        BorderSide.none,
                                   ),
                                 ),
                               ),
