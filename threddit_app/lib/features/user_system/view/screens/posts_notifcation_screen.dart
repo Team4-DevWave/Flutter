@@ -51,7 +51,9 @@ class _PostsNotifcationScreenState
           .getNotificationSetting(client: client);
     });
   }
-
+  void checkTitle(){
+    
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
