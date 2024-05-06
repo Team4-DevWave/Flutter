@@ -6,8 +6,6 @@ class Photos {
   static const googleLogo = 'assets/images/google.png';
   static const avatar = 'assets/images/avatar.png';
   static const thinkingSno = 'assets/images/thinking-snoo.png';
-  static const communityDefault = 'assets/images/communityDefaultIcon.jpg';
-
   static Image appBarLogo = Image.asset(
     Photos.snoLogo,
     width: 40.w,

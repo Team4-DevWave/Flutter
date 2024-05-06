@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/add_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/community_mod_tools.dart';
-import 'package:threddit_clone/features/Moderation/view/screens/community_types.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/description.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/edit_moderator_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/moderators_screen.dart';
-import 'package:threddit_clone/features/Moderation/view/screens/schedule_post_screen.dart';
-import 'package:threddit_clone/features/Moderation/view/screens/scheduled_posts.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/screens/chat_options_screen.dart';
 import 'package:threddit_clone/features/chatting/view/screens/chat_room.dart';
@@ -17,7 +14,6 @@ import 'package:threddit_clone/features/chatting/view/screens/rename_screen.dart
 import 'package:threddit_clone/features/community/view/community_info.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
-import 'package:threddit_clone/features/notifications/view/screens/notifications_Screen.dart';
 import 'package:threddit_clone/features/post/view/cross_post.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approve_screen.dart';
 import 'package:threddit_clone/features/Moderation/view/screens/approved_users_screen.dart';
@@ -49,6 +45,7 @@ import 'package:threddit_clone/features/community/view/create_community.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
+import 'package:threddit_clone/features/home_page/view/screens/notifications_screen.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/post/view/confirm_post.dart';
 import 'package:threddit_clone/features/post/view/post_to_screen.dart';
@@ -130,7 +127,6 @@ class RouteClass {
   static const String renameChatroom = '/rename-chatroom';
   static const String chatMembers = '/chat-members';
   static const String inviteMembers = '/invite-members';
-
   static const String modNotificationsSettings = '/mod-notifications';
   static const String activitySettings = '/activity-settings';
   static const String modMail = '/mod-mail';
@@ -139,9 +135,6 @@ class RouteClass {
 
   static const String postTypes = '/post-types';
   static const String description = '/decription';
-  static const String communityTypes = '/community-types';
-  static const String scheduledPosts = '/scheduled-posts';
-  static const String postSchedule = '/post-schedule';
 
   static const String searchResultsScreen = '/serach-results';
 
@@ -176,11 +169,7 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => CommunityInfo(community: community, uid: uid));
       case communityModTools:
-        final args = settings.arguments as Map<String, dynamic>;
-        final community =
-            args['communityName'] as String; // Extract the community object
-        return MaterialPageRoute(
-            builder: (_) => CommunityModTools(community: community));
+        return MaterialPageRoute(builder: (_) => const CommunityModTools());
       case chooseCommunity:
         return MaterialPageRoute(builder: (_) => const ChooseCommunity());
       case crossPost:
@@ -200,11 +189,7 @@ class RouteClass {
       case mainCommunityScreen:
         return MaterialPageRoute(builder: (_) => const MainCommunityScreen());
       case notificationsScreen:
-        String input = settings.arguments as String;
-        return MaterialPageRoute(
-            builder: (_) => NotificationTempScreen(
-                  usedID: input,
-                ));
+        return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case notificationsSettingsScreen:
         return MaterialPageRoute(
             builder: (_) => const NotificationsSettingsScreen());
@@ -363,22 +348,11 @@ class RouteClass {
         String user = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => EditModeratorScreen(moderator: user));
-      case communityTypes:
-        return MaterialPageRoute(builder: (_) => const CommunityTypes());
       case otherUsers:
-        String? uname;
-        if (settings.arguments is String) {
-          // If arguments is a string directly, use it as the username
-          uname = settings.arguments as String;
-        } else if (settings.arguments is Map<String, dynamic>) {
-          // If arguments is a map, extract the username from it
-          Map<String, dynamic> arguments =
-              settings.arguments as Map<String, dynamic>;
-          uname = arguments['username'] as String;
-        }
+        String uname = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => OtherUsersProfile(
-                  username: uname!,
+                  username: uname,
                 ));
       case searchCommunity:
         String community = settings.arguments as String;
@@ -423,17 +397,6 @@ class RouteClass {
         final subredditName = args['subredditName'] as String;
         return MaterialPageRoute(
             builder: (_) => ReportsScreen(subredditName: subredditName));
-
-      case scheduledPosts:
-        final args = settings.arguments as Map<String, dynamic>;
-        final communityName =
-            args['communityName'] as String; // Extract the community object
-        return MaterialPageRoute(builder: (_) =>  ScheduledPosts(communityName: communityName));
-      case postSchedule:
-        final args = settings.arguments as Map<String, dynamic>;
-        final communityName =
-            args['communityName'] as String; // Extract the community object
-        return MaterialPageRoute(builder: (_) =>  PostSchedule(communityName: communityName));
 
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());

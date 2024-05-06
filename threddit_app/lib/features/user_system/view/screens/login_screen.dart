@@ -18,22 +18,6 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
-///This screen is responsible for taking user's inputs, validating it, and logging him in.
-///
-///The screen initially renders two text fields one for the user email or user name and the second
-///for the user password, google sign in button, and continue button.
-///
-///Email text field: takes the username or email
-///
-///Password text field: takes the user password
-///
-///Google sign in button: opens the google pop up window to choose the user google account
-///and then validate with the backend if the user exist or new one
-///
-///Continue button: when pressed the data in the email text form is validated whether it is email or username
-///and saved to the user model provider, also the password is taken from the password text form field, and saved
-///to the user model provider. Finally the data is sent to backend and check if the data valid then move user
-///to the home screen of the application, if not the the user is showen a message that email/username or password is incorrect.
 class LogInScreen extends ConsumerStatefulWidget {
   const LogInScreen({super.key});
 

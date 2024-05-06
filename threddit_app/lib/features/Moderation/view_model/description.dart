@@ -7,20 +7,16 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 
-/// Provider for managing the description state.
 final descriptionProvider = StateNotifierProvider<DescriptionNotifier, String>(
     (ref) => DescriptionNotifier());
 
-/// State notifier responsible for managing the description state.
 class DescriptionNotifier extends StateNotifier<String> {
   DescriptionNotifier() : super("");
 
-  /// Updates the state with the provided description.
   void updateDescriptioState(String newDescription) {
     state = newDescription;
   }
 
-  /// Fetches the description from the server.
   FutureEither<String> getDescription() async {
     final url = Uri.https(
         "threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app",
@@ -48,7 +44,6 @@ class DescriptionNotifier extends StateNotifier<String> {
     }
   }
 
-  /// Updates the description on the server.
   FutureEither<String> updateDescription() async {
     final url = Uri.https(
         "threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app",

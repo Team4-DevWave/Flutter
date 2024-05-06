@@ -11,26 +11,13 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:http/http.dart' as http;
 
-/// A provider responsible for managing the sharing of posts.
 final sharePostsProvider =
     StateNotifierProvider<SharePosts, bool>((ref) => SharePosts(ref));
 
-/// A notifier for managing the sharing of posts.
-///
-/// This class handles the process of sharing a post by sending a POST request
-/// with the necessary data to the server. It provides methods for sharing
-/// a post and handles errors that may occur during the sharing process.
 class SharePosts extends StateNotifier<bool> {
   Ref ref;
-
-  /// Constructs a new [SharePosts] instance.
   SharePosts(this.ref) : super(false);
 
-  /// Shares a post to the specified destination.
-  ///
-  /// This method sends a POST request to the server with the post data
-  /// to share the post to the specified destination. It returns a [Post] object
-  /// if the sharing is successful, or a [Failure] object if it fails.
   FutureEither<Post> sharePost() async {
     state = true;
     final sharedPost = ref.watch(sharedPostProvider);

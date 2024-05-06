@@ -40,7 +40,6 @@ class NoNotification extends StatelessWidget {
           height: 10.h,
         ),
         Text(
-          key: const Key('fortest'),
           "That's okay, maybe you just need the right inspiration. Check out a popular community for discussion.",
           style: AppTextStyles.secondaryTextStyle,
           textAlign: TextAlign.center,

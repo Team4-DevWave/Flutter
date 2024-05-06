@@ -16,25 +16,6 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
-///This screen is responsible for taking user's inputs, validating it, and continue to next step
-///in the registration process.
-///
-///The screen initially renders two text fields one for the user email and the second
-///for the user password, google sign in button, and continue button.
-///
-///Email text field: takes the user email and continuously checking if the inserted
-///value is a real email format if not an appropriate error message is shown to the user.
-///
-///Password text field: takes the user password and continously checking if the entered value
-///is shorter than eight charachters and show appropriate error message to the user.
-///
-///Google sign in button: opens the google pop up window to choose the user google account
-///and then validate with the backend if the user exist or new one
-///
-///Continue button: this button is not enables unless all text fields passed its validations.
-///When pressed the data in the email text form is validated whether this email is free to be used
-///or used before and saved to the user model provider, also the password is taken from the password text form field, and saved
-///to the user model provider. Finally the user is moved to the next step if passed all validations
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 

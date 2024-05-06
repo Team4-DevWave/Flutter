@@ -5,15 +5,9 @@ import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-/// A widget for adding and editing links within a post.
-class AddLinkWidget extends ConsumerStatefulWidget {
-  /// Constructs a new [AddLinkWidget] instance.
-  ///
-  /// The [removeLink] parameter is optional and represents the function to be
-  /// called when the link is removed.
-  const AddLinkWidget({super.key, required this.removeLink});
 
-  /// Callback function triggered when the link is removed.
+class AddLinkWidget extends ConsumerStatefulWidget {
+  const AddLinkWidget({super.key, required this.removeLink});
   final Function()? removeLink;
 
   @override
@@ -44,13 +38,16 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
   }
 
   bool _validateLink(String value) {
+
     // Regular expression for URL validation
     final urlRegex = RegExp(r'^(http|https):\/\/[^ "]+$', caseSensitive: false);
 
     // Check if the input string matches the URL format
     return urlRegex.hasMatch(value);
   }
-  
+
+
+
   @override
   Widget build(BuildContext context) {
     final ref = this.ref;
@@ -67,7 +64,6 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
             isValid = result;
             ref.watch(validLink.notifier).update((state) => isValid);
           });
-
           ///check if the.url actually changed and the.url is valid
           if (post?.url != data) {
             ///update the.url with the new value
@@ -94,13 +90,13 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
               color: Colors.white,
             ),
             onPressed: () {
-              ref.read(postDataProvider.notifier).removeLink();
-              _linkController?.clear();
-              widget.removeLink?.call();
+                ref.read(postDataProvider.notifier).removeLink();
+                _linkController?.clear();
+                widget.removeLink?.call();
             },
           ),
         ),
       ),
     );
-  } 
+  }
 }

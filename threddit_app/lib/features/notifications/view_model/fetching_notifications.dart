@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
@@ -23,8 +22,6 @@ Future<NotificationAPI> fetchDataNotifications(String id) async {
     },
   );
 
-  print("RESSSSSSSSSSSSSSSS");
-  print(response.body);
   if (response.statusCode == 200) {
     return NotificationAPI.fromJson(jsonDecode(response.body));
   }
@@ -44,7 +41,7 @@ class NotificationData {
   final String type;
   final bool hidden;
   final String sender;
-  final Map<String, dynamic> contentID;
+  final String contentID;
   final int v;
 
   NotificationData({

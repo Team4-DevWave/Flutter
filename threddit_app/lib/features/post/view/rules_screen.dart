@@ -8,15 +8,8 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-/// A StatefulWidget responsible for displaying the rules of a community.
-///
-/// This widget fetches and displays the rules of a community and provides
-/// an "I Understand" button for users to acknowledge the rules.
 class RulesPage extends ConsumerStatefulWidget {
-  /// Constructs a new [RulesPage] with the given [communityName].
   const RulesPage({super.key, required this.communityName});
-
-  /// The name of the community whose rules are being displayed.
   final String communityName;
 
   @override
@@ -27,7 +20,6 @@ class _RulesPageState extends ConsumerState<RulesPage> {
   bool _isLoading = false;
   List<String> _rules = [];
 
-  /// Fetches the rules of the community.
   Future<void> _fetchCommunities() async {
     setState(() {
       _isLoading = true;

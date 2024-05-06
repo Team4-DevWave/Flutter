@@ -10,24 +10,8 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
-/// Enum representing different options for post types.
 enum PostTypeOption { any, linkOnly, textOnly }
 
-/// Helper function to display text for a given post type option.
-String textDisplayed(String postType) {
-  switch (postType) {
-    case 'any':
-      return "Any";
-    case 'linkOnly':
-      return "Link";
-    case 'textOnly':
-      return "Text";
-    default:
-      return "Any";
-  }
-}
-
-/// Screen for managing post types and their settings.
 class PostTypesScreen extends ConsumerStatefulWidget {
   const PostTypesScreen({super.key});
 
@@ -44,7 +28,6 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
   bool pollPosts = false;
   late PostTypes postTypesData;
 
-  /// Saves the changes made to post types settings.
   Future<void> onSave() async {
     ref
         .read(postTypesProvider.notifier)
@@ -68,7 +51,6 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
         (success) => Navigator.pop(context));
   }
 
-  /// Updates the validity of the form based on the changes made.
   void _updateValidaty() {
     isValid = imagePosts != postTypesData.imagePosts ||
         videoPosts != postTypesData.videoPosts ||
@@ -76,7 +58,19 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
         _selectedPostType.name != postTypesData.postTypesOptions;
   }
 
-  /// Fetches the initial data for post types settings.
+  String _textDisplayed() {
+    switch (_selectedPostType.name) {
+      case 'any':
+        return "Any";
+      case 'linkOnly':
+        return "Link";
+      case 'textOnly':
+        return "Text";
+      default:
+        return "Any";
+    }
+  }
+
   Future<void> _setData() async {
     setState(() {
       _isLoading = true;
@@ -156,7 +150,7 @@ class _PostTypesScreenState extends ConsumerState<PostTypesScreen> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(textDisplayed(_selectedPostType.name),
+                      Text(_textDisplayed(),
                           style: AppTextStyles.primaryTextStyle.copyWith(
                               fontSize: 16.spMin,
                               color: AppColors.whiteHideColor)),

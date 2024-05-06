@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/add_social_link.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/onSave_button.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/social_form.dart';
@@ -17,12 +21,7 @@ import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-/// A widget responsible for allowing users to edit their profile information.
-///
-/// This widget provides an interface for users to modify various aspects of their profile,
-/// including display name, about section, social links, content visibility, and active community display.
 class EditProfile extends ConsumerStatefulWidget {
-  /// Constructs an instance of [EditProfile].
   const EditProfile({super.key});
   @override
   ConsumerState<EditProfile> createState() => _EditProfileState();
@@ -34,28 +33,40 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   String? displayName;
   String? about;
   List<List<String>>? socialLinks;
-  bool? initIsActive; // the initial state of the isActive controller
-  bool? initIsVisible; // the initial state of the isVisible controller
+  bool? initIsActive;
+  bool? initIsVisible;
   bool? isActive;
   bool? isVisible;
-  bool isAnythingChanged =
-      false; //checker for changes in the screen to be used in the saved button
+  bool isAnythingChanged = false;
   final ImagePicker picker = ImagePicker();
-  String? image; // holding the base64 string to be sent to the backend
-  File?
-      imageFile; //holds the image file path, used in converting the image to base64
+  String? image;
+  File? imageFile;
   bool? isImage;
   bool? initIsImage;
 
   Future<void> _pickImage() async {
-    // prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage == null) return;
-    imageFile = File(pickedImage.path);
+    // 1. Get Application Documents Directory
+    final appDir = await getApplicationDocumentsDirectory();
+
+    final uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+    // 2. Create the destination file path
+    final newImagePath = '${appDir.path}/$uniqueFileName.jpg';
+
+    // 3. Copy the picked image to the new path
+    imageFile = await File(pickedImage.path).copy(newImagePath);
+
+    // 4. Save the new image path in SharedPreferences
+    await prefs?.setString(PrefConstants.imagePath, newImagePath);
+
     Uint8List imageBytes = await imageFile!.readAsBytes();
     setState(() {
       image = base64Encode(imageBytes);
+      //ref.read(userProfileProvider.notifier).updateProfilePic(image!);
+      //ref.read(imagePathProvider.notifier).state = imageFile;
       isImage = true;
       isAnythingChanged = true;
     });
@@ -78,19 +89,31 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   }
 
   Future<void> _removeImage() async {
+    // 1. Get the stored image path
+    final savedImagePath = prefs?.getString(PrefConstants.imagePath);
+
+    // 2. Check if a path exists and delete the file
+    if (savedImagePath != null) {
+      final fileToDelete = File(savedImagePath);
+      if (await fileToDelete.exists()) {
+        await fileToDelete.delete();
+      }
+    }
+
     setState(() {
       image = "";
       isImage = false;
       imageFile = null;
     });
+    //ref.read(userProfileProvider.notifier).updateProfilePic(image!);
+    ref.read(imagePathProvider.notifier).state = null;
     isAnythingChanged = true;
   }
 
   @override
   void didChangeDependencies() {
     final userProfile = ref.watch(userProfileProvider);
-    final dis = ref.watch(userModelProvider)?.displayName;
-    final pfp = ref.watch(userModelProvider)?.profilePicture;
+    final dis = ref.read(userModelProvider)?.displayName;
     if (userProfile != null) {
       displayName = dis;
       _displayNameController = TextEditingController(text: displayName);
@@ -101,14 +124,16 @@ class _EditProfileState extends ConsumerState<EditProfile> {
       initIsVisible = userProfile.contentVisibility;
       isVisible = initIsVisible;
       isActive = initIsActive;
-      if (pfp == "") {
+      if (userProfile.profilePicture.isEmpty) {
         initIsImage = false;
         isImage = false;
         image = "";
+        imageFile = null;
       } else {
         initIsImage = true;
         isImage = true;
-        image = pfp;
+        image = userProfile.profilePicture;
+        //imageFile = ref.watch(imagePathProvider);
       }
     }
     super.didChangeDependencies();
@@ -159,25 +184,13 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     });
   }
 
-  bool isLink(String value) {
-    // Regular expression for URL validation
-    final urlRegex = RegExp(r'^(http|https):\/\/[^ "]+$', caseSensitive: false);
-
-    // Check if the input string matches the URL format
-    return urlRegex.hasMatch(value);
-  }
-
   @override
   Widget build(BuildContext context) {
     ref.watch(socialLinksFutureProvider);
 
     ImageProvider setProfilePic() {
-      if (image!="") {
-        if (isLink(image!)) {
-          return NetworkImage(image!);
-        } else {
-          return FileImage(imageFile!);
-        }
+      if (imageFile != null) {
+        return FileImage(imageFile!);
       } else {
         return const AssetImage('assets/images/Default_Avatar.png');
       }
@@ -269,12 +282,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text("Edit Profile"),
-          actions: [
-            SaveButton(
-                changed: isAnythingChanged,
-                dis: _displayNameController.text,
-                image: image!)
-          ],
+          actions: [SaveButton(changed: isAnythingChanged, dis: _displayNameController.text)],
         ),
         body: SingleChildScrollView(
           child: Padding(

@@ -4,17 +4,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
-///class widget that renders the next button for create post
 class NextButton extends ConsumerWidget {
-  /// Widget for a next button used for navigation in post creation.
-  ///
-  /// This widget displays a button that allows users to navigate to the next
-  /// step in the post creation process. The button is enabled only when the
-  /// title field is not empty and either there is no link provided or the
-  /// link is valid.
-  ///
-  /// Parameters:
-  /// - `titleController`: The TextEditingController for the post title.
   const NextButton({super.key, required this.titleController});
   final TextEditingController titleController;
   Color textColor() {
@@ -36,6 +26,8 @@ class NextButton extends ConsumerWidget {
     return ElevatedButton(
       onPressed: isValid
           ? () {
+              //there is a problem that we don't know if there is actually a link or not
+              //so we need correctly know if there is a link then this part is done
               Navigator.pushNamed(context, RouteClass.postToScreen);
             }
           : null,

@@ -5,12 +5,6 @@ import 'package:threddit_clone/features/user_system/view_model/validation_provid
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-///This [EmailTextFromField] is a field that is used mainly in the regiteration process
-///to take the username or email in the login screen
-///or the user email in the signup screen
-///
-///For each process; sign up or login, there is a validation function called once
-///the continue button is pressed
 class EmailTextFromField extends ConsumerWidget {
   const EmailTextFromField(
       {super.key, required this.controller, required this.identifier});

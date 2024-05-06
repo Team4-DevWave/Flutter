@@ -14,14 +14,6 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
-///This [Interest] screen starts by rendering all the [interestsList] items where it contains
-///a list of interests, each item has: title, first row interests, and second row interests.
-///
-///Each item in the first row and second row interests is rendered as a button, that user
-///should selects at least one interest, to enable the continue button.
-///
-///The continue button is responsible to save the chosen intersts to the user model provider,
-///signup the user, login in the user, and moves the user to the home screen of the application
 class Interests extends ConsumerStatefulWidget {
   const Interests({super.key});
 

@@ -10,7 +10,6 @@ import 'package:threddit_clone/features/post/model/post_model.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
-import 'package:threddit_clone/features/post/view/widgets/add_poll.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_video.dart';
 import 'package:threddit_clone/features/post/view/widgets/close_button.dart';
 import 'package:threddit_clone/features/post/view/widgets/post_button.dart';
@@ -19,15 +18,6 @@ import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-/// A StatefulWidget responsible for confirming and posting a new content.
-///
-/// This widget allows users to confirm their post content before submitting
-/// it to the application. Users can input a title, body text, add images,
-/// videos, or links to their post, and select tags. They can also view the
-/// rules of the community they are posting in.
-///
-/// This widget listens to the changes in the [PostDataProvider] to update the
-/// content accordingly.
 class ConfirmPost extends ConsumerStatefulWidget {
   const ConfirmPost({super.key});
 
@@ -43,27 +33,15 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   bool isVideo = false;
   late String postTitle;
   late String postBody;
-  bool isPoll = false;
 
-  /// Image picker instance for selecting images from the device gallery.
+  ///add image picker data
   final ImagePicker picker = ImagePicker();
-
-  /// Base64 encoded string representation of the selected image.
   String? image;
-
-  /// Base64 encoded string representation of the selected video.
   String? video;
-
-  /// Represnets where the post will be posted.
   String? whereTo;
-
-  /// File representing the selected video.
   File? videoFile;
-
-  /// File representing the selected image.
   File? imageFile;
 
-  /// Picks an image from the device gallery and updates the selected image.
   Future<void> _pickImage() async {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
@@ -76,13 +54,13 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
 
     setState(() {
       image = base64Encode(imageBytes);
+
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
       ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
     });
   }
 
-  /// Picks a video from the device gallery and updates the selected video.
   Future<void> _pickVideo() async {
     final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
     // If the user does not select a video then return null.
@@ -97,7 +75,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
-  /// Removes the selected image.
   Future<void> _removeImage() async {
     setState(() {
       image = null;
@@ -105,14 +82,12 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
-  /// Adds a link to the post.
   Future<void> _addLink() async {
     setState(() {
       isLink = true;
     });
   }
 
-  /// Removes the selected video.
   Future<void> _removeVideo() async {
     setState(() {
       video = null;
@@ -120,27 +95,12 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     });
   }
 
-  /// Removes the added link.
   Future<void> _removeLink() async {
     setState(() {
       isLink = false;
     });
   }
 
-  Future<void> _addPoll() async {
-    setState(() {
-      isPoll = true;
-    });
-  }
-
-  void _removePoll() {
-    setState(() {
-      isPoll = false;
-    });
-  }
-
-
-  /// Initializes the data for the post including title, body, image, video, and link.
   void intializeData() {
     final intialData = ref.watch(postDataProvider);
     _titleController = TextEditingController(text: intialData?.title ?? '');
@@ -163,9 +123,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     } else {
       whereTo = intialData?.community;
     }
-    if (intialData?.poll != null) {
-      isPoll = true;
-    }
   }
 
   @override
@@ -181,18 +138,13 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     super.dispose();
   }
 
-  /// Resets all data in the widget including title, body, and attachments.
   void resetAll() {
     _titleController = TextEditingController(text: '');
     _bodytextController = TextEditingController(text: '');
     _removeLink();
-    _removePoll();
     ref.read(postDataProvider.notifier).resetAll();
   }
 
-  /// Callback function for title field change.
-  ///
-  /// Updates the title in the `PostDataProvider` if it has changed.
   void onTitleChanged(String value) {
     final post = ref.watch(postDataProvider);
     if (post!.title != value) {
@@ -200,9 +152,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
     }
   }
 
-  /// Callback function for body text field change.
-  ///
-  /// Updates the body text in the `PostDataProvider` if it has changed.
   void onBodyChanged(String value) {
     final post = ref.watch(postDataProvider);
     if (post!.text_body != value) {
@@ -239,13 +188,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
       return const SizedBox();
     }
 
-    Widget buildPoll() {
-      if (isPoll) {
-        return AddPoll(removePoll: _removePoll);
-      }
-      return const SizedBox();
-    }
-
     void openRulesOverlay() {
       showModalBottomSheet(
           backgroundColor: AppColors.backgroundColor,
@@ -273,12 +215,11 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
           automaticallyImplyLeading: false,
           leading: ClosedButton(
             resetAll: resetAll,
-            firstScreen: 0,
+            firstScreen: false,
             titleController: _titleController,
             isImage: isImage,
             isLink: isLink,
             isVideo: isVideo,
-            isPoll: isPoll,
           ),
           actions: [
             if (isImage || isVideo)
@@ -288,8 +229,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
               )
             else if (isLink)
               PostButton(titleController: _titleController, type: "url")
-            else if (isPoll)
-              PostButton(titleController: _titleController, type: "poll")
             else
               PostButton(titleController: _titleController, type: "text")
           ]),
@@ -372,7 +311,6 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                       buildImageContent(),
                       buildLink(),
                       buildVideoContent(),
-                      buildPoll(),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
                         child: TextField(
@@ -411,30 +349,23 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
         child: Row(
           children: [
             IconButton(
-              onPressed: (!isLink && !isVideo && !isPoll) ? _pickImage : () {},
+              onPressed: (!isLink && !isVideo) ? _pickImage : () {},
               icon: const Icon(Icons.image),
-              color: isLink || isImage || isVideo || isPoll
+              color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isLink && !isImage & !isPoll) ? _pickVideo : () {},
+              onPressed: (!isLink && !isImage) ? _pickVideo : () {},
               icon: const Icon(Icons.video_library_outlined),
-              color: isLink || isImage || isVideo || isPoll
+              color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isImage && !isVideo && !isPoll) ? _addLink : () {},
+              onPressed: (!isImage && !isVideo) ? _addLink : () {},
               icon: const Icon(Icons.link),
-              color: isLink || isImage || isVideo || isPoll
-                  ? AppColors.whiteHideColor
-                  : AppColors.whiteGlowColor,
-            ),
-            IconButton(
-              onPressed: (!isImage && !isVideo && !isLink) ? _addPoll : () {},
-              icon: const Icon(Icons.poll_outlined),
-              color: isLink || isImage || isVideo || isPoll
+              color: isLink || isImage || isVideo
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),

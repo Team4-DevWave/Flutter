@@ -12,25 +12,13 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/models/comment.dart';
 import 'package:tuple/tuple.dart';
 
-/// A provider responsible for managing the saving and retrieving of posts.
 final savePostProvider =
     StateNotifierProvider<SavePost, bool>((ref) => SavePost(ref));
 
-/// A state notifier responsible for saving and retrieving posts.
-///
-/// This class manages the communication between the app and the server
-/// for saving, retrieving, and checking the saved status of posts.
 class SavePost extends StateNotifier<bool> {
   Ref ref;
-
-  /// Constructs a new [SavePost] instance.
   SavePost(this.ref) : super(false);
 
-  /// Sends a request to save a post by its ID.
-  ///
-  /// This method sends a PATCH request to the server to save a post
-  /// identified by the provided [postid]. It updates the saved status
-  /// of the post and returns a boolean indicating the success of the operation.
   FutureEither<bool> savePostRequest(String postid) async {
     final url = Uri.parse(
         'http://${AppConstants.local}:8000/api/v1/posts/$postid/save');
@@ -61,11 +49,6 @@ class SavePost extends StateNotifier<bool> {
     }
   }
 
-  /// Retrieves the IDs of saved posts.
-  ///
-  /// This method sends a GET request to the server to retrieve
-  /// the IDs of posts saved by the current user. It returns
-  /// a list of post IDs or an error if the operation fails.
   FutureEither<List<String>> getSavedPostIds() async {
     final url = Uri.parse(
         "http://${AppConstants.local}:8000/api/v1/users/me/saved?page=1");
@@ -99,11 +82,6 @@ class SavePost extends StateNotifier<bool> {
     }
   }
 
-  /// Checks if a post is saved by its ID.
-  ///
-  /// This method checks if a post with the provided [postid] is
-  /// saved by the current user. It returns a boolean indicating
-  /// whether the post is saved or not, or an error if the operation fails.
   FutureEither<bool> isSaved(String postid) async {
     final response = await getSavedPostIds();
     return response.fold((l) {
@@ -113,12 +91,6 @@ class SavePost extends StateNotifier<bool> {
     });
   }
 
-  /// Retrieves saved posts along with save comments.
-  ///
-  /// This method sends a GET request to the server to retrieve
-  /// posts saved by the current user. It returns a tuple containing
-  /// a list of saved posts and a list of comments associated with them,
-  /// or an error if the operation fails.
   FutureEither<Tuple2<List<Post>, List<Comment>>> getSaved() async {
     final url = Uri.parse(
         "http://${AppConstants.local}:8000/api/v1/users/me/saved?page=1");
@@ -157,14 +129,7 @@ class SavePost extends StateNotifier<bool> {
   }
 }
 
-/// A provider for tracking updates related to saving posts.
 final updatesSaveProvider = StateProvider<String?>((ref) => null);
-
-/// A provider for tracking updates related to editing posts.
 final updatesEditProvider = StateProvider<String?>((ref) => null);
-
-/// A provider for tracking updates related to deleting posts.
 final updatesDeleteProvider = StateProvider<String?>((ref) => null);
-
-/// A provider for tracking updates related to feed content.
 final updatesFeedProvider = StateProvider<String?>((ref) => 'Best');

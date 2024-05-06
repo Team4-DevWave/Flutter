@@ -70,9 +70,8 @@ class _FeedWidgetState extends ConsumerState<FeedWidget> {
     super.dispose();
   }
 
-  Future<void> getUserID() async{
+  Future<void> getUserID() async {
     userId = await getUserId();
-    //userId = ref.read(userModelProvider)!.id!;
   }
 
   Future _fetchPosts() async {

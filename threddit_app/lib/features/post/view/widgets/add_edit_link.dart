@@ -5,19 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-/// A widget for editing and inserting a link.
-///
-/// This widget provides a UI for users to input a name and a link.
-/// It then triggers a callback function (`onInsert`) when the user attempts to insert the link.
 class EditLink extends ConsumerStatefulWidget {
-  /// Callback function triggered when the user inserts a link.
-  final Function(String, String) onInsert;
-
-  /// Constructs a new [EditLink] widget.
-  ///
-  /// The [onInsert] parameter is required and represents the function to be called
-  /// when the user inserts a link.
   const EditLink(this.onInsert, {super.key});
+
+  final Function(String, String) onInsert;
 
   @override
   ConsumerState<EditLink> createState() => _EditLinkState();

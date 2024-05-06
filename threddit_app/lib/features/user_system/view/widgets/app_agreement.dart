@@ -10,24 +10,18 @@ final Uri _urlAgreement =
 final Uri _urlPrivacy =
     Uri.parse('https://www.reddit.com/policies/privacy-policy');
 
-///This function launches the user agreement documentation on the reddit
-///website using url launcher
 Future<void> _launchUrlAgreement() async {
   if (!await launchUrl(_urlAgreement)) {
     throw Exception('Could not launch $_urlAgreement');
   }
 }
 
-///This function launches the privacy policy documentation on the reddit
-///website using url launcher
 Future<void> _launchUrlPrivacy() async {
   if (!await launchUrl(_urlPrivacy)) {
     throw Exception('Could not launch $_urlPrivacy');
   }
 }
 
-///This customized widget class is used to display and enable the user to go to the
-///user aggrement on the reddit website and privacy policy
 class AppAgreement extends StatelessWidget {
   const AppAgreement({super.key});
   @override

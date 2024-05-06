@@ -8,8 +8,7 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class CommunityModTools extends StatefulWidget {
-  const CommunityModTools({super.key, required this.community});
-  final String community;
+  const CommunityModTools({super.key});
   @override
   State<CommunityModTools> createState() => _CommunityModToolsState();
 }
@@ -57,31 +56,6 @@ class _CommunityModToolsState extends State<CommunityModTools> {
                 trailing: const Icon(Icons.navigate_next),
                 onTap: () =>
                     Navigator.pushNamed(context, RouteClass.postTypes)),
-            ListTile(
-                leading: const Icon(
-                  CupertinoIcons.lock,
-                  color: AppColors.whiteHideColor,
-                ),
-                title: const Text("Community types"),
-                titleTextStyle: AppTextStyles.primaryTextStyle,
-                trailing: const Icon(Icons.navigate_next),
-                onTap: () =>
-                    Navigator.pushNamed(context, RouteClass.communityTypes)),
-            SizedBox(height: 10.h),
-            const SettingsTitle(title: "CONTENT AND REGULATIONS"),
-            ListTile(
-                leading: const Icon(
-                  Icons.watch_later_outlined,
-                  color: AppColors.whiteHideColor,
-                ),
-                title: const Text("Scheduled posts"),
-                titleTextStyle: AppTextStyles.primaryTextStyle,
-                trailing: const Icon(Icons.navigate_next),
-                onTap: () {
-                 
-                  Navigator.pushNamed(context, RouteClass.scheduledPosts,
-                      arguments: <String, dynamic>{'communityName': widget.community});
-                }),
             SizedBox(height: 10.h),
             const SettingsTitle(title: "USER MANAGEMENT"),
             ListTile(

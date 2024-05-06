@@ -14,17 +14,6 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-///[ForgotPassword] screen start by rendering: input field, continue button, and help button
-///
-///Each of these has a main role in the screen;
-///
-///Input filed: takes the email or username of the user to send the reset password mail to
-///
-///Help button: makes the user able to view the Q/A of the forget process and reach the contact support
-///
-///Continue button: is responsible to send the reset password mail if the entered a valid user name or email,
-///after pressing on the the continue, will check whether the entered value is emial or user name and check
-///its validity and continue the reset password process.
 class ForgotPassword extends ConsumerStatefulWidget {
   const ForgotPassword({super.key});
   @override

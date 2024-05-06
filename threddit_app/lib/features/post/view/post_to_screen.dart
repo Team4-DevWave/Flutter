@@ -7,13 +7,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-/// A StatefulWidget responsible for displaying the screen for posting to communities.
-///
-/// This widget allows users to search for communities they want to post to.
-/// It includes a search bar for querying communities, and displays a list of
-/// search results.
 class PostToScreen extends ConsumerStatefulWidget {
-  /// Constructs a new [PostToScreen].
   const PostToScreen({super.key});
   @override
   ConsumerState<PostToScreen> createState() => _PostToScreenState();
@@ -25,7 +19,7 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
 
   @override
   void initState() {
-    /// Initializes the state of the widget.
+    ///fetches the data when the widget is intialized
     _communityText = TextEditingController();
     searchResults = [];
     super.initState();
@@ -33,15 +27,10 @@ class _PostToScreenState extends ConsumerState<PostToScreen> {
 
   @override
   void dispose() {
-    /// Disposes of resources used by the widget.
     _communityText.dispose();
     super.dispose();
   }
 
-  /// Handles the change in query for community search.
-  ///
-  /// When the user types in the search bar, this method is triggered to
-  /// fetch and update the list of search results based on the query.
   Future<void> _onQueryChanged(String query) async {
     final comm =
         await ref.watch(userCommunitisProvider.notifier).searchResults(query);

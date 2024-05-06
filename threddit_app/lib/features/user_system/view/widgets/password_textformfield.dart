@@ -5,11 +5,6 @@ import 'package:threddit_clone/features/user_system/view_model/validation_provid
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-///This [PasswordTextFormField] is a field that is used mainly in the regiteration process
-///to take the user password in the login screen and the signup screen
-///
-///For each process; signup or login, there is a validation function called once
-///the continue button is pressed
 class PasswordTextFormField extends ConsumerWidget {
   const PasswordTextFormField(
       {super.key, required this.controller, required this.identifier});

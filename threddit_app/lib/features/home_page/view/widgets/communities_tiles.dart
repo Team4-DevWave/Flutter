@@ -11,7 +11,6 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
-import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 class CommunitiesTiles extends ConsumerStatefulWidget {
@@ -131,13 +130,10 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                           'uid': ref.read(userModelProvider)?.id
                         });
                   },
-                  leading: community[1].isEmpty
-                      ? const CircleAvatar(
-                          radius: 10,
-                          backgroundImage: AssetImage(Photos.communityDefault))
-                      : CircleAvatar(
-                          radius: 10,
-                          backgroundImage: NetworkImage(community[1])),
+                  leading: CircleAvatar(
+                    radius: 10,
+                    backgroundImage: NetworkImage(community[1]),
+                  ),
                   title: Text(community[0],
                       maxLines: 1,
                       style: AppTextStyles.primaryTextStyle.copyWith(

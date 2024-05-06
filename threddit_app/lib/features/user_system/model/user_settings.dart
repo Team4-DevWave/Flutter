@@ -39,20 +39,24 @@ class UserSettings {
 }
 
 class UserProfile {
+  final String displayName;
   final String about;
   final bool nsfw;
   final bool allowFollowers;
   final bool contentVisibility;
   final bool activeCommunitiesVisibility;
+  final String profilePicture;
   final File? imagePath;
   final List<List<String>> socialLinks;
 
   UserProfile({
+    required this.displayName,
     required this.about,
     required this.nsfw,
     required this.allowFollowers,
     required this.contentVisibility,
     required this.activeCommunitiesVisibility,
+    required this.profilePicture,
     this.imagePath,
     required this.socialLinks,
   });
@@ -71,11 +75,13 @@ class UserProfile {
       return linkDetails;
     }).toList();
     return UserProfile(
+      displayName: json['displayName'] ?? '',
       about: json['about'] ?? '',
       nsfw: json['NSFW'] ?? false,
       allowFollowers: json['allowFollowers'] ?? true,
       contentVisibility: json['contentVisibility'] ?? true,
       activeCommunitiesVisibility: json['activeCommunitiesVisibility'] ?? true,
+      profilePicture: json['profilePicture'] ?? '',
       socialLinks: socialLinks,
     );
   }
@@ -92,12 +98,14 @@ class UserProfile {
     List<List<String>>? socialLinks,
   }) {
     return UserProfile(
+      displayName: displayName ?? this.displayName,
       about: about ?? this.about,
       nsfw: nsfw ?? this.nsfw,
       allowFollowers: allowFollowers ?? this.allowFollowers,
       contentVisibility: contentVisibility ?? this.contentVisibility,
       activeCommunitiesVisibility:
           activeCommunitiesVisibility ?? this.activeCommunitiesVisibility,
+      profilePicture: profilePicture ?? this.profilePicture,
       socialLinks: socialLinks ?? this.socialLinks,
       imagePath: imagePath ?? this.imagePath,
     );
@@ -106,11 +114,13 @@ class UserProfile {
   Map<String, dynamic> toMap() {
     return {
       'userProfile': {
+        if (displayName.isNotEmpty) 'displayName': displayName,
         if (about.isNotEmpty) 'about': about,
         'nsfw': nsfw,
         'allowFollowers': allowFollowers,
         'contentVisibility': contentVisibility,
         'activeCommunitiesVisibility': activeCommunitiesVisibility,
+        if (profilePicture.isNotEmpty) 'profilePicture': profilePicture,
       }
     };
   }

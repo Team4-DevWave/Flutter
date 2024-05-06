@@ -1,24 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
-/// [UserModel] is considered a data model class where it plays a great role in the user
-/// registration process. It stores all the needed data for the user to complete the proces.
-///
-///From these data [username], where is the username prefered for the user to be set in his account.
-///
-///The [email] of the user entered in the signup or login.
-///
-///The needed [password] for the user and [passwordConfirm] is the copy of the [password],
-///and needed for the post request to the backend.
-///
-///[country] is considered the user location at the regiteration moment.
-///
-///[gender] is used in the about you screen for setting the user gender type.
-///
-///[isGoogle] is needed in the signing with google to control the flow of the user process.
-///
-///[interests] is the list of interest collected in the interests right before signing up the user.
-
 class UserModel {
   final String username;
   final String email;

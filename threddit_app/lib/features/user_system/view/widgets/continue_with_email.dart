@@ -5,8 +5,6 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-///This customized button widget is used to control the continue with email action
-///in the register screen where it pushes the signup screen
 class ContinueWithEmail extends ConsumerWidget {
   const ContinueWithEmail({super.key});
 

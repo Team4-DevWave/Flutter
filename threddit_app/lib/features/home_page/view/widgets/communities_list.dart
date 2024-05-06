@@ -45,15 +45,6 @@ class _CommunityListState extends ConsumerState<CommunityList> {
     super.initState();
   }
 
-  ImageProvider putProfilepic(String commLink) {
-    if (commLink == "") {
-      return const NetworkImage(
-          "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg");
-    } else {
-      return NetworkImage(commLink);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final dispalyedData =
@@ -76,7 +67,7 @@ class _CommunityListState extends ConsumerState<CommunityList> {
                 },
                 leading: CircleAvatar(
                   radius: 10,
-                  backgroundImage: putProfilepic(community[1]),
+                  backgroundImage: NetworkImage(community[0]),
                 ),
                 title: Text(community[0],
                     style: AppTextStyles.primaryTextStyle.copyWith(

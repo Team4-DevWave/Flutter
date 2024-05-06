@@ -1,19 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-///This class is used in the regtration process to validate all the user inputs and
-///show the user the appropriate message for better user experiance.
-///
-///This class has different validation function and each has its own validation logic
-///and its returned message to be displayed to the user.
 class Validation {
-  ///In this function it take a [String] as an input and check if it is
-  ///a valid email format.
-  ///
-  ///The validation is done using [RegExp] and check that the value is not empty or null.
-  ///
-  ///On success: null is returned.
-  ///
-  ///On Failure: a [String] message is returned and used as a validation error message to the user.
   final Provider<String? Function(String?)> emailSignupValidatorProvider =
       Provider((ref) {
     String? validateEmail(String? value) {
@@ -37,14 +24,6 @@ class Validation {
     return validateEmail;
   });
 
-  ///In this function it take a [String] as an input and check if it is
-  ///a valid password.
-  ///
-  ///The validation is checking if the entered value is more than 8 characters
-  ///
-  ///On success: null is returned.
-  ///
-  ///On Failure: a [String] message is returned and used as a validation error message to the user.
   final Provider<String? Function(String?)> passwordSignupValidatorProvider =
       Provider(
     (ref) {
@@ -57,14 +36,6 @@ class Validation {
     },
   );
 
-  ///In this function it take a [String] as an input and check if it is
-  ///a valid email or username.
-  ///
-  ///The validation is done by checking that the entered value is not empty
-  ///
-  ///On success: null is returned.
-  ///
-  ///On Failure: a [String] message is returned and used as a validation error message to the user.
   final Provider<String? Function(String?)> emailLoginValidatorProvider =
       Provider((ref) {
     String? validateEmail(String? value) {
@@ -76,14 +47,6 @@ class Validation {
     return validateEmail;
   });
 
-  ///In this function it take a [String] as an input and check if it is
-  ///a valid password.
-  ///
-  ///The validation is done by checking that the entered value is not empty
-  ///
-  ///On success: null is returned.
-  ///
-  ///On Failure: a [String] message is returned and used as a validation error message to the user.
   final Provider<String? Function(String?)> passwordLoginValidatorProvider =
       Provider(
     (ref) {
