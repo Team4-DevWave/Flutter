@@ -13,6 +13,7 @@ import 'package:threddit_clone/features/searching/view/widgets/search_shared_fee
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
@@ -32,6 +33,8 @@ import 'package:url_launcher/url_launcher.dart';
 /// The `initState` method initializes the state of the widget by fetching the first set
 /// of posts. The `dispose` method is used to clean up the controller when the widget is
 /// removed from the widget tree.
+final selectedSortProvider = StateProvider<String>((ref) => "Top");
+
 class SearchFeedWidget extends ConsumerStatefulWidget {
   final String searchText;
   const SearchFeedWidget({super.key, required this.searchText});
@@ -41,13 +44,14 @@ class SearchFeedWidget extends ConsumerStatefulWidget {
 }
 
 class _SearchFeedWidgetState extends ConsumerState<SearchFeedWidget> {
+  
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
   bool _fetching = true;
   bool _fetchingFinish = true;
   String? userId;
-
+  final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
   @override
   void initState() {
     super.initState();
@@ -64,16 +68,15 @@ class _SearchFeedWidgetState extends ConsumerState<SearchFeedWidget> {
 
   Future<void> getUserID() async {
     userId = await getUserId();
+    print("User ID is !!! : $userId");
   }
 
   Future _fetchPosts() async {
-    print("ALOOOOOOOOOOOOOOOOOOOOO11112323");
-
-    final response = await searchTest(widget.searchText, _currentPage);
+    String searchValue = ref.read(selectedSortProvider);
+    final response =
+        await searchTest(widget.searchText, _currentPage, sorting: searchValue);
 
     final SearchModel results = response;
-    print(results.posts.length);
-    print("HAMADAAAAAAAAAAAAAAAAAAHELOOOOOOOO");
     if (results.posts.isNotEmpty) {
       setState(() {
         _posts.addAll(results.posts);
@@ -95,8 +98,22 @@ class _SearchFeedWidgetState extends ConsumerState<SearchFeedWidget> {
     }
   }
 
+  void onSortChange() {
+    _fetchPosts();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(selectedSortProvider, (previous, next) {
+      setState(() {
+        _posts.clear();
+        _currentPage = 1;
+        _fetching = true;
+        _fetchingFinish = true;
+      });
+      _fetchPosts();
+    });
     ref.listen(updatesDeleteProvider, (previous, next) {
       if (next != null) {
         setState(() {
@@ -139,52 +156,80 @@ class _SearchFeedWidgetState extends ConsumerState<SearchFeedWidget> {
         );
       }
     } else {
-      return ListView.builder(
-        controller: _scrollController,
-        itemCount: _posts.length + 1,
-        itemBuilder: (context, index) {
-          if (index < _posts.length) {
-            return _posts[index].parentPost != null
-                ? Column(
-                    children: [
-                      SearchFeedUnitShare(
-                          dataOfPost: _posts[index].parentPost!,
-                          parentPost: _posts[index],
-                          userId!),
-                      const Divider(color: AppColors.whiteHideColor),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      SearchFeedUnit(_posts[index], userId!),
-                      const Divider(color: AppColors.whiteHideColor),
-                    ],
-                  );
-          } else {
-            return _fetchingFinish
-                ? SizedBox(
-                    height: 75.h,
-                    width: 75.w,
-                    child: Lottie.asset(
-                      'assets/animation/loading2.json',
-                      repeat: true,
-                    ),
-                  )
-                : SizedBox(
-                    child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        'No more posts available.',
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ));
-          }
-        },
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownMenu<String>(
+            inputDecorationTheme: const InputDecorationTheme(
+              border: InputBorder.none,
+            ),
+            textStyle: AppTextStyles.primaryTextStyle,
+            dropdownMenuEntries:
+                tabs.map<DropdownMenuEntry<String>>((String string) {
+              return DropdownMenuEntry(value: string, label: string);
+            }).toList(),
+            width: 150.w,
+            initialSelection: ref.read(selectedSortProvider),
+            onSelected: (String? value) {
+              ref.read(selectedSortProvider.notifier).state = value!;
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Changed to tab $value'),
+                duration: Durations.short1,
+              ));
+            },
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: _posts.length + 1,
+              itemBuilder: (context, index) {
+                if (index < _posts.length) {
+                  print(userId);
+                  return _posts[index].parentPost != null
+                      ? Column(
+                          children: [
+                            
+                            SearchFeedUnitShare(
+                                dataOfPost: _posts[index].parentPost!,
+                                parentPost: _posts[index],
+                                userId!),
+                            const Divider(color: AppColors.whiteHideColor),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            SearchFeedUnit(_posts[index], userId!),
+                            const Divider(color: AppColors.whiteHideColor),
+                          ],
+                        );
+                } else {
+                  return _fetchingFinish
+                      ? SizedBox(
+                          height: 75.h,
+                          width: 75.w,
+                          child: Lottie.asset(
+                            'assets/animation/loading2.json',
+                            repeat: true,
+                          ),
+                        )
+                      : SizedBox(
+                          child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              'No more posts available.',
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ));
+                }
+              },
+            ),
+          ),
+        ],
       );
     }
   }

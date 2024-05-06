@@ -10,10 +10,12 @@ import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_comment_item.dart';
+import 'package:threddit_clone/features/searching/view/widgets/search_feed_widget.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_post_feed_widget.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_shared_feed_unit.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
@@ -50,6 +52,7 @@ class _SearchCommentFeedWidgetState
   bool _fetching = true;
   bool _fetchingFinish = true;
   String? userId;
+  final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
 
   @override
   void initState() {
@@ -70,13 +73,11 @@ class _SearchCommentFeedWidgetState
   }
 
   Future _fetchComments() async {
-    print("ALOOOOOOOOOOOOOOOOOOOOO11112323");
-
-    final response = await searchTest(widget.searchText, _currentPage);
+    String searchValue = ref.read(selectedSortProvider);
+    final response =
+        await searchTest(widget.searchText, _currentPage, sorting: searchValue);
 
     final SearchModel results = response;
-    print(results.comments.length);
-    print("HAMADAAAAAAAAAAAAAAAAAAHELOOOOOOOO ${results.comments.length}");
     if (results.comments.isNotEmpty) {
       setState(() {
         _comments.addAll(results.comments);
@@ -103,11 +104,20 @@ class _SearchCommentFeedWidgetState
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(selectedSortProvider, (previous, next) {
+      setState(() {
+        _comments.clear();
+        _currentPage = 1;
+        _fetching = true;
+        _fetchingFinish = true;
+      });
+      _fetchComments();
+    });
     if (_comments.isEmpty) {
       if (_fetching) {
         return Center(
           child: Lottie.asset(
-            'assets/animation/loading.json',
+            'assets/animation/loading2.json',
             repeat: true,
           ),
         );
@@ -123,47 +133,73 @@ class _SearchCommentFeedWidgetState
         );
       }
     } else {
-      return ListView.builder(
-        shrinkWrap: true,
-        controller: _scrollController,
-        itemCount: _comments.length + 1,
-        itemBuilder: (context, index) {
-          if (index < _comments.length) {
-            return Column(
-              children: [
-                SearchCommentItem(
-                  comment: _comments[index],
-                  uid: userId!,
-                  parentPost: _comments[index].post,
-                ),
-                const Divider(),
-              ],
-            );
-          } else {
-            return _fetchingFinish
-                ? SizedBox(
-                    height: 75.h,
-                    width: 75.w,
-                    child: Lottie.asset(
-                      'assets/animation/loading.json',
-                      repeat: true,
-                    ),
-                  )
-                : SizedBox(
-                    child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        'No more comments available.',
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          color: Colors.white,
-                        ),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownMenu<String>(
+            inputDecorationTheme: const InputDecorationTheme(
+              border: InputBorder.none,
+            ),
+            textStyle: AppTextStyles.primaryTextStyle,
+            dropdownMenuEntries:
+                tabs.map<DropdownMenuEntry<String>>((String string) {
+              return DropdownMenuEntry(value: string, label: string);
+            }).toList(),
+            width: 150.w,
+            initialSelection: ref.read(selectedSortProvider),
+            onSelected: (String? value) {
+              ref.read(selectedSortProvider.notifier).state = value!;
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Changed to tab $value'),
+                duration: Durations.short1,
+              ));
+            },
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              controller: _scrollController,
+              itemCount: _comments.length + 1,
+              itemBuilder: (context, index) {
+                if (index < _comments.length) {
+                  return Column(
+                    children: [
+                      SearchCommentItem(
+                        comment: _comments[index],
+                        uid: userId!,
+                        parentPost: _comments[index].post,
                       ),
-                    ),
-                  ));
-          }
-        },
+                      const Divider(),
+                    ],
+                  );
+                } else {
+                  return _fetchingFinish
+                      ? SizedBox(
+                          height: 75.h,
+                          width: 75.w,
+                          child: Lottie.asset(
+                            'assets/animation/loading2.json',
+                            repeat: true,
+                          ),
+                        )
+                      : SizedBox(
+                          child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              'No more comments available.',
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ));
+                }
+              },
+            ),
+          ),
+        ],
       );
     }
   }

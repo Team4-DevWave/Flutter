@@ -4,6 +4,23 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 
+class Mention {
+  final String id;
+  final String username;
+
+  Mention({
+    required this.id,
+    required this.username,
+  });
+
+  factory Mention.fromJson(Map<String, dynamic> json) {
+    return Mention(
+      id: json['_id'],
+      username: json['username'],
+    );
+  }
+}
+
 class Vote {
   int upvotes;
   int downvotes;
@@ -43,17 +60,17 @@ class User {
 }
 
 class SearchCommentModel {
-  final User user;
-  final String content;
-  final DateTime createdAt;
-  Vote votes;
-  final Post? post;
-  // final bool hidden;
-  // final bool saved;
-  final bool collapsed;
-  final List<User> mentioned;
-  final String id;
-  final int version;
+  final User user; //
+  final String content; //
+  final DateTime createdAt; //
+  Vote votes; //
+  final Post? post; //
+  final bool? hidden; //
+  final bool? saved; //
+  final bool collapsed; //
+  final List<Mention> mentioned; //
+  final String id; //
+  final int version; //
 
   SearchCommentModel({
     required this.user,
@@ -61,8 +78,8 @@ class SearchCommentModel {
     required this.createdAt,
     required this.votes,
     required this.post,
-    // required this.hidden,
-    // required this.saved,
+    required this.hidden,
+    required this.saved,
     required this.collapsed,
     required this.mentioned,
     required this.id,
@@ -82,11 +99,12 @@ class SearchCommentModel {
       createdAt: DateTime.parse(json['createdAt']),
       votes: Vote.fromJson(json['votes']),
       post: tempPost,
-      // hidden: json['hidden'],
-      // saved: json['saved'],
+      hidden: json['hidden'],
+      saved: json['saved'],
       collapsed: json['collapsed'],
-      mentioned: List<User>.from(
-          json['mentioned'].map((i) => User.fromJson(i)).toList()),
+      mentioned: (json['mentioned'] as List)
+          .map((mentionJson) => Mention.fromJson(mentionJson))
+          .toList(),
       id: json['_id'],
       version: json['__v'],
     );
