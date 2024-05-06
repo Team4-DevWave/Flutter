@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/community_feed_unit.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
+import 'package:threddit_clone/features/searching/view/widgets/search_community_unit.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_feed_widget.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -141,7 +142,7 @@ class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
               itemCount: _subreddits.length + 1,
               itemBuilder: (context, index) {
                 if (index < _subreddits.length) {
-                  return CommunityUnit(
+                  return SearchCommunityUnit(
                     subreddit: _subreddits[index],
                     userID: userId!,
                   );
