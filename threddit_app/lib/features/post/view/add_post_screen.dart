@@ -8,13 +8,35 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
+import 'package:threddit_clone/features/post/view/widgets/add_poll.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_video.dart';
 import 'package:threddit_clone/features/post/view/widgets/close_button.dart';
 import 'package:threddit_clone/features/post/view/widgets/next_button.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
+/// The [AddPostScreen] widget allows users to create a new post by providing a title, body text, and optionally adding images, videos, or links.
+///
+/// Users can input a title and body text for their post. They can also add images, videos, or links to their post content.
+///
+/// To add an image or video, users can tap on the respective icon located in the bottom sheet. Once selected, the chosen media will be displayed in the post.
+///
+/// Users can remove added images or videos by tapping on the corresponding remove button.
+///
+/// To add a link, users can tap on the link icon located in the bottom sheet. This will enable the link input field where they can enter the desired link.
+///
+/// Users can navigate between different sections of the screen using the provided buttons in the app bar: a close button to discard the post and a next button to proceed.
+///
+/// If the user decides to discard the post, all entered data will be reset.
+///
+/// The [AddPostScreen] widget relies on the [postDataProvider] for managing post data state.
+///
+/// Example usage:
+/// ```dart
+/// AddPostScreen()
+/// ```
 class AddPostScreen extends ConsumerStatefulWidget {
+  /// Constructor for [AddPostScreen].
   const AddPostScreen({super.key});
 
   @override
@@ -29,6 +51,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   bool isImage = false;
   bool isLink = false;
   bool isVideo = false;
+  bool isPoll = false;
 
   ///add image picker data
   final ImagePicker picker = ImagePicker();
@@ -37,6 +60,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   File? videoFile;
   File? imageFile;
 
+  /// Function to pick an image from the gallery.
   Future<void> _pickImage() async {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
@@ -52,6 +76,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
+  /// Function to pick a video from the gallery.
   Future<void> _pickVideo() async {
     final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
     // If the user does not select a video then return null.
@@ -66,6 +91,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
+  /// Function to remove the currently selected image.
   Future<void> _removeImage() async {
     setState(() {
       image = null;
@@ -73,6 +99,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
+  /// Function to remove the currently selected video.
   Future<void> _removeVideo() async {
     setState(() {
       video = null;
@@ -80,18 +107,45 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     });
   }
 
+  /// Function to enable the link input field.
   Future<void> _addLink() async {
     setState(() {
       isLink = true;
     });
   }
 
+  Future<void> _addPoll() async {
+    setState(() {
+      isPoll = true;
+    });
+  }
+
+  // Future<void> _addPoll() async {
+  //   setState(() {
+  //     isPoll = true;
+  //   });
+  // }
+
+  /// Function to disable the link input field.
   Future<void> _removeLink() async {
     setState(() {
       isLink = false;
     });
   }
 
+  void _removePoll() {
+    setState(() {
+      isPoll = false;
+    });
+  }
+
+  // void _removePoll() {
+  //   setState(() {
+  //     isPoll = false;
+  //   });
+  // }
+
+  /// Function to reset all entered data.
   void resetAll() {
     _titleController = TextEditingController(text: "");
     _bodytextController = TextEditingController(text: "");
@@ -112,6 +166,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     super.dispose();
   }
 
+  /// Callback function for title text field changes.
   void onTitleChanged(String value) {
     final post = ref.watch(postDataProvider);
     if (post!.title != value) {
@@ -119,6 +174,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
     }
   }
 
+  /// Callback function for body text field changes.
   void onBodyChanged(String value) {
     final post = ref.watch(postDataProvider);
     if (post!.text_body != value) {
@@ -135,7 +191,8 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       }
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
-  
+
+
     Widget buildVideoContent() {
       if (video == null || isLink || isImage) {
         return const SizedBox();
@@ -152,16 +209,24 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       return const SizedBox();
     }
 
+    Widget buildPoll() {
+      if (isPoll) {
+        return AddPoll(removePoll: _removePoll);
+      }
+      return const SizedBox();
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: ClosedButton(
             resetAll: resetAll,
-            firstScreen: true,
+            firstScreen: 1,
             titleController: _titleController,
             isImage: isImage,
             isLink: isLink,
-            isVideo: isVideo),
+            isVideo: isVideo,
+            isPoll : isPoll),
         actions: [
           NextButton(titleController: _titleController),
         ],
@@ -200,6 +265,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
                     buildImageContent(),
                     buildLink(),
                     buildVideoContent(),
+                    buildPoll(),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
                       child: TextField(
@@ -236,23 +302,30 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         child: Row(
           children: [
             IconButton(
-              onPressed: (!isLink && !isVideo) ? _pickImage : () {},
+              onPressed: (!isLink && !isVideo && !isPoll) ? _pickImage : () {},
               icon: const Icon(Icons.image),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isLink && !isImage) ? _pickVideo : () {},
+              onPressed: (!isLink && !isImage & !isPoll) ? _pickVideo : () {},
               icon: const Icon(Icons.video_library_outlined),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isImage && !isVideo) ? _addLink : () {},
+              onPressed: (!isImage && !isVideo && !isPoll) ? _addLink : () {},
               icon: const Icon(Icons.link),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll
+                  ? AppColors.whiteHideColor
+                  : AppColors.whiteGlowColor,
+            ),
+            IconButton(
+              onPressed: (!isImage && !isVideo && !isLink) ? _addPoll : () {},
+              icon: const Icon(Icons.poll_outlined),
+              color: isLink || isImage || isVideo || isPoll
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),

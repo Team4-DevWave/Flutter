@@ -4,6 +4,13 @@ import 'package:threddit_clone/features/user_system/view/screens/text_size_scree
 import 'package:threddit_clone/app/pref_constants.dart';
 
 SharedPreferences? prefs;
+
+///[saveToken] function is a function that takes a [String] type [token]
+///this [token] was collected after the login process and the [token] is considered
+///the main way to authenticate the user with the backend server for any kind of request.
+///This function get the [token] and stores it in the applications's shared prefrences.
+///this shared prefrences is the local cache memory of the applicaiton.
+///and the built in saving function is an asynchronus function
 Future<void> saveToken(String token) async {
   prefs = await SharedPreferences.getInstance();
   await prefs?.setString(PrefConstants.authToken, token);
@@ -34,11 +41,16 @@ Future<void> saveGoogleToken(String token) async {
   await prefs?.setString(PrefConstants.googleToken, token);
 }
 
+///[getToken] function gets the user's saved authenticated token
+///in the shared prefrences (local cache memory) this function can be used whenever
+///we need to send the token in any needed authenticated request
 Future<String?> getToken() async {
   prefs = await SharedPreferences.getInstance();
   return prefs?.getString(PrefConstants.authToken);
 }
 
+///The [deleteToken] function is responsible for deleting the token from the shared memory
+///and this function could be useful for scenarios of logging use out of the application
 Future<void> deleteToken() async {
   prefs = await SharedPreferences.getInstance();
   await prefs?.remove(PrefConstants.authToken);

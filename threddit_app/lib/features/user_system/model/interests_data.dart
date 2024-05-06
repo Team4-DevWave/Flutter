@@ -1,3 +1,10 @@
+///[Interest] class is a calss that is considered as a model class,
+///where this data model class have [text] paramter, describing and storing the title
+///of the interests it contains in the [interestsFirstRow], and [interestsSecondRow]
+///where both of them have certain list of interesets that is used in the Interests screen
+///and used to know more about the user and his interests in the world-wide common interests,
+///where this data helps us to use it in selecting ceratin suggestion for the user according to
+///his interests and related topics.
 class Interest {
   const Interest(this.text, this.interestsFirstRow, this.interestsSecondRow);
   final String text;
@@ -5,6 +12,8 @@ class Interest {
   final List<String> interestsSecondRow;
 }
 
+///[interestsList] is a list of [Interest], that contains a text "title of the intersts list",
+///and the two rows lists
 const interestsList = [
   Interest('Global Perspectives', [
     'World News',

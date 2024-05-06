@@ -1,8 +1,28 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
+/// `SharedPost` represents a shared instance of a post within the application.
+/// This model encapsulates the details of a post that can be shared across communities
+/// of the application or user profile, maintaining references to the original post's
+/// context and adding details specific to the sharing action.
+///
+/// Attributes:
+///   - `title`: An optional title for the shared post, providing context or a summary.
+///   - `post`: The post being shared, which can include content such as text, images, videos or url.
+///   - `destination`: An optional destination ID where the post is being shared, could represent
+///     a user ID, channel, or another entity within the application.
+///   - `postIn`: A required identifier indicating where the post is originally located or being shared.
+///   - `postInName`: A required name or title of the location where the post is originally located or being shared.
+///   - `nsfw`: A flag indicating whether the shared post contains Not Safe For Work (NSFW) content.
+///   - `spoiler`: A flag indicating whether the content of the shared post should be considered a spoiler.
+///
+/// The class provides functionality to:
+///   - Clone itself with potentially modified attributes via `copyWith`.
+///   - Serialize and deserialize from and to JSON format, facilitating the easy transmission
+///     and storage of its data.
+///   - Generate string representations for easier logging and debugging.
+///   - Compare instances for equality based on their attributes, useful in tests and when detecting changes.
 class SharedPost {
   final String? title;
   final Post? post;

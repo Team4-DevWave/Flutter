@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,10 +40,13 @@ void main() async {
         // ignore: empty_catches
       } catch (e) {}
     });
+
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       String? targetScreen = message.data['screen'];
+      String? userID = message.data['userID'];
+
       if (targetScreen != null) {
-        navigatorKey.currentState?.pushNamed(targetScreen);
+        navigatorKey.currentState?.pushNamed(targetScreen, arguments: userID);
       }
     });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
