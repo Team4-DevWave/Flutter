@@ -8,8 +8,14 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 import 'package:video_player/video_player.dart';
 
+/// A widget for displaying classic-style posts.
 class PostClassic extends ConsumerStatefulWidget {
+  /// Constructs a new [PostClassic] instance.
+  ///
+  /// The [post] parameter is required and represents the post data to be displayed.
   const PostClassic({super.key, required this.post});
+
+  /// The post data to display.
   final Post post;
 
   @override

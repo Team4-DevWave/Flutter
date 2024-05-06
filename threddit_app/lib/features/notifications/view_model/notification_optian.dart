@@ -24,18 +24,11 @@ final markAllNotificationsAsReadProvider = FutureProvider<void>((ref) async {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $token",
     };
-    final response = await http.patch(
+    await http.patch(
       url,
       headers: headers,
     );
-
-    if (response.statusCode == 200) {
-      print('All messages marked as read');
-    } else {
-      print('Failed to mark all messages as read');
-    }
   } catch (e) {
-    print('Error marking all messages as read: $e');
     throw Exception('Failed to mark all messages as read: $e');
   }
 });

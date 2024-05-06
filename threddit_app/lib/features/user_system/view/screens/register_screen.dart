@@ -9,6 +9,14 @@ import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+///This screen is considered as the first screen in the registration process
+///it contains welcome message and two buttons; the continue with email button and
+///the continue with gooogle button.
+///
+///Continue with email button: pushes the Sign up screen
+///
+///Google sign in button: opens the google pop up window to choose the user google account
+///and then validate with the backend if the user exist or new one
 class RegisterScreen extends ConsumerWidget {
   const RegisterScreen({super.key});
 

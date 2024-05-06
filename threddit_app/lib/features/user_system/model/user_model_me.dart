@@ -1,10 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+///This provider is user for making applying the right state managment for the user data
+///where it will hold the all the user data fetched
 final userModelProvider = StateProvider<UserModelMe?>(
   (ref) => UserModelMe(),
 );
 
+///The class of [UserModelMe] is a data model class that holds all the parameteres of the user
+///fetched from the backend and could be used to fill all the user depend on screen and widgets
+///such as the user profile data, feed and making app functionalites
 class UserModelMe {
   final String? id;
   final String? username;
@@ -129,6 +134,7 @@ class UserModelMe {
     List<String>? hiddenPosts,
     List<String>? posts,
     Karma? karma,
+    String? profilePicture,
     SavedPostsAndComments? savedPostsAndComments,
     Votes? upvotes,
     Votes? downvotes,
@@ -158,11 +164,12 @@ class UserModelMe {
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
       settings: settings ?? this.settings,
+      profilePicture: profilePicture ?? this.profilePicture
     );
   }
 
   factory UserModelMe.fromJsonSearch(Map<String, dynamic> json) {
-    if (json == null) return UserModelMe(); // Handle null user data
+    //if (json == null) return UserModelMe(); // Handle null user data
     return UserModelMe(
       id: json['_id'] as String?,
       username: json['username'] as String?,

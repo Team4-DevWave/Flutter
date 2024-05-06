@@ -65,13 +65,12 @@ class _NotificationFeedState extends ConsumerState<NotificationFeed> {
             } else if (snapshot.hasData) {
               final countryData = snapshot.data!.notifications;
 
-              return (countryData.length > 0)
+              return (countryData.isNotEmpty)
                   ? ListView.builder(
                       itemCount: countryData.length,
                       itemBuilder: (BuildContext context, int index) {
                         return NotificationFeedUnit(
-                          data: countryData[index],
-                        );
+                            data: countryData[index], userID: widget.userID);
                       },
                     )
                   : const NoNotification();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_profile/view_model/follow_user.dart';
@@ -6,16 +7,16 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
-class SearchUserUnit extends StatefulWidget {
+class SearchUserUnit extends ConsumerStatefulWidget {
   final UserModelMe user;
   bool isFollowed;
   SearchUserUnit({super.key, required this.user, required this.isFollowed});
 
   @override
-  State<SearchUserUnit> createState() => _SearchUserUnitState();
+  ConsumerState<SearchUserUnit> createState() => _SearchUserUnitState();
 }
 
-class _SearchUserUnitState extends State<SearchUserUnit> {
+class _SearchUserUnitState extends ConsumerState<SearchUserUnit> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -51,7 +52,7 @@ class _SearchUserUnitState extends State<SearchUserUnit> {
                   : TextButton(
                       onPressed: () async {
                         print(widget.user.username!);
-                        await followUser(widget.user.username!);
+                        await followUser(widget.user.username! , ref);
 
                         setState(() {
                           widget.isFollowed = !widget.isFollowed;

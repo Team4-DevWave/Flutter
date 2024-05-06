@@ -1,16 +1,10 @@
-// import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_community_screen.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
 import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/home_page/view/screens/home_screen.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-// import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
-// import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_clone/features/chatting/view/screens/main_chat_screen.dart';
@@ -34,7 +28,6 @@ class _MainScreenLayout extends ConsumerState<MainScreenLayout> {
 
   Future<void> _setData() async {
     await ref.read(settingsFetchProvider.notifier).getMe();
-    print("TOKEN : ${await getToken()}");
   }
 
   @override

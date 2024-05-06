@@ -29,7 +29,7 @@ class CommunityScreen extends ConsumerStatefulWidget {
 
 class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   String _selectedItem = 'New Posts'; // Initial selected item
-  
+
   final _scrollController = ScrollController();
   final _posts = <Post>[];
   int _currentPage = 1;
@@ -79,7 +79,6 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-   
     final communityAsyncValue = ref.watch(fetchcommunityProvider(widget.id));
     return ScreenUtilInit(
       child: Scaffold(
@@ -118,21 +117,24 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   }
 
   Widget buildCommunityScreen(Subreddit community) {
-     String username = ref.read(userModelProvider)!.username!;
-    final newUser=UserModel(id: widget.uid, username: username);
+    String username = ref.read(userModelProvider)!.username!;
+    final newUser = UserModel(id: widget.uid, username: username);
     community.srLooks.banner = (community.srLooks.banner == '')
         ? "https://htmlcolorcodes.com/assets/images/colors/bright-blue-color-solid-background-1920x1080.png"
         : community.srLooks.banner;
     community.srLooks.icon = (community.srLooks.icon == '')
         ? "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg"
         : community.srLooks.icon;
-    bool isCurrentUserModerator = community.moderators.contains(UserModel(id: widget.uid, username: username));
+    bool isCurrentUserModerator = community.moderators
+        .contains(UserModel(id: widget.uid, username: username));
 
-    bool isCurrentUser = community.members.contains(UserModel(id: widget.uid, username: username));
+    bool isCurrentUser = community.members
+        .contains(UserModel(id: widget.uid, username: username));
 
     bool getUserState(Subreddit community) {
       if (community.moderators.contains(newUser)) {
-        Navigator.pushNamed(context, RouteClass.communityModTools);
+        Navigator.pushNamed(context, RouteClass.communityModTools,
+            arguments: <String, dynamic>{'communityName': community.name});
         return true;
       } else {
         if (community.members.contains(newUser)) {
@@ -157,8 +159,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           return true;
         } else {
           ref.watch(joinCommunityProvider(widget.id));
-          
-          
+
           community.members.add(newUser);
           setState(() {});
 
@@ -251,8 +252,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(community.srLooks.icon),
+                          backgroundImage: NetworkImage(community.srLooks.icon),
                           radius: 30,
                         ),
                       ),
