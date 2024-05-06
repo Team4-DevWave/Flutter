@@ -37,7 +37,7 @@ class CommentRepository {
             'Failed to load comments. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Failed to fetch comments');
+      throw Exception('Failed to fetch comments , $e');
     }
   }
 

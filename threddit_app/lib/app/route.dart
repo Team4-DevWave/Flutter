@@ -12,6 +12,7 @@ import 'package:threddit_clone/features/chatting/view/screens/invite_screen.dart
 import 'package:threddit_clone/features/chatting/view/screens/member_screen.dart';
 import 'package:threddit_clone/features/chatting/view/screens/rename_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/features/community/view/widgets/search_results.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
 import 'package:threddit_clone/features/post/view/cross_post.dart';
@@ -31,6 +32,7 @@ import 'package:threddit_clone/features/user_profile/view/user_profile_screen.da
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
+import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
@@ -122,6 +124,7 @@ class RouteClass {
   static const String renameChatroom = '/rename-chatroom';
   static const String chatMembers = '/chat-members';
   static const String inviteMembers = '/invite-members';
+  static const String CommunitySearchResults = '/search-community-results';
 
 
   static const String postTypes = '/post-types';
@@ -244,6 +247,20 @@ class RouteClass {
           builder: (_) => CommunityScreen(
             id: id,
             uid: uid,
+          ),
+        );
+      case CommunitySearchResults:
+        final args = settings.arguments as Map<String, dynamic>;
+        final communityName=args['communityName'] as String;
+        final searchedItem=args['searchedItem'] as String;
+        final posts=args['posts'] as List<Post>;
+        final comments=args['comments'] as List<Comment>;
+        return MaterialPageRoute(
+          builder: (_) => SearchResultsCommunity(
+           communityName: communityName,
+            serachedItem: searchedItem,
+            posts: posts,
+            comments: comments,
           ),
         );
       case confirmPostScreen:

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/models/subreddit.dart';
 
 class Vote {
   int upvotes;
@@ -48,9 +49,11 @@ class Comment {
   Vote votes;
   final String post;
   final bool collapsed;
-  final List<String> mentioned;
+  final List<User> mentioned;
   final String id;
   final int version;
+   bool? saved;
+  String? userVote;
 
   Comment({
     required this.user,
@@ -62,6 +65,8 @@ class Comment {
     required this.mentioned,
     required this.id,
     required this.version,
+    this.userVote,
+    this.saved,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
@@ -72,9 +77,12 @@ class Comment {
       votes: Vote.fromJson(json['votes']),
       post: json['post'] ?? " ",
       collapsed: json['collapsed'],
-      mentioned: List<String>.from(json['mentioned']),
+      mentioned: List<User>.from(
+          json['mentioned'].map((i) => User.fromJson(i)).toList()),
       id: json['_id'],
       version: json['__v'],
+       saved: json['saved'],
+      userVote: json['userVote'],
     );
   }
 }

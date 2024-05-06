@@ -33,6 +33,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
   @override
   void initState() {
     super.initState();
+    print("/////////////////, ${widget.currentPost.id}, ////////////////////");
     HistoryManager.addPostToHistory(widget.currentPost);
     print(widget.currentPost.id);
   }

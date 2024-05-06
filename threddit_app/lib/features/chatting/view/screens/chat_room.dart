@@ -1,3 +1,4 @@
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -103,6 +104,7 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
     socket?.on('new message', (newMessageReceived) {
       // Process the received message data
 
+      // ignore: unused_local_variable
       String senderID = newMessageReceived['senderID'];
       String message = newMessageReceived['message'];
       print("new message received: $message");
@@ -301,9 +303,7 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
               ),
               IconButton(
                 icon: const Icon(Icons.emoji_emotions),
-                onPressed: () {
-                  // Handle emoji button press
-                },
+                onPressed: () => _showEmojiPicker(context),
               ),
               IconButton(
                 icon: const Icon(Icons.gif),
@@ -330,6 +330,28 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
       ],
     );
   }
+   void _showEmojiPicker(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.5, // Adjust the height as needed
+        child: EmojiPicker(
+          onEmojiSelected: (category, emoji) {
+            setState(() {
+              _messageController.text += emoji.emoji;
+            });
+            Navigator.pop(context); // Close the bottom sheet after selecting an emoji
+          },
+        ),
+      );
+    },
+    backgroundColor: Colors.transparent, // Set transparent background color
+    barrierColor: Colors.black.withOpacity(0.5), // Adjust the barrier color and opacity
+    isScrollControlled: true, // Allow bottom sheet to take up entire screen height
+  );
+}
+
 
   @override
   void dispose() {
