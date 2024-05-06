@@ -68,6 +68,7 @@ class _SearchFeedWidgetState extends ConsumerState<SearchFeedWidget> {
 
   Future<void> getUserID() async {
     userId = await getUserId();
+    print("User ID is !!! : $userId");
   }
 
   Future _fetchPosts() async {
