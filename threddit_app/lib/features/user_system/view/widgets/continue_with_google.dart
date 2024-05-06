@@ -9,6 +9,11 @@ import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+///[ContinueWithGoogle] button is used to controll the sign is with google process,
+///where first of all the sign is with google function is called to open the google pop up
+///window, and the user select his prefered google account, then check if the email
+///is already found user to log him in or new one to start with the about you screen
+///as a first step for the user account registration process
 class ContinueWithGoogle extends ConsumerWidget {
   const ContinueWithGoogle({super.key});
 

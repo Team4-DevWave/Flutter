@@ -1,11 +1,9 @@
-// ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/comment_item_user_profile.dart';
@@ -21,8 +19,15 @@ import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
+/// A widget responsible for displaying the user profile.
+///
+/// This widget provides a detailed view of the user profile, including their posts, comments,
+/// about section, social links, and karma statistics. It also allows users to edit their profile,
+/// add new posts, search, and share their profile.
 class UserProfile extends ConsumerStatefulWidget {
+  /// Constructs an instance of [UserProfile].
   const UserProfile({super.key});
   @override
   ConsumerState<UserProfile> createState() => _UserProfileState();
@@ -46,36 +51,54 @@ class _UserProfileState extends ConsumerState<UserProfile>
   bool _fetchingCommentsFinish = true;
 
   UserModelMe? user;
-  String? dis;
+  String? pfp;
+  String? displayName;
+  bool isLoading = false;
 
-  void _getUserData() async {
-    user = ref.read(userModelProvider)!;
-    socialLinks = ref.read(userProfileProvider)?.socialLinks;
+  void _getUserData() {
+    setState(() {
+      isLoading = true;
+    });
+    user = ref.watch(userModelProvider)!;
+    setState(() {
+      isLoading = false;
+    });
   }
 
+  /// Method to set data.
   void setData() async {
-    //getSettings function gets the user settings data and updates it in the provider
-    await ref.read(settingsFetchProvider.notifier).getSettings();
-    dis = ref.read(userModelProvider)?.displayName;
+    //getSettings function gets the user settings data and updates it in the userProfileProivder
+    await ref.watch(settingsFetchProvider.notifier).getSettings();
+    await ref.watch(settingsFetchProvider.notifier).getMe();
   }
 
   String? uid;
   @override
   void initState() {
-    _getUserData();
     _fetchPosts();
 
     setData();
-    setData();
+
     _scrollController.addListener(_onScroll);
     _scrollControllerComments.addListener(_onScrollComments);
-
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
     _fetchComments();
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    setData();
+    print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEeee");
+    socialLinks = ref.watch(userProfileProvider)?.socialLinks;
+    _getUserData();
+    print(user!.profilePicture);
+    super.didChangeDependencies();
+  }
+
+
+  /// Method to set user ID.
   Future<void> setUserid() async {
     uid = await getUserId();
   }
@@ -86,6 +109,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     super.dispose();
   }
 
+  /// Method to fetch posts.
   Future _fetchPosts() async {
     final response =
         await fetchPostsByUsername(user!.username ?? '', _currentPage);
@@ -104,6 +128,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     }
   }
 
+  /// Method to fetch posts.
   Future _fetchComments() async {
     final response = await fetchComments(
       user!.username ?? '',
@@ -126,6 +151,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
     }
   }
 
+  /// Method to handle scrolling.
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
@@ -140,15 +166,25 @@ class _UserProfileState extends ConsumerState<UserProfile>
     }
   }
 
+  bool isLink(String value) {
+    // Regular expression for URL validation
+    final urlRegex = RegExp(r'^(http|https):\/\/[^ "]+$', caseSensitive: false);
+
+    // Check if the input string matches the URL format
+    return urlRegex.hasMatch(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<String> tabs = <String>['Posts', 'Comments', 'About'];
     final settings = ref.watch(userProfileProvider);
-    final imageFile = ref.watch(imagePathProvider);
+    // final imageFile = ref.watch(imagePathProvider);
 
     ImageProvider setProfilePic() {
-      if (imageFile != null) {
-        return FileImage(imageFile);
+      print("image");
+      print(user!.profilePicture);
+      if (user!.profilePicture!.isNotEmpty && isLink(user!.profilePicture!)) {
+        return NetworkImage(user!.profilePicture!);
       } else {
         return const AssetImage('assets/images/Default_Avatar.png');
       }
@@ -178,7 +214,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
       }
     });
 
-    return DefaultTabController(
+    return !isLoading? DefaultTabController(
       length: tabs.length,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -190,6 +226,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                 handle:
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
+                  stretch: true,
                   title: Text(
                     "u/${user?.username}",
                     style: AppTextStyles.secondaryTextStyle,
@@ -232,6 +269,8 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                           socialLinks = ref
                                               .read(userProfileProvider)
                                               ?.socialLinks;
+                                          setData();
+                                          _getUserData();
                                         }));
                               },
                               child: Text(
@@ -244,30 +283,39 @@ class _UserProfileState extends ConsumerState<UserProfile>
                               height: 5.h,
                             ),
                             Text(
-                              settings!.displayName == ""
+                              user!.displayName == ""
                                   ? "u/${user?.username}"
-                                  : "u/${settings.displayName}",
+                                  : "u/${user!.displayName}",
                               style: AppTextStyles.primaryTextStyle
                                   .copyWith(fontSize: 20.spMin),
                             ),
                             SizedBox(
                               height: 5.h,
                             ),
-                            Text(
+                            Row(
+                              children: [
+                                 Text(
                               "${user?.followedUsers?.length} following",
                               style: AppTextStyles.primaryTextStyle,
                             ),
                             SizedBox(
-                              height: 5.h,
+                              width: 5.w,
+                            ),
+                            Icon(Icons.circle, color: Colors.white, size: 5.r,),
+                            SizedBox(
+                              width: 5.w,
                             ),
                             Text(
                               "${(user?.karma?.posts ?? 0) + (user?.karma?.comments ?? 0)} karma",
                               style: AppTextStyles.secondaryTextStyle,
                             ),
+                              ],
+                            ),
+                           
                             SizedBox(
                               height: 5.h,
                             ),
-                            if (settings.about != "")
+                            if (settings!.about != "")
                               Text(
                                 settings.about,
                                 style: AppTextStyles.secondaryTextStyle,
@@ -324,15 +372,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
                       },
                       icon: const Icon(
                         Icons.search_outlined,
-                        color: AppColors.whiteGlowColor,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        //share profile modal bottom sheet
-                      },
-                      icon: const Icon(
-                        Icons.share,
                         color: AppColors.whiteGlowColor,
                       ),
                     ),
@@ -531,6 +570,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
           ),
         ),
       ),
-    );
+    ): const Loading();
   }
 }

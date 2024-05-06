@@ -106,7 +106,7 @@ class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
         itemBuilder: (context, index) {
           if (index < _subreddits.length) {
             return CommunityUnit(
-              subreddit: _subreddits[index],
+              subreddit: _subreddits,
               userID: userId!,
             );
           } else {

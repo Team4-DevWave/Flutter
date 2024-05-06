@@ -17,7 +17,7 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 ///
 void requestPermisseion() async {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
+  await messaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -25,13 +25,6 @@ void requestPermisseion() async {
       criticalAlert: false,
       provisional: false,
       sound: true);
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    print("User Granted permissions");
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    print("User Granted provisional permission");
-  } else {
-    print("User declined or has not accpet permission");
-  }
 }
 
 /// Sends a push notification to the specified FCM token.
@@ -78,6 +71,18 @@ void sendPushNotification(String token, String body, String title) async {
   } catch (e) {}
 }
 
+/// Marks a notification as read.
+///
+/// This function sends a PATCH request to an API to mark a specific notification as read.
+/// The notification is identified by its ID, which is passed as a parameter to the function.
+///
+/// The function first retrieves the user's token by calling the `getToken` function. It then
+/// sends the PATCH request to the API, including the token in the 'Authorization' header.
+///
+/// If the request is successful (i.e., the response status code is 200), the function completes
+/// without throwing an exception. If the request fails, the function throws an exception.
+///
+/// The [id] parameter must not be null.
 Future<void> markAsRead(String id) async {
   String? token = await getToken();
   final response = await http.patch(

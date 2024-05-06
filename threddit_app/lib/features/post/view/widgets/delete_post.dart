@@ -7,6 +7,15 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// Function to show a delete confirmation dialog for a post.
+///
+/// Displays an AlertDialog to confirm deletion of a post. It includes
+/// options to confirm deletion or cancel the operation.
+///
+/// Parameters:
+/// - `context`: The BuildContext to show the dialog.
+/// - `ref`: The WidgetRef used for Riverpod state management.
+/// - `postid`: The ID of the post to be deleted.
 void delete(BuildContext context, WidgetRef ref, String postid) {
   showDialog(
     context: context,

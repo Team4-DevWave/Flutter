@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/Moderation/view/widgets/moderation.dart';
 import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.dart';
+import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 
@@ -133,8 +134,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
 
   @override
   Widget build(BuildContext context) {
-    final difference = now.difference(widget.dataOfPost.postedTime);
-    final hoursSincePost = difference.inHours;
+    final hoursSincePost = formatDateTime(widget.dataOfPost.postedTime);
     getModOptions();
     return Container(
       padding: const EdgeInsets.all(5.0),
@@ -167,7 +167,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     width: 7.w,
                   ),
                   Text(
-                    '${hoursSincePost}h ago',
+                    '${hoursSincePost}',
                     style: const TextStyle(color: AppColors.whiteHideColor),
                   ),
                 ],

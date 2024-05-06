@@ -6,11 +6,21 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/theme.dart';
 import 'package:video_player/video_player.dart';
 
+/// A widget for adding videos to a post.
 class AddVideoWidget extends ConsumerStatefulWidget {
+  /// Constructs a new [AddVideoWidget] instance.
+  ///
+  /// The [onPressed] and [videoPath] parameters are required. The [onPressed]
+  /// callback function is called when the video is pressed, and the [videoPath]
+  /// represents the file path of the video to be added.
   const AddVideoWidget(
       {super.key, required this.onPressed, required this.videoPath});
+
+  /// Callback function triggered when the video is pressed.
   final Function()? onPressed;
-  final File videoPath; 
+
+  /// The path of the video file to be added.
+  final File videoPath;
 
   @override
   ConsumerState<AddVideoWidget> createState() => _AddVideoWidgetState();
@@ -22,9 +32,10 @@ class _AddVideoWidgetState extends ConsumerState<AddVideoWidget> {
 
   @override
   void initState() {
-    /// the video controller contains the path of the video
+    // the video controller contains the path of the video
     _videoController = VideoPlayerController.file(widget.videoPath);
-    ///intializing the _video object
+
+    // intializing the _video object
     _intializeVideoPlayer = _videoController.initialize();
     super.initState();
   }
@@ -41,11 +52,9 @@ class _AddVideoWidgetState extends ConsumerState<AddVideoWidget> {
       FutureBuilder(
           future: _intializeVideoPlayer,
           builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.waiting)
-            {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Loading();
-            }
-            else if (snapshot.connectionState == ConnectionState.done) {
+            } else if (snapshot.connectionState == ConnectionState.done) {
               return ConstrainedBox(
                 constraints: BoxConstraints.loose(const Size.fromHeight(400)),
                 child: Padding(
@@ -56,8 +65,7 @@ class _AddVideoWidgetState extends ConsumerState<AddVideoWidget> {
                   ),
                 ),
               );
-            } 
-            else {
+            } else {
               return const SizedBox();
             }
           }),
@@ -72,13 +80,10 @@ class _AddVideoWidgetState extends ConsumerState<AddVideoWidget> {
                   : _videoController.play();
             });
           },
-          
-          icon: Icon(_videoController.value.isPlaying
-              ? Icons.pause
-              : Icons.play_arrow, 
-              color: AppColors.whiteGlowColor
-              ),
-              style: ButtonStyle(
+          icon: Icon(
+              _videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
+              color: AppColors.whiteGlowColor),
+          style: ButtonStyle(
               backgroundColor: MaterialStatePropertyAll(
                   AppColors.mainColor.withOpacity(0.5))),
         ),
