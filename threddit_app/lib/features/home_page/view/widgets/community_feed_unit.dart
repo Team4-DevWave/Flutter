@@ -34,7 +34,7 @@ class _CommunityUnitState extends ConsumerState<CommunityUnit> {
     final newUser = UserModel(id: widget.userID, username: username);
 
     return SizedBox(
-      height: 150.h,
+      height: 170.h,
       child: GridView.builder(
           scrollDirection: Axis.horizontal,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -60,7 +60,7 @@ class _CommunityUnitState extends ConsumerState<CommunityUnit> {
                   border: Border.all(
                       style: BorderStyle.solid,
                       color: AppColors.whiteHideColor),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.sp),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -102,8 +102,7 @@ class _CommunityUnitState extends ConsumerState<CommunityUnit> {
                                 if (!isCurrentUser) {
                                   ref.watch(joinCommunityProvider(
                                       widget.subreddit[index].name));
-                                  widget.subreddit[index].members
-                                      .add(newUser);
+                                  widget.subreddit[index].members.add(newUser);
                                   isCurrentUser = true;
                                   setState(() {});
                                 } else {
