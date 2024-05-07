@@ -43,7 +43,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
         isScrollControlled: true,
         context: context,
         builder: (ctx) => AddComment(
-              postID: widget.currentPost.id,
+              post: widget.currentPost,
               uid: widget.uid,
             ));
   }
@@ -153,9 +153,10 @@ class _PostScreenState extends ConsumerState<PostScreen> {
               ),
             ),
             AddComment(
-              postID: widget.currentPost.id,
+              post: widget.currentPost,
               uid: widget.uid,
             )
+            
           ],
         ),
       ),

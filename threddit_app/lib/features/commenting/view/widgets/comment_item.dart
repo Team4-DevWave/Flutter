@@ -90,6 +90,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   @override
   Widget build(BuildContext context) {
+    
     // Function to delete the comment
     void deleteComment() {
       ref.read(commentsProvider.notifier).deleteComment(widget.comment.id, widget.comment.post);
@@ -169,7 +170,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(right: 10.0),
-                      child: CircleAvatar(
+                      child:  CircleAvatar(
                         radius: 18,
                         backgroundImage:
                             AssetImage('assets/images/Default_Avatar.png'),

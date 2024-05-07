@@ -32,13 +32,16 @@ class ChatPreview extends ConsumerStatefulWidget {
 }
 
 class _ChatPreviewState extends ConsumerState<ChatPreview> {
+  
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
   Widget build(BuildContext context) {
+    final chatReceiver=widget.chat.chatroomMembers[0].username==widget.username?widget.chat.chatroomMembers[1]:widget.chat.chatroomMembers[0];
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.all(8.0.sp),
@@ -57,8 +60,14 @@ class _ChatPreviewState extends ConsumerState<ChatPreview> {
                           backgroundImage:
                               AssetImage('assets/images/group-avatars.png'),
                         )
-                      : const CircleAvatar(
+                      :  chatReceiver.profilePicture!=null&&chatReceiver.profilePicture!=''? CircleAvatar(
                           radius: 25.0,
+                          backgroundColor: const Color.fromARGB(255, 76, 175, 172),
+                          backgroundImage:
+                              NetworkImage(
+                              chatReceiver.profilePicture!),
+                        ):const CircleAvatar(
+                          radius: 23.0,
                           backgroundColor: Color.fromARGB(255, 76, 175, 172),
                           backgroundImage:
                               AssetImage('assets/images/Default_Avatar.png'),

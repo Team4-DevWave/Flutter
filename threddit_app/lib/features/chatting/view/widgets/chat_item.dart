@@ -5,9 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
 import 'package:threddit_clone/features/chatting/model/chat_notifier.dart';
 
-
 String formatDateTime(DateTime messageTime) {
-   DateTime now = DateTime.now();
+  DateTime now = DateTime.now();
   Duration difference = now.difference(messageTime);
 
   if (difference.inHours < 24) {
@@ -83,7 +82,9 @@ class _ChatItemState extends ConsumerState<ChatItem> {
                   },
                 );
                 try {
-                  await ref.read(chatNotifierProvider.notifier).deleteMessage(widget.message.id);
+                  await ref
+                      .read(chatNotifierProvider.notifier)
+                      .deleteMessage(widget.message.id);
                   Navigator.pop(context);
                   Navigator.pop(context);
                   Navigator.pop(context);
@@ -150,12 +151,20 @@ class _ChatItemState extends ConsumerState<ChatItem> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    radius: 25.0,
-                    backgroundColor: Color.fromARGB(255, 229, 194, 99),
-                    backgroundImage:
-                        AssetImage('assets/images/Default_Avatar.png'),
-                  ),
+                  widget.message.sender.profilePicture != null && widget.message.sender.profilePicture!=''
+                      ? CircleAvatar(
+                          radius: 25.0,
+                          backgroundColor:
+                              const Color.fromARGB(255, 229, 194, 99),
+                          backgroundImage: NetworkImage(
+                              widget.message.sender.profilePicture!),
+                        )
+                      : const CircleAvatar(
+                          radius: 25.0,
+                          backgroundColor: Color.fromARGB(255, 229, 194, 99),
+                          backgroundImage:
+                              AssetImage('assets/images/Default_Avatar.png'),
+                        ),
                   SizedBox(width: 8.0.w),
                   Expanded(
                     child: Column(

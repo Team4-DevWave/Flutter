@@ -94,14 +94,13 @@ class _PostCardState extends ConsumerState<PostCard> {
 
     void downVotePost(WidgetRef ref) async {
       ref.read(votePost((postID: widget.post.id, voteType: -1)));
-       if (widget.post.userVote == 'upvoted') {
+      if (widget.post.userVote == 'upvoted') {
         widget.post.votes!.upvotes--;
       }
       if (widget.post.userVote == 'downvoted') {
         widget.post.votes!.downvotes--;
         widget.post.userVote = 'none';
-      }
-      else {
+      } else {
         widget.post.votes!.downvotes++;
         widget.post.userVote = 'downvoted';
       }
@@ -123,13 +122,19 @@ class _PostCardState extends ConsumerState<PostCard> {
           children: [
             Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundImage:
-                        AssetImage('assets/images/Default_Avatar.png'),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: widget.post.userID!.profilePicture != null &&
+                          widget.post.userID!.profilePicture != ''
+                      ? CircleAvatar(
+                          radius: 16,
+                          backgroundImage:
+                              NetworkImage(widget.post.userID!.profilePicture!))
+                      : const CircleAvatar(
+                          radius: 16,
+                          backgroundImage:
+                              AssetImage('assets/images/Default_Avatar.png'),
+                        ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
