@@ -11,6 +11,7 @@ import 'package:threddit_clone/features/searching/view_model/searching_apis.dart
 import 'package:threddit_clone/features/searching/view_model/searching_function.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
+import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
@@ -27,12 +28,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   int mode = 0;
   String? userId;
   List<String> localSearchHistory = [];
+  final _subreddits = <Subreddit>[];
+
+  bool _fetching = true;
   SearchModel search = SearchModel(
       posts: [], comments: [], subreddits: [], medias: [], users: []);
   @override
   void initState() {
     super.initState();
-    getUserId();
+    getUserID();
     searchController.addListener(onChange);
   }
 
@@ -42,13 +46,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void fetchSearch(String query) async {
-    final response =
+    final results =
         await ref.watch(searchingApisProvider.notifier).search(query, 1);
-    print("THE NUMBER OF SUBREDDITS IS:     ");
-    print(response.posts.length);
-    setState(() {
-      search = response;
-    });
+    search = results;
+    if (results.subreddits.isNotEmpty) {
+      setState(() {
+        _subreddits.addAll(results.subreddits);
+        _fetching = true;
+      });
+    } else {
+      setState(() {
+        _fetching = false;
+      });
+    }
   }
 
   void onChange() {
@@ -109,71 +119,90 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       body: Padding(
           padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
           child: mode == 1
-              ? SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Communities",
-                        style: AppTextStyles.boldTextStyle
-                            .copyWith(fontSize: 15.sp),
-                      ),
-                      ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            dense: true,
-                            contentPadding: const EdgeInsets.all(0),
-                            leading: ClipOval(
-                              child: search.subreddits[index].srLooks.icon != ''
-                                  ? Image.network(
-                                      search.subreddits[index].srLooks.icon,
-
-                                      fit: BoxFit.cover,
-                                      width: 30
-                                          .w, // You can adjust width and height to your needs
-                                      height: 30.h,
-                                    )
-                                  : SizedBox(
-                                      width: 30,
-                                      height: 30.h,
-                                      child: Image.asset(
-                                        'assets/images/Reddit_Icon_FullColor.png',
-                                      ),
-                                    ),
+              ? _subreddits.isEmpty
+                  ? _fetching
+                      ? Center(
+                          child: Lottie.asset(
+                            'assets/animation/loading2.json',
+                            repeat: true,
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            'No feed available.',
+                            style: TextStyle(
+                              fontSize: 20.sp,
+                              color: Colors.white,
                             ),
-                            title: Text(
-                              "r/${search.subreddits[index].name}",
-                              style: AppTextStyles.boldTextStyle
-                                  .copyWith(fontSize: 15.sp),
-                            ),
-                            onTap: () {
-                              print(userId);
-                              print(search.subreddits[index].name);
-                              saveSearchHistory(
-                                  "r/${search.subreddits[index].name}");
+                          ),
+                        )
+                  : SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Communities",
+                            style: AppTextStyles.boldTextStyle
+                                .copyWith(fontSize: 15.sp),
+                          ),
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                dense: true,
+                                contentPadding: const EdgeInsets.all(0),
+                                leading: ClipOval(
+                                  child: search
+                                              .subreddits[index].srLooks.icon !=
+                                          ''
+                                      ? Image.network(
+                                          search.subreddits[index].srLooks.icon,
 
-                              Navigator.pushNamed(
-                                  context, RouteClass.communityScreen,
-                                  arguments: {
-                                    'id': search.subreddits[index].name,
-                                    'uid': " "
-                                  }).then((value) => setState(() {
-                                    localSearchHistory = addingHistory(
-                                        "r/${search.subreddits[index].name}",
-                                        localSearchHistory);
-                                    print(
-                                        "PRINTING LOCAL SEARCH HISTORY > !! > >!!! $localSearchHistory ");
-                                  }));
+                                          fit: BoxFit.cover,
+                                          width: 30
+                                              .w, // You can adjust width and height to your needs
+                                          height: 30.h,
+                                        )
+                                      : SizedBox(
+                                          width: 30,
+                                          height: 30.h,
+                                          child: Image.asset(
+                                            'assets/images/Reddit_Icon_FullColor.png',
+                                          ),
+                                        ),
+                                ),
+                                title: Text(
+                                  "r/${search.subreddits[index].name}",
+                                  style: AppTextStyles.boldTextStyle
+                                      .copyWith(fontSize: 15.sp),
+                                ),
+                                onTap: () {
+                                  print(userId);
+                                  print(search.subreddits[index].name);
+                                  saveSearchHistory(
+                                      "r/${search.subreddits[index].name}");
+
+                                  Navigator.pushNamed(
+                                      context, RouteClass.communityScreen,
+                                      arguments: {
+                                        'id': search.subreddits[index].name,
+                                        'uid': userId!
+                                      }).then((value) => setState(() {
+                                        localSearchHistory = addingHistory(
+                                            "r/${search.subreddits[index].name}",
+                                            localSearchHistory);
+                                        print(
+                                            "PRINTING LOCAL SEARCH HISTORY > !! > >!!! $localSearchHistory ");
+                                      }));
+                                },
+                              );
                             },
-                          );
-                        },
-                        itemCount: search.subreddits.length,
+                            itemCount: search.subreddits.length,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )
+                    )
               : SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +233,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                           context, RouteClass.communityScreen,
                                           arguments: {
                                             'id': localSearchHistory[index],
-                                            'uid': " "
+                                            'uid': userId!
                                           });
                                     },
                                     title: Text(

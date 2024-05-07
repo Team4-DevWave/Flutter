@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,7 +6,6 @@ import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
-import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_room_preview.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/new_chat.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
@@ -27,7 +24,6 @@ class MainChatScreen extends ConsumerStatefulWidget {
 class _MainChatScreenState extends ConsumerState<MainChatScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  List<Chatroom> _chatrooms = [];
   IO.Socket? socket;
 
   @override
@@ -38,13 +34,21 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
   }
 
   void _initializeSocketConnection() async {
-    socket = IO.io("http://${AppConstants.local}:3005", <String, dynamic>{
+    String? token = await getToken();
+     String socketUrl = "http://${AppConstants.local}:3005";
+  
+    socket = IO.io(socketUrl, <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
-    });
+      
+      "query":"token=$token",
+      
+    },
+    
+    );
     socket?.connect();
     socket?.onConnect((data) {
-      print("Connected");
+      //print("Connected");
       socket?.on("message", (msg) {
         print(msg);
         //implement updating the screen
@@ -79,8 +83,7 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
           ),
           centerTitle: true,
           actions: [
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.filter_alt_sharp)),
+           
             Builder(
               builder: (context) => IconButton(
                 icon: const Icon(Icons.person_rounded),
