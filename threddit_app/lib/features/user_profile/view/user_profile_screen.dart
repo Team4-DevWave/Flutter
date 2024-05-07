@@ -382,7 +382,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
                               )),
                           IconButton(
                             onPressed: () {
-                              //open search screen
                               Navigator.pushNamed(
                                   context, RouteClass.searchScreen);
                             },
