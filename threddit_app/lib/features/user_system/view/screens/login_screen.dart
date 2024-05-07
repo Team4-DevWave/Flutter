@@ -230,7 +230,7 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                       child: ContinueButton(
                         isOn: isValid,
                         onPressed: isValid ? onContinue : null,
-                        identifier: 'Conitnue',
+                        identifier: 'Continue',
                       ),
                     ),
                   ],

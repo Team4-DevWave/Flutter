@@ -53,3 +53,5 @@ final isFirstTimeEnter = StateProvider<bool>((ref) => true);
 
 /// A provider for managing the flag indicating if there are changes in data.
 final isChanged = StateProvider<bool>((ref) => false);
+
+final shareProfilePic = StateProvider<String>((ref) => "");

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:threddit_clone/features/home_page/model/visited_item.dart';
 import 'package:threddit_clone/features/user_system/view/screens/text_size_screen.dart';
 import 'package:threddit_clone/app/pref_constants.dart';
 
@@ -56,6 +59,8 @@ Future<void> deleteToken() async {
   await prefs?.remove(PrefConstants.authToken);
 }
 
+Future<void> saveRecentlyVisited() async {}
+
 Future<String?> getGoogleToken() async {
   prefs = await SharedPreferences.getInstance();
   return prefs?.getString(PrefConstants.googleToken);
@@ -101,3 +106,63 @@ Future<void> saveTextSize(double fontSize) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setDouble('textSize', fontSize);
 }
+
+Future<List<VisitedItem>> getRecentVisits() async {
+  prefs = await SharedPreferences.getInstance();
+  final List<String>? storedData =
+      prefs?.getStringList(PrefConstants.recentlyVisitied);
+  if (storedData == null) return [];
+  return storedData
+      .map((item) => VisitedItem.fromMap(jsonDecode(item)))
+      .toList();
+}
+
+Future<void> addVisit(VisitedItem item) async {
+  prefs = await SharedPreferences.getInstance();
+
+  final currentVisits = await getRecentVisits();
+
+  // Check if item already exists and remove it to move it to the top
+  currentVisits
+      .removeWhere((existingItem) => existingItem.username == item.username);
+  currentVisits.insert(0, item);
+
+  // Limit the list size
+  if (currentVisits.length > 10) currentVisits.removeLast();
+  await prefs?.setStringList(
+    PrefConstants.recentlyVisitied,
+    currentVisits.map((item) => jsonEncode(item.toMap())).toList(),
+  );
+}
+
+Future<void> deleteAll() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove(PrefConstants.recentlyVisitied);
+}
+
+// class RecentVisitsManager {
+//   static Future<List<VisitedItem>> getRecentVisits() async {
+//     final prefs = await SharedPreferences.getInstance();
+//     final List<String>? storedData =
+//         prefs.getStringList(PrefConstants.recentlyVisitied);
+//     if (storedData == null) return [];
+//     return storedData
+//         .map((item) => VisitedItem.fromMap(jsonDecode(item)))
+//         .toList();
+//   }
+
+//   static Future<void> addVisit(VisitedItem item) async {
+//     final prefs = await SharedPreferences.getInstance();
+//     final currentVisits = await getRecentVisits();
+//     // Check if item already exists and remove it to move it to the top
+//     currentVisits
+//         .removeWhere((existingItem) => existingItem.username == item.username);
+//     currentVisits.insert(0, item);
+//     // Limit the list size if needed
+//     if (currentVisits.length > 10) currentVisits.removeLast();
+//     await prefs.setStringList(
+//       PrefConstants.recentlyVisitied,
+//       currentVisits.map((item) => jsonEncode(item.toMap())).toList(),
+//     );
+//   }
+// }

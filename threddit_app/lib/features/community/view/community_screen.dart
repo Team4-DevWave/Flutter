@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view%20model/community_provider.dart';
 import 'package:threddit_clone/features/community/view/widgets/community_options.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/home_page/model/visited_item.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
 
@@ -19,7 +21,7 @@ import 'package:threddit_clone/theme/colors.dart';
 /// The community screen is used to display the community banner, community icon, community name, community description, community members count, join button, community info button, community posts and the community post feed
 
 class CommunityScreen extends ConsumerStatefulWidget {
-  final String id;
+  final String id; // community name
   final String uid;
   const CommunityScreen({super.key, required this.id, required this.uid});
 
@@ -50,6 +52,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         _fetchingFinish = false;
       });
     }
+  }
+
+  void _setVisit(Subreddit community) async {
+    final VisitedItem visited;
+    visited = VisitedItem(
+        community.name, PrefConstants.subredditType, community.srLooks.icon);
+    await addVisit(visited);
   }
 
   Future<void> getUserID() async {
@@ -131,6 +140,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     bool isCurrentUser = community.members
         .contains(UserModel(id: widget.uid, username: username));
 
+    _setVisit(community);
     bool getUserState(Subreddit community) {
       if (community.moderators.contains(newUser)) {
         Navigator.pushNamed(context, RouteClass.communityModTools,
@@ -203,7 +213,6 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                   const Color.fromARGB(223, 49, 49, 49)),
                             ),
                           ),
-                    
                           IconButton.filled(
                             onPressed: () {
                               showModalBottomSheet(
