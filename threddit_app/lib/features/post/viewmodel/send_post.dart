@@ -38,13 +38,13 @@ class PostProvider extends StateNotifier<bool> {
     final post = ref.watch(postDataProvider);
     final token = await getToken();
     final user = ref.read(userModelProvider)!.username;
-    final Map<String, List<String>> pollValue = {
-      for (var value in post!.poll!.values)
-        value: [] 
-    };
-
-    final whereTo =
-        post.community == null ? 'u/$user' : 'r/${post.community}';
+    final Map<String, List<String>> pollValue;
+    if (post!.poll != null) {
+      pollValue = {for (var value in post.poll!.values) value: []};
+    } else {
+      pollValue = {};
+    }
+    final whereTo = post.community == null ? 'u/$user' : 'r/${post.community}';
 
     try {
       final response = await http.post(
@@ -64,9 +64,8 @@ class PostProvider extends StateNotifier<bool> {
             "image": post.image ?? "",
             "video": post.video ?? "",
             "duration": post.duration ?? 1,
-            "poll": pollValue
+            "poll": pollValue,
           }));
-
       if (response.statusCode == 201) {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
         final urlPost =

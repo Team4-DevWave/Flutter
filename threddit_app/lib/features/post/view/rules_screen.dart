@@ -65,14 +65,30 @@ class _RulesPageState extends ConsumerState<RulesPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ..._rules.map(
-                (rule) => Text(
-                  rule,
-                  style: AppTextStyles.primaryTextStyle.copyWith(
-                    fontSize: 20.spMin,
+              if (_rules.isNotEmpty)
+                ..._rules.map(
+                  (rule) => Text(
+                    rule,
+                    style: AppTextStyles.primaryTextStyle.copyWith(
+                      fontSize: 20.spMin,
+                    ),
                   ),
                 ),
-              ),
+              if (_rules.isEmpty)
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.warning_amber,
+                      color: AppColors.whiteGlowColor,
+                    ),
+                    Text(
+                      "Wow, such empty in rules!",
+                      style: AppTextStyles.primaryTextStyle,
+                    ),
+                  ],
+                ),
               Align(
                 alignment: FractionalOffset.bottomCenter,
                 child: ElevatedButton(

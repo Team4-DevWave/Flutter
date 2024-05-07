@@ -355,9 +355,7 @@ class SettingsFetch extends StateNotifier<bool> {
     if (response.statusCode == 200) {
       user = UserModelMe.fromJson(jsonDecode(response.body));
       ref.read(userModelProvider.notifier).update((state) => user);
-    } else {
-      
-    }
+    } else {}
     return UserModelMe.fromJson(jsonDecode(response.body));
   }
 
@@ -401,7 +399,7 @@ class SettingsFetch extends StateNotifier<bool> {
     print(response.body);
     print(response.statusCode);
     print("Above are the responses");
-    
+
     return NotificationsSettingsModel.fromJson(jsonDecode(response.body));
   }
 

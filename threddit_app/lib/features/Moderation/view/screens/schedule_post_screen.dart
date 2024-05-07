@@ -5,22 +5,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/Moderation/model/schedule_post.dart';
+import 'package:threddit_clone/features/Moderation/view/screens/widgets/scheduling_sheet.dart';
+import 'package:threddit_clone/features/Moderation/view_model/schedule_post.dart';
 import 'package:threddit_clone/features/post/model/post_model.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
+import 'package:threddit_clone/features/post/view/widgets/add_poll.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_video.dart';
 import 'package:threddit_clone/features/post/view/widgets/close_button.dart';
 import 'package:threddit_clone/features/post/view/widgets/post_button.dart';
 import 'package:threddit_clone/features/post/view/widgets/tags.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A StatefulWidget responsible for confirming and posting a new content.
+///
+/// This widget allows users to confirm their post content before submitting
+/// it to the application. Users can input a title, body text, add images,
+/// videos, or links to their post, and select tags. They can also view the
+/// rules of the community they are posting in.
+///
+/// This widget listens to the changes in the [PostDataProvider] to update the
+/// content accordingly.
 class PostSchedule extends ConsumerStatefulWidget {
-  const PostSchedule({super.key, required this.communityName});
-  final String communityName;
+  const PostSchedule({super.key});
   @override
   ConsumerState<PostSchedule> createState() => _PostScheduleState();
 }
@@ -31,18 +43,30 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
   bool isImage = false;
   bool isLink = false;
   bool isVideo = false;
-  bool isPoll = false;
   late String postTitle;
   late String postBody;
+  bool isPoll = false;
+  bool isDisabled = false;
 
-  ///add image picker data
+  /// Image picker instance for selecting images from the device gallery.
   final ImagePicker picker = ImagePicker();
+
+  /// Base64 encoded string representation of the selected image.
   String? image;
+
+  /// Base64 encoded string representation of the selected video.
   String? video;
+
+  /// Represnets where the post will be posted.
   String? whereTo;
+
+  /// File representing the selected video.
   File? videoFile;
+
+  /// File representing the selected image.
   File? imageFile;
 
+  /// Picks an image from the device gallery and updates the selected image.
   Future<void> _pickImage() async {
     final XFile? pickedImage =
         await picker.pickImage(source: ImageSource.gallery);
@@ -55,13 +79,13 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
 
     setState(() {
       image = base64Encode(imageBytes);
-
       isImage = true;
       ref.read(postDataProvider.notifier).updateImages(image!);
       ref.read(postDataProvider.notifier).updateImagePath(imageFile!);
     });
   }
 
+  /// Picks a video from the device gallery and updates the selected video.
   Future<void> _pickVideo() async {
     final pickedVideo = await picker.pickVideo(source: ImageSource.gallery);
     // If the user does not select a video then return null.
@@ -76,6 +100,7 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
     });
   }
 
+  /// Removes the selected image.
   Future<void> _removeImage() async {
     setState(() {
       image = null;
@@ -83,12 +108,14 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
     });
   }
 
+  /// Adds a link to the post.
   Future<void> _addLink() async {
     setState(() {
       isLink = true;
     });
   }
 
+  /// Removes the selected video.
   Future<void> _removeVideo() async {
     setState(() {
       video = null;
@@ -96,20 +123,63 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
     });
   }
 
+  /// Removes the added link.
   Future<void> _removeLink() async {
     setState(() {
       isLink = false;
     });
   }
 
+  /// Initializes the path for the post
   void intializeData() {
-    whereTo = widget.communityName;
+    final intialData = ref.watch(postDataProvider);
+    if (intialData?.community == null) {
+      whereTo = 'My Profile';
+    } else {
+      whereTo = intialData?.community;
+    }
   }
 
   @override
   void didChangeDependencies() {
     intializeData();
     super.didChangeDependencies();
+  }
+
+  Future<void> _addPoll() async {
+    setState(() {
+      isPoll = true;
+    });
+  }
+
+  void _removePoll() {
+    setState(() {
+      isPoll = false;
+    });
+  }
+
+  bool checkForScheduling(SchedulePostModel? post) {
+    if (post == null) {
+      return false;
+    }
+    DateTime selectedDateTime = DateTime(post.realDate!.year,
+        post.realDate!.month, post.realDate!.day, post.realTime!.hour);
+    DateTime currentDateTime = DateTime.now();
+    print('selected date: $selectedDateTime');
+    print('current date: $currentDateTime');
+    if (selectedDateTime.isAfter(currentDateTime)) {
+      setState(() {
+        isDisabled = true;
+      });
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -119,25 +189,39 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
     super.dispose();
   }
 
+  /// Resets all data in the widget including title, body, and attachments.
   void resetAll() {
+    isImage = false;
+    isLink = false;
+    isVideo = false;
     _titleController = TextEditingController(text: '');
     _bodytextController = TextEditingController(text: '');
     _removeLink();
+    _removePoll();
     ref.read(postDataProvider.notifier).resetAll();
+    ref.read(schedulePostProvider.notifier).resetDateAndTime();
   }
 
+  /// Callback function for title field change.
+  ///
+  /// Updates the title in the `PostDataProvider` if it has changed.
   void onTitleChanged(String value) {
     final post = ref.watch(postDataProvider);
     if (post!.title != value) {
       ref.watch(postDataProvider.notifier).updateTitle(value);
     }
+    ref.watch(schedulePostProvider.notifier).updateTitle(value);
   }
 
+  /// Callback function for body text field change.
+  ///
+  /// Updates the body text in the `PostDataProvider` if it has changed.
   void onBodyChanged(String value) {
     final post = ref.watch(postDataProvider);
     if (post!.text_body != value) {
       ref.watch(postDataProvider.notifier).updateBodyText(value);
     }
+    ref.watch(schedulePostProvider.notifier).updateBody(value);
     postBody = value;
   }
 
@@ -145,6 +229,7 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
   Widget build(BuildContext context) {
     final ref = this.ref;
     PostData? post = ref.watch(postDataProvider);
+    SchedulePostModel? schpost = ref.watch(schedulePostProvider);
 
     Widget buildImageContent() {
       if (image == null || isLink || isVideo) {
@@ -165,6 +250,13 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
         return AddLinkWidget(
           removeLink: _removeLink,
         );
+      }
+      return const SizedBox();
+    }
+
+    Widget buildPoll() {
+      if (isPoll) {
+        return AddPoll(removePoll: _removePoll);
       }
       return const SizedBox();
     }
@@ -191,159 +283,75 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
           });
     }
 
-    void scheduling() {
-      showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: AppColors.backgroundColor,
-          builder: (ctx) {
-            return Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(Icons.navigate_before),
-                        color: AppColors.whiteGlowColor,
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Text(
-                        "Schedule Post",
-                        style: TextStyle(
-                            color: AppColors.whiteGlowColor,
-                            fontSize: 18.sp,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      const Spacer(),
-                      ElevatedButton(
-                         style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  const Color.fromARGB(223, 49, 49, 49)),),
-                          onPressed: () {},
-                          child: Text(
-                            'Save',
-                            style: AppTextStyles.primaryButtonGlowTextStyle,
-                          ))
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "Start on date",
-                        style: AppTextStyles.boldTextStyle
-                            .copyWith(fontSize: 16.spMin),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "Start on time ",
-                        style: AppTextStyles.boldTextStyle
-                            .copyWith(fontSize: 16.spMin),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            );
-          });
+    Widget scheduleButton() {
+      // Show schedule button if the combined date and time is in the future
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        child: ElevatedButton(
+          onPressed: () async {
+            ref.read(schedulePostProvider.notifier).resetDateAndTime();
+            Navigator.pop(context);
+            final response =
+                await ref.read(schedulePostProvider.notifier).updateSchPost();
+            response.fold((l) => showSnackBar(context, l.message), (r) => null);
+          },
+          style: const ButtonStyle(
+              backgroundColor:
+                  MaterialStatePropertyAll(AppColors.redditOrangeColor)),
+          child: const Text(
+            'Schedule',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      );
     }
 
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: false,
-          leading: ClosedButton(
-            resetAll: resetAll,
-            firstScreen: 2,
-            titleController: _titleController,
-            isImage: isImage,
-            isLink: isLink,
-            isVideo: isVideo,
-            isPoll: isPoll,
-          ),
-          actions: [
-            if (_titleController.text != "")
-              IconButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      context: context,
-                      backgroundColor: AppColors.backgroundColor,
-                      builder: (context) {
-                        return Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "Post Settings",
-                                style: AppTextStyles.boldTextStyle,
-                              ),
-                              SizedBox(
-                                height: 15.h,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  scheduling();
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    const Icon(
-                                      Icons.calendar_today_outlined,
-                                      color: AppColors.whiteGlowColor,
-                                    ),
-                                    SizedBox(
-                                      width: 10.w,
-                                    ),
-                                    Text(
-                                      "Schedule Post",
-                                      style: AppTextStyles.boldTextStyle
-                                          .copyWith(fontSize: 16.spMin),
-                                    ),
-                                    const Spacer(),
-                                    const Icon(
-                                      Icons.navigate_next,
-                                      color: AppColors.whiteGlowColor,
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        );
-                      });
-                },
-                icon: const Icon(
-                  Icons.more_horiz,
-                  color: Colors.white,
-                ),
+        automaticallyImplyLeading: false,
+        leading: ClosedButton(
+          resetAll: resetAll,
+          firstScreen: 2,
+          titleController: _titleController,
+          isImage: isImage,
+          isLink: isLink,
+          isVideo: isVideo,
+          isPoll: isPoll,
+        ),
+        actions: [
+          if (_titleController.text != "" && !isImage && !isLink && !isPoll && !isVideo)
+            IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    backgroundColor: AppColors.backgroundColor,
+                    builder: (context) {
+                      return const SchedulingBottomSheet();
+                    });
+              },
+              icon: const Icon(
+                Icons.more_horiz,
+                color: Colors.white,
               ),
-            if (isImage || isVideo)
-              PostButton(
-                titleController: _titleController,
-                type: "image/video",
-              )
-            else if (isLink)
-              PostButton(titleController: _titleController, type: "url")
-            else
-              PostButton(titleController: _titleController, type: "text")
-          ]),
+            ),
+          checkForScheduling(schpost)
+              ? scheduleButton()
+              : (isImage || isVideo)
+                  ? PostButton(
+                      titleController: _titleController,
+                      type: "image/video",
+                    )
+                  : (isLink)
+                      ? PostButton(
+                          titleController: _titleController, type: "url")
+                      : (isPoll)
+                          ? PostButton(
+                              titleController: _titleController, type: "poll")
+                          : PostButton(
+                              titleController: _titleController, type: "text")
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -359,28 +367,23 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, RouteClass.postToScreen);
-                              },
-                              splashColor: AppColors.realWhiteColor,
-                              child: Text(
-                                whereTo!,
-                                style: AppTextStyles.boldTextStyle,
-                              ),
+                            Text(
+                              whereTo!,
+                              style: AppTextStyles.boldTextStyle,
                             ),
-                            TextButton(
-                              onPressed: () {
-                                openRulesOverlay();
-                              },
-                              child: const Text(
-                                "Rules",
-                                style: TextStyle(
-                                  color: AppColors.redditOrangeColor,
-                                ),
-                              ),
-                            ),
+                            whereTo != "My Profile"
+                                ? TextButton(
+                                    onPressed: () {
+                                      openRulesOverlay();
+                                    },
+                                    child: const Text(
+                                      "Rules",
+                                      style: TextStyle(
+                                        color: AppColors.redditOrangeColor,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(),
                           ],
                         ),
                       ),
@@ -423,6 +426,7 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
                       buildImageContent(),
                       buildLink(),
                       buildVideoContent(),
+                      buildPoll(),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
                         child: TextField(
@@ -461,23 +465,38 @@ class _PostScheduleState extends ConsumerState<PostSchedule> {
         child: Row(
           children: [
             IconButton(
-              onPressed: (!isLink && !isVideo) ? _pickImage : () {},
+              onPressed: (!isLink && !isVideo && !isPoll && !isDisabled)
+                  ? _pickImage
+                  : () {},
               icon: const Icon(Icons.image),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll || isDisabled
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isLink && !isImage) ? _pickVideo : () {},
+              onPressed: (!isLink && !isImage & !isPoll && !isDisabled)
+                  ? _pickVideo
+                  : () {},
               icon: const Icon(Icons.video_library_outlined),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll || isDisabled
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
             IconButton(
-              onPressed: (!isImage && !isVideo) ? _addLink : () {},
+              onPressed: (!isImage && !isVideo && !isPoll && !isDisabled)
+                  ? _addLink
+                  : () {},
               icon: const Icon(Icons.link),
-              color: isLink || isImage || isVideo
+              color: isLink || isImage || isVideo || isPoll || isDisabled
+                  ? AppColors.whiteHideColor
+                  : AppColors.whiteGlowColor,
+            ),
+            IconButton(
+              onPressed: (!isImage && !isVideo && !isLink && !isDisabled)
+                  ? _addPoll
+                  : () {},
+              icon: const Icon(Icons.poll_outlined),
+              color: isLink || isImage || isVideo || isPoll || isDisabled
                   ? AppColors.whiteHideColor
                   : AppColors.whiteGlowColor,
             ),
