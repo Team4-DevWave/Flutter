@@ -90,6 +90,11 @@ void share(BuildContext context, WidgetRef ref, Post post) {
                           ref
                               .read(shareProfilePic.notifier)
                               .update((state) => userProfile);
+                          if (userProfile == "")
+                            print("DDDDDDDDDDDDDDDD$userProfile");
+                          else {
+                            print("DDDDDDDDDDDDDDDDLLLL");
+                          }
                           Navigator.pushNamed(context, RouteClass.crossPost);
                         },
                         style: ElevatedButton.styleFrom(

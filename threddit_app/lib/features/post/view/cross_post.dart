@@ -38,6 +38,14 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     });
   }
 
+  void onExit() {
+    for (int i = 0; i <= ref.watch(popCounter); i++) {
+      Navigator.pop(context);
+    }
+    ref.read(isFirstTimeEnter.notifier).update((state) => true);
+    ref.read(popCounter.notifier).update((state) => state = 1);
+  }
+
   void onIsOn() {
     setState(() {
       isOn = !isOn;
@@ -69,14 +77,6 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     );
   }
 
-  void onExit() {
-      for (int i = 0; i <= ref.watch(popCounter); i++) {
-        Navigator.pop(context);
-      }
-      ref.read(isFirstTimeEnter.notifier).update((state) => true);
-      ref.read(popCounter.notifier).update((state) => state = 1);
-    }
-
   Future<void> onPost() async {
     ref.read(sharedPostProvider.notifier).setNSFW(isNSFW, isSpoiler);
     ref.read(sharedPostProvider.notifier).setTitle(lastValue);
@@ -96,9 +96,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
       Navigator.pushNamed(context, RouteClass.postScreen, arguments: {
         'currentpost': post,
         'uid': ref.read(userModelProvider)?.id
-      }).then((value) {
-        onExit();
-      });
+      }).then((value) => onExit());
     });
   }
 
@@ -157,9 +155,10 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                     leading: ref.read(shareProfilePic) == ""
                         ? CircleAvatar(
                             radius: 15.r,
-                            backgroundImage: AssetImage(postingIn == 'My Profile'
-                                ? Photos.profileDefault
-                                : Photos.communityDefault))
+                            backgroundImage: AssetImage(
+                                postingIn == "My Profile"
+                                    ? Photos.profileDefault
+                                    : Photos.communityDefault))
                         : CircleAvatar(
                             radius: 15.r,
                             backgroundImage:
