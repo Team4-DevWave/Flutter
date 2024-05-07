@@ -77,14 +77,6 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     );
   }
 
-  void onExit() {
-      for (int i = 0; i <= ref.watch(popCounter); i++) {
-        Navigator.pop(context);
-      }
-      ref.read(isFirstTimeEnter.notifier).update((state) => true);
-      ref.read(popCounter.notifier).update((state) => state = 1);
-    }
-
   Future<void> onPost() async {
     ref.read(sharedPostProvider.notifier).setNSFW(isNSFW, isSpoiler);
     ref.read(sharedPostProvider.notifier).setTitle(lastValue);
@@ -113,7 +105,6 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     lastValue = ref.read(sharedPostProvider).post?.title ?? "";
 
     _isLoading = ref.watch(sharePostsProvider);
-    ref.read(sharedPostProvider).destination == ''
     ref.read(sharedPostProvider).destination == ''
         ? postingIn = 'My Profile'
         : postingIn = ref.read(sharedPostProvider).destination;
