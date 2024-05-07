@@ -12,6 +12,15 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// The `SearchCommunityWidget` displays a list of communities (subreddits) related to a specific search query. 
+/// It takes a [searchText] parameter as input, representing the search query entered by the user.
+///
+/// The `_SearchCommunityScreenState` class manages the state for this widget. 
+/// It maintains a list of `Subreddit` objects, `_subreddits`, which are displayed in the list. Additionally, 
+/// it handles pagination of communities using a `_currentPage` counter and implements infinite scrolling functionality with the `_fetchSubreddits` method.
+///
+/// The `_fetchSubreddits` method is responsible for fetching communities from the server based on the provided search query and page number.
+///  It adds the fetched communities to the `_subreddits` list and updates the `_currentPage` counter accordingly.
 class SearchCommunityWidget extends ConsumerStatefulWidget {
   final String searchText;
   const SearchCommunityWidget({super.key, required this.searchText});
@@ -51,7 +60,6 @@ class _SearchCommunityScreenState extends ConsumerState<SearchCommunityWidget> {
   }
 
   Future _fetchSubreddits() async {
-
     String searchValue = ref.read(selectedSortProvider);
     final response =
         await searchTest(widget.searchText, _currentPage, sorting: searchValue);

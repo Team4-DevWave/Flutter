@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +16,7 @@ import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
+import 'package:threddit_clone/features/posting/view/widgets/bottom_sheet_owner.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -21,6 +24,7 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 /// The selected code in the `post_feed_widget.dart` file is responsible for decorating a
@@ -179,13 +183,20 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                       builder: (context) {
                         return Column(
                           mainAxisSize: MainAxisSize.min,
-                          children: [
-                            OptionsBotttomSheet(
-                                post: widget.dataOfPost,
-                                toggleSPOILER: toggleSPOILER,
-                                toggleNsfw: toggleNsfw,
-                                uid: widget.uid)
-                          ],
+                          children: widget.dataOfPost.userID!.id != widget.uid
+                              ? [
+                                  OptionsBotttomSheet(
+                                      post: widget.dataOfPost,
+                                      toggleSPOILER: toggleSPOILER,
+                                      toggleNsfw: toggleNsfw,
+                                      uid: widget.uid)
+                                ]
+                              : [
+                                  ModeratorBotttomSheet(
+                                      post: widget.dataOfPost,
+                                      toggleSPOILER: toggleSPOILER,
+                                      toggleNsfw: toggleNsfw)
+                                ],
                         );
                       },
                       backgroundColor: AppColors.backgroundColor);
@@ -248,10 +259,25 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                   widget.dataOfPost.title,
                   style: AppTextStyles.boldTextStyle,
                 ),
-                Text(
-                  widget.dataOfPost.textBody ?? '',
-                  style: AppTextStyles.secondaryTextStyle,
+                Container(
+                  height: 20.h,
+                  child: Markdown(
+                    onTapLink: (text, href, title) {
+                      launchUrlFunction(Uri.parse(href ?? ""));
+                    },
+                    padding: EdgeInsets.zero,
+                    data: widget.dataOfPost.textBody ?? '',
+                    styleSheet: MarkdownStyleSheet(
+                        a: const TextStyle(
+                          color: const Color.fromARGB(255, 7, 114, 255),
+                        ),
+                        p: AppTextStyles.secondaryTextStyle),
+                  ),
                 ),
+                // Text(
+                //   widget.dataOfPost.textBody ?? '',
+                //   style: AppTextStyles.secondaryTextStyle,
+                // ),
               ],
             ),
           ),

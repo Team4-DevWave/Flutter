@@ -42,7 +42,6 @@ import 'package:threddit_clone/features/user_system/view/screens/mod_mail_screen
 import 'package:threddit_clone/features/user_system/view/screens/mod_notifications_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/posts_notifcation_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/reports_screen.dart';
-import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
@@ -137,7 +136,7 @@ class RouteClass {
 
   static const String modNotificationsSettings = '/mod-notifications';
   static const String activitySettings = '/activity-settings';
-  static const String modMail = '/mod-mail';
+  // static const String modMail = '/mod-mail';
   static const String reportSettings = '/report-settings';
   static const String postNotifications = '/post-notifications';
 
@@ -276,13 +275,13 @@ class RouteClass {
         );
       case CommunitySearchResults:
         final args = settings.arguments as Map<String, dynamic>;
-        final communityName=args['communityName'] as String;
-        final searchedItem=args['searchedItem'] as String;
-        final posts=args['posts'] as List<Post>;
-        final comments=args['comments'] as List<SearchCommentModel>;
+        final communityName = args['communityName'] as String;
+        final searchedItem = args['searchedItem'] as String;
+        final posts = args['posts'] as List<Post>;
+        final comments = args['comments'] as List<SearchCommentModel>;
         return MaterialPageRoute(
           builder: (_) => SearchResultsCommunity(
-           communityName: communityName,
+            communityName: communityName,
             serachedItem: searchedItem,
             posts: posts,
             comments: comments,
@@ -431,11 +430,11 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => PostsNotifcationScreen(
                 title: title, subredditName: subredditName));
-      case modMail:
-        final args = settings.arguments as Map<String, dynamic>;
-        final subredditName = args['subredditName'] as String;
-        return MaterialPageRoute(
-            builder: (_) => ModMailScreen(subredditName: subredditName));
+      // case modMail:
+      //   final args = settings.arguments as Map<String, dynamic>;
+      //   final subredditName = args['subredditName'] as String;
+      //   return MaterialPageRoute(
+      //       builder: (_) => ModMailScreen(subredditName: subredditName));
       case reportSettings:
         final args = settings.arguments as Map<String, dynamic>;
         final subredditName = args['subredditName'] as String;
@@ -446,12 +445,14 @@ class RouteClass {
         final args = settings.arguments as Map<String, dynamic>;
         final communityName =
             args['communityName'] as String; // Extract the community object
-        return MaterialPageRoute(builder: (_) =>  ScheduledPosts(communityName: communityName));
+        return MaterialPageRoute(
+            builder: (_) => ScheduledPosts(communityName: communityName));
       case postSchedule:
+
         // final args = settings.arguments as Map<String, dynamic>;
         // final communityName =
         //     args['communityName'] as String; // Extract the community object
-        return MaterialPageRoute(builder: (_) =>  const PostSchedule());
+        return MaterialPageRoute(builder: (_) => const PostSchedule());
 
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
