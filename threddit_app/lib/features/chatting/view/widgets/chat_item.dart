@@ -3,16 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
-import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
+import 'package:threddit_clone/features/chatting/model/chat_notifier.dart';
 
-String formatDateTime(DateTime dateTime) {
-  final now = DateTime.now();
-  final difference = now.difference(dateTime);
 
-  if (difference.inDays == 0) {
-    return DateFormat('HH:mm').format(dateTime);
+String formatDateTime(DateTime messageTime) {
+   DateTime now = DateTime.now();
+  Duration difference = now.difference(messageTime);
+
+  if (difference.inHours < 24) {
+    // Message sent less than 24 hours ago, return time
+    return DateFormat.Hm().format(messageTime); // Format: HH:mm
+  } else if (difference.inHours >= 24 && difference.inHours < 48) {
+    // Message sent between 24 and 48 hours ago, return 'Yesterday'
+    return 'Yesterday';
   } else {
-    return DateFormat('yMMMEd').format(dateTime);
+    // Message sent more than 48 hours ago, return number of days
+    int daysAgo = difference.inDays;
+    return '$daysAgo ${daysAgo == 1 ? 'day' : 'days'} ago';
   }
 }
 
@@ -76,8 +83,7 @@ class _ChatItemState extends ConsumerState<ChatItem> {
                   },
                 );
                 try {
-                  await ref.read(deleteMessage(widget.message.id).future);
-
+                  await ref.read(chatNotifierProvider.notifier).deleteMessage(widget.message.id);
                   Navigator.pop(context);
                   Navigator.pop(context);
                   Navigator.pop(context);
