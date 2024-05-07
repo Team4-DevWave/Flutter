@@ -23,6 +23,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   final TextEditingController _usernameController = TextEditingController();
   bool isSelected = false;
   String _foundUsername = '';
+  var foundMember=ChatroomMember(displayName: '', id: '', username: '');
   List<String> _selectedUsers = [];
   @override
   void initState() {
@@ -48,6 +49,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
       setState(() {
         isSelected = false;
         _foundUsername = foundUser.username;
+        foundMember.username=_foundUsername;
       });
     } else {
       setState(() {
@@ -110,7 +112,17 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
           actions: [
             TextButton(
               onPressed: () {
-                invitemembersfn(context);
+                if(_selectedUsers.isNotEmpty)
+                {invitemembersfn(context);
+                }
+                else
+                {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select a user to add to the group'),
+                    ),
+                  );
+                }
               },
               child: Text(
                 "Add",
@@ -223,7 +235,10 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
                                     'It\'s You',
                                     style: TextStyle(color: Colors.white),
                                   )
-                                : Checkbox(
+                                : widget.chatroom.chatroomMembers.contains(foundMember)? const Text(
+                                    'Already a member of the group!',
+                                    style: TextStyle(color: Colors.white),
+                                  ): Checkbox(
                                     value:
                                         _selectedUsers.contains(_foundUsername),
                                     onChanged: (value) {

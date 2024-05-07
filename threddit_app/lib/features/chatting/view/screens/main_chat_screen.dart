@@ -1,18 +1,38 @@
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:socket_io_client/socket_io_client.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
+import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_room_preview.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/new_chat.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/theme.dart';
+List<Chatroom> sortChatroomsByLatestMessage(List<Chatroom> chatrooms) {
+  chatrooms.sort((a, b) {
+    final latestMessageA = a.latestMessage;
+    final latestMessageB = b.latestMessage;
+
+    if (latestMessageA == null && latestMessageB == null) {
+      // If both chatrooms have no latest messages, sort by creation date
+      return b.dateCreated.compareTo(a.dateCreated);
+      // To sort by ascending order, swap a.dateCreated and b.dateCreated
+    } else if (latestMessageA == null) {
+      return 1; // A has no latest message, so it should come after B
+    } else if (latestMessageB == null) {
+      return -1; // B has no latest message, so it should come after A
+    }
+
+    // Compare the date of the latest message
+    return latestMessageB.dateSent.compareTo(latestMessageA.dateSent);
+    // To sort by ascending order, swap latestMessageA and latestMessageB
+  });
+
+  return chatrooms;
+}
+
 
 class MainChatScreen extends ConsumerStatefulWidget {
   const MainChatScreen({super.key});
@@ -127,7 +147,9 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
                       return ListView.builder(
                         itemCount: chatrooms.length,
                         itemBuilder: (context, index) {
-                          final chatroom = chatrooms[index];
+                          List<Chatroom> sortedChatrooms = sortChatroomsByLatestMessage(chatrooms);
+
+                          final chatroom = sortedChatrooms[index];
                           return chatrooms.isNotEmpty
                               ? Column(
                                   children: [

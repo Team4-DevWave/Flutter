@@ -104,6 +104,30 @@ Future<void> joinRooms(IO.Socket socket) async {
      socket.emit('new message', {'message': message, 'roomID': roomId});
     }); 
   }
+Future<void> deleteMessage(String messageId) async {
+  try {
+    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatmessages/$messageId');
+    String? token = await getToken();
+    final headers = {
+      'Content-Type': 'application/json',
+      "Authorization": "Bearer $token",
+    };
+    final response = await http.delete(
+      url,
+      headers: headers
+    );
+    if (response.statusCode == 204) {
+       state = state.where((message) => message.id != messageId).toList();
+      
+    } else {
+      throw Exception('Failed to delete message. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error deleting message: $e');
+    throw Exception('Failed to delete message : $e');
+  }
+  }
+
 
   @override
   void dispose() {

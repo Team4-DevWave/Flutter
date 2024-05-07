@@ -10,6 +10,21 @@ import 'package:threddit_clone/features/chatting/model/chat_notifier.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 
+String _formatDate(DateTime dateTime) {
+  final now = DateTime.now();
+  if (dateTime.year == now.year &&
+      dateTime.month == now.month &&
+      dateTime.day == now.day) {
+    return 'Today';
+  } else if (dateTime.year == now.year &&
+      dateTime.month == now.month &&
+      dateTime.day == now.day - 1) {
+    return 'Yesterday';
+  } else {
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+  }
+}
+
 // ignore: must_be_immutable
 class ChatRoomScreen extends StatelessWidget {
   Chatroom chatroom;
@@ -86,16 +101,17 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
   final TextEditingController _messageController = TextEditingController();
   List<ChatMessage> messages = [];
   void sendChat() {
-    ref
-        .read(chatNotifierProvider.notifier)
-        .sendMessage(_messageController.text, widget.chatroom.id,widget.username);
+    ref.read(chatNotifierProvider.notifier).sendMessage(
+        _messageController.text, widget.chatroom.id, widget.username);
     _messageController.clear();
   }
 
   @override
   void initState() {
     super.initState();
-    ref.read(chatNotifierProvider.notifier).fetchRoomMessages(widget.chatroom.id);
+    ref
+        .read(chatNotifierProvider.notifier)
+        .fetchRoomMessages(widget.chatroom.id);
   }
 
   @override
@@ -203,27 +219,44 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
                     SizedBox(
                       height: 60.h,
                     ),
-                   Consumer(
-                    builder: (context, watch, child) {
-                      final messages = ref.watch(chatNotifierProvider);
-                      return  Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,                          
-                            itemCount: messages.length,
-                            itemBuilder: (context, index) {
-                              final message = messages[index];
-                              return ChatItem(
-                                message: message,
-                                username: widget.username,
-                              );
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                    Consumer(
+                      builder: (context, watch, child) {
+                        final messages = ref.watch(chatNotifierProvider);
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            final message = messages[index];
+                            final DateTime messageDate =
+                                DateTime.parse(message.dateSent);
+                            final bool isFirstMessage = index == 0 ||
+                                messageDate.day !=
+                                    DateTime.parse(
+                                            messages[index - 1].dateSent)
+                                        .day;
+                        
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (isFirstMessage)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 8.0),
+                                    child: Text(
+                                      _formatDate(messageDate), // Helper method to format date
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                  ),
+                                ChatItem(
+                                  message: message,
+                                  username: widget.username,
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -277,14 +310,18 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
               IconButton(
                 icon: Icon(
                   Icons.send,
-                  color: _messageController.text == ''
+                  color: _messageController.text != ''
                       ? const Color.fromARGB(235, 243, 51, 3)
                       : Colors.white,
                 ),
                 onPressed: () {
-                  sendChat();
-                  _messageController
-                      .clear(); // Clear the text field after sending message
+                  if (_messageController.text != '') {
+                    sendChat();
+                    _messageController
+                        .clear(); // Clear the text field after sending message
+                  } else {
+                    return;
+                  }
                 },
               ),
             ],
