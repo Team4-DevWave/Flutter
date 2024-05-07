@@ -43,7 +43,7 @@ class _EditLinkState extends ConsumerState<EditLink> {
                         ),
                         backgroundColor: Colors.transparent,
                         content: Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: MediaQuery.of(context).size.width.spMin,
                           padding: EdgeInsets.all(16.0.spMin),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0.r),
@@ -105,7 +105,7 @@ class _EditLinkState extends ConsumerState<EditLink> {
                               SizedBox(height: 16.0.h),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
