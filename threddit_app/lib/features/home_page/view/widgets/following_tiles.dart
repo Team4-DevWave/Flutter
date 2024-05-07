@@ -28,6 +28,8 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
   UserModelNotMe? someone;
   bool isStarLoading = false;
   List<Favourite> favouriteData = [];
+  String pressedOn = "";
+  bool initialState = false;
 
   Future<void> _getUserData() async {
     setState(() {
@@ -95,6 +97,7 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
   @override
   Widget build(BuildContext context) {
     favouriteData = ref.watch(favouriteList);
+    // initialState = ref.read(followingStateProvider) ?? false;
 
     ImageProvider putProfilepic(String pfpLink) {
       if (pfpLink == "") {
@@ -105,6 +108,15 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
     }
 
     return ExpansionTile(
+        // initiallyExpanded: ref.read(followingStateProvider) ?? false,
+        // onExpansionChanged: (value) async {
+        //   print(initialState);
+        //   print("DDDDDDDDDD$value");
+        //   await saveCommunitiesState(value);
+        //   setState(() {
+        //     initialState = value;
+        //   });
+        // },
         title: Text(
           widget.title,
           style: AppTextStyles.primaryTextStyle,
@@ -130,23 +142,28 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                       style: AppTextStyles.primaryTextStyle.copyWith(
                         fontSize: 17.spMin,
                       )),
-                  trailing: IconButton(
-                    onPressed: () {
-                      print("EEEEEEEEEEE ${followed['username']!}");
-                      _onPress(followed['username']!);
-                    },
-                    icon: favouriteData.any(
-                            (item) => item.username == followed['username']!)
-                        ? const Icon(
-                            Icons.star_rounded,
-                            color: AppColors.whiteGlowColor,
-                            size: 24,
-                          )
-                        : Icon(
-                            Icons.star_border_rounded,
-                            size: 24.spMin,
-                          ),
-                  ),
+                  trailing: isStarLoading && pressedOn == followed['username']!
+                      ? CircularProgressIndicator(
+                          strokeWidth: 2.w,
+                          color: AppColors.whiteColor,
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            pressedOn = followed['username']!;
+                            _onPress(followed['username']!);
+                          },
+                          icon: favouriteData.any((item) =>
+                                  item.username == followed['username']!)
+                              ? const Icon(
+                                  Icons.star_rounded,
+                                  color: AppColors.whiteGlowColor,
+                                  size: 24,
+                                )
+                              : Icon(
+                                  Icons.star_border_rounded,
+                                  size: 24.spMin,
+                                ),
+                        ),
                 ))
           else
             const CircularProgressIndicator(

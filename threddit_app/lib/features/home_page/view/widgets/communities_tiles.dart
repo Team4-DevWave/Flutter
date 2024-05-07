@@ -25,6 +25,7 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
   bool isLoading = false;
   bool isStarLoading = false;
   List<Favourite> favouriteData = [];
+  String pressedOn = "";
 
   void _setData() {
     favouriteData = ref.read(favouriteList);
@@ -109,22 +110,28 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                     style: AppTextStyles.primaryTextStyle.copyWith(
                       fontSize: 17.spMin,
                     )),
-                trailing: IconButton(
-                  onPressed: () {
-                    _onPress(community);
-                  },
-                  icon:
-                      favouriteData.any((item) => item.username == community[0])
-                          ? const Icon(
-                              Icons.star_rounded,
-                              color: AppColors.whiteGlowColor,
-                              size: 24,
-                            )
-                          : Icon(
-                              Icons.star_border_rounded,
-                              size: 24.spMin,
-                            ),
-                ),
+                trailing: isStarLoading && pressedOn == community[0]
+                    ? CircularProgressIndicator(
+                        strokeWidth: 2.w,
+                        color: AppColors.whiteColor,
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          pressedOn = community[0];
+                          _onPress(community);
+                        },
+                        icon: favouriteData
+                                .any((item) => item.username == community[0])
+                            ? const Icon(
+                                Icons.star_rounded,
+                                color: AppColors.whiteGlowColor,
+                                size: 24,
+                              )
+                            : Icon(
+                                Icons.star_border_rounded,
+                                size: 24.spMin,
+                              ),
+                      ),
               ),
             )
         ]);

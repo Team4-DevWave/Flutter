@@ -20,14 +20,22 @@ class FavouriteTiles extends ConsumerStatefulWidget {
 class _FavouriteTilesState extends ConsumerState<FavouriteTiles> {
   bool isLoading = false;
   List<Favourite> favouriteData = [];
+  bool isStarLoading = false;
+  String pressedOn = "";
 
   void _setData() {
     favouriteData = ref.read(favouriteList);
   }
 
   Future<void> _removeFromFavourite(Favourite favItem) async {
+    setState(() {
+      isStarLoading = true;
+    });
     ref.read(favouriteProvider.notifier).updateItem(favItem);
     await ref.read(favouriteProvider.notifier).removeItem();
+    setState(() {
+      isStarLoading = false;
+    });
   }
 
   @override
@@ -78,19 +86,25 @@ class _FavouriteTilesState extends ConsumerState<FavouriteTiles> {
                     style: AppTextStyles.primaryTextStyle.copyWith(
                       fontSize: 17.spMin,
                     )),
-                trailing: IconButton(
-                  onPressed: () async {
-                    await _removeFromFavourite(favourite);
-                    setState(() {
-                      _setData();
-                    });
-                  },
-                  icon: Icon(
-                    Icons.star_rounded,
-                    color: AppColors.whiteGlowColor,
-                    size: 24.spMin,
-                  ),
-                ),
+                trailing: isStarLoading && pressedOn == favourite.username
+                    ? CircularProgressIndicator(
+                        strokeWidth: 2.w,
+                        color: AppColors.whiteColor,
+                      )
+                    : IconButton(
+                        onPressed: () async {
+                          pressedOn = favourite.username;
+                          await _removeFromFavourite(favourite);
+                          setState(() {
+                            _setData();
+                          });
+                        },
+                        icon: Icon(
+                          Icons.star_rounded,
+                          color: AppColors.whiteGlowColor,
+                          size: 24.spMin,
+                        ),
+                      ),
               ),
             )
         ]);
