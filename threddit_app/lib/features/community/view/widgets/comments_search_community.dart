@@ -72,7 +72,7 @@ String? userId;
               width: 75.w,
               child: Lottie.asset(
                 'assets/animation/loading.json',
-                repeat: true,
+                
               ),
             );
           }

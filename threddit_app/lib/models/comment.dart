@@ -85,6 +85,33 @@ class Comment {
       userVote: json['userVote'],
     );
   }
+   Comment copyWith({
+    User? user,
+    String? content,
+    DateTime? createdAt,
+    Vote? votes,
+    String? post,
+    bool? collapsed,
+    List<User>? mentioned,
+    String? id,
+    int? version,
+    bool? saved,
+    String? userVote,
+  }) {
+    return Comment(
+      user: user ?? this.user,
+      content: content ?? this.content,
+      createdAt: createdAt ?? this.createdAt,
+      votes: votes ?? this.votes,
+      post: post ?? this.post,
+      collapsed: collapsed ?? this.collapsed,
+      mentioned: mentioned ?? this.mentioned,
+      id: id ?? this.id,
+      version: version ?? this.version,
+      saved: saved ?? this.saved,
+      userVote: userVote ?? this.userVote,
+    );
+  }
 }
 
 Future<List<Comment>> fetchComments(String username) async {

@@ -10,6 +10,7 @@ import 'package:threddit_clone/features/chatting/view/widgets/chat_room_preview.
 import 'package:threddit_clone/features/chatting/view/widgets/new_chat.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
@@ -33,13 +34,21 @@ class _MainChatScreenState extends ConsumerState<MainChatScreen>
   }
 
   void _initializeSocketConnection() async {
-    socket = IO.io("http://${AppConstants.local}:3005", <String, dynamic>{
+    String? token = await getToken();
+     String socketUrl = "http://${AppConstants.local}:3005";
+  
+    socket = IO.io(socketUrl, <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
-    });
+      
+      "query":"token=$token",
+      
+    },
+    
+    );
     socket?.connect();
     socket?.onConnect((data) {
-      print("Connected");
+      //print("Connected");
       socket?.on("message", (msg) {
         print(msg);
         //implement updating the screen

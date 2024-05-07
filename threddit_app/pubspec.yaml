@@ -80,6 +80,7 @@ dependencies:
   web_socket_channel: ^2.2.1
   syncfusion_flutter_sliders: ^25.1.42
   emoji_picker_flutter: ^2.2.0
+  flutter_hooks: ^0.20.5
 
 
 dev_dependencies:

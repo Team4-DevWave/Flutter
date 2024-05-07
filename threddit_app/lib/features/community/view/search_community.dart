@@ -46,7 +46,8 @@ class _SearchCommunityScreenPageState
     List<SearchCommentModel> foundComments=[];
     Future<void> _searchCommunity(String searchItem) async {
       print("/////////////////////////////////we are here//////////////////////////////////////////////////");
-    final url =
+      print(widget.community);
+    try{final url =
         Uri.parse('http://${AppConstants.local}:8000/api/v1/r/${widget.community}/search?q=$searchItem');
     final response = await http.get(url);
 
@@ -55,10 +56,10 @@ class _SearchCommunityScreenPageState
           jsonDecode(response.body)['data']['posts'];
           print(response.body);
       foundPosts = posts.map((post)=>Post.fromJson(post)).toList();
-      print("this is the posts length ${posts.length}");
-      // final  List<dynamic> comments  =
-      //     jsonDecode(response.body)['data']['comments'];
-      // foundComments = comments.map((comment)=>SearchCommentModel.fromJson(comment)).toList();
+      print("this is the posts length ${foundPosts.length}");
+      final  List<dynamic> comments  =
+          jsonDecode(response.body)['data']['comments'];
+      foundComments = comments.map((comment)=>SearchCommentModel.fromJson(comment)).toList();
       // print("this is the comments length ${comments.length}");
       setState(() {
        
@@ -67,6 +68,10 @@ class _SearchCommunityScreenPageState
       setState(() {
       });
       print('Error searching community: ${response.statusCode}');
+    }
+    }
+    catch(e){
+      print('Error searching community: $e');
     }
   }
     return SafeArea(
