@@ -125,7 +125,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
       widget.dataOfPost.votes!.downvotes--;
       widget.dataOfPost.userVote = 'none';
     }
-    if (widget.dataOfPost.userVote == 'upvoted') {
+    else if (widget.dataOfPost.userVote == 'upvoted') {
       widget.dataOfPost.votes!.upvotes--;
       widget.dataOfPost.votes!.downvotes++;
       widget.dataOfPost.userVote = 'downvoted';

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/commenting/model/comment_notifier.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,9 +14,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 ///the comment controller is used to get the content of the comment that is being added to the post
 
 class AddComment extends ConsumerStatefulWidget {
-  const AddComment({super.key, required this.postID, required this.uid});
+  const AddComment({super.key, required this.post, required this.uid});
   final String uid;
-  final String postID;
+  final Post post;
   @override
   ConsumerState<AddComment> createState() {
     return _AddComment();
@@ -26,7 +28,7 @@ class _AddComment extends ConsumerState<AddComment> {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   void addComment(WidgetRef ref) async {
      String username = ref.read(userModelProvider)!.username!;
-    ref.read(commentsProvider.notifier).addComment(widget.postID, _commentController.text,username);
+    ref.read(commentsProvider.notifier).addComment(widget.post.id, _commentController.text,username);
     
   }
 
@@ -71,8 +73,10 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
                       IconButton(
                         onPressed: () {
                           addComment(ref);
+                          
                           setState(() {
                             _commentController.clear();
+                           FocusScope.of(context).unfocus();
                           });
                         },
                         icon: const Icon(Icons.send),

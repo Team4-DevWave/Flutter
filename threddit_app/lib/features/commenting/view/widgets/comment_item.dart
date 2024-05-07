@@ -74,15 +74,14 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
     void downVoteComment(WidgetRef ref) async {
       ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
+      if (widget.comment.userVote == 'upvoted') {
+        widget.comment.votes.upvotes--;
+      }
       if (widget.comment.userVote == 'downvoted') {
         widget.comment.votes.downvotes--;
         widget.comment.userVote = 'none';
       }
-      if (widget.comment.userVote == 'upvoted') {
-        widget.comment.votes.upvotes--;
-        widget.comment.votes.downvotes++;
-        widget.comment.userVote = 'downvoted';
-      } else {
+       else {
         widget.comment.votes.downvotes++;
         widget.comment.userVote = 'downvoted';
       }
@@ -91,6 +90,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   @override
   Widget build(BuildContext context) {
+    
     // Function to delete the comment
     void deleteComment() {
       ref.read(commentsProvider.notifier).deleteComment(widget.comment.id, widget.comment.post);
@@ -170,7 +170,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(right: 10.0),
-                      child: CircleAvatar(
+                      child:  CircleAvatar(
                         radius: 18,
                         backgroundImage:
                             AssetImage('assets/images/Default_Avatar.png'),

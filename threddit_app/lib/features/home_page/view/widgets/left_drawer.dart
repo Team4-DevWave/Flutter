@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -108,8 +110,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                             children: [
                               SizedBox(height: 40.h),
                               Padding(
-                                padding:
-                                    EdgeInsets.symmetric(horizontal: 15.spMin),
+                                padding: EdgeInsets.symmetric(horizontal: 15.w),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
@@ -139,7 +140,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                                 ),
                               ),
                               ListView.builder(
-                                padding: EdgeInsets.all(0.spMin),
+                                padding: const EdgeInsets.all(0),
                                 shrinkWrap: true,
                                 physics:
                                     const NeverScrollableScrollPhysics(), // Disable scrolling within the list
@@ -218,8 +219,9 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                     children: [
                       SizedBox(height: 40.h),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.spMin),
+                        padding: EdgeInsets.symmetric(horizontal: 5.w),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             InkWell(
@@ -232,13 +234,13 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                                   Icons.arrow_back,
                                   color: Colors.white,
                                 )),
-                            SizedBox(width: 15.spMin),
+                            SizedBox(width: Platform.isAndroid?15.w:7.w),
                             Text(
                               'Recently Visited',
                               style: AppTextStyles.primaryTextStyle
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(width: 60.spMin),
+                            SizedBox(width: Platform.isAndroid?60.w:15.w),
                             InkWell(
                               onTap: () async {
                                 await deleteAll();
@@ -258,7 +260,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                         ),
                       ),
                       ListView.builder(
-                        padding: EdgeInsets.all(0.spMin),
+                        padding: const EdgeInsets.all(0),
                         shrinkWrap: true,
                         physics:
                             const NeverScrollableScrollPhysics(), // Disable scrolling within the list

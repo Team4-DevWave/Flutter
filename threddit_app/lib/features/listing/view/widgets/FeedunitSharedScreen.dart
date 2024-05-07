@@ -95,7 +95,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
       widget.parentPost.votes!.downvotes--;
       widget.parentPost.userVote = 'none';
     }
-    if (widget.parentPost.userVote == 'upvoted') {
+    else if (widget.parentPost.userVote == 'upvoted') {
       widget.parentPost.votes!.upvotes--;
       widget.parentPost.votes!.downvotes++;
       widget.parentPost.userVote = 'downvoted';

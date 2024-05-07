@@ -160,19 +160,25 @@ class Post {
 class User {
   final String id;
   final String username;
+  String? displayName;
+  String? profilePicture;
 
-  User({required this.id, required this.username});
+  User({required this.id, required this.username,this.displayName,this.profilePicture});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'],
       username: json['username'],
+      displayName: json['displayName'],
+      profilePicture: json['profilePicture'],
     );
   }
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
       'username': username,
+      'displayName': displayName,
+      'profilePicture': profilePicture,
     };
   }
 }

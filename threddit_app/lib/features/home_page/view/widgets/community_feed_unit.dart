@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,12 +36,12 @@ class _CommunityUnitState extends ConsumerState<CommunityUnit> {
     final newUser = UserModel(id: widget.userID, username: username);
 
     return SizedBox(
-      height: 170.h,
+      height: Platform.isAndroid?170.h:190.h,
       child: GridView.builder(
           scrollDirection: Axis.horizontal,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.3.spMin,
+              childAspectRatio: Platform.isAndroid?0.3.spMin: 0.2.spMin,
               mainAxisSpacing: 10.w,
               crossAxisSpacing: 5.h),
           itemCount: widget.subreddit.length,

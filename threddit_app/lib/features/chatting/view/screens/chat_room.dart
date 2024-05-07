@@ -116,6 +116,7 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
 
   @override
   Widget build(BuildContext context) {
+    final chatReceiver=widget.chatroom.chatroomMembers[0].username==widget.username?widget.chatroom.chatroomMembers[1]:widget.chatroom.chatroomMembers[0];
     // ignore: invalid_use_of_visible_for_testing_member
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -132,16 +133,24 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
                     Stack(
                       children: [
                         Positioned(
-                          child: CircleAvatar(
-                            backgroundImage:
-                                widget.chatroom.chatroomName != "New Chat"
-                                    ? const AssetImage(
-                                        'assets/images/group-avatars.png')
-                                    : const AssetImage(
-                                        'assets/images/Default_Avatar.png'),
-                            backgroundColor: Colors.transparent,
-                            radius: 50.0,
-                          ),
+                          child:widget.chatroom.chatroomName != "New Chat"? const CircleAvatar(
+                          radius: 58.0,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage('assets/images/group-avatars.png'),
+                        )
+                      :  chatReceiver.profilePicture!=null && chatReceiver.profilePicture!=''? CircleAvatar(
+                          radius: 58.0,
+                          backgroundColor: const Color.fromARGB(255, 76, 175, 172),
+                          backgroundImage:
+                              NetworkImage(
+                              chatReceiver.profilePicture!),
+                        ):const CircleAvatar(
+                          radius: 58.0,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage('assets/images/Default_Avatar.png'),
+                        ),
                         ),
                       ],
                     ),
