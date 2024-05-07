@@ -1,3 +1,4 @@
+/// Data class that holds the Trend's data to display.
 class Trend {
   final String? title;
   final String? subtitle;

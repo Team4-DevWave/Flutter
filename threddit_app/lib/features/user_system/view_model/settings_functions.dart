@@ -204,12 +204,72 @@ Future<int> blockUser({
 }
 
 Future<int> notificationOn(
-    {required http.Client client,
-    required bool isEnabled,
-    required String token}) async {
-  Map<String, dynamic> body = {'isOn': isEnabled};
+    {required http.Client client, required String settingName}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  Map<String, dynamic> body = {
+    'setting': settingName
+  };
   String bodyEncoded = jsonEncode(body);
+  String? token = await getToken();
+  http.Response response = await client.patch(
+    Uri.parse("$url:8000/api/v1/notifications/change_user_settings"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: bodyEncoded,
+  );
+  print(response.body);
+  return response.statusCode;
+}
 
+Future<int> modNotificationOn({required String subredditName}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  String? token = await getToken();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  return response.statusCode;
+}
+
+Future<int> activityModNotification({
+  required String subredditName,
+}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  String? token = await getToken();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/activity"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  return response.statusCode;
+}
+
+Future<int> reportCommentModNotification(
+    {required String settingName, required String subredditName}) async {
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
@@ -217,13 +277,160 @@ Future<int> notificationOn(
     url = urlAndroid;
   }
 
-  http.Response response = await client.post(
-    Uri.parse("$url/api/notification?user_id=1"),
+  String? token = await getToken();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/reports/comments/$settingName"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     },
-    body: bodyEncoded,
+  );
+  return response.statusCode;
+}
+
+Future<int> reportPostModNotification(
+    {required String settingName, required String subredditName}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+
+  String? token = await getToken();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/reports/posts/$settingName"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  return response.statusCode;
+}
+
+Future<int> activitypostWithUpvotes(
+    {required String settingName, required String subredditName}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  String? token = await getToken();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/activity/postsWithUpvotes/$settingName"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  return response.statusCode;
+}
+
+Future<int> activitypostWithComments(
+    {required String settingName, required String subredditName}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  String? token = await getToken();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/activity/postsWithComments/$settingName"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  return response.statusCode;
+}
+
+Future<int> activityCommentSlider(
+    {required String subredditName, required double value}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  String? token = await getToken();
+  int newValue = value.toInt();
+  http.Response response = await http.patch(
+  
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/activity/postsWithComments/advancedSetup/$newValue"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  return response.statusCode;
+}
+
+Future<int> activityUpvotesSlider(
+    {required String subredditName, required double value}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  String? token = await getToken();
+  int newValue = value.toInt();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/activity/postsWithUpvotes/advancedSetup/$newValue"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  return response.statusCode;
+}
+
+Future<int> reportCommentsSlider(
+    {required String subredditName, required double value}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  String? token = await getToken();
+  int newValue = value.toInt();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/reports/comments/advancedSetup/$newValue"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  return response.statusCode;
+}
+
+Future<int> reportPostsSlider(
+    {required String subredditName, required double value}) async {
+  final String url;
+  if (Platform.isWindows) {
+    url = urlWindows;
+  } else {
+    url = urlAndroid;
+  }
+  String? token = await getToken();
+  int newValue = value.toInt();
+  http.Response response = await http.patch(
+    Uri.parse(
+        "$url:8000/api/v1/notifications/change_user_mod_notifications_settings/$subredditName/reports/posts/advancedSetup/$newValue"),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
   );
   return response.statusCode;
 }

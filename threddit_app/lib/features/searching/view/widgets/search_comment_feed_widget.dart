@@ -18,23 +18,18 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
-/// display a feed of posts. The widget takes a `feedID` as a parameter, which is used
-/// to fetch the posts for the specific feed.
-
-/// The `_FeedWidgetState` class manages the state for this widget. It maintains a list
-/// of `Post` objects, `_comments`, which are displayed in the feed, and a page counter,
-/// `_currentPage`, which is used for pagination of the posts.
-
-/// The `_fetchPosts` method is used to fetch the posts from the server. It adds the
-/// fetched posts to the `_comments` list and increments the `_currentPage` counter.
-
-/// The `_onScroll` method is a listener that triggers the `_fetchPosts` method when the
-/// user scrolls to the end of the feed, enabling infinite scrolling.
-
-/// The `initState` method initializes the state of the widget by fetching the first set
-/// of posts. The `dispose` method is used to clean up the controller when the widget is
-/// removed from the widget tree.
+/// The `SearchCommentFeedWidget` widget displays a feed of comments related to a specific search query. It takes a [searchText] parameter as input, 
+/// which represents the search query entered by the user.
+/// 
+/// The `_SearchCommentFeedWidgetState` class manages the state for this widget. 
+/// It maintains a list of `SearchCommentModel` objects, `_comments`, which are displayed in the feed.
+///  Additionally, it handles pagination of comments using a `_currentPage` counter and implements infinite scrolling functionality with the `_fetchComments` method.
+/// 
+/// The `_fetchComments` method is responsible for fetching comments from the server based on the provided search query and page number. 
+/// It adds the fetched comments to the `_comments` list and updates the `_currentPage` counter accordingly.
+/// 
+/// The `_onScroll` method is a listener attached to the scroll controller. 
+/// It triggers the `_fetchComments` method when the user scrolls to the end of the feed, allowing for continuous loading of comments.
 class SearchCommentFeedWidget extends ConsumerStatefulWidget {
   final String searchText;
   const SearchCommentFeedWidget({super.key, required this.searchText});

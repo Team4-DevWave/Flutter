@@ -19,7 +19,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String feedID = 'Best';
   String? userID;
   final List<String> tabs = ['Best', 'Hot', 'New', 'Top'];
-  
+
   void _openEndDrawer() {
     _scaffoldKey.currentState!.openEndDrawer();
   }
@@ -33,6 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
+            key: const Key("searchButton"),
             onPressed: () {
               Navigator.pushNamed(context, RouteClass.searchScreen);
             },

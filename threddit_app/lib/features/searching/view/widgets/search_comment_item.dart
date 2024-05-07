@@ -92,16 +92,14 @@ class _SearchCommentItemState extends ConsumerState<SearchCommentItem> {
                             widget.uid!)
                         : SearchFeedUnit(widget.comment.post!, widget.uid!),
                     subtitle: Container(
+                      padding: const EdgeInsets.all(6.0),
                       decoration: BoxDecoration(
+
                         color: AppColors.mainColor,
-                        borderRadius: BorderRadius.circular(20.w),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: AppColors.redditOrangeColor,
-                            blurRadius: 4,
-                            offset: Offset(-4, 8), // Shadow position
-                          ),
-                        ],
+                        border: Border.all(
+                            width: 1.w,
+                            color: const Color.fromARGB(131, 255, 255, 255)),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: ListTile(
                         onTap: () => Navigator.pushNamed(
