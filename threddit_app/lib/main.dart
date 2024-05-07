@@ -28,7 +28,7 @@ void main() async {
     requestPermisseion();
     var androidInitialize =
         const AndroidInitializationSettings('@mipmap/ic_launcher');
-    //var iOSInitialize=const IOSInitializationSettings();
+
     var initializationSetting =
         InitializationSettings(android: androidInitialize);
     flutterLocalNotificationsPlugin.initialize(initializationSetting,
