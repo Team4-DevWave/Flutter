@@ -5,10 +5,12 @@ import 'package:threddit_clone/features/user_system/model/notification_settings_
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/enable_setting.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/slider_container.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 
 /// Notification screen has the options renders the options that the user
 /// can use to turn on/off the notifcations he wants/doesn't want.
@@ -43,17 +45,7 @@ class _PostsNotifcationScreenState
     super.initState();
   }
 
-  void toggleNotificationSettings(bool isEnabled) async {
-    notificationOn(client: client, isEnabled: isEnabled, token: token!);
-    setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getNotificationSetting(client: client);
-    });
-  }
-  void checkTitle(){
-    
-  }
+  void checkTitle() {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +68,7 @@ class _PostsNotifcationScreenState
               Report? settingsReport;
               int type = -1;
               double number = 0;
+              bool isOn = false;
               switch (widget.title) {
                 case "Posts with Comments":
                   settingsComments = isEnabled
@@ -84,6 +77,7 @@ class _PostsNotifcationScreenState
                       .postsWithComments;
                   type = 0;
                   number = settingsComments.numberOfComments.toDouble();
+                  isOn = settingsComments.advancedSetup;
                   break;
                 case "Posts with Upvotes":
                   settingsActivity = isEnabled
@@ -92,19 +86,22 @@ class _PostsNotifcationScreenState
                       .postsWithUpvotes;
                   type = 1;
                   number = settingsActivity.numberOfUpvotes.toDouble();
+                  isOn = settingsActivity.advancedSetup;
                   break;
                 case 'Posts':
                   settingsReport = isEnabled
                       .subredditsUserMods[widget.subredditName]!.reports.posts;
                   type = 2;
                   number = settingsReport.numberOfReports.toDouble();
+                  isOn = settingsReport.advancedSetup;
                 case 'Comments':
                   settingsReport = isEnabled
                       .subredditsUserMods[widget.subredditName]!
                       .reports
                       .comments;
-                  type = 2;
+                  type = 3;
                   number = settingsReport.numberOfReports.toDouble();
+                  isOn = settingsReport.advancedSetup;
                   break;
                 default:
                   break;
@@ -113,47 +110,67 @@ class _PostsNotifcationScreenState
                 child: Column(
                   children: [
                     EnableSetting(
-                      isEnabled: type == 1
-                          ? settingsActivity!.allowNotification
-                          : type == 0
-                              ? settingsComments!.allowNotification
-                              : settingsReport!.allowNotification,
-                      optionName: "Allow notifications",
-                      settingIcon: Icons.notifications,
-                      enable: () {},
-                    ),
-                    EnableSetting(
-                      isEnabled: type == 1
-                          ? settingsActivity!.advancedSetup
-                          : type == 0
-                              ? settingsComments!.advancedSetup
-                              : settingsReport!.advancedSetup,
-                      optionName: "Advanced Setup",
-                      settingIcon: Icons.notifications,
-                      enable: () {},
-                    ),
-                    Container(
-                      padding: EdgeInsetsDirectional.all(10.w),
-                      alignment: Alignment.bottomCenter,
-                      child: SfSlider(
-                        min: 1,
-                        max: type == 1 || type == 0 ? 5000 : 10,
-                        showDividers: true,
-                        showLabels: true,
-                        value: number,
-                        onChanged: type == 1
-                            ? (settingsActivity!.advancedSetup
-                                ? (value) {}
-                                : null)
+                        isEnabled: type == 1
+                            ? settingsActivity!.allowNotification
                             : type == 0
-                                ? (settingsComments!.advancedSetup
-                                    ? (value) {}
-                                    : null)
-                                : (settingsReport!.advancedSetup
-                                    ? (value) {}
-                                    : null),
+                                ? settingsComments!.allowNotification
+                                : settingsReport!.allowNotification,
+                        optionName: "Allow notifications",
+                        settingIcon: Icons.notifications,
+                        enable: type == 0
+                            ? () => activitypostWithComments(
+                                subredditName: widget.subredditName,
+                                settingName: "")
+                            : type == 1
+                                ? () => activitypostWithUpvotes(
+                                    subredditName: widget.subredditName,
+                                    settingName: "")
+                                : type == 2
+                                    ? () => reportPostModNotification(
+                                        subredditName: widget.subredditName,
+                                        settingName: "")
+                                    : () => reportCommentModNotification(
+                                        subredditName: widget.subredditName,
+                                        settingName: "")),
+                    ListTile(
+                      leading: const Icon(Icons.notifications),
+                      title: const Text("Advanced Setup"),
+                      titleTextStyle: AppTextStyles.primaryTextStyle,
+                      trailing: Switch(
+                        activeColor: const Color.fromARGB(255, 1, 61, 110),
+                        value: isOn,
+                        onChanged: type == 0
+                            ? (value) {
+                                activitypostWithComments(
+                                        subredditName: widget.subredditName,
+                                        settingName: "advancedSetup")
+                                    .then((value) => setState(() {}));
+                              }
+                            : type == 1
+                                ? (value) {
+                                    activitypostWithUpvotes(
+                                            subredditName: widget.subredditName,
+                                            settingName: "advancedSetup")
+                                        .then((value) => setState(() {}));
+                                  }
+                                : type == 2
+                                    ? (value) {
+                                        reportPostModNotification(
+                                                subredditName:
+                                                    widget.subredditName,
+                                                settingName: "advancedSetup")
+                                            .then((value) => setState(() {}));
+                                      }
+                                    : (value) {
+                                        reportCommentModNotification(
+                                                subredditName:
+                                                    widget.subredditName,
+                                                settingName: "advancedSetup")
+                                            .then((value) => setState(() {}));
+                                      },
                       ),
                     ),
+                    SliderContainer(number: number, isOn: isOn, type: type, subredditName: widget.subredditName),
                   ],
                 ),
               );

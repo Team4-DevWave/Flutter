@@ -96,11 +96,6 @@ class _SearchUserWidgetState extends ConsumerState<SearchUserWidget> {
         _followingList.add(username);
       }
     }
-    print("FFFFFFFFFFFFFFFFFMMMMMMMMMMMLLLLLLLLLLLLLLLLLLLLL");
-    print("Username is: ${user!.username}");
-    print("users Followed  are : ${user!.followedUsers}");
-
-    print(_followingList);
     isLoading = false;
     super.didChangeDependencies();
   }

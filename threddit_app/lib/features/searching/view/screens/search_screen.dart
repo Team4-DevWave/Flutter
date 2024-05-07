@@ -15,8 +15,9 @@ import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
-/// The `SearchScreen` widget provides functionality for searching and browsing communities, posts, and trending topics within the Threddit app. 
-/// Users can enter search queries to find relevant communities and posts, view trending topics, and access their search history. 
+
+/// The `SearchScreen` widget provides functionality for searching and browsing communities, posts, and trending topics within the Threddit app.
+/// Users can enter search queries to find relevant communities and posts, view trending topics, and access their search history.
 /// This widget integrates with various features such as community browsing, search functionality, and trend tracking to enhance the user experience.
 /// It has two modes, a mode for the trending and search history and a mode for when a search is entered and it shows the list of Subreddits.
 
@@ -114,8 +115,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 .then((test) => setState(() {
                       localSearchHistory =
                           addingHistory(value, localSearchHistory);
-                      print(
-                          "PRINTING LOCAL SEARCH HISTORY > !! > >!!! $localSearchHistory ");
                     }));
           },
         ),
@@ -219,8 +218,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                print(
-                                    "PRINTING LOCAL SEARCH HISTORY > !! > >!!! $localSearchHistory ");
                                 if (localSearchHistory[index].startsWith("r")) {
                                   return ListTile(
                                     trailing: IconButton(
@@ -286,6 +283,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               )),
                       SizedBox(height: 10.h),
                       Text(
+                        key: const Key("trendingText"),
                         "Trending Today",
                         style: AppTextStyles.boldTextStyle
                             .copyWith(fontSize: 15.sp),

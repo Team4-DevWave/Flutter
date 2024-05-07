@@ -38,13 +38,8 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     super.initState();
   }
 
-  void toggleNotificationSettings(bool isEnabled) async {
-    notificationOn(client: client, isEnabled: isEnabled, token: token!);
-    setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getNotificationSetting(client: client);
-    });
+  void toggleNotificationSettings()  {
+    activityModNotification(subredditName: widget.subredditName);
   }
 
   @override
@@ -73,7 +68,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                       isEnabled: activitySettings.newPosts,
                       optionName: "New posts",
                       settingIcon: Icons.file_copy,
-                      enable: () {},
+                      enable: () => toggleNotificationSettings(),
                     ),
                     ListTile(
                         title: const Text("Posts with Upvotes"),
@@ -88,7 +83,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                               context, RouteClass.postNotifications,
                               arguments: arguements);
                         }),
-                        ListTile(
+                    ListTile(
                         title: const Text("Posts with Comments"),
                         titleTextStyle: AppTextStyles.primaryTextStyle,
                         trailing: const Icon(Icons.arrow_forward),

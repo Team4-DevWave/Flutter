@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/notification_settings_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -8,6 +9,8 @@ import 'package:threddit_clone/features/user_system/view/widgets/enable_setting.
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
+import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/text_styles.dart';
 
 /// Notification screen has the options renders the options that the user
 /// can use to turn on/off the notifcations he wants/doesn't want.
@@ -39,6 +42,9 @@ class _NotificationsSettingsScreenState
     return subredditUserMods.entries.map((entry) {
       final subredditName = entry.key;
       return ListTile(
+          tileColor: Color.fromARGB(0, 19, 19, 19),
+          contentPadding: EdgeInsets.only(left: 20.w),
+          titleTextStyle: AppTextStyles.primaryTextStyle,
           title: Text("r/$subredditName"),
           onTap: () {
             final arguements = {
@@ -55,13 +61,8 @@ class _NotificationsSettingsScreenState
     super.initState();
   }
 
-  void toggleNotificationSettings(bool isEnabled) async {
-    notificationOn(client: client, isEnabled: isEnabled, token: token!);
-    setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getNotificationSetting(client: client);
-    });
+  void toggleNotificationSettings(String settingName) async {
+    notificationOn(client: client, settingName: settingName);
   }
 
   @override
@@ -89,40 +90,46 @@ class _NotificationsSettingsScreenState
                       isEnabled: isEnabled.privateMessages,
                       optionName: "Private messages",
                       settingIcon: Icons.mail,
-                      enable: () => toggleNotificationSettings(
-                          !isEnabled.privateMessages),
+                      enable: () =>
+                          toggleNotificationSettings("privateMessages"),
                     ),
                     EnableSetting(
                         isEnabled: isEnabled.chatMessages,
                         optionName: "Chat messages",
                         settingIcon: Icons.chat,
-                        enable: () {}),
+                        enable: () =>
+                            toggleNotificationSettings("chatMessages")),
                     EnableSetting(
                         isEnabled: isEnabled.chatRequests,
                         optionName: "Chat requests",
                         settingIcon: Icons.chat_bubble_outline,
-                        enable: () {}),
+                        enable: () =>
+                            toggleNotificationSettings("chatRequests")),
                     const SettingsTitle(title: "ACTIVITY"),
                     EnableSetting(
                         isEnabled: isEnabled.mentionsOfUsername,
                         optionName: "Mentions of u/username",
                         settingIcon: Icons.person,
-                        enable: () {}),
+                        enable: () =>
+                            toggleNotificationSettings("mentionsOfUsername")),
                     EnableSetting(
                         isEnabled: isEnabled.commentsOnYourPost,
                         optionName: "Comments on your posts",
                         settingIcon: Icons.comment,
-                        enable: () {}),
+                        enable: () =>
+                            toggleNotificationSettings("commentsOnYourPost")),
                     EnableSetting(
                         isEnabled: isEnabled.upvotesOnYourPost,
                         optionName: "Upvotes on your posts",
                         settingIcon: Icons.arrow_upward,
-                        enable: () {}),
+                        enable: () =>
+                            toggleNotificationSettings("upvotesOnYourPost")),
                     EnableSetting(
                         isEnabled: isEnabled.upvotesOnYourComments,
                         optionName: "Upvotes on your comments",
                         settingIcon: Icons.arrow_upward_sharp,
-                        enable: () {}),
+                        enable: () => toggleNotificationSettings(
+                            "upvotesOnYourComments")),
                     // EnableSetting(
                     //     isEnabled: isEnabled.repliesToYourComments,
                     //     optionName: "Replies to your comments",
@@ -132,7 +139,7 @@ class _NotificationsSettingsScreenState
                       isEnabled: isEnabled.newFollowers,
                       optionName: "New followers",
                       settingIcon: Icons.person,
-                      enable: () {},
+                      enable: () => toggleNotificationSettings("newFollowers"),
                     ),
                     // EnableSetting(
                     //     isEnabled: isEnabled,
@@ -144,7 +151,8 @@ class _NotificationsSettingsScreenState
                         isEnabled: isEnabled.modNotifications,
                         optionName: "Mod notifications",
                         settingIcon: Icons.shield,
-                        enable: () {}),
+                        enable: () =>
+                            toggleNotificationSettings("modNotifications")),
                     Column(
                       children:
                           buildListTileWidgets(isEnabled.subredditsUserMods),
