@@ -7,6 +7,9 @@ class PrefConstants {
   static String userName = 'username';
   static String userId = '_id';
   static String imagePath = 'imagePath';
+  static String recentlyVisitied = 'recentlyVisited';
+  static String subredditType = 'subreddit';
+  static String userType = 'user';
 }
 
 class AppConstants {

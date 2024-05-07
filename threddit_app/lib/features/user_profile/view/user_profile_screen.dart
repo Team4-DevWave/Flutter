@@ -54,41 +54,40 @@ class _UserProfileState extends ConsumerState<UserProfile>
   String? displayName;
   bool isLoading = false;
 
-  void _getUserData() async {
+  Future<void> _getUserData() async {
     user = ref.read(userModelProvider)!;
     socialLinks = ref.read(userProfileProvider)?.socialLinks;
   }
 
   /// Method to set data.
-  void setData() async {
+  Future<void> setData() async {
+    setState(() {
+      isLoading = true;
+    });
+
     //getSettings function gets the user settings data and updates it in the userProfileProivder
-    await ref.watch(settingsFetchProvider.notifier).getSettings();
-    await ref.watch(settingsFetchProvider.notifier).getMe();
+    await ref.read(settingsFetchProvider.notifier).getMe();
+    await ref.read(settingsFetchProvider.notifier).getSettings();
+    user = ref.read(userModelProvider)!;
+    socialLinks = ref.read(userProfileProvider)?.socialLinks;
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   String? uid;
   @override
   void initState() {
+    setData();
     _getUserData();
     _fetchPosts();
-    setData();
-
     _scrollController.addListener(_onScroll);
     _scrollControllerComments.addListener(_onScrollComments);
     _tabController = TabController(length: 3, vsync: this);
     setUserid();
     _fetchComments();
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    setData();
-    print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEeee");
-    socialLinks = ref.watch(userProfileProvider)?.socialLinks;
-    _getUserData();
-    print(user!.profilePicture);
-    super.didChangeDependencies();
   }
 
   /// Method to set user ID.
@@ -174,8 +173,6 @@ class _UserProfileState extends ConsumerState<UserProfile>
     // final imageFile = ref.watch(imagePathProvider);
 
     ImageProvider setProfilePic() {
-      print("image");
-      print(user!.profilePicture);
       if (user!.profilePicture!.isNotEmpty && isLink(user!.profilePicture!)) {
         return NetworkImage(user!.profilePicture!);
       } else {
@@ -221,10 +218,25 @@ class _UserProfileState extends ConsumerState<UserProfile>
                           context),
                       sliver: SliverAppBar(
                         stretch: true,
-                        title: Text(
-                          "u/${user?.username}",
-                          style: AppTextStyles.secondaryTextStyle,
-                        ),
+                        title: user?.username != "SuperMario"
+                            ? Text(
+                                "u/${user?.username}",
+                                style: AppTextStyles.secondaryTextStyle,
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "u/${user?.username}",
+                                    style: AppTextStyles.secondaryTextStyle,
+                                  ),
+                                  SizedBox(width: 5.w),
+                                  const Icon(
+                                    Icons.verified,
+                                    color: Colors.blue,
+                                  )
+                                ],
+                              ),
                         flexibleSpace: FlexibleSpaceBar(
                           collapseMode: CollapseMode.parallax,
                           background: Container(
@@ -324,8 +336,8 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                     ),
                                   Expanded(
                                     child: Wrap(
-                                      spacing: 7.0.w,
-                                      runSpacing: 5.0.h,
+                                      spacing: 5.0.w,
+                                      runSpacing: -11.h,
                                       children: socialLinks!
                                           .map(
                                             (link) => ElevatedButton(

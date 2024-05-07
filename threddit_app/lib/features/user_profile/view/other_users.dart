@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/home_page/model/visited_item.dart';
 import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
 import 'package:threddit_clone/features/listing/view/widgets/comment_item_user_profile.dart';
 import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
@@ -13,6 +15,7 @@ import 'package:threddit_clone/features/user_profile/view_model/follow_user.dart
 import 'package:threddit_clone/features/user_profile/view_model/get_user.dart';
 import 'package:threddit_clone/features/user_profile/view_model/on_link.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/models/comment.dart';
@@ -55,30 +58,44 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   bool isLoading = true;
   bool? isFollowed;
 
+  bool checkExistance(
+      String username, List<Map<String, dynamic>>? followedUsers) {
+    bool isExist = false;
+
+    if (user != null && followedUsers != null) {
+      for (var followedUser in followedUsers) {
+        if (username == followedUser['username']) isExist = true;
+      }
+    }
+    return isExist;
+  }
+
   /// Method to set user data.
   void setData() async {
     //getUser function gets the user data and updates it in the provider
     setState(() {
       isLoading = true;
     });
+
+    //get user (ME) data
+    await ref.read(settingsFetchProvider.notifier).getMe();
+
+    //get user visited data
     final res =
-        await ref.watch(getUserProvider.notifier).getUser(widget.username);
-    res.fold((l) => showSnackBar(navigatorKey.currentContext!, l.message), (r) {
+        await ref.read(getUserProvider.notifier).getUser(widget.username);
+    res.fold((l) => showSnackBar(navigatorKey.currentContext!, l.message),
+        (r) async {
       user = r;
+      final VisitedItem visited;
+      visited = VisitedItem(
+          widget.username, PrefConstants.userType, user!.profilePicture ?? "");
+      await addVisit(visited);
     });
-    final response = await followUser(user!.username!, ref);
-    response.fold((l) {
-      if (l.message == "user already followed") {
-        setState(() {
-          isFollowed = true;
-        });
-      }
-    }, (r) {
-      setState(() {
-        isFollowed = !r;
-        unfollowUser(user!.username!);
-      });
-    });
+
+    //check if the user is followed or not
+    isFollowed = checkExistance(
+        widget.username, ref.read(userModelProvider)!.followedUsers);
+
     setState(() {
       isLoading = false;
     });
@@ -87,7 +104,8 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   String? uid;
   @override
   void initState() {
-    //setData();
+    //set all the needed data for the other_users screen
+    setData();
     _fetchPosts();
     _scrollController.addListener(_onScroll);
     _tabController = TabController(length: 3, vsync: this);
@@ -120,12 +138,12 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    setData();
+  // @override
+  // void didChangeDependencies() {
+  //   setData();
 
-    super.didChangeDependencies();
-  }
+  //   super.didChangeDependencies();
+  // }
 
   /// Method to set user ID.
   Future<void> setUserid() async {
@@ -195,13 +213,13 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   void _onScroll() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      fetchPostsByUsername(user?.username ?? '', _currentPage); 
+      fetchPostsByUsername(user?.username ?? '', _currentPage);
     }
   }
 
   void _onFollow() async {
     if (!isFollowed!) {
-      final res = await followUser(user!.username!,ref);
+      final res = await followUser(user!.username!, ref);
       res.fold((l) => showSnackBar(context, l.message), (r) {
         setState(() {
           isFollowed = true;

@@ -5,6 +5,7 @@ import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
@@ -12,18 +13,7 @@ import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
-/// The [ChooseCommunity] widget allows users to select a community when cross-posting a post.
-///
-/// Users can choose either their profile or one of the communities they've joined to post their content.
-///
-/// The widget fetches the user's joined communities upon initialization.
-///
-/// Example usage:
-/// ```dart
-/// ChooseCommunity()
-/// ```
 class ChooseCommunity extends ConsumerStatefulWidget {
-  /// Constructs a [ChooseCommunity] widget.
   const ChooseCommunity({super.key});
 
   @override
@@ -34,30 +24,32 @@ class ChooseCommunity extends ConsumerStatefulWidget {
 class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
   List<List<String>> _communitiesData = [[]];
   bool _isLoading = false;
+  String userPic = "";
 
-  /// Navigate to the profile page.
   void onProfile() {
-    ref.watch(sharedPostProvider.notifier).setDestination("");
+    ref.read(sharedPostProvider.notifier).setDestination("");
+    ref
+        .read(shareProfilePic.notifier)
+        .update((state) => ref.read(userModelProvider)?.profilePicture ?? "");
     Navigator.pushReplacementNamed(context, RouteClass.crossPost);
   }
 
-  /// Navigate to the selected community page.
-  void onCommunity(String community) {
-    ref.watch(sharedPostProvider.notifier).setDestination(community);
+  void onCommunity(String community, String communityPic) {
+    ref.read(sharedPostProvider.notifier).setDestination(community);
+    ref.read(shareProfilePic.notifier).update((state) => communityPic);
     Navigator.pushReplacementNamed(context, RouteClass.crossPost);
   }
 
-  /// Handle exiting the choose community screen.
   void onExit() {
-    ref.watch(popCounter.notifier).update((state) => state = state - 1);
+    ref.read(popCounter.notifier).update((state) => state = state - 1);
     Navigator.pop(context);
   }
 
-  /// Fetch user's joined communities.
   Future<void> _fetchCommunities() async {
     setState(() {
       _isLoading = true;
     });
+    userPic = ref.read(userModelProvider)?.profilePicture ?? "";
     final response =
         await ref.read(userCommunitisProvider.notifier).getUserCommunities();
     response.fold(
@@ -108,8 +100,14 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
                       onTap: () {
                         onProfile();
                       },
-                      leading: Icon(Icons.account_circle,
-                          size: 38.spMin, color: AppColors.whiteColor),
+                      leading: userPic == ""
+                          ? CircleAvatar(
+                              radius: 15.r,
+                              backgroundImage:
+                                  const AssetImage(Photos.profileDefault))
+                          : CircleAvatar(
+                              radius: 15.r,
+                              backgroundImage: NetworkImage(userPic)),
                       title: Text("My profile",
                           style: AppTextStyles.primaryTextStyle.copyWith(
                             fontSize: 20.spMin,
@@ -122,15 +120,15 @@ class _ChooseCommunityState extends ConsumerState<ChooseCommunity> {
                     ..._communitiesData.map(
                       (community) => ListTile(
                         onTap: () {
-                          onCommunity(community[0]);
+                          onCommunity(community[0], community[1]);
                         },
                         leading: community[1].isEmpty
-                            ? const CircleAvatar(
-                                radius: 10,
+                            ? CircleAvatar(
+                                radius: 15.r,
                                 backgroundImage:
-                                    AssetImage(Photos.communityDefault))
+                                    const AssetImage(Photos.communityDefault))
                             : CircleAvatar(
-                                radius: 10,
+                                radius: 15.r,
                                 backgroundImage: NetworkImage(community[1])),
                         title: Text(community[0],
                             style: AppTextStyles.primaryTextStyle.copyWith(
