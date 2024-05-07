@@ -244,32 +244,33 @@ class _SocialForm extends ConsumerState<SocialForm> {
                 cursorColor: AppColors.blueColor,
                 style: AppTextStyles.primaryTextStyle,
                 decoration: InputDecoration(
-                  hintText: _hintText(),
-                  hintStyle: AppTextStyles.primaryTextStyle
-                      .copyWith(color: AppColors.whiteHideColor),
-                  filled: true,
-                  fillColor: AppColors.registerButtonColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0.r),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0.r),
-                    borderSide: const BorderSide(color: AppColors.whiteColor),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0.r),
-                    borderSide: const BorderSide(color: AppColors.errorColor),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0.r),
-                    borderSide: const BorderSide(color: AppColors.errorColor),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(
-                      vertical: 15.0.h, horizontal: 15.0.w),
-                  counter: const SizedBox.shrink(),
-                ),
+                    hintText: _hintText(),
+                    hintStyle: AppTextStyles.primaryTextStyle
+                        .copyWith(color: AppColors.whiteHideColor),
+                    filled: true,
+                    fillColor: AppColors.registerButtonColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0.r),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0.r),
+                      borderSide: const BorderSide(color: AppColors.whiteColor),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0.r),
+                      borderSide: const BorderSide(color: AppColors.errorColor),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0.r),
+                      borderSide: const BorderSide(color: AppColors.errorColor),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: 15.0.h, horizontal: 15.0.w),
+                    counterStyle: AppTextStyles.primaryTextStyle
+                        .copyWith(color: AppColors.whiteHideColor)),
                 validator: (value) => null,
+                maxLength: 30,
               ),
               SizedBox(height: 5.h),
               if (_isUrlExist)

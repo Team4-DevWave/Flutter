@@ -22,7 +22,8 @@ final trendingFutureProvider = FutureProvider<List<Trend>>(
     return searchResult;
   },
 );
-Future<SearchModel> searchTest(String query, int page) async {
+Future<SearchModel> searchTest(String query, int page,
+    {String sorting = "Top"}) async {
   final String url;
   if (Platform.isWindows) {
     url = urlWindows;
@@ -33,7 +34,8 @@ Future<SearchModel> searchTest(String query, int page) async {
 
   String? token = await getToken();
   http.Response response = await http.get(
-    Uri.parse("$url:8000/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
+    Uri.parse(
+        "$url:8000/api/v1/homepage/search?q=$query&sort=$sorting&page=$page"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

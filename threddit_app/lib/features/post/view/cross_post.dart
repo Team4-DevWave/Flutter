@@ -11,14 +11,10 @@ import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart'
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
-/// A StatefulWidget for handling the cross-posting functionality.
-///
-/// This widget allows users to cross-post their content to another community
-/// or their profile. Users can select the destination, set options like NSFW
-/// or spoiler, and view a preview of their post before posting.
 class CrossPost extends ConsumerStatefulWidget {
   const CrossPost({super.key});
 
@@ -36,35 +32,30 @@ class _CrossPostState extends ConsumerState<CrossPost> {
   bool _isLoading = false;
   bool _isValid = true;
 
-  /// Updates the form validity based on the last value.
   void _updateFormValidity() {
     setState(() {
       _isValid = lastValue.trim().isNotEmpty ? true : false;
     });
   }
 
-  /// Toggles the bottom sheet buttons visibility.
   void onIsOn() {
     setState(() {
       isOn = !isOn;
     });
   }
 
-  /// Toggles the NSFW option.
   void onIsNSFW() {
     setState(() {
       isNSFW = !isNSFW;
     });
   }
 
-  /// Toggles the spoiler option.
   void onIsSpoiler() {
     setState(() {
       isSpoiler = !isSpoiler;
     });
   }
 
-  /// Opens the rules overlay for the selected destination community.
   void openRulesOverlay() {
     final shared = ref.read(sharedPostProvider);
     showModalBottomSheet(
@@ -78,7 +69,6 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     );
   }
 
-  /// Handles the post action.
   Future<void> onPost() async {
     ref.read(sharedPostProvider.notifier).setNSFW(isNSFW, isSpoiler);
     ref.read(sharedPostProvider.notifier).setTitle(lastValue);
@@ -95,6 +85,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
         (post) {
       showSnackBar(
           navigatorKey.currentContext!, 'Your post shared to $message');
+
       Navigator.pushNamed(context, RouteClass.postScreen, arguments: {
         'currentpost': post,
         'uid': ref.read(userModelProvider)?.id
@@ -107,7 +98,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     lastValue = ref.read(sharedPostProvider).post?.title ?? "";
 
     _isLoading = ref.watch(sharePostsProvider);
-    ref.read(sharedPostProvider).destination == ''
+    final whereTo = ref.read(sharedPostProvider).destination == ''
         ? postingIn = 'My Profile'
         : postingIn = ref.read(sharedPostProvider).destination;
 
@@ -154,8 +145,16 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                           .update((state) => state = state + 1);
                       Navigator.pushNamed(context, RouteClass.chooseCommunity);
                     },
-                    leading: Icon(Icons.account_circle,
-                        size: 38.spMin, color: AppColors.whiteColor),
+                    leading: ref.read(shareProfilePic) == ""
+                        ? CircleAvatar(
+                            radius: 15.r,
+                            backgroundImage: AssetImage(whereTo == ""
+                                ? Photos.profileDefault
+                                : Photos.communityDefault))
+                        : CircleAvatar(
+                            radius: 15.r,
+                            backgroundImage:
+                                NetworkImage(ref.read(shareProfilePic))),
                     title: Row(
                       children: [
                         Text(

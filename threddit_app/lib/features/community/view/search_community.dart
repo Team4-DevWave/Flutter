@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/pref_constants.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
+import 'package:threddit_clone/models/comment.dart';
 
 class SearchCommunityScreenPage extends ConsumerStatefulWidget {
   const SearchCommunityScreenPage({super.key, required this.community});
@@ -34,6 +41,39 @@ class _SearchCommunityScreenPageState
 
   @override
   Widget build(BuildContext context) {
+    
+    List<Post> foundPosts=[];
+    List<SearchCommentModel> foundComments=[];
+    Future<void> _searchCommunity(String searchItem) async {
+      print("/////////////////////////////////we are here//////////////////////////////////////////////////");
+      print(widget.community);
+    try{final url =
+        Uri.parse('http://${AppConstants.local}:8000/api/v1/r/${widget.community}/search?q=$searchItem');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final  List<dynamic> posts =
+          jsonDecode(response.body)['data']['posts'];
+          print(response.body);
+      foundPosts = posts.map((post)=>Post.fromJson(post)).toList();
+      print("this is the posts length ${foundPosts.length}");
+      final  List<dynamic> comments  =
+          jsonDecode(response.body)['data']['comments'];
+      foundComments = comments.map((comment)=>SearchCommentModel.fromJson(comment)).toList();
+      // print("this is the comments length ${comments.length}");
+      setState(() {
+       
+      });
+    } else {
+      setState(() {
+      });
+      print('Error searching community: ${response.statusCode}');
+    }
+    }
+    catch(e){
+      print('Error searching community: $e');
+    }
+  }
     return SafeArea(
       child: Scaffold(
         
@@ -49,6 +89,18 @@ class _SearchCommunityScreenPageState
                             colorScheme: Theme.of(context).colorScheme.copyWith(
                                 primary: Colors.white, secondary: Colors.white)),
                         child: TextField(
+                          onChanged:  (text) => _searchCommunity(_searchController.text),
+                          onSubmitted: (text){
+                             Navigator.pushNamed(
+                                              context, RouteClass.CommunitySearchResults,
+                                              arguments: {
+                                                'communityName':widget.community,
+                                                'searchedItem':_searchController.text,
+                                                'posts':foundPosts,
+                                                'comments':foundComments
+                                              });
+                          },
+                          style: const TextStyle(color: Colors.white),
                           controller: _searchController,
                           autofocus: true,
                           decoration: InputDecoration(
@@ -62,6 +114,7 @@ class _SearchCommunityScreenPageState
                                 _searchController.clear();
                               },
                             ),
+                            
                           ),
                         ),
                       ),
