@@ -38,6 +38,14 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     });
   }
 
+  void onExit() {
+    for (int i = 0; i <= ref.watch(popCounter); i++) {
+      Navigator.pop(context);
+    }
+    ref.read(isFirstTimeEnter.notifier).update((state) => true);
+    ref.read(popCounter.notifier).update((state) => state = 1);
+  }
+
   void onIsOn() {
     setState(() {
       isOn = !isOn;
@@ -89,7 +97,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
       Navigator.pushNamed(context, RouteClass.postScreen, arguments: {
         'currentpost': post,
         'uid': ref.read(userModelProvider)?.id
-      });
+      }).then((value) => onExit());
     });
   }
 
@@ -98,7 +106,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     lastValue = ref.read(sharedPostProvider).post?.title ?? "";
 
     _isLoading = ref.watch(sharePostsProvider);
-    final whereTo = ref.read(sharedPostProvider).destination == ''
+    ref.read(sharedPostProvider).destination == ''
         ? postingIn = 'My Profile'
         : postingIn = ref.read(sharedPostProvider).destination;
 
@@ -148,9 +156,10 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                     leading: ref.read(shareProfilePic) == ""
                         ? CircleAvatar(
                             radius: 15.r,
-                            backgroundImage: AssetImage(whereTo == ""
-                                ? Photos.profileDefault
-                                : Photos.communityDefault))
+                            backgroundImage: AssetImage(
+                                postingIn == "My Profile"
+                                    ? Photos.profileDefault
+                                    : Photos.communityDefault))
                         : CircleAvatar(
                             radius: 15.r,
                             backgroundImage:
