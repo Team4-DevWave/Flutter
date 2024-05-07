@@ -247,7 +247,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                                     : AppColors.backgroundColor,
                                 side: BorderSide(
                                   color: AppColors.whiteColor,
-                                  width: 2.0.w,
+                                  width: 2.0.spMin,
                                 ),
                               ),
                               child: Text(
@@ -267,9 +267,9 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                                 backgroundColor: isSpoiler
                                     ? AppColors.whiteGlowColor
                                     : AppColors.backgroundColor,
-                                side: const BorderSide(
+                                side: BorderSide(
                                   color: AppColors.whiteColor,
-                                  width: 2.0,
+                                  width: 2.0.spMin,
                                 ),
                               ),
                               child: Text(

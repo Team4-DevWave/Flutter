@@ -406,7 +406,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                             ),
                           ),
                         ),
-                        expandedHeight: 300.h,
+                        expandedHeight: 340.h,
                         actions: [
                           const Align(
                             alignment: Alignment.centerRight,
