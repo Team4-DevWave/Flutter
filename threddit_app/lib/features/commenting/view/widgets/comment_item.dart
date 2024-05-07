@@ -59,14 +59,14 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   void upVoteComment(WidgetRef ref) async {
       ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
       if (widget.comment.userVote == 'upvoted') {
-        widget.comment.votes!.upvotes--;
+        widget.comment.votes.upvotes--;
         widget.comment.userVote = 'none';
       } else if (widget.comment.userVote == 'downvoted') {
-        widget.comment.votes!.downvotes--;
-        widget.comment.votes!.upvotes++;
+        widget.comment.votes.downvotes--;
+        widget.comment.votes.upvotes++;
         widget.comment.userVote = 'upvoted';
       } else {
-        widget.comment.votes!.upvotes++;
+        widget.comment.votes.upvotes++;
         widget.comment.userVote = 'upvoted';
       }
       setState(() {});
@@ -75,15 +75,15 @@ class _CommentItemState extends ConsumerState<CommentItem> {
     void downVoteComment(WidgetRef ref) async {
       ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
       if (widget.comment.userVote == 'downvoted') {
-        widget.comment.votes!.downvotes--;
+        widget.comment.votes.downvotes--;
         widget.comment.userVote = 'none';
       }
       if (widget.comment.userVote == 'upvoted') {
-        widget.comment.votes!.upvotes--;
-        widget.comment.votes!.downvotes++;
+        widget.comment.votes.upvotes--;
+        widget.comment.votes.downvotes++;
         widget.comment.userVote = 'downvoted';
       } else {
-        widget.comment.votes!.downvotes++;
+        widget.comment.votes.downvotes++;
         widget.comment.userVote = 'downvoted';
       }
       setState(() {});

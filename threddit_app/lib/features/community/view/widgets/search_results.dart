@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/community/view/widgets/comments_search_community.dart';
 import 'package:threddit_clone/features/community/view/widgets/posts_searched.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
-import 'package:threddit_clone/features/searching/view/widgets/search_comment_feed_widget.dart';
 
 
 class SearchResultsCommunity extends ConsumerStatefulWidget {
