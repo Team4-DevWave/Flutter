@@ -8,7 +8,6 @@ import 'package:threddit_clone/features/home_page/model/visited_item.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/communities_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/favourites_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.dart';
-import 'package:threddit_clone/features/home_page/view_model/favourites_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/favrourite_notifier.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -18,6 +17,7 @@ import 'package:threddit_clone/features/user_system/view_model/settings_function
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:threddit_clone/theme/theme.dart';
 
 class LeftDrawer extends ConsumerStatefulWidget {
   const LeftDrawer({super.key});
@@ -30,8 +30,12 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
   List<VisitedItem> recentlyVisted = [];
   List<List<String>> userCommunitiesData = [];
   List<String>? favouritesList;
+  bool isLoading = false;
 
   Future<void> _setData() async {
+    setState(() {
+      isLoading = true;
+    });
     await ref.read(settingsFetchProvider.notifier).getMe();
     recentlyVisted = await getRecentVisits();
     final response =
@@ -46,19 +50,15 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
         (r) => null);
-    setState(() {});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   void initState() {
     _setData();
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    favouritesList = ref.watch(favouriteListProvider);
-    super.didChangeDependencies();
   }
 
   bool _showSecondDrawer = false;
@@ -74,98 +74,130 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
         backgroundColor: AppColors.mainColor,
         shadowColor: AppColors.mainColor,
         surfaceTintColor: AppColors.mainColor,
-        child: ListView(
-          itemExtent: null,
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            if (recentlyVisted.isNotEmpty)
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 40.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15.w),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Recently Visited',
-                            style: AppTextStyles.primaryTextStyle
-                                .copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                _showSecondDrawer = true;
-                              });
-                            },
-                            child: Text(
-                              'See all',
-                              style: AppTextStyles.primaryTextStyle.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15.spMin),
-                            ),
-                          ),
-                        ],
+        child: isLoading
+            ? const Loading()
+            : recentlyVisted.isEmpty &&
+                    ref.read(favouriteList).isEmpty &&
+                    ref.read(userModelProvider)!.followedUsers!.isEmpty &&
+                    userCommunitiesData.isEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.warning_amber,
+                        color: AppColors.whiteGlowColor,
                       ),
-                    ),
-                    ListView.builder(
-                      padding: const EdgeInsets.all(0),
-                      shrinkWrap: true,
-                      physics:
-                          const NeverScrollableScrollPhysics(), // Disable scrolling within the list
-                      itemCount: limitedRecentlyVisited.length,
-                      itemBuilder: (context, index) {
-                        final item = limitedRecentlyVisited[index];
-                        return ListTile(
-                          onTap: () {
-                            //go to the community/user's profile screen
-                            if (item.type == PrefConstants.userType) {
-                              Navigator.pushNamed(
-                                  context, RouteClass.otherUsers,
-                                  arguments: {
-                                    'username': item.username,
-                                  }).then((value) => Navigator.pop(context));
-                            } else {
-                              Navigator.pushNamed(
-                                  context, RouteClass.communityScreen,
-                                  arguments: {
-                                    'id': item.username,
-                                    'uid': ref.read(userModelProvider)?.id
-                                  }).then((value) => Navigator.pop(context));
-                            }
-                          },
-                          leading: item.imageUrl == ""
-                              ? CircleAvatar(
-                                  radius: 15.spMin,
-                                  backgroundImage:
-                                      const AssetImage(Photos.profileDefault))
-                              : CircleAvatar(
-                                  radius: 15.spMin,
-                                  backgroundImage: NetworkImage(item.imageUrl)),
-                          title: Text(item.username,
-                              maxLines: 1,
-                              style: AppTextStyles.primaryTextStyle.copyWith(
-                                fontSize: 17.spMin,
-                              )),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            if (recentlyVisted.isNotEmpty) const Divider(),
-            if (recentlyVisted.isEmpty) SizedBox(height: 30.h),
-            if (ref.read(favouriteList).isNotEmpty)
-              const FavouriteTiles(title: "Favourites"),
-            if (userCommunitiesData.isNotEmpty)
-              const CommunitiesTiles(title: "Your Communities"),
-            if (ref.read(userModelProvider)!.followedUsers!.isNotEmpty)
-              const FollowingTiles(title: "Following"),
-          ],
-        ),
+                      Text(
+                        "Wow, such empty in activity!",
+                        style: AppTextStyles.primaryTextStyle,
+                      ),
+                    ],
+                  )
+                : ListView(
+                    itemExtent: null,
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+                      if (recentlyVisted.isNotEmpty)
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: 40.h),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Recently Visited',
+                                      style: AppTextStyles.primaryTextStyle
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          _showSecondDrawer = true;
+                                        });
+                                      },
+                                      child: Text(
+                                        'See all',
+                                        style: AppTextStyles.primaryTextStyle
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15.spMin),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              ListView.builder(
+                                padding: const EdgeInsets.all(0),
+                                shrinkWrap: true,
+                                physics:
+                                    const NeverScrollableScrollPhysics(), // Disable scrolling within the list
+                                itemCount: limitedRecentlyVisited.length,
+                                itemBuilder: (context, index) {
+                                  final item = limitedRecentlyVisited[index];
+                                  return ListTile(
+                                    onTap: () {
+                                      //go to the community/user's profile screen
+                                      if (item.type == PrefConstants.userType) {
+                                        Navigator.pushNamed(
+                                            context, RouteClass.otherUsers,
+                                            arguments: {
+                                              'username': item.username,
+                                            }).then(
+                                            (value) => Navigator.pop(context));
+                                      } else {
+                                        Navigator.pushNamed(
+                                            context, RouteClass.communityScreen,
+                                            arguments: {
+                                              'id': item.username,
+                                              'uid': ref
+                                                  .read(userModelProvider)
+                                                  ?.id
+                                            }).then(
+                                            (value) => Navigator.pop(context));
+                                      }
+                                    },
+                                    leading: item.imageUrl == ""
+                                        ? CircleAvatar(
+                                            radius: 15.spMin,
+                                            backgroundImage: const AssetImage(
+                                                Photos.profileDefault))
+                                        : CircleAvatar(
+                                            radius: 15.spMin,
+                                            backgroundImage:
+                                                NetworkImage(item.imageUrl)),
+                                    title: Text(item.username,
+                                        maxLines: 1,
+                                        style: AppTextStyles.primaryTextStyle
+                                            .copyWith(
+                                          fontSize: 17.spMin,
+                                        )),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      if (recentlyVisted.isNotEmpty) const Divider(),
+                      if (recentlyVisted.isEmpty) SizedBox(height: 30.h),
+                      if (ref.read(favouriteList).isNotEmpty)
+                        const FavouriteTiles(title: "Favourites"),
+                      if (userCommunitiesData.isNotEmpty)
+                        const CommunitiesTiles(title: "Your Communities"),
+                      if (ref
+                          .read(userModelProvider)!
+                          .followedUsers!
+                          .isNotEmpty)
+                        const FollowingTiles(title: "Following"),
+                    ],
+                  ),
       ),
       if (_showSecondDrawer)
         Expanded(
