@@ -10,6 +10,9 @@ class PrefConstants {
   static String recentlyVisitied = 'recentlyVisited';
   static String subredditType = 'subreddit';
   static String userType = 'user';
+  static String communitiesState = 'communitiesState';
+  static String favouritesState = 'favouritesState';
+  static String followingState = 'followingState';
 }
 
 class AppConstants {

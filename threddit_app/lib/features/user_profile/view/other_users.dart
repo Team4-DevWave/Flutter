@@ -274,10 +274,25 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                           context),
                       sliver: SliverAppBar(
-                        title: Text(
-                          "u/${user?.username}",
-                          style: AppTextStyles.secondaryTextStyle,
-                        ),
+                        title: user?.username != "SuperMario"
+                            ? Text(
+                                "u/${user?.username}",
+                                style: AppTextStyles.secondaryTextStyle,
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "u/${user?.username}",
+                                    style: AppTextStyles.secondaryTextStyle,
+                                  ),
+                                  SizedBox(width: 5.w),
+                                  const Icon(
+                                    Icons.verified,
+                                    color: Colors.blue,
+                                  )
+                                ],
+                              ),
                         flexibleSpace: FlexibleSpaceBar(
                           collapseMode: CollapseMode.parallax,
                           background: Container(
@@ -360,8 +375,8 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                                   ),
                                   Expanded(
                                     child: Wrap(
-                                      spacing: 7.0.w,
-                                      runSpacing: 5.0.h,
+                                      spacing: 5.0.w,
+                                      runSpacing: -11.h,
                                       children: user!
                                           .userProfileSettings!.socialLinks
                                           .map(

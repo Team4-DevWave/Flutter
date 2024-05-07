@@ -36,6 +36,9 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
     setState(() {
       isLoading = true;
     });
+    // print(await getCommunitiesState(ref));
+    // await getFavouritesState(ref);
+    // await getFollowingState(ref);
     await ref.read(settingsFetchProvider.notifier).getMe();
     recentlyVisted = await getRecentVisits();
     final response =
@@ -145,13 +148,13 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                                   return ListTile(
                                     onTap: () {
                                       //go to the community/user's profile screen
+                                      Navigator.pop(context);
                                       if (item.type == PrefConstants.userType) {
                                         Navigator.pushNamed(
                                             context, RouteClass.otherUsers,
                                             arguments: {
                                               'username': item.username,
-                                            }).then(
-                                            (value) => Navigator.pop(context));
+                                            });
                                       } else {
                                         Navigator.pushNamed(
                                             context, RouteClass.communityScreen,
@@ -160,8 +163,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                                               'uid': ref
                                                   .read(userModelProvider)
                                                   ?.id
-                                            }).then(
-                                            (value) => Navigator.pop(context));
+                                            });
                                       }
                                     },
                                     leading: item.imageUrl == ""
@@ -265,19 +267,20 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                           return ListTile(
                             onTap: () {
                               //go to the community/user's profile screen
+                              Navigator.pop(context);
                               if (item.type == PrefConstants.userType) {
                                 Navigator.pushNamed(
                                     context, RouteClass.otherUsers,
                                     arguments: {
                                       'username': item.username,
-                                    }).then((value) => Navigator.pop(context));
+                                    });
                               } else {
                                 Navigator.pushNamed(
                                     context, RouteClass.communityScreen,
                                     arguments: {
                                       'id': item.username,
                                       'uid': ref.read(userModelProvider)?.id
-                                    }).then((value) => Navigator.pop(context));
+                                    });
                               }
                             },
                             leading: item.imageUrl == ""
