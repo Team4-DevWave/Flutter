@@ -38,15 +38,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     super.initState();
   }
 
-  void toggleNotificationSettings(bool isEnabled) async {
-    notificationOn(client: client, isEnabled: isEnabled, token: token!);
-    setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getNotificationSetting(client: client);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +80,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         onTap: () {
                           final arguements = {
                             'subredditName': widget.subredditName,
-                            'title': "Posts with Comments",
+                            'title': "Comments",
                           };
                           Navigator.pushNamed(
                               context, RouteClass.postNotifications,

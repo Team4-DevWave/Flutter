@@ -1,5 +1,6 @@
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 
+/// Media class responsible for holding and parsing the media data from the search API.
 class Media {
   final String? id;
   final VotesList? votes;

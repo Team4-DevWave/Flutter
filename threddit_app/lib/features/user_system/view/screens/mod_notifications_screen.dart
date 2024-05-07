@@ -41,13 +41,9 @@ class _ModNotificationsSettingsScreenState
     super.initState();
   }
 
-  void toggleNotificationSettings(bool isEnabled) async {
-    notificationOn(client: client, isEnabled: isEnabled, token: token!);
-    setState(() {
-      ref
-          .watch(settingsFetchProvider.notifier)
-          .getNotificationSetting(client: client);
-    });
+  void toggleNotificationSettings(bool isEnabled)  {
+    modNotificationOn(subredditName: widget.subredditName);
+
   }
 
   @override
@@ -95,18 +91,17 @@ class _ModNotificationsSettingsScreenState
                               context, RouteClass.activitySettings,
                               arguments: arguements);
                         }),
-                    ListTile(
-                        title: const Text("Mod Mail"),
-                        titleTextStyle: AppTextStyles.primaryTextStyle,
-                        trailing: const Icon(Icons.arrow_forward),
-                        onTap: () {
-                          final arguements = {
-                            'subredditName': widget.subredditName,
-                          };
-                          Navigator.pushNamed(
-                              context, RouteClass.modMail,
-                              arguments: arguements);
-                        }),
+                    // ListTile(
+                    //     title: const Text("Mod Mail"),
+                    //     titleTextStyle: AppTextStyles.primaryTextStyle,
+                    //     trailing: const Icon(Icons.arrow_forward),
+                    //     onTap: () {
+                    //       final arguements = {
+                    //         'subredditName': widget.subredditName,
+                    //       };
+                    //       Navigator.pushNamed(context, RouteClass.modMail,
+                    //           arguments: arguements);
+                    //     }),
                     ListTile(
                         title: const Text("Reports"),
                         titleTextStyle: AppTextStyles.primaryTextStyle,

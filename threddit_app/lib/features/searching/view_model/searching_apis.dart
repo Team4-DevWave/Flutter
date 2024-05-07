@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/model/trends.dart';
-import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 const String urlAndroid = "http://10.0.2.2";
@@ -22,6 +21,10 @@ final trendingFutureProvider = FutureProvider<List<Trend>>(
     return searchResult;
   },
 );
+
+/// Api function for searching.
+/// It takes the qury, the page, and sorting which is by default Top
+/// Gets the token then calls the api and returns a SearchModel object which includes the search Results.
 Future<SearchModel> searchTest(String query, int page,
     {String sorting = "Top"}) async {
   final String url;
@@ -41,20 +44,15 @@ Future<SearchModel> searchTest(String query, int page,
       'Authorization': 'Bearer $token',
     },
   );
-  print(response.statusCode);
-  print("TESSSSSSSSSSSSSSSST after");
-  print(response.body);
+
   final search = SearchModel.fromJson(jsonDecode(response.body));
-  print("Subbredits: ");
-  print(search.subreddits.length);
-  print("Posts: ");
-  print(search.posts.length);
   return SearchModel.fromJson(jsonDecode(response.body));
 }
-
 class SearchingApis extends StateNotifier<bool> {
   final Ref ref;
   SearchingApis(this.ref) : super(false);
+  /// Api for getting the Trending list from the backend.
+  /// It gets the token then calls the api and returns a List of [Trend]
   Future<List<Trend>> getTrending() async {
     final String url;
     if (Platform.isWindows) {
@@ -71,14 +69,16 @@ class SearchingApis extends StateNotifier<bool> {
         'Authorization': 'Bearer $token'
       },
     );
-    print(response.statusCode);
-    print(response.body);
     Map<String, dynamic> data = jsonDecode(response.body);
     List<dynamic> trendsData = data['data']['trends'];
     List<Trend> trends =
         trendsData.map((json) => Trend.fromJson(json)).toList();
     return trends;
   }
+
+  /// Api function for searching.
+  /// It takes the qury, the page, and sorting which is by default Top
+  /// Gets the token then calls the api and returns a SearchModel object which includes the search Results.
 
   Future<SearchModel> search(String query, int page) async {
     final String url;
@@ -87,8 +87,6 @@ class SearchingApis extends StateNotifier<bool> {
     } else {
       url = urlAndroid;
     }
-    print("TESSSSSSSSSSSSSSSST before");
-
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse(
@@ -98,14 +96,7 @@ class SearchingApis extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
-    print(response.statusCode);
-    print("TESSSSSSSSSSSSSSSST after");
-    print(response.body);
     final search = SearchModel.fromJson(jsonDecode(response.body));
-    print("Subbredits: ");
-    print(search.subreddits.length);
-    print("Posts: ");
-    print(search.posts.length);
     return SearchModel.fromJson(jsonDecode(response.body));
   }
 }

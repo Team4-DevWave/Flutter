@@ -5,10 +5,19 @@ import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// This class defines a widget called SearchCommunityUnit, 
+/// which represents a single unit in the search results for communities within the Threddit app. 
+/// Each unit displays information about a subreddit, including its name, member count, 
+/// and a brief description. 
+/// Users can interact with each unit to visit the respective community. 
+/// The class utilizes Flutter's StatefulWidget to manage its state, allowing for dynamic updates based on user interactions or changes in data. 
+/// SearchCommunityUnit is designed to be flexible and reusable, providing a clean and organized way to display community search results in the app.
+
 class SearchCommunityUnit extends StatefulWidget {
   final Subreddit subreddit;
   final String userID;
-  const SearchCommunityUnit({super.key, required this.subreddit, required this.userID});
+  const SearchCommunityUnit(
+      {super.key, required this.subreddit, required this.userID});
 
   @override
   State<SearchCommunityUnit> createState() => _SearchCommunityUnitState();
