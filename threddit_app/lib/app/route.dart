@@ -430,10 +430,10 @@ class RouteClass {
             args['communityName'] as String; // Extract the community object
         return MaterialPageRoute(builder: (_) =>  ScheduledPosts(communityName: communityName));
       case postSchedule:
-        final args = settings.arguments as Map<String, dynamic>;
-        final communityName =
-            args['communityName'] as String; // Extract the community object
-        return MaterialPageRoute(builder: (_) =>  PostSchedule(communityName: communityName));
+        // final args = settings.arguments as Map<String, dynamic>;
+        // final communityName =
+        //     args['communityName'] as String; // Extract the community object
+        return MaterialPageRoute(builder: (_) =>  const PostSchedule());
 
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());

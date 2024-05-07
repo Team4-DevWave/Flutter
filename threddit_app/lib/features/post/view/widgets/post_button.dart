@@ -71,7 +71,6 @@ class PostButton extends ConsumerWidget {
           showSnackBar(navigatorKey.currentContext!, l.message);
         }, (post) {
           ref.read(postDataProvider.notifier).resetAll();
-
           //should route to the posted post page but it routes to the mainLayout for now
           ref.read(currentScreenProvider.notifier).updateCurrentScreen(0);
           Navigator.pushNamed(context, RouteClass.postScreen, arguments: {

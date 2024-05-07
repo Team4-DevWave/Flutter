@@ -17,9 +17,7 @@ class CommunityTypesNotifier extends StateNotifier<CommunityTypesModel> {
             isAdult: false,
             restriction: 0
             ));
-
-  
-
+            
   void updateAdult(bool check) {
     state = state.copyWith(isAdult: check);
   }
