@@ -16,23 +16,21 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// The `feed_widget.dart` file defines a stateful widget `FeedWidget` that is used to
-/// display a feed of posts. The widget takes a `feedID` as a parameter, which is used
-/// to fetch the posts for the specific feed.
-
-/// The `_FeedWidgetState` class manages the state for this widget. It maintains a list
-/// of `Post` objects, `_posts`, which are displayed in the feed, and a page counter,
-/// `_currentPage`, which is used for pagination of the posts.
-
-/// The `_fetchPosts` method is used to fetch the posts from the server. It adds the
-/// fetched posts to the `_posts` list and increments the `_currentPage` counter.
-
-/// The `_onScroll` method is a listener that triggers the `_fetchPosts` method when the
-/// user scrolls to the end of the feed, enabling infinite scrolling.
-
-/// The `initState` method initializes the state of the widget by fetching the first set
-/// of posts. The `dispose` method is used to clean up the controller when the widget is
-/// removed from the widget tree.
+/// The `SearchFeedWidget` displays a feed of posts based on a specific search query. 
+/// It takes a [searchText] parameter representing the search query entered by the user.
+/// 
+/// The `_SearchFeedWidgetState` class manages the state for this widget. 
+/// It maintains a list of `Post` objects, `_posts`, which are displayed in the feed, 
+/// and implements pagination using a `_currentPage` counter.
+/// 
+/// The `_fetchPosts` method is responsible for fetching posts from the server based on the provided search query and page number. 
+/// It adds the fetched posts to the `_posts` list and updates the `_currentPage` counter accordingly.
+/// 
+/// The `_onScroll` method is a listener attached to the scroll controller. 
+/// It triggers the `_fetchPosts` method when the user scrolls to the end of the feed, enabling infinite scrolling.
+/// 
+/// The widget also allows users to change the sorting of posts using a dropdown menu. 
+/// The `onSortChange` method is called when the sorting option is changed, triggering a new fetch of posts with the updated sorting option.
 final selectedSortProvider = StateProvider<String>((ref) => "Top");
 
 class SearchFeedWidget extends ConsumerStatefulWidget {

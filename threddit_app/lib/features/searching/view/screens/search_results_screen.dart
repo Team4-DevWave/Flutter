@@ -11,6 +11,10 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
 
 enum ViewType { all, editable }
+/// The `SearchResultsScreen` widget presents search results for various content types within the Threddit app. 
+/// This widget is responsible for displaying search results in tabs for posts, communities, comments, media, and people. 
+/// Each tab contains a specific type of search result, allowing users to easily navigate through the different types of content. 
+/// The search results are populated based on the provided [searchResults] model and the [searchText] that was queried by the user.
 
 class SearchResultsScreen extends ConsumerStatefulWidget {
   final SearchModel searchResults;

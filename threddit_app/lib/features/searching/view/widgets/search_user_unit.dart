@@ -52,7 +52,7 @@ class _SearchUserUnitState extends ConsumerState<SearchUserUnit> {
                   : TextButton(
                       onPressed: () async {
                         print(widget.user.username!);
-                        await followUser(widget.user.username! , ref);
+                        await followUser(widget.user.username!, ref);
 
                         setState(() {
                           widget.isFollowed = !widget.isFollowed;
@@ -64,7 +64,9 @@ class _SearchUserUnitState extends ConsumerState<SearchUserUnit> {
                       )),
             ),
           ),
-          SizedBox(height: 5.h,),
+          SizedBox(
+            height: 5.h,
+          ),
           const Divider(
             color: Color.fromRGBO(233, 93, 95, 0.573),
             thickness: 1,

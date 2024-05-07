@@ -136,7 +136,7 @@ class RouteClass {
 
   static const String modNotificationsSettings = '/mod-notifications';
   static const String activitySettings = '/activity-settings';
-  static const String modMail = '/mod-mail';
+  // static const String modMail = '/mod-mail';
   static const String reportSettings = '/report-settings';
   static const String postNotifications = '/post-notifications';
 
@@ -430,11 +430,11 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => PostsNotifcationScreen(
                 title: title, subredditName: subredditName));
-      case modMail:
-        final args = settings.arguments as Map<String, dynamic>;
-        final subredditName = args['subredditName'] as String;
-        return MaterialPageRoute(
-            builder: (_) => ModMailScreen(subredditName: subredditName));
+      // case modMail:
+      //   final args = settings.arguments as Map<String, dynamic>;
+      //   final subredditName = args['subredditName'] as String;
+      //   return MaterialPageRoute(
+      //       builder: (_) => ModMailScreen(subredditName: subredditName));
       case reportSettings:
         final args = settings.arguments as Map<String, dynamic>;
         final subredditName = args['subredditName'] as String;

@@ -13,7 +13,23 @@ import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
-
+/// The `SearchMediaFeed` widget displays a feed of media content based on a specific search query. 
+/// It takes a [searchText] parameter representing the search query entered by the user.
+/// 
+/// The `_SearchMediaFeedState` class manages the state for this widget. 
+/// It maintains a list of `Media` objects, `_media`, which are displayed in the feed, and implements pagination using a `_currentPage` counter.
+/// 
+/// The `_fetchMedia` method is responsible for fetching media content from the server based on the provided search query and page number.
+///  It adds the fetched media items to the `_media` list and updates the `_currentPage` counter accordingly.
+/// 
+/// The widget supports both images and videos. Images are displayed using the `Image` widget,
+///  while videos are displayed using the `VideoPlayer` widget from the `video_player` package. Users can play/pause videos by tapping on the video player.
+/// 
+/// The `_onScroll` method is a listener attached to the scroll controller. 
+/// It triggers the `_fetchMedia` method when the user scrolls to the end of the feed, enabling infinite scrolling.
+/// 
+/// The widget also allows users to change the sorting of media items using a dropdown menu.
+/// The `onSortChange` method is called when the sorting option is changed, triggering a new fetch of media items with the updated sorting option.
 class SearchMediaFeed extends ConsumerStatefulWidget {
   final String searchText;
 
