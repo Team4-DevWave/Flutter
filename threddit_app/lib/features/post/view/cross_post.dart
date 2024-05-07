@@ -77,37 +77,6 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     );
   }
 
-  void onExit() {
-    for (int i = 0; i <= ref.watch(popCounter); i++) {
-      Navigator.pop(context);
-    }
-    ref.read(isFirstTimeEnter.notifier).update((state) => true);
-    ref.read(popCounter.notifier).update((state) => state = 1);
-  }
-
-  Future<void> onPost() async {
-    ref.read(sharedPostProvider.notifier).setNSFW(isNSFW, isSpoiler);
-    ref.read(sharedPostProvider.notifier).setTitle(lastValue);
-    final shared = ref.read(sharedPostProvider);
-    final message =
-        shared.destination == '' ? 'your profile' : shared.destination;
-
-    //send shared post to backend and recieve the responsed from the provider
-    //to show user a message
-    final response = await ref.read(sharePostsProvider.notifier).sharePost();
-    response.fold(
-        (failure) =>
-            showSnackBar(navigatorKey.currentContext!, failure.message),
-        (post) {
-      showSnackBar(
-          navigatorKey.currentContext!, 'Your post shared to $message');
-      Navigator.pushNamed(context, RouteClass.postScreen, arguments: {
-        'currentpost': post,
-        'uid': ref.read(userModelProvider)?.id
-      }).then((value) => onExit());
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     lastValue = ref.read(sharedPostProvider).post?.title ?? "";
