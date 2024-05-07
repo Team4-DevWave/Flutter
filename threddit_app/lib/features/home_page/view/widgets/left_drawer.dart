@@ -108,7 +108,8 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                             children: [
                               SizedBox(height: 40.h),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 15.spMin),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment:
@@ -138,7 +139,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                                 ),
                               ),
                               ListView.builder(
-                                padding: const EdgeInsets.all(0),
+                                padding: EdgeInsets.all(0.spMin),
                                 shrinkWrap: true,
                                 physics:
                                     const NeverScrollableScrollPhysics(), // Disable scrolling within the list
@@ -217,7 +218,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                     children: [
                       SizedBox(height: 40.h),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        padding: EdgeInsets.symmetric(horizontal: 15.spMin),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -231,13 +232,13 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                                   Icons.arrow_back,
                                   color: Colors.white,
                                 )),
-                            SizedBox(width: 15.w),
+                            SizedBox(width: 15.spMin),
                             Text(
                               'Recently Visited',
                               style: AppTextStyles.primaryTextStyle
                                   .copyWith(fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(width: 60.w),
+                            SizedBox(width: 60.spMin),
                             InkWell(
                               onTap: () async {
                                 await deleteAll();
@@ -257,7 +258,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                         ),
                       ),
                       ListView.builder(
-                        padding: const EdgeInsets.all(0),
+                        padding: EdgeInsets.all(0.spMin),
                         shrinkWrap: true,
                         physics:
                             const NeverScrollableScrollPhysics(), // Disable scrolling within the list
