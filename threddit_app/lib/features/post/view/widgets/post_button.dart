@@ -86,7 +86,6 @@ class _PostButtonState extends ConsumerState<PostButton> {
         }, (post) {
           final whereTo = ref.read(postDataProvider)?.community;
           ref.read(postDataProvider.notifier).resetAll();
-
           //should route to the posted post page but it routes to the mainLayout for now
           ref.read(currentScreenProvider.notifier).updateCurrentScreen(0);
 

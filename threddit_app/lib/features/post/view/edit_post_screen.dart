@@ -16,6 +16,7 @@ import 'package:threddit_clone/theme/text_styles.dart';
 /// This widget allows users to edit the content of an existing post,
 /// including the post body, NSFW status, and spoiler status. Users can
 /// also add or edit links within the post body.
+/// 
 class EditPost extends ConsumerStatefulWidget {
   const EditPost({super.key});
 
@@ -120,7 +121,7 @@ class _EditPostState extends ConsumerState<EditPost> {
   Widget build(BuildContext context) {
     _updateFormValidity();
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( 
         leading: _isChanged
             ? const ExitEdit()
             : IconButton(
