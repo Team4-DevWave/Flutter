@@ -57,6 +57,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
                   InkWell(
                       onTap: () {
                         Navigator.pop(context);
+
                         Navigator.pushNamed(
                             context, RouteClass.userProfileScreen);
                       },
