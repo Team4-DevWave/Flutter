@@ -66,7 +66,6 @@ class PostProvider extends StateNotifier<bool> {
             "duration": post.duration ?? 1,
             "poll": pollValue,
           }));
-
       if (response.statusCode == 201) {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
         final urlPost =
