@@ -5,6 +5,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 
+// ignore: must_be_immutable
 class ChatOptionsScreen extends ConsumerStatefulWidget {
   ChatOptionsScreen(
       {super.key, required this.username, required this.chatroom});

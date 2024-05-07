@@ -7,6 +7,7 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+// ignore: must_be_immutable
 class RenameChatroom extends ConsumerStatefulWidget {
   RenameChatroom(
       {super.key, required this.username, required this.chatroom});

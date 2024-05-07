@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
@@ -20,8 +21,9 @@ import 'package:threddit_clone/theme/text_styles.dart';
 ///
 /// [post] is the Post object to be shared.
 void share(BuildContext context, WidgetRef ref, Post post) {
-  ref.watch(isFirstTimeEnter.notifier).update((state) => true);
-  ref.watch(isChanged.notifier).update((state) => false);
+  ref.read(isFirstTimeEnter.notifier).update((state) => true);
+  ref.read(isChanged.notifier).update((state) => false);
+  final userProfile = ref.read(userModelProvider)!.profilePicture ?? "";
   showModalBottomSheet<void>(
       context: context,
       shape: RoundedRectangleBorder(
@@ -51,7 +53,7 @@ void share(BuildContext context, WidgetRef ref, Post post) {
                       ElevatedButton(
                           onPressed: () {
                             ref
-                                .watch(sharedPostProvider.notifier)
+                                .read(sharedPostProvider.notifier)
                                 .setToBeSharedPost(post);
                             Navigator.pushNamed(
                                 context, RouteClass.chooseCommunity);
@@ -80,11 +82,14 @@ void share(BuildContext context, WidgetRef ref, Post post) {
                       ElevatedButton(
                         onPressed: () {
                           ref
-                              .watch(sharedPostProvider.notifier)
+                              .read(sharedPostProvider.notifier)
                               .setToBeSharedPost(post);
                           ref
-                              .watch(sharedPostProvider.notifier)
+                              .read(sharedPostProvider.notifier)
                               .setDestination("");
+                          ref
+                              .read(shareProfilePic.notifier)
+                              .update((state) => userProfile);
                           Navigator.pushNamed(context, RouteClass.crossPost);
                         },
                         style: ElevatedButton.styleFrom(
@@ -92,12 +97,14 @@ void share(BuildContext context, WidgetRef ref, Post post) {
                           shape: const CircleBorder(),
                           padding: const EdgeInsets.all(15),
                         ),
-                        child: Image.asset(
-                          Photos.thinkingSno,
-                          fit: BoxFit.contain,
-                          width: 17.w,
-                          height: 17.h,
-                        ),
+                        child: userProfile == ""
+                            ? CircleAvatar(
+                                radius: 15.r,
+                                backgroundImage:
+                                    const AssetImage(Photos.profileDefault))
+                            : CircleAvatar(
+                                radius: 15.r,
+                                backgroundImage: NetworkImage(userProfile)),
                       ),
                       SizedBox(
                         height: 5.h,

@@ -55,4 +55,3 @@ class GetUserNotifier extends StateNotifier<UserModelNotMe> {
     }
   }
 }
-  

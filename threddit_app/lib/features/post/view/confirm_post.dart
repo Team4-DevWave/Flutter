@@ -319,7 +319,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                 style: AppTextStyles.boldTextStyle,
                               ),
                             ),
-                            TextButton(
+                            whereTo != "My Profile" ? TextButton(
                               onPressed: () {
                                 openRulesOverlay();
                               },
@@ -329,7 +329,7 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
                                   color: AppColors.redditOrangeColor,
                                 ),
                               ),
-                            ),
+                            ) : const SizedBox(),
                           ],
                         ),
                       ),

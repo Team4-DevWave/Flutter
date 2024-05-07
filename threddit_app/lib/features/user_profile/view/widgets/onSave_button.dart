@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_profile/view_model/update_dis_name.dart';
 import 'package:threddit_clone/features/user_profile/view_model/update_pfp.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -64,8 +63,7 @@ class _SaveButtonState extends ConsumerState<SaveButton> {
                 setState(() {
                   _isLoading = false;
                 });
-                Navigator.pushReplacementNamed(
-                    context, RouteClass.userProfileScreen);
+                Navigator.pop(context);
               });
             }
           : null,

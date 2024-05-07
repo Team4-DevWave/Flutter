@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/route.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
@@ -115,8 +116,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         style: AppTextStyles.secondaryTextStyle,
                         dropdownColor: AppColors.backgroundColor,
                         icon: const Icon(Icons.arrow_downward),
-                        onChanged: (String? value) {
-                        },
+                        onChanged: (String? value) {},
                         value: defaultView.first,
                         items: defaultView
                             .map<DropdownMenuItem<String>>((String value) {
@@ -336,7 +336,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             leading: const Icon(Icons.delete),
             title: const Text("Clear local history"),
             titleTextStyle: AppTextStyles.primaryTextStyle,
-            onTap: () {},
+            onTap: () async {
+              await deleteAll();
+            },
           ),
         ]));
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
+import 'package:threddit_clone/features/commenting/model/comment_notifier.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/saved_post.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
@@ -30,6 +31,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   bool _isLoading = false;
   bool _isSaved = false;
+  
   void _setVariables() async {
     setState(() {
       _isLoading = true;
@@ -55,22 +57,43 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   }
 
   void upVoteComment(WidgetRef ref) async {
-    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
-    setState(() {});
-  }
+      ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
+      if (widget.comment.userVote == 'upvoted') {
+        widget.comment.votes!.upvotes--;
+        widget.comment.userVote = 'none';
+      } else if (widget.comment.userVote == 'downvoted') {
+        widget.comment.votes!.downvotes--;
+        widget.comment.votes!.upvotes++;
+        widget.comment.userVote = 'upvoted';
+      } else {
+        widget.comment.votes!.upvotes++;
+        widget.comment.userVote = 'upvoted';
+      }
+      setState(() {});
+    }
 
-  void downVoteComment(WidgetRef ref) async {
-    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
-
-    setState(() {});
-  }
+    void downVoteComment(WidgetRef ref) async {
+      ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
+      if (widget.comment.userVote == 'downvoted') {
+        widget.comment.votes!.downvotes--;
+        widget.comment.userVote = 'none';
+      }
+      if (widget.comment.userVote == 'upvoted') {
+        widget.comment.votes!.upvotes--;
+        widget.comment.votes!.downvotes++;
+        widget.comment.userVote = 'downvoted';
+      } else {
+        widget.comment.votes!.downvotes++;
+        widget.comment.userVote = 'downvoted';
+      }
+      setState(() {});
+    }
 
   @override
   Widget build(BuildContext context) {
     // Function to delete the comment
     void deleteComment() {
-      ref.watch(deleteCommentProvider(
-          (postId: widget.comment.post, commentId: widget.comment.id)));
+      ref.read(commentsProvider.notifier).deleteComment(widget.comment.id, widget.comment.post);
     }
 
     Future<void> showDeleteConfirmationDialog(BuildContext context) async {
@@ -460,14 +483,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                                             context);
                                                                         Navigator.pop(
                                                                             context);
-                                                                        ref.read(
-                                                                            editCommentProvider((
-                                                                          commentId: widget
-                                                                              .comment
-                                                                              .id,
-                                                                          newContent:
-                                                                              _commentController.text
-                                                                        )));
+                                                                       ref.read(commentsProvider.notifier).editComment(widget.comment.id, _commentController.text);
                                                                       } else {
                                                                         showDialog(
                                                                             context:
@@ -546,8 +562,10 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_upward_outlined,
                         size: 30.spMin,
                       ),
-                      color: Colors.white,
-                    ),
+                      color: widget.comment.userVote == 'upvoted'
+                        ? Colors.red
+                        : Colors.white),
+                    
                     Text(
                       '${widget.comment.votes.upvotes - widget.comment.votes.downvotes == 0 ? "vote" : widget.comment.votes.upvotes - widget.comment.votes.downvotes}',
                       style: AppTextStyles.primaryTextStyle
@@ -561,7 +579,9 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         Icons.arrow_downward_outlined,
                         size: 30.spMin,
                       ),
-                      color: Colors.white,
+                      color: widget.comment.userVote == 'downvoted'
+                      ? Colors.blue
+                      : Colors.white,
                     ),
                   ],
                 )

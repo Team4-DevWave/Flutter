@@ -7,6 +7,7 @@ class Photos {
   static const avatar = 'assets/images/avatar.png';
   static const thinkingSno = 'assets/images/thinking-snoo.png';
   static const communityDefault = 'assets/images/communityDefaultIcon.jpg';
+  static const profileDefault = 'assets/images/Default_Avatar.png';
 
   static Image appBarLogo = Image.asset(
     Photos.snoLogo,

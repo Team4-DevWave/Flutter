@@ -15,6 +15,7 @@ import 'package:threddit_clone/features/chatting/view/screens/invite_screen.dart
 import 'package:threddit_clone/features/chatting/view/screens/member_screen.dart';
 import 'package:threddit_clone/features/chatting/view/screens/rename_screen.dart';
 import 'package:threddit_clone/features/community/view/community_info.dart';
+import 'package:threddit_clone/features/community/view/widgets/search_results.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/messaging/view/screens/Inbox.dart';
 import 'package:threddit_clone/features/notifications/view/screens/notifications_Screen.dart';
@@ -26,6 +27,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/banned_users_scr
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
+import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view/screens/search_results_screen.dart';
 import 'package:threddit_clone/features/searching/view/screens/search_screen.dart';
@@ -40,6 +42,7 @@ import 'package:threddit_clone/features/user_system/view/screens/mod_mail_screen
 import 'package:threddit_clone/features/user_system/view/screens/mod_notifications_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/posts_notifcation_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/reports_screen.dart';
+import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/features/user_system/view/screens/settings_screen.dart';
@@ -130,6 +133,7 @@ class RouteClass {
   static const String renameChatroom = '/rename-chatroom';
   static const String chatMembers = '/chat-members';
   static const String inviteMembers = '/invite-members';
+  static const String CommunitySearchResults = '/search-community-results';
 
   static const String modNotificationsSettings = '/mod-notifications';
   static const String activitySettings = '/activity-settings';
@@ -268,6 +272,20 @@ class RouteClass {
           builder: (_) => CommunityScreen(
             id: id,
             uid: uid,
+          ),
+        );
+      case CommunitySearchResults:
+        final args = settings.arguments as Map<String, dynamic>;
+        final communityName=args['communityName'] as String;
+        final searchedItem=args['searchedItem'] as String;
+        final posts=args['posts'] as List<Post>;
+        final comments=args['comments'] as List<SearchCommentModel>;
+        return MaterialPageRoute(
+          builder: (_) => SearchResultsCommunity(
+           communityName: communityName,
+            serachedItem: searchedItem,
+            posts: posts,
+            comments: comments,
           ),
         );
       case confirmPostScreen:
@@ -430,10 +448,10 @@ class RouteClass {
             args['communityName'] as String; // Extract the community object
         return MaterialPageRoute(builder: (_) =>  ScheduledPosts(communityName: communityName));
       case postSchedule:
-        final args = settings.arguments as Map<String, dynamic>;
-        final communityName =
-            args['communityName'] as String; // Extract the community object
-        return MaterialPageRoute(builder: (_) =>  PostSchedule(communityName: communityName));
+        // final args = settings.arguments as Map<String, dynamic>;
+        // final communityName =
+        //     args['communityName'] as String; // Extract the community object
+        return MaterialPageRoute(builder: (_) =>  const PostSchedule());
 
       default:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
