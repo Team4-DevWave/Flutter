@@ -81,7 +81,7 @@ dependencies:
   syncfusion_flutter_sliders: ^25.1.42
   emoji_picker_flutter: ^2.2.0
   flutter_hooks: ^0.20.5
-
+  flutter_markdown: ^0.7.1
 
 dev_dependencies:
   flutter_test:
