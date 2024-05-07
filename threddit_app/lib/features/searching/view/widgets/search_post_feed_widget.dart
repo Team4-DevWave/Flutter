@@ -1,5 +1,6 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,30 +11,31 @@ import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:video_player/video_player.dart';
 
-/// The `SearchFeedUnit` widget is responsible for rendering a single post in the search feed. 
+/// The `SearchFeedUnit` widget is responsible for rendering a single post in the search feed.
 /// It displays various details such as the post author, posting time, post content (text and/or image/video), and any additional attributes like NSFW or spoiler tags.
-/// 
-/// The widget takes a [dataOfPost] parameter representing the post data to be displayed and a [uid] parameter representing the user ID. 
-/// 
-/// The `build` method of the widget constructs the UI layout for the post, 
-/// including the post author, posting time, content (title and text body), and any media content (image or video). Additionally, 
+///
+/// The widget takes a [dataOfPost] parameter representing the post data to be displayed and a [uid] parameter representing the user ID.
+///
+/// The `build` method of the widget constructs the UI layout for the post,
+/// including the post author, posting time, content (title and text body), and any media content (image or video). Additionally,
 /// it handles rendering of NSFW or spoiler tags if present.
-/// 
-/// The post content is displayed within a `Container`, which is decorated with a `BoxDecoration` to provide a border and circular border radius. 
+///
+/// The post content is displayed within a `Container`, which is decorated with a `BoxDecoration` to provide a border and circular border radius.
 /// The border color is set to a semi-transparent white color, and the width is adjusted based on screen width.
 ///  Horizontal and vertical padding is applied to create space around the content.
-/// 
+///
 /// If the post contains an image or video, it is displayed using the `Image` or `VideoPlayer` widget, respectively.
 ///  Users can play/pause videos by tapping on the video player.
-/// 
-/// If the post type is a URL, the `AnyLinkPreview` widget is used to display a preview of the linked content. 
+///
+/// If the post type is a URL, the `AnyLinkPreview` widget is used to display a preview of the linked content.
 /// Tapping on the preview opens the link in the default browser.
-/// 
+///
 /// The widget also listens for user interactions such as tapping on the author's username or tapping on the post content to navigate to the post details screen.
 class SearchFeedUnit extends ConsumerStatefulWidget {
   final Post dataOfPost;
@@ -51,7 +53,7 @@ class _SearchFeedUnitState extends ConsumerState<SearchFeedUnit> {
   late int numbberOfvotes;
   final now = DateTime.now();
   late VideoPlayerController _controller;
-
+  UserModelMe? user;
   @override
   void initState() {
     super.initState();
@@ -63,6 +65,16 @@ class _SearchFeedUnitState extends ConsumerState<SearchFeedUnit> {
           setState(() {});
         });
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    setUserModel();
+    super.didChangeDependencies();
+  }
+
+  Future<void> setUserModel() async {
+    user = ref.read(userModelProvider)!;
   }
 
   Future getModOptions() async {
@@ -211,10 +223,25 @@ class _SearchFeedUnitState extends ConsumerState<SearchFeedUnit> {
                   widget.dataOfPost.title,
                   style: AppTextStyles.boldTextStyle,
                 ),
-                Text(
-                  widget.dataOfPost.textBody ?? '',
-                  style: AppTextStyles.secondaryTextStyle,
+                Container(
+                  height: 20.h,
+                  child: Markdown(
+                    onTapLink: (text, href, title) {
+                      launchUrlFunction(Uri.parse(href ?? ""));
+                    },
+                    padding: EdgeInsets.zero,
+                    data: widget.dataOfPost.textBody ?? '',
+                    styleSheet: MarkdownStyleSheet(
+                        a: const TextStyle(
+                          color: const Color.fromARGB(255, 7, 114, 255),
+                        ),
+                        p: AppTextStyles.secondaryTextStyle),
+                  ),
                 ),
+                // Text(
+                //   widget.dataOfPost.textBody ?? '',
+                //   style: AppTextStyles.secondaryTextStyle,
+                // ),
               ],
             ),
           ),
@@ -272,7 +299,7 @@ class _SearchFeedUnitState extends ConsumerState<SearchFeedUnit> {
                     },
                   ),
                 )
-              : SizedBox(),
+              : const SizedBox(),
           //const Divider(color: AppColors.whiteHideColor),
         ],
       ),
