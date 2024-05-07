@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -406,7 +408,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                             ),
                           ),
                         ),
-                        expandedHeight: 300.h,
+                        expandedHeight: Platform.isAndroid?340.h:360.h,
                         actions: [
                           const Align(
                             alignment: Alignment.centerRight,

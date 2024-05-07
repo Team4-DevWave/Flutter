@@ -94,15 +94,14 @@ class _PostCardState extends ConsumerState<PostCard> {
 
     void downVotePost(WidgetRef ref) async {
       ref.read(votePost((postID: widget.post.id, voteType: -1)));
+       if (widget.post.userVote == 'upvoted') {
+        widget.post.votes!.upvotes--;
+      }
       if (widget.post.userVote == 'downvoted') {
         widget.post.votes!.downvotes--;
         widget.post.userVote = 'none';
       }
-      if (widget.post.userVote == 'upvoted') {
-        widget.post.votes!.upvotes--;
-        widget.post.votes!.downvotes++;
-        widget.post.userVote = 'downvoted';
-      } else {
+      else {
         widget.post.votes!.downvotes++;
         widget.post.userVote = 'downvoted';
       }
