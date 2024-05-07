@@ -7,7 +7,8 @@ import 'package:threddit_clone/models/message.dart';
 
 class MessageRepository {
   Future<List<Message>> fetchUserMessages() async {
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/messages/allmessages');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/messages/allmessages');
     String? token = await getToken();
     final headers = {
       "Authorization": "Bearer $token",
@@ -15,11 +16,15 @@ class MessageRepository {
     try {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
-        final List<dynamic> messagesJson = json.decode(response.body)['data']['messages'];
-        List<Message> messages = messagesJson.map((messageJson) => Message.fromJson(messageJson)).toList();
+        final List<dynamic> messagesJson =
+            json.decode(response.body)['data']['messages'];
+        List<Message> messages = messagesJson
+            .map((messageJson) => Message.fromJson(messageJson))
+            .toList();
         return messages;
       } else {
-        throw Exception('Failed to load messages. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load messages. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to fetch messages: $e');
@@ -32,15 +37,17 @@ class MessageRepository {
     }).asyncMap((_) async => fetchUserMessages());
   }
 
-  Future<void> createMessage(String recipient, String subject, String message) async {
+  Future<void> createMessage(
+      String recipient, String subject, String message) async {
     String? token = await getToken();
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/messages/compose');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/messages/compose');
     final headers = {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $token",
     };
     try {
-      String formattedRecipient = recipient.startsWith('u/') ? recipient : 'u/$recipient';
+      String formattedRecipient =
+          recipient.startsWith('u/') ? recipient : 'u/$recipient';
       final body = jsonEncode({
         'from': "",
         'to': formattedRecipient,
@@ -53,7 +60,8 @@ class MessageRepository {
       } else if (response.statusCode == 404) {
         throw Exception('No user found with username $formattedRecipient');
       } else {
-        throw Exception('Failed to send message. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to send message. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error sending message: $e');
@@ -64,7 +72,8 @@ class MessageRepository {
 
 final markAllMessagesAsReadProvider = FutureProvider<void>((ref) async {
   try {
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/messages/markallread');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/messages/markallread');
     String? token = await getToken();
     final headers = {
       'Content-Type': 'application/json',
@@ -84,9 +93,10 @@ final markAllMessagesAsReadProvider = FutureProvider<void>((ref) async {
     throw Exception('Failed to mark all messages as read: $e');
   }
 });
-final toggleRead=FutureProvider.family<void,String>((ref,String id) async {
+final toggleRead = FutureProvider.family<void, String>((ref, String id) async {
   try {
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/messages/$id/markread');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/messages/$id/markread');
     String? token = await getToken();
     final headers = {
       'Content-Type': 'application/json',

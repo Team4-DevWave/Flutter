@@ -38,7 +38,7 @@ Future<SearchModel> searchTest(String query, int page,
   String? token = await getToken();
   http.Response response = await http.get(
     Uri.parse(
-        "$url:8000/api/v1/homepage/search?q=$query&sort=$sorting&page=$page"),
+        "https://www.threadit.tech/api/v1/homepage/search?q=$query&sort=$sorting&page=$page"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -48,9 +48,11 @@ Future<SearchModel> searchTest(String query, int page,
   final search = SearchModel.fromJson(jsonDecode(response.body));
   return SearchModel.fromJson(jsonDecode(response.body));
 }
+
 class SearchingApis extends StateNotifier<bool> {
   final Ref ref;
   SearchingApis(this.ref) : super(false);
+
   /// Api for getting the Trending list from the backend.
   /// It gets the token then calls the api and returns a List of [Trend]
   Future<List<Trend>> getTrending() async {
@@ -63,7 +65,7 @@ class SearchingApis extends StateNotifier<bool> {
     String? token = await getToken();
 
     final response = await http.get(
-      Uri.parse('$url:8000/api/v1/homepage/trending'),
+      Uri.parse('https://www.threadit.tech/api/v1/homepage/trending'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
@@ -90,7 +92,7 @@ class SearchingApis extends StateNotifier<bool> {
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse(
-          "$url:8000/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
+          "https://www.threadit.tech/api/v1/homepage/search?q=$query&sort=Top&page=$page"),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

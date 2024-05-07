@@ -24,8 +24,7 @@ class ReportRepository {
     required String ruleReason,
     required String userID,
   }) async {
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000:8000/api/v1/report');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/report');
     String? token = await getToken();
     final body = jsonEncode({
       'reportedID': reportedID,

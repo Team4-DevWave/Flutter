@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
 import 'package:http/http.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
+
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/type_defs.dart';
@@ -21,7 +21,7 @@ class UserCommunities extends StateNotifier<bool> {
   // static String local = Platform.isAndroid ? '${AppConstants.local}' : 'localhost';
 
   final String communitiesURL =
-      "http://${AppConstants.local}:8000/api/v1/r/user_subreddits";
+      "https://www.threadit.tech/api/v1/r/user_subreddits";
 
   ///The function returns the names of the user's communities
   FutureEither<List<List<String>>> getUserCommunities() async {

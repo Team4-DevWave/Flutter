@@ -250,24 +250,24 @@ Future<PostApiResponse> fetchPosts(
     String feedID, String subreddit, int pageNumber) async {
   String? token = await getToken();
 
-  String url = "http://${AppConstants.local}:8000/api/v1/posts/best?page=$pageNumber";
+  String url = "https://www.threadit.tech/api/v1/posts/best?page=$pageNumber";
   if (feedID == 'Hot Posts') {
-    url = "http://${AppConstants.local}:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/hot?page=$pageNumber";
   }
   if (feedID == 'New Posts') {
-    url = "http://${AppConstants.local}:8000/api/v1/r/$subreddit/new?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/new?page=$pageNumber";
   }
   if (feedID == 'Top Posts') {
-    url = "http://${AppConstants.local}:8000/api/v1/r/$subreddit/top?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/top?page=$pageNumber";
   }
   if (feedID == 'Hot') {
-    url = "http://${AppConstants.local}:8000/api/v1/posts/hot?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/posts/hot?page=$pageNumber";
   }
   if (feedID == 'New') {
-    url = "http://${AppConstants.local}:8000/api/v1/posts/new?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/posts/new?page=$pageNumber";
   }
   if (feedID == 'Top') {
-    url = "http://${AppConstants.local}:8000/api/v1/posts/top?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/posts/top?page=$pageNumber";
   }
   final response = await http.get(
     Uri.parse(url),

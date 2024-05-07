@@ -35,8 +35,7 @@ class SharePosts extends StateNotifier<bool> {
     state = true;
     final sharedPost = ref.watch(sharedPostProvider);
 
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/share');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/posts/share');
     final token = await getToken();
 
     try {
@@ -60,7 +59,7 @@ class SharePosts extends StateNotifier<bool> {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
 
         final urlPost =
-            Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/$pid');
+            Uri.parse('https://www.threadit.tech/api/v1/posts/$pid');
 
         final responsePost = await http.get(urlPost, headers: {
           'Content-Type': 'application/json',

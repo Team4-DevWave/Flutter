@@ -21,8 +21,8 @@ class GetCommunityRules extends StateNotifier<bool> {
 
   Future<Either<Failure, List<String>>> getCommunityRules(
       String communityName) async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/r/$communityName/rules");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/r/$communityName/rules");
     final token = await getToken();
     try {
       final response = await http.get(
@@ -53,8 +53,8 @@ class GetCommunityRules extends StateNotifier<bool> {
 }
 
 Future<SubredditList> fetchSubredditsAll() async {
-  final response = await http
-      .get(Uri.parse('http://${AppConstants.local}:8000/api/v1/r/all'));
+  final response =
+      await http.get(Uri.parse('https://www.threadit.tech/api/v1/r/all'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> body = jsonDecode(response.body);

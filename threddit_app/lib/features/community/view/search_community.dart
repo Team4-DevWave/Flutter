@@ -44,7 +44,7 @@ class _SearchCommunityScreenPageState
     Future<void> _searchCommunity(String searchItem) async {
       try {
         final url = Uri.parse(
-            'http://${AppConstants.local}:8000/api/v1/r/${widget.community}/search?q=$searchItem');
+            'https://www.threadit.tech/api/v1/r/${widget.community}/search?q=$searchItem');
         String? token = await getToken();
         final headers = {
           'Content-Type': 'application/json',
