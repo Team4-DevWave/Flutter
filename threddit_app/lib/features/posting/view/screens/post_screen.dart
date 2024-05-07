@@ -11,9 +11,8 @@ import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sh
 import 'package:threddit_clone/features/posting/view_model/history_manager.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/posting/view/widgets/post_card.dart';
-import 'package:threddit_clone/models/comment.dart';
 import 'package:threddit_clone/theme/colors.dart';
-import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
+import 'package:threddit_clone/features/commenting/model/comment_notifier.dart';
 
 /// This widget displays the post screen
 /// It displays the post and all the comments on the post
@@ -33,7 +32,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
   @override
   void initState() {
     super.initState();
-    print("/////////////////, ${widget.currentPost.id}, ////////////////////");
+   ref.read(commentsProvider.notifier).fetchComments(widget.currentPost.id);
     HistoryManager.addPostToHistory(widget.currentPost);
     print(widget.currentPost.id);
   }
@@ -51,6 +50,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     void toggleNsfw() async {
       ref.read(toggleNSFW(widget.currentPost.id));
       widget.currentPost.nsfw = !widget.currentPost.nsfw;
@@ -139,28 +139,16 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                           post: widget.currentPost,
                           uid: widget.uid,
                         ),
-                  Consumer(builder: (context, watch, child) {
-                    final AsyncValue<List<Comment>> postComments =
-                        ref.watch(commentsProvider((widget.currentPost.id)));
-                    return postComments.when(
-                        loading: () =>
-                            const Center(child: CircularProgressIndicator()),
-                        error: (error, stackTrace) =>
-                            Center(child: Text('Error: $error')),
-                        data: (comments) {
-                          return Column(
-                            children: [
-                              const Padding(
-                                  padding: EdgeInsets.only(bottom: 8)),
-                              if (comments.isNotEmpty)
-                                ...comments.map((comment) => CommentItem(
-                                      comment: comment,
-                                      uid: widget.uid,
-                                    )),
-                            ],
-                          );
-                        });
-                  })
+                  Consumer(
+                    builder: (context, watch, child) {
+                      final comments = ref.watch(commentsProvider);
+                      return Column(
+                        children: comments.map((comment) {
+                          return CommentItem(comment: comment,uid:widget.uid);
+                        }).toList(),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
