@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -194,7 +196,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 53.h,
+                  
+                  top:Platform.isAndroid?40.h:15.h,
                   right: 5.w,
                   child: Row(
                     children: [
