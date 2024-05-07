@@ -24,45 +24,22 @@ class MainChatScreen extends ConsumerStatefulWidget {
 class _MainChatScreenState extends ConsumerState<MainChatScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  IO.Socket? socket;
+  
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _initializeSocketConnection();
+   
   }
 
-  void _initializeSocketConnection() async {
-    String? token = await getToken();
-     String socketUrl = "http://${AppConstants.local}:3005";
-  
-    socket = IO.io(socketUrl, <String, dynamic>{
-      "transports": ["websocket"],
-      "autoConnect": false,
-      
-      "query":"token=$token",
-      
-    },
-    
-    );
-    socket?.connect();
-    socket?.onConnect((data) {
-      //print("Connected");
-      socket?.on("message", (msg) {
-        print(msg);
-        //implement updating the screen
-      });
-    });
-    print(socket?.connected);
-  }
-
+ 
   
 
   @override
   void dispose() {
     _tabController?.dispose();
-    socket?.disconnect();
+   
     super.dispose();
   }
 
