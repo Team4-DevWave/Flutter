@@ -196,29 +196,7 @@ final leaveChatRoom=FutureProvider.family<int,String>((ref,chatroomId) async {
     throw Exception('Failed to leave chatroom: $e');
   }
 });
-final deleteMessage=FutureProvider.family<void,String>((ref,messageId) async {
-  try {
-    final url = Uri.parse('http://${AppConstants.local}:8000/api/v1/chatmessages/$messageId');
-    String? token = await getToken();
-    final headers = {
-      'Content-Type': 'application/json',
-      "Authorization": "Bearer $token",
-    };
-    final response = await http.delete(
-      url,
-      headers: headers
-    );
-    if (response.statusCode == 204) {
-      print('message deleted successfully');
-      
-    } else {
-      throw Exception('Failed to delete message. Status code: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error deleting message: $e');
-    throw Exception('Failed to delete message : $e');
-  }
-});
+
 typedef RenameChatParameters = ({String chatName, String chatroomId});
 final renameChatroom=FutureProvider.family<void,RenameChatParameters>((ref,parameters) async {
   try {

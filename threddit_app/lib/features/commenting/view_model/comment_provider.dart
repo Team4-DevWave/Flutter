@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/features/commenting/model/comment_repository.dart';
-import 'package:threddit_clone/models/comment.dart';
 
 ///this class is used to provide the comment repository to the widgets that need it
 ///the comment repository is used to fetch all the comments of a post, create a comment, vote on a comment, edit a comment and delete a comment
