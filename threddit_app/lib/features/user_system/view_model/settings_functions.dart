@@ -186,12 +186,7 @@ Future<int> blockUser({
   required BuildContext context,
 }) async {
   String? token = await getToken();
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
+
   http.Response response = await http.post(
     Uri.parse("https://www.threadit.tech/api/v1/users/me/block/$userToBlock"),
     headers: {
