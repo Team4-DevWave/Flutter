@@ -53,12 +53,16 @@ class GetCommunityRules extends StateNotifier<bool> {
 }
 
 Future<SubredditList> fetchSubredditsAll() async {
-  final response =
-      await http.get(Uri.parse('https://www.threadit.tech/api/v1/r/all'));
+  final response = await http
+      .get(Uri.parse('https://www.threadit.tech/api/v1/r/all?page=1'));
+  final response2 = await http
+      .get(Uri.parse('https://www.threadit.tech/api/v1/r/all?page=2'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> body = jsonDecode(response.body);
+    Map<String, dynamic> body2 = jsonDecode(response2.body);
     List<dynamic> subredditList = body['data']['subreddits'];
+    subredditList.add(body2['data']['subreddits']);
 
     return SubredditList.fromJson(subredditList);
   } else {
