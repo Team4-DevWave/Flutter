@@ -126,12 +126,11 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
             ..._followingList.map((followed) => ListTile(
                   onTap: () {
                     //go to the user's profile screen
+                    Navigator.pop(context);
                     Navigator.pushNamed(context, RouteClass.otherUsers,
                         arguments: <String, dynamic>{
                           'username': followed['username'].toString(),
-                        }).then((value) {
-                      Navigator.pop(context);
-                    });
+                        });
                   },
                   leading: CircleAvatar(
                       radius: 15.spMin,

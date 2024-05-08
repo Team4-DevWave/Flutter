@@ -91,11 +91,12 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
               (community) => ListTile(
                 onTap: () {
                   //go to the community/user's profile screen
+                  Navigator.pop(context);
                   Navigator.pushNamed(context, RouteClass.communityScreen,
                       arguments: {
                         'id': community[0],
                         'uid': ref.read(userModelProvider)?.id
-                      }).then((value) => Navigator.pop(context));
+                      });
                 },
                 leading: community[1].isEmpty
                     ? CircleAvatar(
