@@ -48,7 +48,7 @@ class PostProvider extends StateNotifier<bool> {
 
     try {
       final response = await http.post(
-          Uri.parse('https://www.threadit.tech/v1/posts/submit/$whereTo'),
+          Uri.parse('https://www.threadit.tech/api/v1/posts/submit/$whereTo'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',

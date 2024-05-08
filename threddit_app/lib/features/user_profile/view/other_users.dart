@@ -276,7 +276,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
                       handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                           context),
                       sliver: SliverAppBar(
-                        title: user?.username != "SuperMario"
+                        title: user?.username != "Super Mario"
                             ? Text(
                                 "u/${user?.username}",
                                 style: AppTextStyles.secondaryTextStyle,

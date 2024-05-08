@@ -144,7 +144,8 @@ class _ModeratorBotttomSheetState extends ConsumerState<ModeratorBotttomSheet> {
         ),
         if ((widget.post.image == "" || widget.post.image == null) &&
             (widget.post.video == "" || widget.post.video == null) &&
-            (widget.post.linkURL == "" || widget.post.linkURL == null))
+            (widget.post.linkURL == "" || widget.post.linkURL == null) &&
+            (widget.post.type != "poll"))
           ListTile(
             title: const Text(
               "Edit post",

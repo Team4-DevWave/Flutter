@@ -222,7 +222,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                           context),
                       sliver: SliverAppBar(
                         stretch: true,
-                        title: user?.username != "SuperMario"
+                        title: user?.username != "Super Mario"
                             ? Text(
                                 "u/${user?.username}",
                                 style: AppTextStyles.secondaryTextStyle,

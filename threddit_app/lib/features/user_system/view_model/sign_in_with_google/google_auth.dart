@@ -1,8 +1,15 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/type_defs.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/firebase_providers.dart';
+import 'package:http/http.dart' as http;
 
 ///This provider controlls tha class of the [AuthRepository] which has the google
 ///functions and authentication
@@ -64,9 +71,34 @@ class AuthRepository {
   ///authenticated token while logging out.
   ///
   ///Uses [_googleSignIn] to call the built in sign out function that sign the google account out
-  void logOut() async {
-    deleteToken();
-    await _googleSignIn.signOut();
-    await _auth.signOut();
+  FutureEither<bool> logOut() async {
+    final url = Uri.parse('https://www.threadit.tech/api/v1/users/me/signout');
+    final token = await getToken();
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        await _googleSignIn.signOut();
+        await _auth.signOut();
+        deleteToken();
+        deleteGoogleToken();
+        return right(true);
+      } else if (response.statusCode == 404) {
+        return left(Failure('Something went wrong, try again later'));
+      } else {
+        return left(Failure('Something went wrong, try again later'));
+      }
+    } catch (e) {
+      if (e is SocketException || e is TimeoutException || e is HttpException) {
+        return left(Failure('Check your internet connection...'));
+      } else {
+        return left(Failure(e.toString()));
+      }
+    }
   }
 }

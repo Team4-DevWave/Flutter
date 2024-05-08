@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -105,7 +103,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                     children: <Widget>[
                       if (recentlyVisted.isNotEmpty)
                         SizedBox(
-                          height: 210.h,
+                          height: limitedRecentlyVisited.length * 50.h + 50.h,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

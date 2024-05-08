@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/screens/saved_screen.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -82,7 +84,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               title: "My profile",
               onTap: () {
                 Navigator.pop(context);
-                
+
                 Navigator.pushNamed(context, RouteClass.userProfileScreen);
               }),
           RightDrawerButtons(
@@ -93,7 +95,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               title: "Create a community",
               onTap: () {
                 Navigator.pop(context);
-                
+
                 Navigator.pushNamed(
                   context,
                   RouteClass.createCommunityScreen,
@@ -108,7 +110,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               title: "Saved",
               onTap: () {
                 Navigator.pop(context);
-                
+
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const SavedScreen()));
               }),
@@ -120,7 +122,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               title: "History",
               onTap: () {
                 Navigator.pop(context);
-                
+
                 Navigator.pushNamed(context, RouteClass.historyScreen,
                     arguments: "user2");
               }),
@@ -130,7 +132,19 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               color: AppColors.whiteColor,
             ),
             title: "Logout",
-            onTap: () => ref.watch(authControllerProvider.notifier).logout(),
+            onTap: () async {
+              final response =
+                  await ref.watch(authControllerProvider.notifier).logout();
+              response.fold(
+                  (failure) => showSnackBar(
+                      navigatorKey.currentContext!, failure.message),
+                  (success) {
+                Navigator.pushReplacementNamed(
+                    navigatorKey.currentContext!, RouteClass.registerScreen);
+                showSnackBar(navigatorKey.currentContext!,
+                    "Heyy ${ref.read(userModelProvider)?.username}, can't wait to see you again!");
+              });
+            },
           ),
           RightDrawerButtons(
               icon: const Icon(
@@ -140,7 +154,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               title: "Settings",
               onTap: () {
                 Navigator.pop(context);
-                
+
                 Navigator.pushNamed(context, RouteClass.settingsScreen);
               }),
         ],

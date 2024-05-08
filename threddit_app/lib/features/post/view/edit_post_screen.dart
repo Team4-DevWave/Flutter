@@ -157,20 +157,14 @@ class _EditPostState extends ConsumerState<EditPost> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              scrollPhysics: const ClampingScrollPhysics(),
               controller: textBodyController,
               onChanged: (value) {
-                // ref
-                //     .read(isEditFirstTime.notifier)
-                //     .update((state) => false);
-
-                // lastValue = value;
-
                 textBodyController.text = value;
                 _updateFormValidity();
               },
-              // initialValue: ref.read(isEditFirstTime)
-              //     ? lastValue = ref.read(editPostProvider).textBody ?? ""
-              //     : lastValue,
               style:
                   AppTextStyles.primaryTextStyle.copyWith(fontSize: 20.spMin),
               decoration: InputDecoration(

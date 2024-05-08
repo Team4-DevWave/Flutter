@@ -117,13 +117,13 @@ class _PostButtonState extends ConsumerState<PostButton> {
               'uid': ref.read(userModelProvider)?.id
             },
           );
-          setState(() {
-            _isLoading = false;
-          });
         });
       } else {
         null;
       }
+      setState(() {
+        _isLoading = false;
+      });
     }
 
     return Padding(
