@@ -114,13 +114,19 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
           children: [
             Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundImage:
-                        AssetImage('assets/images/Default_Avatar.png'),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: widget.post.userID?.profilePicture != null &&
+                          widget.post.userID!.profilePicture != ''
+                      ? CircleAvatar(
+                          radius: 16,
+                          backgroundImage:
+                              NetworkImage(widget.post.userID!.profilePicture!))
+                      : const CircleAvatar(
+                          radius: 16,
+                          backgroundImage:
+                              AssetImage('assets/images/Default_Avatar.png'),
+                        ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

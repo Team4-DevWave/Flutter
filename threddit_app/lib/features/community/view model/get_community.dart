@@ -57,12 +57,16 @@ Future<SubredditList> fetchSubredditsAll() async {
       .get(Uri.parse('https://www.threadit.tech/api/v1/r/all?page=1'));
   final response2 = await http
       .get(Uri.parse('https://www.threadit.tech/api/v1/r/all?page=2'));
+  final response3 = await http
+      .get(Uri.parse('https://www.threadit.tech/api/v1/r/all?page=3'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> body = jsonDecode(response.body);
     Map<String, dynamic> body2 = jsonDecode(response2.body);
+    Map<String, dynamic> body3 = jsonDecode(response3.body);
     List<dynamic> subredditList = body['data']['subreddits'];
-    subredditList.add(body2['data']['subreddits']);
+    subredditList.append(body2['data']['subreddits']);
+    subredditList.append(body3['data']['subreddits']);
 
     return SubredditList.fromJson(subredditList);
   } else {

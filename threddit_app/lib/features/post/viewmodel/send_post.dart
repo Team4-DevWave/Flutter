@@ -84,6 +84,9 @@ class PostProvider extends StateNotifier<bool> {
           throw Exception(
               'Failed to fetch post. Status code: ${response.statusCode}');
         }
+      } else if (response.statusCode == 413) {
+        return left(
+            Failure("Chosen media is too big, try choosing another one"));
       } else {
         return left(
             Failure("Can't submit post, please discard or try again later"));

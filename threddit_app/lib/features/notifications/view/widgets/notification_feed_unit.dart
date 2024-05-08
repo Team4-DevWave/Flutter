@@ -4,7 +4,6 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/notifications/view_model/fetching_notifications.dart';
 import 'package:threddit_clone/features/notifications/view_model/methods.dart';
-import 'package:threddit_clone/theme/text_styles.dart';
 
 /// A stateful widget that displays a single notification.
 ///
@@ -86,8 +85,8 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
                         children: [
                           ClipOval(
                               child: Image(
-                            image:
-                                AssetImage('assets/images/Default_Avatar.png'),
+                            image: const AssetImage(
+                                'assets/images/Default_Avatar.png'),
                             fit: BoxFit.cover,
                             width: 45
                                 .w, // You can adjust width and height to your needs
@@ -114,11 +113,19 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
                       children: [
                         Text(
                           widget.data.content.split(' ')[0],
-                          style: AppTextStyles.boldTextStyleNotifcation,
+                          style: TextStyle(
+                              color: const Color.fromARGB(166, 255, 255, 255),
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis),
                         ),
                         Text(
                           widget.data.content.split(' ').sublist(1).join(' '),
-                          style: AppTextStyles.secondaryTextStylenotifications,
+                          style: TextStyle(
+                              color: const Color.fromARGB(166, 255, 255, 255),
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis),
                         ),
                       ],
                     ),

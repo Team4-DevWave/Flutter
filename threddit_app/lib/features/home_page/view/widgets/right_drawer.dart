@@ -5,6 +5,7 @@ import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/screens/saved_screen.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
@@ -138,7 +139,8 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               response.fold(
                   (failure) => showSnackBar(
                       navigatorKey.currentContext!, failure.message),
-                  (success) {
+                  (success) async {
+                await deleteAll();
                 Navigator.pushReplacementNamed(
                     navigatorKey.currentContext!, RouteClass.registerScreen);
                 showSnackBar(navigatorKey.currentContext!,
@@ -154,7 +156,6 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
               title: "Settings",
               onTap: () {
                 Navigator.pop(context);
-
                 Navigator.pushNamed(context, RouteClass.settingsScreen);
               }),
         ],
