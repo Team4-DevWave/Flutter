@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/app/pref_constants.dart';
 
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 

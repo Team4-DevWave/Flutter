@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/theme/colors.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 
 class MessageScreen extends ConsumerStatefulWidget {

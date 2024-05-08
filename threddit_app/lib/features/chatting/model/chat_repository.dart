@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';

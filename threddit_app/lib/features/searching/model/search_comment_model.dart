@@ -1,7 +1,5 @@
-import 'dart:convert';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 
 /// Mention class responsible for holding and parsing the mentioned users data in the comment search result.

@@ -8,7 +8,6 @@ import 'package:threddit_clone/features/searching/view/widgets/search_feed_widge
 import 'package:threddit_clone/features/searching/view/widgets/search_media_feed.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_users_widget.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:http/http.dart' as http;
 
 enum ViewType { all, editable }
 /// The `SearchResultsScreen` widget presents search results for various content types within the Threddit app. 
