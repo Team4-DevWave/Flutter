@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +14,7 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
+import 'package:threddit_clone/features/post/viewmodel/delete_post.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view/widgets/bottom_sheet_owner.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
@@ -24,7 +24,6 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/features/listing/view/widgets/widget_container_with_radius.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 /// The selected code in the `post_feed_widget.dart` file is responsible for decorating a
@@ -124,8 +123,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
     if (widget.dataOfPost.userVote == 'downvoted') {
       widget.dataOfPost.votes!.downvotes--;
       widget.dataOfPost.userVote = 'none';
-    }
-    else if (widget.dataOfPost.userVote == 'upvoted') {
+    } else if (widget.dataOfPost.userVote == 'upvoted') {
       widget.dataOfPost.votes!.upvotes--;
       widget.dataOfPost.votes!.downvotes++;
       widget.dataOfPost.userVote = 'downvoted';
@@ -399,6 +397,9 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                       children: [
                         InkWell(
                           onTap: () {
+                            ref
+                                .read(deletePostScreen.notifier)
+                                .update((state) => true);
                             Navigator.pushNamed(
                               context,
                               RouteClass.postScreen,
@@ -406,10 +407,15 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                                 'currentpost': widget.dataOfPost,
                                 'uid': widget.uid,
                               },
-                            );
+                            ).then((value) => ref
+                                .read(deletePostScreen.notifier)
+                                .update((state) => false));
                           },
                           child: InkWell(
                             onTap: () {
+                              ref
+                                  .read(deletePostScreen.notifier)
+                                  .update((state) => true);
                               Navigator.pushNamed(
                                 context,
                                 RouteClass.postScreen,
@@ -417,7 +423,9 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                                   'currentpost': widget.dataOfPost,
                                   'uid': widget.uid,
                                 },
-                              );
+                              ).then((value) => ref
+                                  .read(deletePostScreen.notifier)
+                                  .update((state) => false));
                             },
                             child: const Icon(
                               Icons.comment,

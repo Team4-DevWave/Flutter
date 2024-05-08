@@ -5,6 +5,7 @@ import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/screens/main_screen_layout.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
+import 'package:threddit_clone/features/post/viewmodel/delete_post.dart';
 import 'package:threddit_clone/features/post/viewmodel/post_provider.dart';
 import 'package:threddit_clone/features/post/viewmodel/send_post.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -107,8 +108,8 @@ class _PostButtonState extends ConsumerState<PostButton> {
               (route) => false,
             );
           }
-
           // Push postScreen
+          ref.read(deletePostScreen.notifier).update((state) => true);
           Navigator.pushNamed(
             context,
             RouteClass.postScreen,
@@ -116,7 +117,8 @@ class _PostButtonState extends ConsumerState<PostButton> {
               'currentpost': post,
               'uid': ref.read(userModelProvider)?.id
             },
-          );
+          ).then((value) =>
+              ref.read(deletePostScreen.notifier).update((state) => false));
         });
       } else {
         null;

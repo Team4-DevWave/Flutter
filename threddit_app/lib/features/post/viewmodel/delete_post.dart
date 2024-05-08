@@ -58,3 +58,5 @@ class DeletePost extends StateNotifier<bool> {
     }
   }
 }
+
+final deletePostScreen = StateProvider((ref) => false);

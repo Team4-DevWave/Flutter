@@ -66,7 +66,6 @@ class PostProvider extends StateNotifier<bool> {
             "duration": post.duration ?? 1,
             "poll": pollValue,
           }));
-      print("LEEEEEEEEEEEEEEEE${response.body}");
       if (response.statusCode == 201) {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
         final urlPost =
@@ -76,7 +75,6 @@ class PostProvider extends StateNotifier<bool> {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         });
-        print("LEEEEEEEEEEEEEEEE${responsePost.statusCode}");
         if (responsePost.statusCode == 200) {
           final Map<String, dynamic> responseData =
               jsonDecode(responsePost.body);
