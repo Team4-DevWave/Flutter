@@ -19,8 +19,8 @@ class FavouriteNotifier extends StateNotifier<Favourite> {
   FavouriteNotifier(this.ref) : super(Favourite("", "", ""));
 
   FutureEither<bool> getFavourite() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/favorites");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/favorites");
 
     final token = await getToken();
 
@@ -52,8 +52,8 @@ class FavouriteNotifier extends StateNotifier<Favourite> {
   }
 
   FutureEither<bool> removeItem() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/favorites");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/favorites");
 
     final token = await getToken();
 
@@ -89,8 +89,8 @@ class FavouriteNotifier extends StateNotifier<Favourite> {
   }
 
   FutureEither<bool> addItem() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/favorites");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/favorites");
 
     final token = await getToken();
 

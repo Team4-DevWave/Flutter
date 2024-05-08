@@ -18,10 +18,8 @@ class GetCommunityRules extends StateNotifier<bool> {
 
   Future<Either<Failure, List<String>>> getCommunityRules(
       String communityName) async {
-    print("HEEHEHEHEHEHEHEHEHEHEHEHEHEHEHEHE");
-    print(communityName);
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/r/$communityName/rules");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/r/$communityName/rules");
     final token = await getToken();
     try {
       final response = await http.get(

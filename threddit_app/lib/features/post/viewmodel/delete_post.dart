@@ -28,8 +28,8 @@ class DeletePost extends StateNotifier<bool> {
   /// If the request is successful, the post is removed and the [updatesDeleteProvider]
   /// is updated.
   FutureEither<bool> deletePostRequest(String postid) async {
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postid/delete');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postid/delete');
     final token = await getToken();
     try {
       final response = await http.delete(

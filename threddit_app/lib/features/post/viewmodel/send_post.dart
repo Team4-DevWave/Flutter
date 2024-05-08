@@ -48,7 +48,7 @@ class PostProvider extends StateNotifier<bool> {
 
     try {
       final response = await http.post(
-          Uri.parse('http://$local:8000/api/v1/posts/submit/$whereTo'),
+          Uri.parse('https://www.threadit.tech/v1/posts/submit/$whereTo'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -66,15 +66,17 @@ class PostProvider extends StateNotifier<bool> {
             "duration": post.duration ?? 1,
             "poll": pollValue,
           }));
+      print("LEEEEEEEEEEEEEEEE${response.body}");
       if (response.statusCode == 201) {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
         final urlPost =
-            Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/$pid');
+            Uri.parse('https://www.threadit.tech/api/v1/posts/$pid');
 
         final responsePost = await http.get(urlPost, headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         });
+        print("LEEEEEEEEEEEEEEEE${responsePost.statusCode}");
         if (responsePost.statusCode == 200) {
           final Map<String, dynamic> responseData =
               jsonDecode(responsePost.body);

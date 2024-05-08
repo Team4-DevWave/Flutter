@@ -60,7 +60,7 @@ class Auth extends StateNotifier<bool> {
 
     try {
       final response = await http.get(Uri.parse(
-          'http://${AppConstants.local}:8000/api/v1/users/checkEmail/$email'));
+          'https://www.threadit.tech/api/v1/users/checkEmail/$email'));
       state = false;
 
       //200 -> This email is available to be used
@@ -101,8 +101,8 @@ class Auth extends StateNotifier<bool> {
   ///And on the Right is the result of the check : true for 200 and false for 401.
   FutureEmailCheck<bool> checkUsernameAvailability(String username) async {
     try {
-      final response = await http.get(Uri.parse(
-          'http://${AppConstants.local}:8000/api/v1/users/check/$username'));
+      final response = await http.get(
+          Uri.parse('https://www.threadit.tech/api/v1/users/check/$username'));
 
       //200 -> available to be used (not used)
       //401 -> not available (used before)
@@ -227,8 +227,7 @@ class Auth extends StateNotifier<bool> {
 
     try {
       final response = await http.post(
-        Uri.parse(
-            'http://${AppConstants.local}:8000/api/v1/users/forgotPassword'),
+        Uri.parse('https://www.threadit.tech/api/v1/users/forgotPassword'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -274,8 +273,7 @@ class Auth extends StateNotifier<bool> {
 
     try {
       final response = await http.post(
-        Uri.parse(
-            'http://${AppConstants.local}:8000/api/v1/users/forgotUsername'),
+        Uri.parse('https://www.threadit.tech/api/v1/users/forgotUsername'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -327,7 +325,7 @@ class Auth extends StateNotifier<bool> {
     final String? mtoken = ref.watch(mtokenProvider);
     try {
       final response = await http.post(
-        Uri.parse("http://${AppConstants.local}:8000/api/v1/users/login"),
+        Uri.parse("https://www.threadit.tech/api/v1/users/login"),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -387,7 +385,7 @@ class Auth extends StateNotifier<bool> {
     final String? mtoken = ref.watch(mtokenProvider);
     try {
       final response = await http.post(
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/users/signup'),
+        Uri.parse('https://www.threadit.tech/api/v1/users/signup'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -447,7 +445,7 @@ class Auth extends StateNotifier<bool> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://${AppConstants.local}:8000/api/v1/users/googleSignup?token=${user.token}'),
+            'https://www.threadit.tech/api/v1/users/googleSignup?token=${user.token}'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -503,7 +501,7 @@ class Auth extends StateNotifier<bool> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=${user.token}'),
+            'https://www.threadit.tech/api/v1/users/googleLogin?token=${user.token}'),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -588,7 +586,7 @@ class Auth extends StateNotifier<bool> {
 
     final response = await http.get(
       Uri.parse(
-          'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=$userToken'),
+          'https://www.threadit.tech/api/v1/users/googleLogin?token=$userToken'),
     );
     //200 for exisiting users
     //400 new users
@@ -663,7 +661,7 @@ class Auth extends StateNotifier<bool> {
 
     final response = await http.get(
       Uri.parse(
-          'http://${AppConstants.local}:8000/api/v1/users/googleLogin?token=$userToken'),
+          'https://www.threadit.tech/api/v1/users/googleLogin?token=$userToken'),
     );
 
     //200 for exisiting users

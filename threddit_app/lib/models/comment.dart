@@ -52,7 +52,7 @@ class Comment {
   final List<User> mentioned;
   final String id;
   final int version;
-   bool? saved;
+  bool? saved;
   String? userVote;
 
   Comment({
@@ -81,11 +81,11 @@ class Comment {
           json['mentioned'].map((i) => User.fromJson(i)).toList()),
       id: json['_id'],
       version: json['__v'],
-       saved: json['saved'],
+      saved: json['saved'],
       userVote: json['userVote'],
     );
   }
-   Comment copyWith({
+  Comment copyWith({
     User? user,
     String? content,
     DateTime? createdAt,
@@ -118,7 +118,7 @@ Future<List<Comment>> fetchComments(String username) async {
   String? token = await getToken();
 
   final response = await http.get(
-    Uri.parse("http://10.0.2.2:8000/api/v1/users/$username/comments"),
+    Uri.parse("https://www.threadit.tech/api/v1/users/$username/comments"),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

@@ -5,19 +5,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-final commentsProvider = StateNotifierProvider<CommentNotifier, List<Comment>>((ref) {
+
+final commentsProvider =
+    StateNotifierProvider<CommentNotifier, List<Comment>>((ref) {
   return CommentNotifier(); // You need to implement CommentNotifier
 });
-
-
 
 class CommentNotifier extends StateNotifier<List<Comment>> {
   CommentNotifier() : super([]);
 
   Future<void> fetchComments(String postId) async {
-    
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postId/comments/');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postId/comments/');
     String? token = await getToken();
     final headers = {
       "Authorization": "Bearer $token",
@@ -27,11 +26,10 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
       if (response.statusCode == 200) {
         final List<dynamic> commentsJson =
             json.decode(response.body)['data']['comments'];
-        final comments= commentsJson
+        final comments = commentsJson
             .map((commentJson) => Comment.fromJson(commentJson))
             .toList();
-            state = comments;
-
+        state = comments;
       } else {
         throw Exception(
             'Failed to load comments. Status code: ${response.statusCode}');
@@ -41,10 +39,10 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
     }
   }
 
-  Future<void> addComment(String postId, String text,String username) async {
-     String? token = await getToken();
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postId/comments/');
+  Future<void> addComment(String postId, String text, String username) async {
+    String? token = await getToken();
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postId/comments/');
     final headers = {
       'Content-Type': 'application/json',
       "Authorization": "Bearer $token",
@@ -56,18 +54,28 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
         headers: headers,
       );
       if (response.statusCode == 201) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final Map<String, dynamic> commentData =
+            responseData['data']['comment'];
 
-         final Map<String, dynamic> responseData = jsonDecode(response.body);
-      final Map<String, dynamic> commentData = responseData['data']['comment'];
-      
-      final commentVotes=Vote(upvotes: commentData['votes']['upvotes'], downvotes: commentData['votes']['downvotes']);
-     
-      final thisUser=User(id: commentData['user'], username: username);
-      
-        final newComment=Comment(user: thisUser, content: commentData['content'], createdAt: DateTime.parse(commentData['createdAt']), votes: commentVotes, post: commentData['post'], collapsed: commentData['collapsed'], mentioned: [], id: commentData['_id'], version: commentData['__v']);
-     
-      state = [...state, newComment];
-     
+        final commentVotes = Vote(
+            upvotes: commentData['votes']['upvotes'],
+            downvotes: commentData['votes']['downvotes']);
+
+        final thisUser = User(id: commentData['user'], username: username);
+
+        final newComment = Comment(
+            user: thisUser,
+            content: commentData['content'],
+            createdAt: DateTime.parse(commentData['createdAt']),
+            votes: commentVotes,
+            post: commentData['post'],
+            collapsed: commentData['collapsed'],
+            mentioned: [],
+            id: commentData['_id'],
+            version: commentData['__v']);
+
+        state = [...state, newComment];
       } else {
         throw Exception(
             'Failed to create comment. Status code: ${response.statusCode}');
@@ -77,10 +85,9 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
     }
   }
 
-  Future<void> deleteComment(String commentId,String postId) async {
- 
+  Future<void> deleteComment(String commentId, String postId) async {
     final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postId/comments/$commentId');
+        'https://www.threadit.tech/api/v1/posts/$postId/comments/$commentId');
     final token = await getToken();
 
     final headers = {
@@ -101,12 +108,10 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
       print("Error deleting comment: $e");
     }
   }
-  
 
   Future<void> editComment(String commentId, String newText) async {
     try {
-      String url =
-          'http://${AppConstants.local}:8000/api/v1/comments/$commentId';
+      String url = 'https://www.threadit.tech/api/v1/comments/$commentId';
       final token = await getToken();
       Map<String, String> headers = {
         'Content-Type': 'application/json; charset=UTF-8',
@@ -121,11 +126,11 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
 
       if (response.statusCode == 200) {
         state = state.map((comment) {
-        if (comment.id == commentId) {
-          return comment.copyWith(content: newText);
-        }
-        return comment;
-      }).toList();
+          if (comment.id == commentId) {
+            return comment.copyWith(content: newText);
+          }
+          return comment;
+        }).toList();
         print('Comment edited successfully');
       } else {
         print('Failed to edit comment. Status code: ${response.statusCode}');

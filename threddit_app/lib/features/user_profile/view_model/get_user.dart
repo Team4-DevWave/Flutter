@@ -37,7 +37,7 @@ class GetUserNotifier extends StateNotifier<UserModelNotMe> {
     String? token = await getToken();
     try {
       http.Response response = await http.get(
-        Uri.parse("http://${AppConstants.local}:8000/api/v1/users/$username"),
+        Uri.parse("https://www.threadit.tech/api/v1/users/$username"),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

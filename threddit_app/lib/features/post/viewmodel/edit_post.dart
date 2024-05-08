@@ -40,8 +40,8 @@ class EditPost extends StateNotifier<Post> {
   /// This method sends a PATCH request to the server to edit the post with the specified ID.
   /// If the request is successful, the updated post is returned.
   FutureEither<Post> editPostRequest() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/posts/${state.id}/edit");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/posts/${state.id}/edit");
     final token = await getToken();
     final headers = {
       'Content-Type': 'application/json',

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
 ///this repository handles all the http requests sent to the backend related to comment
 ///operations like fetching all comments, creating a comment, voting on a comment, editing a comment and deleting a comment
 ///fetch comment is used to get all the comments of a post and then used by get comments stream which automatically fetches the comments every 5 seconds to update the UI continously
@@ -14,12 +13,9 @@ import 'package:http/http.dart' as http;
 ///delete comment is used to delete a comment and accepts a comment ID as it's parameter
 
 class CommentRepository {
-  
-
   Future<void> voteComment(String commentId, int voteType) async {
     try {
-      final url =
-          'http://${AppConstants.local}:8000/api/v1/comments/$commentId/vote';
+      final url = 'https://www.threadit.tech/api/v1/comments/$commentId/vote';
       final token = await getToken();
       final Map<String, String> headers = {
         'Content-Type': 'application/json',
@@ -40,6 +36,4 @@ class CommentRepository {
       print('Error voting on comment: $e');
     }
   }
-
- 
 }
