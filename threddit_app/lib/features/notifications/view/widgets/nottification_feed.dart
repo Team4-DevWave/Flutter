@@ -47,41 +47,47 @@ class _NotificationFeedState extends ConsumerState<NotificationFeed> {
   @override
   Widget build(BuildContext context) {
     //final notificationsRead = ref.watch(markAllNotificationsAsReadProvider);
-    return Expanded(
-      child: Container(
-        color: AppColors.backgroundColor,
-        child: FutureBuilder<NotificationAPI>(
-          future: futuredata,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: Lottie.asset(
-                  'assets/animation/loading2.json',
-                  repeat: true,
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Text('${snapshot.error}');
-            } else if (snapshot.hasData) {
-              final countryData = snapshot.data!.notifications;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: Container(
+            color: AppColors.backgroundColor,
+            child: FutureBuilder<NotificationAPI>(
+              future: futuredata,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: Lottie.asset(
+                      'assets/animation/loading2.json',
+                      repeat: true,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  final countryData = snapshot.data!.notifications;
 
-              return (countryData.isNotEmpty)
-                  ? ListView.builder(
-                      itemCount: countryData.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return NotificationFeedUnit(
-                            data: countryData[index], userID: widget.userID);
-                      },
-                    )
-                  : const NoNotification();
-            } else {
-              return const Text(
-                'No data available.',
-              );
-            }
-          },
+                  return (countryData.isNotEmpty)
+                      ? ListView.builder(
+                          itemCount: countryData.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return NotificationFeedUnit(
+                                data: countryData[index],
+                                userID: widget.userID);
+                          },
+                        )
+                      : const NoNotification();
+                } else {
+                  return const Text(
+                    'No data available.',
+                  );
+                }
+              },
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
