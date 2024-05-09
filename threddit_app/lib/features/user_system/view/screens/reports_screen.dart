@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/model/notification_settings_model.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/enable_setting.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -54,9 +51,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 child: Text(snapshot.error.toString()),
               );
             } else {
-              final isEnabled = snapshot.data!;
-              Activity activitySettings =
-                  isEnabled.subredditsUserMods[widget.subredditName]!.activity;
               return SingleChildScrollView(
                 child: Column(
                   children: [

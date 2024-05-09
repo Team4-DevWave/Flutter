@@ -653,7 +653,8 @@ class Auth extends StateNotifier<bool> {
     UserModel? currentUser = ref.read(userProvider)!;
 
     // Create a new user with the updated email
-    UserModel updatedUser = currentUser.copyWith(token: userToken);
+    UserModel updatedUser =
+        currentUser.copyWith(token: userToken, isGoogle: true);
 
     // Update the userProvider state with the new user
     ref.read(userProvider.notifier).state = updatedUser;

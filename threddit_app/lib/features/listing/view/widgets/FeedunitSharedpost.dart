@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/posting/view/widgets/poll.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -160,7 +161,8 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                               )
                             ]),
                           )
-                        : const SizedBox(),
+                        : widget.dataOfPost.type=='poll'?PollWidget(votes: widget.dataOfPost.poll!.values.fold(0, (prev, curr) => prev + curr), options: widget.dataOfPost.poll!.keys.toList(),userVote: widget.dataOfPost.userPollVote!,postId: widget.dataOfPost.id,) :const SizedBox(),
+            
               ),
             ),
             SizedBox(

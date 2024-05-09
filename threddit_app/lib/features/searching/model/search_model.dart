@@ -1,10 +1,7 @@
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/searching/model/media.dart';
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
-import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
-import 'package:threddit_clone/models/comment.dart';
-import 'package:threddit_clone/models/community.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 /// Search Model class responsible for holding the results from the search API
 /// Contains List of:

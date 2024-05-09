@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/commenting/model/comment_notifier.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/searching/model/search_model.dart';
@@ -27,14 +26,6 @@ final trendingFutureProvider = FutureProvider<List<Trend>>(
 /// Gets the token then calls the api and returns a SearchModel object which includes the search Results.
 Future<SearchModel> searchTest(String query, int page,
     {String sorting = "Top"}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
-  print("TESSSSSSSSSSSSSSSST before");
-
   String? token = await getToken();
   http.Response response = await http.get(
     Uri.parse(
@@ -45,7 +36,6 @@ Future<SearchModel> searchTest(String query, int page,
     },
   );
 
-  final search = SearchModel.fromJson(jsonDecode(response.body));
   return SearchModel.fromJson(jsonDecode(response.body));
 }
 
@@ -56,12 +46,6 @@ class SearchingApis extends StateNotifier<bool> {
   /// Api for getting the Trending list from the backend.
   /// It gets the token then calls the api and returns a List of [Trend]
   Future<List<Trend>> getTrending() async {
-    final String url;
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
     String? token = await getToken();
 
     final response = await http.get(
@@ -83,12 +67,6 @@ class SearchingApis extends StateNotifier<bool> {
   /// Gets the token then calls the api and returns a SearchModel object which includes the search Results.
 
   Future<SearchModel> search(String query, int page) async {
-    final String url;
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse(
@@ -98,7 +76,6 @@ class SearchingApis extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
-    final search = SearchModel.fromJson(jsonDecode(response.body));
     return SearchModel.fromJson(jsonDecode(response.body));
   }
 }

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/app/pref_constants.dart';
 
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
@@ -29,8 +28,9 @@ class Post {
   bool? hidden;
   bool? saved;
   String? userVote;
-
+  String? userPollVote;
   final String? linkURL;
+  Map<String, int>? poll;
   Post({
     required this.id,
     required this.title,
@@ -53,6 +53,8 @@ class Post {
     this.saved,
     this.userVote,
     this.type,
+    this.userPollVote='',
+    this.poll,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -88,6 +90,8 @@ class Post {
       hidden: json['hidden'],
       saved: json['saved'],
       userVote: json['userVote'],
+      userPollVote: json['userPollVote'],
+      poll:json['poll']!=null? Map<String, int>.from(json['poll']):null,
     );
   }
   Map<String, dynamic> toJson() {
@@ -112,7 +116,10 @@ class Post {
       'saved': saved,
       'userVote': userVote,
       'type': type,
-      'url': linkURL
+      'url': linkURL,
+      'userPollVote': userPollVote,
+      'poll': poll,
+
     };
   }
 
@@ -182,6 +189,7 @@ class User {
     };
   }
 }
+
 
 class SubredditInfo {
   final String id;

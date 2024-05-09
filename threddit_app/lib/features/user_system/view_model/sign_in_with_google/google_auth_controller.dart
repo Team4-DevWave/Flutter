@@ -43,7 +43,6 @@ class AuthController extends StateNotifier<bool> {
   /// Logs the user out of the application for connect with google.
   void googleLogout() async {
     deleteGoogleToken();
-    await _authRepository.logOut();
     UserModel? currentUser = _ref.read(userProvider)!;
     UserModel updatedUser = currentUser.copyWith(isGoogle: false);
     _ref.read(userProvider.notifier).state = updatedUser;

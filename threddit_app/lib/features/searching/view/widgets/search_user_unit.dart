@@ -7,6 +7,7 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+// ignore: must_be_immutable
 class SearchUserUnit extends ConsumerStatefulWidget {
   final UserModelMe user;
   bool isFollowed;
@@ -51,7 +52,6 @@ class _SearchUserUnitState extends ConsumerState<SearchUserUnit> {
                       ))
                   : TextButton(
                       onPressed: () async {
-                        print(widget.user.username!);
                         await followUser(widget.user.username!, ref);
 
                         setState(() {

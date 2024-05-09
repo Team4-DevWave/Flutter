@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
 /// This repository handles all the http requests sent to the backend related to reporting a post or a comment

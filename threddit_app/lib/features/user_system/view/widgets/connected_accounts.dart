@@ -36,8 +36,10 @@ class _ConnectedAcccountsState extends ConsumerState<ConnectedAccounts> {
           titleTextStyle: AppTextStyles.primaryTextStyle,
           trailing: checkGoogle()
               ? TextButton(
-                  onPressed: () =>
-                      ref.watch(authControllerProvider.notifier).googleLogout(),
+                  onPressed: () {
+                    ref.watch(authControllerProvider.notifier).googleLogout();
+                    showSnackBar(context, "Successfully disconnected from Google");
+                  },
                   child: const Text(
                     "Disconnect",
                     style: TextStyle(color: Colors.blue),
@@ -50,12 +52,23 @@ class _ConnectedAcccountsState extends ConsumerState<ConnectedAccounts> {
 
                     response.fold(
                         (l) => showSnackBar(
-                            navigatorKey.currentContext!, l.message), (r) {
+                            navigatorKey.currentContext!, l.message),
+                        (r) async {
                       if (r) {
-                        Navigator.pushNamed(
-                            context, RouteClass.confirmPasswordScreen);
-                        
-                        
+                        showSnackBar(context, "Successfully connected with Google");
+                        setState(() {});
+                      } else {
+                        final responseSignUp = await ref
+                            .watch(authProvider.notifier)
+                            .signUpWithGoogle();
+                        responseSignUp.fold(
+                            (l) => {
+                                  showSnackBar(
+                                      navigatorKey.currentContext!, l.message)
+                                }, (r) {
+                          showSnackBar(context, "Successfully connected with Google");
+                          setState(() {});
+                        });
                       }
                     });
                   },

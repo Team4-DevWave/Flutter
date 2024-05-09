@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
-import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
-import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
-
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
@@ -14,7 +11,6 @@ import 'package:threddit_clone/features/searching/view_model/searching_apis.dart
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// The `SearchFeedWidget` displays a feed of posts based on a specific search query. 
 /// It takes a [searchText] parameter representing the search query entered by the user.

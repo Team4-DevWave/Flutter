@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/app/route.dart';
@@ -66,7 +65,7 @@ class _SearchCommunityScreenPageState
           final foundComments = comments
               .map((comment) => SearchCommentModel.fromJson(comment))
               .toList();
-          Navigator.pushNamed(context, RouteClass.CommunitySearchResults,
+          Navigator.pushNamed(context, RouteClass.communitySearchResults,
               arguments: {
                 'communityName': widget.community,
                 'searchedItem': _searchController.text,

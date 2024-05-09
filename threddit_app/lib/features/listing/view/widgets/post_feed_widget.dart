@@ -18,6 +18,7 @@ import 'package:threddit_clone/features/post/viewmodel/delete_post.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/posting/view/widgets/bottom_sheet_owner.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
+import 'package:threddit_clone/features/posting/view/widgets/poll.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
@@ -136,6 +137,7 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
 
   @override
   Widget build(BuildContext context) {
+    widget.dataOfPost.userPollVote ??= '';
     final hoursSincePost = formatDateTime(widget.dataOfPost.postedTime);
     getModOptions();
     return Container(
@@ -282,10 +284,9 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
           Center(
             child: Container(
               clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.backgroundColor),
-                  borderRadius:
-                      BorderRadius.circular(35) // Adjust the radius as needed
+              decoration:const BoxDecoration(
+                 
+                  // Adjust the radius as needed
                   ),
               child: (widget.dataOfPost.image != null &&
                       widget.dataOfPost.image != '')
@@ -320,7 +321,8 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                             )
                           ]),
                         )
-                      : const SizedBox(),
+                      : widget.dataOfPost.type=='poll'?PollWidget(votes: widget.dataOfPost.poll!.values.fold(0, (prev, curr) => prev + curr), options: widget.dataOfPost.poll!.keys.toList(),userVote: widget.dataOfPost.userPollVote!,postId: widget.dataOfPost.id,) :const SizedBox(),
+            
             ),
           ),
           widget.dataOfPost.type == 'url'

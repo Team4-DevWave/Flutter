@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
-import 'package:threddit_clone/features/listing/view/widgets/FeedunitSharedScreen.dart';
-import 'package:threddit_clone/features/listing/view/widgets/post_feed_widget.dart';
-
 import 'package:lottie/lottie.dart';
-import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_comment_item.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_feed_widget.dart';
-import 'package:threddit_clone/features/searching/view/widgets/search_post_feed_widget.dart';
-import 'package:threddit_clone/features/searching/view/widgets/search_shared_feed_unit.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 /// The `SearchCommentFeedWidget` widget displays a feed of comments related to a specific search query. It takes a [searchText] parameter as input, 
 /// which represents the search query entered by the user.
