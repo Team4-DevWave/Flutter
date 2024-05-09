@@ -1,9 +1,12 @@
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 import 'package:threddit_clone/features/posting/view/widgets/poll.dart';
 
 import 'package:threddit_clone/theme/colors.dart';
@@ -112,10 +115,25 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                     widget.dataOfPost.title,
                     style: AppTextStyles.boldTextStyle,
                   ),
-                  Text(
-                    widget.dataOfPost.textBody.toString(),
-                    style: AppTextStyles.secondaryTextStyle,
-                  ),
+                  widget.dataOfPost.textBody == null
+                      ? const SizedBox(
+                          width: 1,
+                        )
+                      : Container(
+                          height: 40.h,
+                          child: Markdown(
+                            onTapLink: (text, href, title) {
+                              launchUrlFunction(Uri.parse(href ?? ""));
+                            },
+                            padding: EdgeInsets.zero,
+                            data: widget.dataOfPost.textBody ?? '',
+                            styleSheet: MarkdownStyleSheet(
+                                a: const TextStyle(
+                                  color: const Color.fromARGB(255, 7, 114, 255),
+                                ),
+                                p: AppTextStyles.secondaryTextStyle),
+                          ),
+                        ),
                 ],
               ),
             ),
@@ -161,8 +179,25 @@ class _FeedUnitSharedPostState extends State<FeedUnitSharedPost> {
                               )
                             ]),
                           )
-                        : widget.dataOfPost.type=='poll'?PollWidget(votes: widget.dataOfPost.poll!.values.fold(0, (prev, curr) => prev + curr), options: widget.dataOfPost.poll!.keys.toList(),userVote: widget.dataOfPost.userPollVote!,postId: widget.dataOfPost.id,) :const SizedBox(),
-            
+                        : widget.dataOfPost.type == 'poll'
+                            ? PollWidget(
+                                votes: widget.dataOfPost.poll!.values
+                                    .fold(0, (prev, curr) => prev + curr),
+                                options: widget.dataOfPost.poll!.keys.toList(),
+                                userVote: widget.dataOfPost.userPollVote!,
+                                postId: widget.dataOfPost.id,
+                              )
+                            : widget.dataOfPost.type == 'url'
+                                ? Center(
+                                    child: AnyLinkPreview(
+                                      link: widget.dataOfPost.linkURL ?? '',
+                                      onTap: () {
+                                        launchUrlFunction(Uri.parse(
+                                            widget.dataOfPost.linkURL ?? ''));
+                                      },
+                                    ),
+                                  )
+                                : const SizedBox(),
               ),
             ),
             SizedBox(

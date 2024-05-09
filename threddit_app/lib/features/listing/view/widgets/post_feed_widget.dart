@@ -151,28 +151,77 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
               Container(
                   child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      user?.username == widget.dataOfPost.userID?.username
-                          ? Navigator.pushNamed(
-                              context, RouteClass.userProfileScreen)
-                          : Navigator.pushNamed(
-                              context,
-                              RouteClass.otherUsers,
-                              arguments: widget.dataOfPost.userID?.username,
-                            );
-                    },
-                    child: Text(
-                      'u/${widget.dataOfPost.userID?.username}',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 7.w,
-                  ),
-                  Text(
-                    '${hoursSincePost}',
-                    style: const TextStyle(color: AppColors.whiteHideColor),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Container(
+                        width: 25.w,
+                        height: 25.h,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: (widget.dataOfPost.userID?.profilePicture ==
+                                      null ||
+                                  widget.dataOfPost.userID?.profilePicture ==
+                                      "")
+                              ? Image.asset('assets/images/avatar.png')
+                              : Image.network(
+                                  "${widget.dataOfPost.userID?.profilePicture}"),
+                        ),
+                      )),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              user?.username ==
+                                      widget.dataOfPost.userID?.username
+                                  ? Navigator.pushNamed(
+                                      context, RouteClass.userProfileScreen)
+                                  : Navigator.pushNamed(
+                                      context,
+                                      RouteClass.otherUsers,
+                                      arguments:
+                                          widget.dataOfPost.userID?.username,
+                                    );
+                            },
+                            child: Text(
+                              'u/${widget.dataOfPost.userID?.username}',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 7.w,
+                          ),
+                          Text(
+                            '${hoursSincePost}',
+                            style: const TextStyle(
+                                color: AppColors.whiteHideColor),
+                          ),
+                        ],
+                      ),
+                      widget.dataOfPost.subredditID?.name != null
+                          ? GestureDetector(
+                              onTap: () {
+                                if (widget.dataOfPost.subredditID!.id != "") {
+                                  Navigator.pushNamed(
+                                      context, RouteClass.communityScreen,
+                                      arguments: {
+                                        'id':
+                                            widget.dataOfPost.subredditID!.name,
+                                        'uid': user!.id
+                                      });
+                                }
+                              },
+                              child: Text(
+                                  'r/${widget.dataOfPost.subredditID?.name}',
+                                  style: TextStyle(
+                                      color: AppColors.whiteHideColor,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w300)))
+                          : SizedBox(),
+                    ],
                   ),
                 ],
               )),
@@ -259,21 +308,27 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                   widget.dataOfPost.title,
                   style: AppTextStyles.boldTextStyle,
                 ),
-                Container(
-                  height: 20.h,
-                  child: Markdown(
-                    onTapLink: (text, href, title) {
-                      launchUrlFunction(Uri.parse(href ?? ""));
-                    },
-                    padding: EdgeInsets.zero,
-                    data: widget.dataOfPost.textBody ?? '',
-                    styleSheet: MarkdownStyleSheet(
-                        a: const TextStyle(
-                          color: const Color.fromARGB(255, 7, 114, 255),
+
+                widget.dataOfPost.textBody == null
+                    ? const SizedBox(
+                        width: 1,
+                      )
+                    : Container(
+                        height: 40.h,
+                        child: Markdown(
+                          onTapLink: (text, href, title) {
+                            launchUrlFunction(Uri.parse(href ?? ""));
+                          },
+                          padding: EdgeInsets.zero,
+                          data: widget.dataOfPost.textBody ?? '',
+                          styleSheet: MarkdownStyleSheet(
+                              a: const TextStyle(
+                                color: const Color.fromARGB(255, 7, 114, 255),
+                              ),
+                              p: AppTextStyles.secondaryTextStyle),
                         ),
-                        p: AppTextStyles.secondaryTextStyle),
-                  ),
-                ),
+                      ),
+
                 // Text(
                 //   widget.dataOfPost.textBody ?? '',
                 //   style: AppTextStyles.secondaryTextStyle,
@@ -284,8 +339,8 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
           Center(
             child: Container(
               clipBehavior: Clip.antiAlias,
-              decoration:const BoxDecoration(
-                 
+              decoration: const BoxDecoration(
+
                   // Adjust the radius as needed
                   ),
               child: (widget.dataOfPost.image != null &&
@@ -321,8 +376,15 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                             )
                           ]),
                         )
-                      : widget.dataOfPost.type=='poll'?PollWidget(votes: widget.dataOfPost.poll!.values.fold(0, (prev, curr) => prev + curr), options: widget.dataOfPost.poll!.keys.toList(),userVote: widget.dataOfPost.userPollVote!,postId: widget.dataOfPost.id,) :const SizedBox(),
-            
+                      : widget.dataOfPost.type == 'poll'
+                          ? PollWidget(
+                              votes: widget.dataOfPost.poll!.values
+                                  .fold(0, (prev, curr) => prev + curr),
+                              options: widget.dataOfPost.poll!.keys.toList(),
+                              userVote: widget.dataOfPost.userPollVote!,
+                              postId: widget.dataOfPost.id,
+                            )
+                          : const SizedBox(),
             ),
           ),
           widget.dataOfPost.type == 'url'
@@ -447,17 +509,6 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                   ),
                 ],
               ),
-              IconButton(
-                  onPressed: () {
-                    setState(() {
-                      getModOptions().then((value) =>
-                          moderation(context, ref, isSpam, isLocked));
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.shield,
-                    color: AppColors.realWhiteColor,
-                  )),
               IconButton(
                 icon: const Icon(Icons.share, color: AppColors.realWhiteColor),
                 onPressed: () {

@@ -5,6 +5,10 @@ import 'package:threddit_clone/features/user_system/view_model/validation_provid
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+String displayText(String identifier) {
+  return identifier == 'login' ? 'Email or Username' : 'Email';
+}
+
 ///This [EmailTextFromField] is a field that is used mainly in the regiteration process
 ///to take the username or email in the login screen
 ///or the user email in the signup screen
@@ -18,8 +22,7 @@ class EmailTextFromField extends ConsumerWidget {
   final String identifier;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String displayedText =
-        (identifier == 'login' ? 'Email or Username' : 'Email');
+    final String displayedText = displayText(identifier);
 
     final emailSignupValidator =
         ref.watch(Validation().emailSignupValidatorProvider);

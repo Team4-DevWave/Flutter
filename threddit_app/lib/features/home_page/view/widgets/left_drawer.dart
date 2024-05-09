@@ -8,6 +8,7 @@ import 'package:threddit_clone/features/home_page/model/visited_item.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/communities_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/favourites_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.dart';
+import 'package:threddit_clone/features/home_page/view/widgets/moderating_tiles.dart';
 import 'package:threddit_clone/features/home_page/view_model/favrourite_notifier.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -29,6 +30,7 @@ class LeftDrawer extends ConsumerStatefulWidget {
 class _LeftDrawerState extends ConsumerState<LeftDrawer> {
   List<VisitedItem> recentlyVisted = [];
   List<List<String>> userCommunitiesData = [];
+  List<List<String>> moderatingCommunities = [];
   List<String>? favouritesList;
   bool isLoading = false;
 
@@ -36,9 +38,6 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
     setState(() {
       isLoading = true;
     });
-    // print(await getCommunitiesState(ref));
-    // await getFavouritesState(ref);
-    // await getFollowingState(ref);
     await ref.read(settingsFetchProvider.notifier).getMe();
     recentlyVisted = await getRecentVisits();
     final response =
@@ -47,6 +46,13 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
         (list) => userCommunitiesData = list);
+
+    final response2 =
+        await ref.read(userCommunitisProvider.notifier).getUserModerating();
+    response2.fold(
+        (failure) =>
+            showSnackBar(navigatorKey.currentContext!, failure.message),
+        (list) => moderatingCommunities = list);
 
     final resp = await ref.read(favouriteProvider.notifier).getFavourite();
     resp.fold(
@@ -74,9 +80,9 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
     return Stack(children: [
       Drawer(
         elevation: double.maxFinite,
-        backgroundColor: AppColors.mainColor,
-        shadowColor: AppColors.mainColor,
-        surfaceTintColor: AppColors.mainColor,
+        backgroundColor: AppColors.backgroundColor,
+        shadowColor: AppColors.backgroundColor,
+        surfaceTintColor: AppColors.backgroundColor,
         child: isLoading
             ? const Loading()
             : recentlyVisted.isEmpty &&
@@ -209,8 +215,11 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                       if (recentlyVisted.isEmpty) SizedBox(height: 30.h),
                       if (ref.read(favouriteList).isNotEmpty)
                         const FavouriteTiles(title: "Favourites"),
+                      if (moderatingCommunities.isNotEmpty)
+                        const ModeratingTiles(title: "Moderating"),
                       if (userCommunitiesData.isNotEmpty)
-                        const CommunitiesTiles(title: "Your Communities"),
+                        const CommunitiesTiles(
+                          title: "Your Communities"),
                       if (ref
                           .read(userModelProvider)!
                           .followedUsers!
