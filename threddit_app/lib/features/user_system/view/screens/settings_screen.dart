@@ -18,7 +18,11 @@ const List<String> thumbnail = <String>[
 ];
 
 final userSettingsProvider = StateProvider<UserSettings?>((ref) => null);
-
+/// The [SettingsScreen] allows users to customize their browsing experience
+/// by adjusting various preferences and settings. It provides sections for
+/// managing account settings, view options, accessibility features, and advanced
+/// configurations. Users can personalize their app environment according to
+/// their preferences and needs.
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 

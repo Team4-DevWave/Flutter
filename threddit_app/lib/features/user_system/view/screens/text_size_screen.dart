@@ -10,7 +10,9 @@ final sliderProvider = StateProvider<double>((ref) {
 final enableResizeProvider = StateProvider<bool>((ref) {
   return false;
 });
-
+/// The [TextSizeScreen] allows users to adjust the text size of the app interface.
+/// It has a button that prompts the user to override the device settings.
+/// And then scales the whole application's text font using the slider.
 class TextSizeScreen extends ConsumerStatefulWidget {
   const TextSizeScreen({super.key});
   @override

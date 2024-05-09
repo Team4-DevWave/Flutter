@@ -1,3 +1,5 @@
+/// Class responsible for recieveing a simple mocking of a banned user.
+/// Has the username and reason to be banned.
 class BannedUser {
   final String username;
   final String reason;

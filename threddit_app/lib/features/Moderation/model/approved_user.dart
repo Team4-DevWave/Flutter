@@ -1,3 +1,6 @@
+/// Simple mocking for an approved user.
+/// Represents an approved user with their username.
+
 class ApprovedUser {
   final String username;
 

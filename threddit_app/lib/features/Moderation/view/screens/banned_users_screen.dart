@@ -8,7 +8,10 @@ import 'package:threddit_clone/features/Moderation/view_model/moderation_apis.da
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
-
+/// This screen displays the currently banned users in the subreddit. 
+/// Users can search for specific banned users, add new bans, and perform actions like editing ban details and unbanning users. 
+/// 
+/// Each banned user is listed with their username, and additional actions such as viewing details, viewing the user's profile, and unbanning them are accessible via the overflow menu.
 class BannedUsersScreen extends ConsumerStatefulWidget {
   const BannedUsersScreen({super.key});
   @override

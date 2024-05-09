@@ -8,7 +8,9 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
 
 enum BanType { permenant, custom }
-
+/// This screen allows moderators to update the ban details for a specific user in the subreddit. 
+/// Moderators can choose the rule broken, ban length (either permanent or custom), provide a message to the user, and add a moderator note. 
+/// The user's ban can be updated by selecting the appropriate options and clicking the update button in the app bar.
 class UpdateBanScreen extends ConsumerStatefulWidget {
   final String user;
   final String reason;
