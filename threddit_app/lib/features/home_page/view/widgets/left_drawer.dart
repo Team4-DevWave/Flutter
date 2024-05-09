@@ -74,9 +74,9 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
     return Stack(children: [
       Drawer(
         elevation: double.maxFinite,
-        backgroundColor: AppColors.mainColor,
-        shadowColor: AppColors.mainColor,
-        surfaceTintColor: AppColors.mainColor,
+        backgroundColor: AppColors.backgroundColor,
+        shadowColor: AppColors.backgroundColor,
+        surfaceTintColor: AppColors.backgroundColor,
         child: isLoading
             ? const Loading()
             : recentlyVisted.isEmpty &&

@@ -267,9 +267,9 @@ class _FeedUnitState extends ConsumerState<FeedUnit> {
                     data: widget.dataOfPost.textBody ?? '',
                     styleSheet: MarkdownStyleSheet(
                         a: const TextStyle(
-                          color: const Color.fromARGB(255, 7, 114, 255),
+                          color: Color.fromARGB(255, 7, 114, 255),
                         ),
-                        p: AppTextStyles.secondaryTextStyle),
+                        p: const TextStyle(overflow: TextOverflow.ellipsis)),
                   ),
                 ),
                 // Text(

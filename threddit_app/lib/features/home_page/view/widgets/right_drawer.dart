@@ -48,7 +48,9 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
     }
 
     return Drawer(
-      backgroundColor: AppColors.mainColor,
+      backgroundColor: AppColors.backgroundColor,
+      shadowColor: AppColors.backgroundColor,
+      surfaceTintColor: AppColors.backgroundColor,
       child: Column(
         children: [
           SizedBox(

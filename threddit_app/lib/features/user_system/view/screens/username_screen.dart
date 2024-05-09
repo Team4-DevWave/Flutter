@@ -12,6 +12,12 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+bool updateFormValidity(String? value) {
+  return (value == null || value.isEmpty || value.trim().isEmpty)
+      ? false
+      : true;
+}
+
 ///This screen is designed and implemented to take and validate the user username
 ///in the registration process.
 ///
@@ -34,14 +40,6 @@ class _UserNameState extends ConsumerState<UserName> {
   bool isUsedUserName = false;
   bool isValid = false;
   bool isLoading = false;
-
-  void updateFormValidity(String? value) {
-    setState(() {
-      isValid = (value == null || value.isEmpty || value.trim().isEmpty)
-          ? false
-          : true;
-    });
-  }
 
   Future<void> onContinue() async {
     isLoading = true;
@@ -126,7 +124,9 @@ class _UserNameState extends ConsumerState<UserName> {
                                 key: userNameFormKey,
                                 child: TextFormField(
                                   onChanged: (value) {
-                                    return updateFormValidity(value);
+                                    setState(() {
+                                      isValid = updateFormValidity(value);
+                                    });
                                   },
                                   controller: userNameController,
                                   decoration: InputDecoration(
