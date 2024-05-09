@@ -38,7 +38,6 @@ import 'package:threddit_clone/features/user_system/view/screens/activity_screen
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
-import 'package:threddit_clone/features/user_system/view/screens/mod_mail_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/mod_notifications_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/posts_notifcation_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/reports_screen.dart';
@@ -132,7 +131,7 @@ class RouteClass {
   static const String renameChatroom = '/rename-chatroom';
   static const String chatMembers = '/chat-members';
   static const String inviteMembers = '/invite-members';
-  static const String CommunitySearchResults = '/search-community-results';
+  static const String communitySearchResults = '/search-community-results';
 
   static const String modNotificationsSettings = '/mod-notifications';
   static const String activitySettings = '/activity-settings';
@@ -170,7 +169,7 @@ class RouteClass {
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
-        return MaterialPageRoute(builder: (_) => SearchScreen());
+        return MaterialPageRoute(builder: (_) => const SearchScreen());
       case communityInfo:
         final args = settings.arguments as Map<String, dynamic>;
         final community =
@@ -273,7 +272,7 @@ class RouteClass {
             uid: uid,
           ),
         );
-      case CommunitySearchResults:
+      case communitySearchResults:
         final args = settings.arguments as Map<String, dynamic>;
         final communityName = args['communityName'] as String;
         final searchedItem = args['searchedItem'] as String;

@@ -51,9 +51,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 child: Text(snapshot.error.toString()),
               );
             } else {
-              final isEnabled = snapshot.data!;
-              Activity activitySettings =
-                  isEnabled.subredditsUserMods[widget.subredditName]!.activity;
               return SingleChildScrollView(
                 child: Column(
                   children: [

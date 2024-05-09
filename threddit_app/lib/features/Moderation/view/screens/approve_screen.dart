@@ -6,7 +6,8 @@ import 'package:threddit_clone/features/Moderation/view_model/moderation_functio
 import 'package:threddit_clone/features/user_system/view/widgets/email_form.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
-/// Class responsible for approving a user as a user in a locked subreddit. 
+
+/// Class responsible for approving a user as a user in a locked subreddit.
 /// Takes the username of the user of the user you want to approve and
 /// checks that the username isn't empty. Then adds him to the approved
 /// users list.
@@ -15,8 +16,6 @@ class ApproveScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ApproveScreenState();
 }
-
-
 
 class _ApproveScreenState extends ConsumerState<ApproveScreen> {
   final EmailForm usernameForm = EmailForm("username");
@@ -32,7 +31,7 @@ class _ApproveScreenState extends ConsumerState<ApproveScreen> {
                 int validationValue = validateApprove(username);
                 switch (validationValue) {
                   case 0:
-                    int statusCode = await ref
+                    await ref
                         .watch(moderationApisProvider.notifier)
                         .approveUser(
                           client: client,

@@ -1,6 +1,5 @@
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
-import 'package:http/http.dart' as http;
 
 /// Mention class responsible for holding and parsing the mentioned users data in the comment search result.
 

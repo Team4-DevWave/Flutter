@@ -13,7 +13,6 @@ import 'package:threddit_clone/features/user_system/model/user_data.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/model/user_settings.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/alert.dart';
-import 'package:threddit_clone/features/user_system/model/user_mock.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_settings_provider.dart';
 import 'package:threddit_clone/features/user_system/view_model/user_system_providers.dart';
@@ -35,12 +34,6 @@ Future<int> changePasswordFunction(
     'passwordConfirm': confirmedPassword,
   };
   String bodyEncoded = jsonEncode(body);
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   http.Response response = await http.patch(
     Uri.parse(
@@ -93,12 +86,6 @@ Future<int> changeEmailFunction({
     'email': newEmail,
   };
   String? token = await getToken();
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
 
   String bodyEncoded = jsonEncode(body);
   http.Response response = await http.patch(
@@ -123,12 +110,7 @@ Future<int> changeGenderFunction({
     'gender': gender,
   };
   String? token = await getToken();
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
+
   String bodyEncoded = jsonEncode(body);
 
   http.Response response = await http.patch(
@@ -200,12 +182,6 @@ Future<int> blockUser({
 
 Future<int> notificationOn(
     {required http.Client client, required String settingName}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   Map<String, dynamic> body = {'setting': settingName};
   String bodyEncoded = jsonEncode(body);
   String? token = await getToken();
@@ -218,17 +194,10 @@ Future<int> notificationOn(
     },
     body: bodyEncoded,
   );
-  print(response.body);
   return response.statusCode;
 }
 
 Future<int> modNotificationOn({required String subredditName}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   http.Response response = await http.patch(
     Uri.parse(
@@ -244,12 +213,6 @@ Future<int> modNotificationOn({required String subredditName}) async {
 Future<int> activityModNotification({
   required String subredditName,
 }) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   http.Response response = await http.patch(
     Uri.parse(
@@ -264,13 +227,6 @@ Future<int> activityModNotification({
 
 Future<int> reportCommentModNotification(
     {required String settingName, required String subredditName}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
-
   String? token = await getToken();
   http.Response response = await http.patch(
     Uri.parse(
@@ -285,13 +241,6 @@ Future<int> reportCommentModNotification(
 
 Future<int> reportPostModNotification(
     {required String settingName, required String subredditName}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
-
   String? token = await getToken();
   http.Response response = await http.patch(
     Uri.parse(
@@ -306,12 +255,6 @@ Future<int> reportPostModNotification(
 
 Future<int> activitypostWithUpvotes(
     {required String settingName, required String subredditName}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   http.Response response = await http.patch(
     Uri.parse(
@@ -326,12 +269,6 @@ Future<int> activitypostWithUpvotes(
 
 Future<int> activitypostWithComments(
     {required String settingName, required String subredditName}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   http.Response response = await http.patch(
     Uri.parse(
@@ -346,12 +283,6 @@ Future<int> activitypostWithComments(
 
 Future<int> activityCommentSlider(
     {required String subredditName, required double value}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   int newValue = value.toInt();
   http.Response response = await http.patch(
@@ -367,12 +298,6 @@ Future<int> activityCommentSlider(
 
 Future<int> activityUpvotesSlider(
     {required String subredditName, required double value}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   int newValue = value.toInt();
   http.Response response = await http.patch(
@@ -388,12 +313,6 @@ Future<int> activityUpvotesSlider(
 
 Future<int> reportCommentsSlider(
     {required String subredditName, required double value}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   int newValue = value.toInt();
   http.Response response = await http.patch(
@@ -409,12 +328,6 @@ Future<int> reportCommentsSlider(
 
 Future<int> reportPostsSlider(
     {required String subredditName, required double value}) async {
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   String? token = await getToken();
   int newValue = value.toInt();
   http.Response response = await http.patch(
@@ -432,13 +345,8 @@ Future<int> unblockUser(
     {required http.Client client,
     required String userToUnBlock,
     required BuildContext context}) async {
-  final String url;
   String? token = await getToken();
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
+
   http.Response response = await client.delete(
     Uri.parse("https://www.threadit.tech/api/v1/users/me/block/$userToUnBlock"),
     headers: {
@@ -474,75 +382,7 @@ class SettingsFetch extends StateNotifier<bool> {
     }
   }
 
-  /// API Call to fetch the User data
-
-  Future<UserMock> getUserInfo(
-      {required http.Client client, required String token}) async {
-    // final url = Uri.https(
-    //     'threddit-clone-app-default-rtdb.europe-west1.firebasedatabase.app',
-    //     'users.json');
-    //final url = Uri.http("localhost:3001/api/user-info?user_id=1");
-    final String url;
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
-    try {
-      http.Response response = await http.get(
-        Uri.parse("$url:3001/api/user-info?user_id=1"),
-      );
-
-      return UserMock.fromJson(jsonDecode(response.body));
-    } catch (e) {
-      return UserMock.fromJson(jsonDecode('sd'));
-    }
-  }
-
-  Future<List<UserMock>> searchUsers(http.Client client, String query) async {
-    http.Response response = await client.get(
-      Uri.parse("http://10.0.2.2:3001/api/search-user?query=$query"),
-    );
-    List<dynamic> data = jsonDecode(response.body.toString());
-    List<UserMock> users = [];
-    for (var userData in data) {
-      String username = userData['username'] as String;
-      bool blocked = userData['blocked'] as bool;
-      users.add(UserMock(
-          id: '',
-          email: '',
-          username: username,
-          isBlocked: blocked,
-          gender: ''));
-    }
-    return users;
-  }
-
-  Future<UserMock> getBlockedUsers() async {
-    final String url;
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
-    String? token = await getToken();
-    http.Response response = await http.get(
-      Uri.parse("$url:3001/api/user-info?user_id=2"),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    return UserMock.fromJson(jsonDecode(response.body));
-  }
-
   Future<UserModelMe> getMe() async {
-    final String url;
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
     UserModelMe user = ref.read(userModelProvider)!;
     String? token = await getToken();
     http.Response response = await http.get(
@@ -560,13 +400,6 @@ class SettingsFetch extends StateNotifier<bool> {
   }
 
   Future<UserSettings> getSettings() async {
-    final String url;
-
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
     String? token = await getToken();
     http.Response response = await http.get(
       Uri.parse("https://www.threadit.tech/api/v1/users/me/settings"),
@@ -582,12 +415,6 @@ class SettingsFetch extends StateNotifier<bool> {
 
   Future<NotificationsSettingsModel> getNotificationSetting(
       {required http.Client client}) async {
-    final String url;
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
     String? token = await getToken();
     http.Response response = await client.get(
       Uri.parse("https://www.threadit.tech/api/v1/notifications/settings"),
@@ -596,31 +423,7 @@ class SettingsFetch extends StateNotifier<bool> {
         'Authorization': 'Bearer $token',
       },
     );
-    print(response.body);
-    print(response.statusCode);
-    print("Above are the responses");
-
     return NotificationsSettingsModel.fromJson(jsonDecode(response.body));
-  }
-
-  Future<bool> getFollowableSetting() async {
-    final String url;
-    if (Platform.isWindows) {
-      url = urlWindows;
-    } else {
-      url = urlAndroid;
-    }
-    String? token = await getToken();
-    http.Response response = await http.get(
-      Uri.parse("$url/api/user-info?user_id=1"),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    Map<String, dynamic> userData = jsonDecode(response.body);
-    final bool isFollowableEnabled = userData['isFollowable'];
-    return isFollowableEnabled;
   }
 }
 
@@ -636,12 +439,6 @@ Future<int> changeSetting({
   };
   String? token = await getToken();
   String bodyEncoded = jsonEncode(body);
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
   http.Response response = await http.patch(
     Uri.parse("https://www.threadit.tech//api/v1/users/me/settings"),
     headers: {
@@ -661,12 +458,7 @@ Future<int> changeCountry({
   };
   String? token = await getToken();
   String bodyEncoded = jsonEncode(body);
-  final String url;
-  if (Platform.isWindows) {
-    url = urlWindows;
-  } else {
-    url = urlAndroid;
-  }
+
   http.Response response = await http.patch(
     Uri.parse(
         "https://www.threadit.tech/api/v1/users/me/settings/changecountry"),

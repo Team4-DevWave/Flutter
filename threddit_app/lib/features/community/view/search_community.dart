@@ -65,7 +65,7 @@ class _SearchCommunityScreenPageState
           final foundComments = comments
               .map((comment) => SearchCommentModel.fromJson(comment))
               .toList();
-          Navigator.pushNamed(context, RouteClass.CommunitySearchResults,
+          Navigator.pushNamed(context, RouteClass.communitySearchResults,
               arguments: {
                 'communityName': widget.community,
                 'searchedItem': _searchController.text,
