@@ -439,7 +439,14 @@ class _PostCardState extends ConsumerState<PostCard> {
                                 },
                                 icon: const Icon(Icons.add_moderator_sharp)),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, RouteClass.postInsights,
+                                    arguments: {
+                                      'uid': widget.uid,
+                                      'post': widget.post
+                                    });
+                              },
                               icon: const Icon(
                                 Icons.insights,
                                 color: Colors.purple,

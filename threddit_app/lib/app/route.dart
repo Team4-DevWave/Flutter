@@ -27,6 +27,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/banned_users_scr
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
+import 'package:threddit_clone/features/posting/view/screens/post_insights_screen.dart';
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view/screens/search_results_screen.dart';
@@ -144,6 +145,7 @@ class RouteClass {
   static const String communityTypes = '/community-types';
   static const String scheduledPosts = '/scheduled-posts';
   static const String postSchedule = '/post-schedule';
+  static const String postInsights = '/post-insights';
 
   static const String searchResultsScreen = '/serach-results';
 
@@ -298,6 +300,15 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   currentPost: currentpost,
+                  uid: uid,
+                ));
+      case postInsights:
+        final args = settings.arguments as Map<String, dynamic>;
+        final post = args['post'] as Post; // Extract the community object
+        final uid = args['uid'] as String;
+        return MaterialPageRoute(
+            builder: (_) => PostInsightsScreen(
+                  post: post,
                   uid: uid,
                 ));
       case messageScreen:

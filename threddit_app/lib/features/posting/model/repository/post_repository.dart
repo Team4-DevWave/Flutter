@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/posting/model/post_insights.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -175,5 +176,30 @@ final votePoll =
     }
   } catch (e) {
     print('Error voting on poll: $e');
+  }
+});
+final getPostInsights =
+    FutureProvider.family<PostInsights, String>((ref, postId) async {
+  try {
+    String? token = await getToken();
+    final url =
+        'https://www.threadit.tech/api/v1/posts/$postId/insights';
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+          final jsonBody = jsonDecode(response.body);
+          print('insights fetched');
+      return PostInsights.fromJson(jsonBody['data']);
+    } else {
+      throw Exception('failed to fetch post insights');
+    }
+  } catch (e) {
+    throw Exception('failed to fetch post insights $e');
   }
 });

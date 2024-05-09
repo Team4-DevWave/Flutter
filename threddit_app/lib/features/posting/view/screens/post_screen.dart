@@ -165,7 +165,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                                 ],
                               ),
                             );
-                      ;
+                      
                     },
                   ),
                 ],

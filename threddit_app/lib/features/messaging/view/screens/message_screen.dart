@@ -19,6 +19,7 @@ class MessageScreen extends ConsumerStatefulWidget {
 
 class _MessageScreenState extends ConsumerState<MessageScreen> {
   bool _isblocked = false;
+  // ignore: unused_field
   bool _isLoading = false;
   String otherUsername = '';
   String otherId = '';

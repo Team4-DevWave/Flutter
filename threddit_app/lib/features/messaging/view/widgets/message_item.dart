@@ -17,6 +17,7 @@ class MessageItem extends ConsumerStatefulWidget {
 
 class _MessageItemState extends ConsumerState<MessageItem> {
   bool _isblocked = false;
+  // ignore: unused_field
   bool _isLoading = false;
   String otherUsername = '';
   String otherId = '';

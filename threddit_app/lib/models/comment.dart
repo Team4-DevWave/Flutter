@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/models/subreddit.dart';
 
 class Vote {
   int upvotes;
