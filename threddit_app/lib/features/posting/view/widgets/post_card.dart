@@ -6,6 +6,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
+import 'package:threddit_clone/features/posting/view/widgets/poll.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -62,6 +63,7 @@ class _PostCardState extends ConsumerState<PostCard> {
 
   @override
   Widget build(BuildContext) {
+    widget.post.userPollVote ??= '';
     void toggleNsfw() {
       widget.post.nsfw = !widget.post.nsfw;
       setState(() {});
@@ -297,7 +299,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                               )
                             : const CircularProgressIndicator(),
                       )
-                    : const SizedBox(),
+                    : widget.post.type=='poll'?PollWidget(votes: widget.post.poll!.values.fold(0, (prev, curr) => prev + curr), options: widget.post.poll!.keys.toList(),userVote: widget.post.userPollVote!,postId: widget.post.id,) :const SizedBox(),
             widget.post.type == 'url'
                 ? Center(
                     child: AnyLinkPreview(

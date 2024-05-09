@@ -14,6 +14,7 @@ import 'package:threddit_clone/models/votes.dart';
 /// togglePostSpoiler is used to toggle the spoiler status of a post
 /// fetchPost is used to get a post by it's ID
 typedef votingParameters = ({String postID, int voteType});
+typedef pollVotingParameters = ({String postID, String option});
 
 class PostRepository {
   Future<void> togglePostNSFW(String postId) async {
@@ -149,5 +150,30 @@ final votePost =
     }
   } catch (e) {
     print('Error voting on post: $e');
+  }
+});
+final votePoll =
+    FutureProvider.family<void, pollVotingParameters>((ref, arguments) async {
+  try {
+    String? token = await getToken();
+    final url =
+        'https://www.threadit.tech/api/v1/posts/${arguments.postID}/votepoll';
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode({'option': arguments.option}),
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      print("poll voted");
+    } else {
+      print('Failed to vote on poll: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error voting on poll: $e');
   }
 });

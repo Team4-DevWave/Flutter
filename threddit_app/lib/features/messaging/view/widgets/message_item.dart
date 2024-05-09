@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/models/message.dart';
 import 'package:threddit_clone/theme/colors.dart';
+import 'package:http/http.dart' as http;
 
 class MessageItem extends ConsumerStatefulWidget {
   const MessageItem({super.key, required this.message, required this.uid});
@@ -14,9 +16,35 @@ class MessageItem extends ConsumerStatefulWidget {
 }
 
 class _MessageItemState extends ConsumerState<MessageItem> {
+  bool _isblocked = false;
+  bool _isLoading = false;
+  String otherUsername = '';
+  String otherId = '';
   @override
   void initState() {
     super.initState();
+    otherUsername = widget.message.from.id != widget.uid
+        ? widget.message.from.username
+        : widget.message.to.username;
+    otherId = widget.message.from.id != widget.uid
+        ? widget.message.from.id
+        : widget.message.to.id;
+    _setVariables();
+  }
+
+  void _setVariables() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await checkUserBlockState(otherId).then(
+      (value) {
+        setState(() {
+          _isblocked = value;
+          _isLoading = false;
+        });
+      },
+    );
   }
 
   @override
@@ -76,18 +104,38 @@ class _MessageItemState extends ConsumerState<MessageItem> {
                                     children: [
                                       GestureDetector(
                                         child: ListTile(
-                                          title: const Text(
-                                            "Block account",
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                          title: _isblocked
+                                              ? const Text(
+                                                  'Unblock account',
+                                                  style: TextStyle(
+                                                      color: Colors.orange),
+                                                )
+                                              : const Text(
+                                                  'Block account',
+                                                  style: TextStyle(
+                                                      color: Colors.orange),
+                                                ),
+                                          leading: const Icon(
+                                            Icons.block,
+                                            color: Colors.orange,
                                           ),
-                                          leading: const Icon(Icons.block),
                                           onTap: () {
-                                            blockUser(
-                                              userToBlock:
-                                                  widget.message.from.username,
-                                              context: context,
-                                            );
+                                            _isblocked
+                                                ?{ unblockUser(
+                                                    client: http.Client(),
+                                                    userToUnBlock:
+                                                        otherUsername,
+                                                    context: context),
+                                                    Navigator.pop(context)
+                                                }
+                                                :{ blockUser(
+                                                    userToBlock: otherUsername,
+                                                    context: context,
+                                                  ),
+                                                  Navigator.pop(context)
+                                                };
+                                            
+                                            setState(() {_isblocked = !_isblocked;});
                                           },
                                         ),
                                       ),

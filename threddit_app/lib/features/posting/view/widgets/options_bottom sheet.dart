@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/app/global_keys.dart';
@@ -5,12 +7,47 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
+import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/theme/colors.dart';
-
+import 'package:http/http.dart' as http;
 /// this bottom sheet is the options bottom sheet that is displayed when the user clicks on the three dots on a post and he is not an owner of the post or a moderator
 /// therefor he can only save the post, share the post, report the post, block the user or hide the post
+
+Future<bool> checkUserBlockState(String userId) async
+{
+  String? token = await getToken();
+    final url = Uri.parse('https://www.threadit.tech/api/v1/users/me/current');
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token",
+    };
+
+    try {
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final user = UserModelMe.fromJson(responseData);
+        for(int i=0;i<user.blockedUsers!.length;i++)
+        {
+          if(user.blockedUsers![i].id==userId)
+          {
+            return true;
+          }
+        }
+        return false;
+      } else {
+        throw Exception(
+            'Failed to fetch post. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching post: $e');
+      throw Exception('Failed to fetch post');
+    }
+}
 
 class OptionsBotttomSheet extends ConsumerStatefulWidget {
   const OptionsBotttomSheet({
@@ -31,7 +68,7 @@ class OptionsBotttomSheet extends ConsumerStatefulWidget {
 class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
   bool _isLoading = false;
   bool _isSaved = false;
-
+  bool _isblocked=false;
   @override
   void initState() {
     super.initState();
@@ -44,6 +81,7 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
     });
     final response =
         await ref.read(savePostProvider.notifier).isSaved(widget.post.id);
+        final isBlocked=await checkUserBlockState(widget.post.userID!.id);
     response.fold(
         (l) => showSnackBar(
             navigatorKey.currentContext!, "Could not retrieve saved state"),
@@ -51,8 +89,11 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
       setState(() {
         _isSaved = success;
         _isLoading = false;
+        _isblocked=isBlocked;
       });
     });
+    
+    
   }
 
   @override
@@ -157,7 +198,10 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
           },
         ),
         ListTile(
-          title: const Text(
+          title:_isblocked?const Text(
+            'Unblock account',
+            style: TextStyle(color: Colors.orange),
+          ): const Text(
             'Block account',
             style: TextStyle(color: Colors.orange),
           ),
@@ -166,10 +210,15 @@ class _OptionsBotttomSheetState extends ConsumerState<OptionsBotttomSheet> {
             color: Colors.orange,
           ),
           onTap: () {
+            _isblocked?unblockUser(client: http.Client(), userToUnBlock: widget.post.userID!.username, context: context):
             blockUser(
               userToBlock: widget.post.userID!.username,
               context: context,
             );
+            _isblocked=!_isblocked;
+            setState(() {
+              
+            });
           },
         ),
         ListTile(
