@@ -316,7 +316,6 @@ class ModerationApis extends StateNotifier<bool> {
       },
       body: bodyEncoded,
     );
-    print(response.statusCode);
     return response.statusCode;
   }
 
@@ -341,8 +340,6 @@ class ModerationApis extends StateNotifier<bool> {
       },
       body: bodyEncoded,
     );
-    print(response.statusCode);
-    print(response.body);
     return response.statusCode;
   }
 
