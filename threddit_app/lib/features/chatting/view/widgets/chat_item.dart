@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
 import 'package:threddit_clone/features/chatting/model/chat_notifier.dart';
+import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
+import 'package:threddit_clone/theme/colors.dart';
 
 String formatDateTime(DateTime messageTime) {
   DateTime now = DateTime.now();
@@ -133,7 +135,22 @@ class _ChatItemState extends ConsumerState<ChatItem> {
                           "Report Message",
                           style: TextStyle(color: Colors.white),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pop(context);
+                          showModalBottomSheet(
+                            useSafeArea: true,
+                            isScrollControlled: true,
+                            context: context,
+                            backgroundColor: AppColors.backgroundColor,
+                            builder: (context) {
+                              return ReportBottomSheet(
+                                userID: widget.username,
+                                reportedID: widget.message.id,
+                                type: "chat",
+                              );
+                            },
+                          );
+                        },
                       ),
               ]),
             );
@@ -151,7 +168,8 @@ class _ChatItemState extends ConsumerState<ChatItem> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  widget.message.sender.profilePicture != null && widget.message.sender.profilePicture!=''
+                  widget.message.sender.profilePicture != null &&
+                          widget.message.sender.profilePicture != ''
                       ? CircleAvatar(
                           radius: 25.0,
                           backgroundColor:

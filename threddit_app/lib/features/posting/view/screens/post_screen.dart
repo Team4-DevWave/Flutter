@@ -82,11 +82,6 @@ class _PostScreenState extends ConsumerState<PostScreen> {
             Row(
               children: [
                 IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search),
-                ),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
-                IconButton(
                     onPressed: () {
                       showModalBottomSheet(
                           isScrollControlled: true,
@@ -143,11 +138,34 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   Consumer(
                     builder: (context, watch, child) {
                       final comments = ref.watch(commentsProvider);
-                      return Column(
-                        children: comments.map((comment) {
-                          return CommentItem(comment: comment, uid: widget.uid);
-                        }).toList(),
-                      );
+                      return comments.isNotEmpty
+                          ? Column(
+                              children: comments.map((comment) {
+                                return CommentItem(
+                                    comment: comment, uid: widget.uid);
+                              }).toList(),
+                            )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 50.h,
+                                  ),
+                                  Image(
+                                    image: const AssetImage(
+                                        'assets/images/thinking-snoo.png'),
+                                    height: 100.h,
+                                  ),
+                                  Text('Be the first to comment?',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                            );
+                      ;
                     },
                   ),
                 ],

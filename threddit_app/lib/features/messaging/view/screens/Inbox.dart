@@ -6,6 +6,7 @@ import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart'
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/messaging/model/message_repository.dart';
 import 'package:threddit_clone/features/messaging/view%20model/messages_provider.dart';
+import 'package:threddit_clone/features/messaging/view/screens/no_messgaes.dart';
 import 'package:threddit_clone/features/messaging/view/widgets/message_item.dart';
 import 'package:threddit_clone/features/messaging/view/widgets/options_bottom_sheet.dart';
 import 'package:threddit_clone/features/notifications/view/widgets/nottification_feed.dart';
@@ -97,7 +98,7 @@ class _MainInboxScreenState extends ConsumerState<MainInboxScreen>
 
                   return messagesAsyncValue.when(
                     data: (messages) {
-                      return ListView.builder(
+                      return messages.isNotEmpty? ListView.builder(
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
                           final message = messages[index];
@@ -126,7 +127,7 @@ class _MainInboxScreenState extends ConsumerState<MainInboxScreen>
                             ],
                           );
                         },
-                      );
+                      ):const NoInbox();
                     },
                     loading: () => const Loading(),
                     error: (error, stack) => Text('Error: $error'),

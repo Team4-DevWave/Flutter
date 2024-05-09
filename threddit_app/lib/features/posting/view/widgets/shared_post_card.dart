@@ -6,6 +6,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
+import 'package:threddit_clone/features/posting/view/widgets/poll.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
@@ -50,6 +51,7 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
 
   @override
   Widget build(BuildContext) {
+    widget.post.parentPost!.userPollVote ??= '';
     void toggleNsfw() {
       widget.post.nsfw = !widget.post.nsfw;
       setState(() {});
@@ -299,6 +301,9 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                             ],
                           ),
                         ),
+                         if( widget.post.parentPost!.type=='poll')
+                            PollWidget(votes: widget.post.parentPost!.poll!.values.fold(0, (prev, curr) => prev + curr), options: widget.post.parentPost!.poll!.keys.toList(),userVote: widget.post.parentPost!.userPollVote!,postId: widget.post.parentPost!.id,), 
+                          
                         if (widget.post.parentPost!.image != null &&
                             widget.post.parentPost!.image != "")
                           Padding(
@@ -351,8 +356,8 @@ class _SharedPostCardState extends ConsumerState<SharedPostCard> {
                                               ]),
                                         ),
                                       )
-                                    : const CircularProgressIndicator()
-                                : const SizedBox(),
+                                    : const CircularProgressIndicator():
+                            const SizedBox(),
                           ),
                         SizedBox(
                           height: 5.h,
