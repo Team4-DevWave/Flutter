@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
@@ -106,26 +108,40 @@ class _NotificationFeedUnitState extends State<NotificationFeedUnit> {
                       ),
                     ),
                   ),
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.all(10.0),
+                    width: 300.w,
+                    height: 200.h,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.data.content.split(' ')[0],
+                          widget.data.content.split(' ')[0] == "check"
+                              ? widget.data.content
+                              : widget.data.content.split(' ')[0],
+                          maxLines: 2,
+
+                          overflow: TextOverflow
+                              .clip, // Change this to your preferred overflow option
                           style: TextStyle(
-                              color: const Color.fromARGB(166, 255, 255, 255),
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.bold,
-                              overflow: TextOverflow.ellipsis),
+                            color: Color.fromARGB(234, 255, 255, 255),
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
-                          widget.data.content.split(' ').sublist(1).join(' '),
+                          widget.data.content.split(' ')[0] == "check"
+                              ? " "
+                              : widget.data.content
+                                  .split(' ')
+                                  .sublist(1)
+                                  .join(' '),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: const Color.fromARGB(166, 255, 255, 255),
                               fontSize: 12.sp,
-                              fontWeight: FontWeight.bold,
-                              overflow: TextOverflow.ellipsis),
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
