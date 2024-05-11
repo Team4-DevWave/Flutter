@@ -5,9 +5,9 @@ import 'package:threddit_clone/features/user_system/model/notification_settings_
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/text_styles.dart';
-
-/// Notification screen has the options renders the options that the user
-/// can use to turn on/off the notifcations he wants/doesn't want.
+/// This screen allows users to configure notification settings for reports in a specific subreddit.
+/// Users can enable or disable notifications for various types of reports, such as posts and comments by navigating to each screen.
+/// 
 class ReportsScreen extends ConsumerStatefulWidget {
   final String subredditName;
   const ReportsScreen({super.key, required this.subredditName});

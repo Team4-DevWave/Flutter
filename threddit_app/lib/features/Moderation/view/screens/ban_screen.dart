@@ -9,7 +9,10 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
 
 enum BanType { permenant, custom }
-
+/// The screen used to ban a user. Has 4 [Inputform]s:
+/// Username, Banlength(optional), Message to user and mod note.
+/// 
+/// You can choose whether to ban permenantely or with a custom length which displays the banlength form.
 class BanScreen extends ConsumerStatefulWidget {
   const BanScreen({super.key});
   @override

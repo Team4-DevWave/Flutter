@@ -9,8 +9,9 @@ import 'package:threddit_clone/features/user_system/view_model/settings_function
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/text_styles.dart';
 
-/// Notification screen has the options renders the options that the user
+/// Notification screen has the options renders the options that the user.
 /// can use to turn on/off the notifcations he wants/doesn't want.
+/// Then it renders the subreddits that the user is a moderator in and the user can press on to get redirected to each subreddit's specific mod notification.
 class NotificationsSettingsScreen extends ConsumerStatefulWidget {
   const NotificationsSettingsScreen({super.key});
 

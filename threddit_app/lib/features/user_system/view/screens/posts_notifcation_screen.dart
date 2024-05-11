@@ -6,9 +6,13 @@ import 'package:threddit_clone/features/user_system/view/widgets/slider_containe
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 import 'package:threddit_clone/theme/text_styles.dart';
-
-/// Notification screen has the options renders the options that the user
-/// can use to turn on/off the notifcations he wants/doesn't want.
+/// This is a template screen for either Posts with comments, posts with upvoets or reports comments and posts mod notifications.
+/// it chooses the type it will be depending on the [String] title given and an [int] type.
+/// 
+/// 
+/// This allows users to configure notification settings in a specific subreddit. 
+/// Users can enable or disable notifications, customize advanced settings, the advanced settings allows the users to interact with the slider/not interact.
+/// and set thresholds for notifications based on post activity.
 class PostsNotifcationScreen extends ConsumerStatefulWidget {
   final String title;
   final String subredditName;
