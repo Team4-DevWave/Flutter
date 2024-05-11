@@ -1,15 +1,19 @@
 import 'dart:convert';
 
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
+
 class UserModel {
   final String id;
   final String username;
 
   UserModel({required this.id, required this.username});
    @override
+  @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is UserModel && other.id == id;
+    return other is UserModel &&
+        other.id == id;
   }
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -64,6 +68,21 @@ class Subreddit {
       invitedUsers: List<dynamic>.from(json['invitedUsers'] ?? []),
       version: json['__v'] ?? 0,
     );
+  }
+  joinCommunity(UserModel user)
+  {
+    members.add(user);
+  }
+  leaveCommunity(UserModel user)
+  {
+    members.remove(user);
+  }
+  createCommunity(UserModelMe user,Subreddit newSubreddit)
+  {
+    UserModel userModel=UserModel(id: user.id!, username: user.username!);
+    newSubreddit.moderators.add(userModel);
+    newSubreddit.members.add(userModel);
+    user.joinedSubreddits!.add(newSubreddit.name);
   }
 }
 

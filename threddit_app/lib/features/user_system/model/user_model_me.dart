@@ -29,10 +29,10 @@ class UserModelMe {
   final List<String>? viewedPosts;
   final List<String>? hiddenPosts;
   final List<String>? posts;
-  final Karma? karma;
+  Karma? karma;
   final SavedPostsAndComments? savedPostsAndComments;
-  final Votes? upvotes;
-  final Votes? downvotes;
+  Votes? upvotes;
+  Votes? downvotes;
   final String? settings;
 
   UserModelMe({
@@ -213,8 +213,8 @@ class UserModelMe {
 }
 
 class Karma {
-  final int comments;
-  final int posts;
+  int comments;
+  int posts;
 
   Karma({required this.comments, required this.posts});
 
@@ -245,7 +245,7 @@ class SavedPostsAndComments {
 }
 
 class Votes {
-  final List<String> comments;
+  List<String> comments;
   final List<String> posts;
 
   Votes({required this.comments, required this.posts});
