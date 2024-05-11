@@ -1,12 +1,12 @@
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
-
+///model for the chat message received from the backend 
 class ChatMessage {
   final String id;
   final ChatroomMember sender;
   final String dateSent;
   final String message;
   final ModifiedChatroom? chatID;
-  final int v; // Version number (assuming "_v" refers to version)
+  final int v;
 
   ChatMessage({
     required this.id,
@@ -36,7 +36,7 @@ class ChatMessage {
       };
 }
 
-
+///chatroom object receiver with the message 
 class ModifiedChatroom {
   final String id;
   final DateTime dateCreated;
@@ -45,7 +45,7 @@ class ModifiedChatroom {
   final ChatroomMember chatroomAdmin;
   final bool isGroup;
   final String? latestMessage; // Can be null for new groups or deleted messages
-  final int v; // Version number (assuming "_v" refers to version)
+  final int v; 
 
   ModifiedChatroom({
     required this.id,

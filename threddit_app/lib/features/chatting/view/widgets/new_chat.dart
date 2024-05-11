@@ -7,6 +7,11 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/UserModel.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 
+/// This file contains the [NewChat] widget, which is responsible for creating a new chat.
+/// It provides a form for the user to enter the details of the new chat, such as the chat name and participants.
+/// The [NewChat] widget is typically used within the chat creation flow of the application.
+
+
 class NewChat extends ConsumerStatefulWidget {
   const NewChat({super.key, required this.uid});
   final String uid;
@@ -29,6 +34,7 @@ class _NewChatState extends ConsumerState<NewChat> {
     super.dispose();
   }
 
+///function to search users upon typing a username to start chat with or add to a group chat
   Future<void> _searchUsers(String username) async {
     // You can customize the URL based on your API endpoint
     final url = Uri.parse('https://www.threadit.tech/api/v1/users/$username');
@@ -50,6 +56,7 @@ class _NewChatState extends ConsumerState<NewChat> {
       print('Error searching users: ${response.statusCode}');
     }
   }
+/// function to create the chatroom upon selecting a user or a group of users with agroup name 
 
   void createChatroomfn(BuildContext context, List<String> _selectedUsers,
       String groupName) async {

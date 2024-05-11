@@ -11,6 +11,12 @@ import 'package:threddit_clone/features/chatting/model/chat_notifier.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/chatting/view/widgets/chat_item.dart';
 
+/// This file contains the implementation of the ChatRoom screen.
+/// The ChatRoom screen is responsible for displaying the chat messages
+/// between users in a chat room. It provides a user interface for sending
+/// and receiving messages, as well as displaying the chat history.
+
+/// function to format the date to be correctly displayed according to the latest message next to the chatroom
 String _formatDate(DateTime dateTime) {
   final now = DateTime.now();
   if (dateTime.year == now.year &&

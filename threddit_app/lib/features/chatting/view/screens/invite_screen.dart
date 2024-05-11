@@ -7,6 +7,25 @@ import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+/// This file contains the implementation of the `InviteScreen` widget.
+/// 
+/// The `InviteScreen` widget is responsible for displaying the screen where users can invite their friends to join a chat.
+/// It provides a form for users to enter their friends' email addresses and send them an invitation.
+/// 
+/// The `InviteScreen` widget is part of the `chatting` feature and is located in the `view/screens` directory.
+/// 
+/// Example usage:
+/// 
+/// ```dart
+/// Navigator.push(
+///   context,
+///   MaterialPageRoute(
+///     builder: (context) => InviteScreen(),
+///   ),
+/// );
+/// ```
+
+
 // ignore: must_be_immutable
 class InviteScreen extends ConsumerStatefulWidget {
   InviteScreen({super.key, required this.username, required this.chatroom});

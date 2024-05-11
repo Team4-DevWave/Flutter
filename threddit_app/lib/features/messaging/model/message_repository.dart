@@ -4,6 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/models/message.dart';
 
+/// This file contains the [MessageRepository] class, which is responsible for handling
+/// the data operations related to messages in the messaging feature of the app.
+/// It provides methods to fetch, send, and delete messages from the repository.
+/// The [MessageRepository] class acts as an interface between the data layer and the
+/// presentation layer of the messaging feature.
+/// The [MessageRepository] class is a provider that provides a [MessageRepository] instance.
+
 class MessageRepository {
   Future<List<Message>> fetchUserMessages() async {
     final url =

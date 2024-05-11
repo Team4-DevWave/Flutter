@@ -7,6 +7,13 @@ import 'package:threddit_clone/features/chatting/model/chat_notifier.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/theme/colors.dart';
 
+/// A widget representing a single chat item.
+///
+/// This widget is responsible for displaying a single chat item in the chat list.
+/// It includes the sender's profile picture, name, message, and timestamp.
+
+
+/// Formats the date and time of a message to display in the chat
 String formatDateTime(DateTime messageTime) {
   DateTime now = DateTime.now();
   Duration difference = now.difference(messageTime);

@@ -8,6 +8,11 @@ import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
+///class is responsible for viewing the seraching UI
+///takes input from user in the search text field 
+///call the backend API to search for the input 
+///redirects to the results screen after submission 
+
 class SearchCommunityScreenPage extends ConsumerStatefulWidget {
   const SearchCommunityScreenPage({super.key, required this.community});
   final String community;

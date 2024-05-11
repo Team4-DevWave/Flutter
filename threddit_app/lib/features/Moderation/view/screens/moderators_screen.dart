@@ -10,6 +10,11 @@ import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:http/http.dart' as http;
 
 enum ViewType { all, editable }
+/// This screen displays a list of moderators in the subreddit, 
+/// divided into two tabs: "All" and "Editable".
+///  In the "All" tab, all moderators are displayed without any distinction. 
+/// In the "Editable" tab, only moderators with limited permissions are shown, allowing admins to easily identify which moderators can have their permissions edited.
+///  Moderators can be searched using the search bar and new moderators can be added using the add button.
 
 class ModeratorsScreen extends ConsumerStatefulWidget {
   const ModeratorsScreen({super.key});

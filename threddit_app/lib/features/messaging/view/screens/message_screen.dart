@@ -8,6 +8,11 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
 
+/// This file contains the [MessageScreen] widget, which is responsible for displaying the messages in a conversation.
+/// It provides a user interface for sending and receiving messages, as well as viewing the message history.
+/// The [MessageScreen] widget is typically used as the main screen for the messaging feature in the app.
+
+
 class MessageScreen extends ConsumerStatefulWidget {
   final String uid;
   final Message message;

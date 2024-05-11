@@ -18,7 +18,9 @@ Map<String, bool?> modPermissions = {
   'wiki': false,
   'chatOperator': false,
 };
-
+/// This screen allows moderators to edit the permissions of another moderator in the subreddit. 
+/// The screen displays the selected moderator's username and a list of permissions checkboxes. 
+/// Moderators can toggle individual permissions or grant full permissions to the selected moderator.
 class EditModeratorScreen extends ConsumerStatefulWidget {
   final String moderator;
   const EditModeratorScreen({super.key, required this.moderator});

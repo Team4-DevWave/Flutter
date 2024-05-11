@@ -5,6 +5,9 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
 
+/// A screen widget that is displayed when there are no messages in the messaging feature.
+
+
 class NoInbox extends StatelessWidget {
   const NoInbox({super.key});
 

@@ -1,3 +1,6 @@
+/// Class responsible for recieveing a simple mocking of a moderator.
+/// Has the user name and the permissions of the moderator. 
+/// Also a [bool] that checks if the moderator has full permissions or not.
 class Moderator {
   final String username;
   final bool fullPermissions;

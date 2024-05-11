@@ -6,6 +6,9 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+/// This screen provides community moderation tools for managing various aspects of a subreddit,
+/// such as its description, post types, community types, scheduled posts, moderators, approved users, and banned users. 
+/// Users can navigate to different screens to view and edit these settings.
 
 class CommunityModTools extends StatefulWidget {
   const CommunityModTools({super.key, required this.community});
