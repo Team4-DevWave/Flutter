@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/UserModel.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
@@ -32,8 +31,7 @@ class _NewChatState extends ConsumerState<NewChat> {
 
   Future<void> _searchUsers(String username) async {
     // You can customize the URL based on your API endpoint
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/users/$username');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/users/$username');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -53,7 +51,8 @@ class _NewChatState extends ConsumerState<NewChat> {
     }
   }
 
-  void createChatroomfn(BuildContext context,List<String>_selectedUsers,String groupName ) async {
+  void createChatroomfn(BuildContext context, List<String> _selectedUsers,
+      String groupName) async {
     showDialog(
       context: context,
       barrierDismissible: false, // Prevent dialog from being dismissed
@@ -214,12 +213,10 @@ class _NewChatState extends ConsumerState<NewChat> {
                                   contentPadding: EdgeInsets.symmetric(
                                     horizontal: 16.0.w,
                                     vertical: 14.0.h,
-                                  ), 
-
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    borderSide:
-                                        BorderSide.none,
+                                    borderSide: BorderSide.none,
                                   ),
                                 ),
                               ),
@@ -303,7 +300,8 @@ class _NewChatState extends ConsumerState<NewChat> {
                               if (_selectedUsers.isEmpty) {
                                 return;
                               } else {
-                                createChatroomfn(context,_selectedUsers,'New Chat');
+                                createChatroomfn(
+                                    context, _selectedUsers, 'New Chat');
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -326,7 +324,8 @@ class _NewChatState extends ConsumerState<NewChat> {
                               if (groupName == '') {
                                 return;
                               } else {
-                                createChatroomfn(context,_selectedUsers,groupName);
+                                createChatroomfn(
+                                    context, _selectedUsers, groupName);
                               }
                             },
 

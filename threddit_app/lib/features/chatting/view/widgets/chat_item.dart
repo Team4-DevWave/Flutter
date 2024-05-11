@@ -3,16 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
-import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
+import 'package:threddit_clone/features/chatting/model/chat_notifier.dart';
+import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
+import 'package:threddit_clone/theme/colors.dart';
 
-String formatDateTime(DateTime dateTime) {
-  final now = DateTime.now();
-  final difference = now.difference(dateTime);
+String formatDateTime(DateTime messageTime) {
+  DateTime now = DateTime.now();
+  Duration difference = now.difference(messageTime);
 
-  if (difference.inDays == 0) {
-    return DateFormat('HH:mm').format(dateTime);
+  if (difference.inHours < 24) {
+    // Message sent less than 24 hours ago, return time
+    return DateFormat.Hm().format(messageTime); // Format: HH:mm
+  } else if (difference.inHours >= 24 && difference.inHours < 48) {
+    // Message sent between 24 and 48 hours ago, return 'Yesterday'
+    return 'Yesterday';
   } else {
-    return DateFormat('yMMMEd').format(dateTime);
+    // Message sent more than 48 hours ago, return number of days
+    int daysAgo = difference.inDays;
+    return '$daysAgo ${daysAgo == 1 ? 'day' : 'days'} ago';
   }
 }
 
@@ -76,8 +84,9 @@ class _ChatItemState extends ConsumerState<ChatItem> {
                   },
                 );
                 try {
-                  await ref.read(deleteMessage(widget.message.id).future);
-
+                  await ref
+                      .read(chatNotifierProvider.notifier)
+                      .deleteMessage(widget.message.id);
                   Navigator.pop(context);
                   Navigator.pop(context);
                   Navigator.pop(context);
@@ -126,7 +135,22 @@ class _ChatItemState extends ConsumerState<ChatItem> {
                           "Report Message",
                           style: TextStyle(color: Colors.white),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pop(context);
+                          showModalBottomSheet(
+                            useSafeArea: true,
+                            isScrollControlled: true,
+                            context: context,
+                            backgroundColor: AppColors.backgroundColor,
+                            builder: (context) {
+                              return ReportBottomSheet(
+                                userID: widget.username,
+                                reportedID: widget.message.id,
+                                type: "chat",
+                              );
+                            },
+                          );
+                        },
                       ),
               ]),
             );
@@ -144,12 +168,21 @@ class _ChatItemState extends ConsumerState<ChatItem> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    radius: 25.0,
-                    backgroundColor: Color.fromARGB(255, 229, 194, 99),
-                    backgroundImage:
-                        AssetImage('assets/images/Default_Avatar.png'),
-                  ),
+                  widget.message.sender.profilePicture != null &&
+                          widget.message.sender.profilePicture != ''
+                      ? CircleAvatar(
+                          radius: 25.0,
+                          backgroundColor:
+                              const Color.fromARGB(255, 229, 194, 99),
+                          backgroundImage: NetworkImage(
+                              widget.message.sender.profilePicture!),
+                        )
+                      : const CircleAvatar(
+                          radius: 25.0,
+                          backgroundColor: Color.fromARGB(255, 229, 194, 99),
+                          backgroundImage:
+                              AssetImage('assets/images/Default_Avatar.png'),
+                        ),
                   SizedBox(width: 8.0.w),
                   Expanded(
                     child: Column(

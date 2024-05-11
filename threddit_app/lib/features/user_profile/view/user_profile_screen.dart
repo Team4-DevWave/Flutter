@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,6 +41,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
 
   final _posts = <Post>[];
   int _currentPage = 1;
+  // ignore: unused_field
   int _currentPageComments = 1;
   List<List<String>>? socialLinks;
 
@@ -47,6 +50,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
   bool _fetchingPosts = true;
   bool _fetchingComments = true;
   bool _fetchingPostsFinish = true;
+  // ignore: unused_field
   bool _fetchingCommentsFinish = true;
 
   UserModelMe? user;
@@ -218,7 +222,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                           context),
                       sliver: SliverAppBar(
                         stretch: true,
-                        title: user?.username != "SuperMario"
+                        title: user?.username != "Super Mario"
                             ? Text(
                                 "u/${user?.username}",
                                 style: AppTextStyles.secondaryTextStyle,
@@ -366,7 +370,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                             ),
                           ),
                         ),
-                        expandedHeight: 340.h,
+                        expandedHeight:Platform.isAndroid?340.h: 360.h,
                         actions: [
                           const Align(
                             alignment: Alignment.centerRight,
@@ -518,19 +522,28 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                     return CommentItemForProfile(
                                         comment: _comments[index], uid: uid!);
                                   } else {
-                                    return SizedBox(
-                                        child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          'No more Comments ',
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ));
+                                    return _fetchingCommentsFinish
+                                        ? SizedBox(
+                                            height: 75.h,
+                                            width: 75.w,
+                                            child: Lottie.asset(
+                                              'assets/animation/loading2.json',
+                                              repeat: true,
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: Text(
+                                                'No more Comments ',
+                                                style: TextStyle(
+                                                  fontSize: 16.sp,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ));
                                   }
                                 },
                               ),

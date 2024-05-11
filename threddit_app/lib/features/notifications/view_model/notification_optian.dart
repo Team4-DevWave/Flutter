@@ -17,8 +17,8 @@ import 'package:http/http.dart' as http;
 
 final markAllNotificationsAsReadProvider = FutureProvider<void>((ref) async {
   try {
-    final url =
-        Uri.parse('http://10.0.2.2:8000/api/v1/notifications/mark_all_read');
+    final url = Uri.parse(
+        'https://www.threadit.tech/api/v1/notifications/mark_all_read');
     String? token = await getToken();
     final headers = {
       'Content-Type': 'application/json',

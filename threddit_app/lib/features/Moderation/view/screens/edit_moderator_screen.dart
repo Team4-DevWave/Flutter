@@ -42,13 +42,12 @@ class _EditModeratorScreenState extends ConsumerState<EditModeratorScreen> {
               onPressed: () async {
                 final String username = usernameForm.enteredEmail;
 
-                int statusCode =
-                    await ref.watch(moderationApisProvider.notifier).editMod(
-                          client: client,
-                          username: username,
-                          permissions: modPermissions,
-                          fullPermissions: fullPermissions,
-                        );
+                await ref.watch(moderationApisProvider.notifier).editMod(
+                      client: client,
+                      username: username,
+                      permissions: modPermissions,
+                      fullPermissions: fullPermissions,
+                    );
                 setState(() {
                   ref
                       .watch(moderationApisProvider.notifier)

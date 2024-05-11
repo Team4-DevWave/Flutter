@@ -202,7 +202,7 @@ class _SocialForm extends ConsumerState<SocialForm> {
               SizedBox(width: 50.w),
               Text(
                 "Add Social Link",
-                style: AppTextStyles.boldTextStyle,
+                style: AppTextStyles.boldTextStyle.copyWith(fontSize: 16.spMin),
                 textAlign: TextAlign.center,
               ),
               SizedBox(width: 50.w),

@@ -58,6 +58,7 @@ class _FavouriteTilesState extends ConsumerState<FavouriteTiles> {
               (favourite) => ListTile(
                 onTap: () {
                   //go to the community/user's profile screen
+                  Navigator.pop(context);
                   if (favourite.type == PrefConstants.userType) {
                     Navigator.pushNamed(context, RouteClass.otherUsers,
                         arguments: {
@@ -68,7 +69,7 @@ class _FavouriteTilesState extends ConsumerState<FavouriteTiles> {
                         arguments: {
                           'id': favourite.username,
                           'uid': ref.read(userModelProvider)?.id
-                        }).then((value) => Navigator.pop(context));
+                        });
                   }
                 },
                 leading: favourite.imageUrl == ""

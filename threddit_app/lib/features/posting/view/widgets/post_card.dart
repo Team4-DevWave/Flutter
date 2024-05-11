@@ -6,6 +6,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/listing/model/lanunch_url.dart';
 import 'package:threddit_clone/features/post/view/widgets/share_bottomsheet.dart';
+import 'package:threddit_clone/features/posting/view/widgets/poll.dart';
 import 'package:threddit_clone/features/posting/view_model/post_provider.dart';
 import 'package:threddit_clone/features/posting/model/repository/post_repository.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -62,6 +63,7 @@ class _PostCardState extends ConsumerState<PostCard> {
 
   @override
   Widget build(BuildContext) {
+    widget.post.userPollVote ??= '';
     void toggleNsfw() {
       widget.post.nsfw = !widget.post.nsfw;
       setState(() {});
@@ -94,14 +96,12 @@ class _PostCardState extends ConsumerState<PostCard> {
 
     void downVotePost(WidgetRef ref) async {
       ref.read(votePost((postID: widget.post.id, voteType: -1)));
+      if (widget.post.userVote == 'upvoted') {
+        widget.post.votes!.upvotes--;
+      }
       if (widget.post.userVote == 'downvoted') {
         widget.post.votes!.downvotes--;
         widget.post.userVote = 'none';
-      }
-      if (widget.post.userVote == 'upvoted') {
-        widget.post.votes!.upvotes--;
-        widget.post.votes!.downvotes++;
-        widget.post.userVote = 'downvoted';
       } else {
         widget.post.votes!.downvotes++;
         widget.post.userVote = 'downvoted';
@@ -124,13 +124,19 @@ class _PostCardState extends ConsumerState<PostCard> {
           children: [
             Row(
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundImage:
-                        AssetImage('assets/images/Default_Avatar.png'),
-                  ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: widget.post.userID!.profilePicture != null &&
+                          widget.post.userID!.profilePicture != ''
+                      ? CircleAvatar(
+                          radius: 16,
+                          backgroundImage:
+                              NetworkImage(widget.post.userID!.profilePicture!))
+                      : const CircleAvatar(
+                          radius: 16,
+                          backgroundImage:
+                              AssetImage('assets/images/Default_Avatar.png'),
+                        ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +299,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                               )
                             : const CircularProgressIndicator(),
                       )
-                    : const SizedBox(),
+                    : widget.post.type=='poll'?PollWidget(votes: widget.post.poll!.values.fold(0, (prev, curr) => prev + curr), options: widget.post.poll!.keys.toList(),userVote: widget.post.userPollVote!,postId: widget.post.id,) :const SizedBox(),
             widget.post.type == 'url'
                 ? Center(
                     child: AnyLinkPreview(
@@ -433,7 +439,14 @@ class _PostCardState extends ConsumerState<PostCard> {
                                 },
                                 icon: const Icon(Icons.add_moderator_sharp)),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, RouteClass.postInsights,
+                                    arguments: {
+                                      'uid': widget.uid,
+                                      'post': widget.post
+                                    });
+                              },
                               icon: const Icon(
                                 Icons.insights,
                                 color: Colors.purple,

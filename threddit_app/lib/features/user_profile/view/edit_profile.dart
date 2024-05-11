@@ -300,8 +300,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                         ),
                       ),
                       Positioned(
-                        top: 60.h,
-                        right: 120.w,
+                        top: Platform.isAndroid?60.h:50.h,
+                        right: Platform.isAndroid?120.w:170.w,
                         child: Stack(children: [
                           CircleAvatar(
                             radius: 50.r,

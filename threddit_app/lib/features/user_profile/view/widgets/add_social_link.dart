@@ -50,6 +50,7 @@ class AddSocialLink extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
@@ -65,13 +66,14 @@ class AddSocialLink extends ConsumerWidget {
               ),
               Text(
                 "Add Social Link",
-                style: AppTextStyles.boldTextStyle,
+                style: AppTextStyles.boldTextStyle.copyWith(fontSize: 16.spMin),
                 textAlign: TextAlign.center,
               ),
             ],
           ),
           SizedBox(height: 16.h),
           Row(
+            mainAxisSize: MainAxisSize.max,
             children: [
               InterestButton(
                 answerText: "Facebook",

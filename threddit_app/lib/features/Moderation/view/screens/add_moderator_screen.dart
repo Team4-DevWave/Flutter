@@ -61,7 +61,7 @@ class _AddModeratorScreenState extends ConsumerState<AddModeratorScreen> {
                 switch (validationValue) {
                   case 0:
                  
-                    int statusCode = await ref
+                    await ref
                         .watch(moderationApisProvider.notifier)
                         .modUser(
                           client: client,

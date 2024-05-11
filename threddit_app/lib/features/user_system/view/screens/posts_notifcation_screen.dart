@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/features/user_system/model/notification_settings_model.dart';
-import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/enable_setting.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/slider_container.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/theme/colors.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 /// This is a template screen for either Posts with comments, posts with upvoets or reports comments and posts mod notifications.
 /// it chooses the type it will be depending on the [String] title given and an [int] type.

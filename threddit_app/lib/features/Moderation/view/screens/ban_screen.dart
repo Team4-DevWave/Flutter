@@ -44,7 +44,7 @@ class _BanScreenState extends ConsumerState<BanScreen> {
                 int validationValue = validateBan(username, ruleBroken, banLength);
                 switch (validationValue) {
                   case 0:
-                    int statusCode = await ref
+                    await ref
                         .watch(moderationApisProvider.notifier)
                         .banUser(
                             client: client,

@@ -16,7 +16,7 @@ import 'package:threddit_clone/theme/text_styles.dart';
 /// This widget allows users to edit the content of an existing post,
 /// including the post body, NSFW status, and spoiler status. Users can
 /// also add or edit links within the post body.
-/// 
+///
 class EditPost extends ConsumerStatefulWidget {
   const EditPost({super.key});
 
@@ -121,7 +121,7 @@ class _EditPostState extends ConsumerState<EditPost> {
   Widget build(BuildContext context) {
     _updateFormValidity();
     return Scaffold(
-      appBar: AppBar( 
+      appBar: AppBar(
         leading: _isChanged
             ? const ExitEdit()
             : IconButton(
@@ -157,20 +157,14 @@ class _EditPostState extends ConsumerState<EditPost> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextFormField(
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              scrollPhysics: const ClampingScrollPhysics(),
               controller: textBodyController,
               onChanged: (value) {
-                // ref
-                //     .read(isEditFirstTime.notifier)
-                //     .update((state) => false);
-
-                // lastValue = value;
-
                 textBodyController.text = value;
                 _updateFormValidity();
               },
-              // initialValue: ref.read(isEditFirstTime)
-              //     ? lastValue = ref.read(editPostProvider).textBody ?? ""
-              //     : lastValue,
               style:
                   AppTextStyles.primaryTextStyle.copyWith(fontSize: 20.spMin),
               decoration: InputDecoration(
@@ -201,6 +195,7 @@ class _EditPostState extends ConsumerState<EditPost> {
             ),
             isOn
                 ? Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       ElevatedButton(
                         onPressed: onIsNSFW,
@@ -210,7 +205,7 @@ class _EditPostState extends ConsumerState<EditPost> {
                               : AppColors.backgroundColor,
                           side: BorderSide(
                             color: AppColors.whiteColor,
-                            width: 2.0.w,
+                            width: 2.0.spMin,
                           ),
                         ),
                         child: Text(
@@ -230,9 +225,9 @@ class _EditPostState extends ConsumerState<EditPost> {
                           backgroundColor: isSpoiler
                               ? AppColors.whiteGlowColor
                               : AppColors.backgroundColor,
-                          side: const BorderSide(
+                          side: BorderSide(
                             color: AppColors.whiteColor,
-                            width: 2.0,
+                            width: 2.0.spMin,
                           ),
                         ),
                         child: Text(

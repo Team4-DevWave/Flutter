@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
@@ -40,8 +39,8 @@ class EditPost extends StateNotifier<Post> {
   /// This method sends a PATCH request to the server to edit the post with the specified ID.
   /// If the request is successful, the updated post is returned.
   FutureEither<Post> editPostRequest() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/posts/${state.id}/edit");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/posts/${state.id}/edit");
     final token = await getToken();
     final headers = {
       'Content-Type': 'application/json',

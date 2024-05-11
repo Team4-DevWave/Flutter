@@ -62,13 +62,19 @@ void delete(BuildContext context, WidgetRef ref, String postid) {
                   .deletePostRequest(postid);
               response.fold((failure) {
                 showSnackBar(navigatorKey.currentContext!, failure.message);
-                // Navigator.pop(context);
               }, (success) {
                 showSnackBar(navigatorKey.currentContext!,
                     'Your post deleted to succefully');
-                Navigator.pop(context);
-                Navigator.pop(context);
-                Navigator.pop(context);
+                if (ref.read(deletePostScreen)) {
+                  ref.read(deletePostScreen.notifier).update((state) => false);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                } else {
+                  ref.read(deletePostScreen.notifier).update((state) => false);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }
               });
             },
             style: const ButtonStyle(

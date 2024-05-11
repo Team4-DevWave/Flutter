@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/chatting/model/UserModel.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 
 // ignore: must_be_immutable
 class InviteScreen extends ConsumerStatefulWidget {
@@ -23,6 +21,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   final TextEditingController _usernameController = TextEditingController();
   bool isSelected = false;
   String _foundUsername = '';
+  var foundMember = ChatroomMember(displayName: '', id: '', username: '');
   List<String> _selectedUsers = [];
   @override
   void initState() {
@@ -37,8 +36,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
 
   Future<void> _searchUsers(String username) async {
     // You can customize the URL based on your API endpoint
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/users/$username');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/users/$username');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -48,6 +46,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
       setState(() {
         isSelected = false;
         _foundUsername = foundUser.username;
+        foundMember.username = _foundUsername;
       });
     } else {
       setState(() {
@@ -110,7 +109,15 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
           actions: [
             TextButton(
               onPressed: () {
-                invitemembersfn(context);
+                if (_selectedUsers.isNotEmpty) {
+                  invitemembersfn(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select a user to add to the group'),
+                    ),
+                  );
+                }
               },
               child: Text(
                 "Add",
@@ -223,20 +230,28 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
                                     'It\'s You',
                                     style: TextStyle(color: Colors.white),
                                   )
-                                : Checkbox(
-                                    value:
-                                        _selectedUsers.contains(_foundUsername),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isSelected = value ?? false;
-                                        if (value == true) {
-                                          _selectedUsers.add(_foundUsername);
-                                        } else {
-                                          _selectedUsers.remove(_foundUsername);
-                                        }
-                                      });
-                                    },
-                                  ),
+                                : widget.chatroom.chatroomMembers
+                                        .contains(foundMember)
+                                    ? const Text(
+                                        'Already a member of the group!',
+                                        style: TextStyle(color: Colors.white),
+                                      )
+                                    : Checkbox(
+                                        value: _selectedUsers
+                                            .contains(_foundUsername),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            isSelected = value ?? false;
+                                            if (value == true) {
+                                              _selectedUsers
+                                                  .add(_foundUsername);
+                                            } else {
+                                              _selectedUsers
+                                                  .remove(_foundUsername);
+                                            }
+                                          });
+                                        },
+                                      ),
                           ],
                         ),
                       ),

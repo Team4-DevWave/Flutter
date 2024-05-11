@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
+
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
+import 'package:threddit_clone/features/posting/model/post_insights.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -14,13 +15,13 @@ import 'package:threddit_clone/models/votes.dart';
 /// togglePostSpoiler is used to toggle the spoiler status of a post
 /// fetchPost is used to get a post by it's ID
 typedef votingParameters = ({String postID, int voteType});
+typedef pollVotingParameters = ({String postID, String option});
+
 class PostRepository {
- 
   Future<void> togglePostNSFW(String postId) async {
     try {
       String? jwtToken = await getToken();
-      String url =
-          'http://${AppConstants.local}:8000/api/v1/posts/$postId/nsfw';
+      String url = 'https://www.threadit.tech/api/v1/posts/$postId/nsfw';
       final headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer $jwtToken",
@@ -37,8 +38,7 @@ class PostRepository {
   Future<void> togglePostSpoiler(String postId) async {
     try {
       String? jwtToken = await getToken();
-      String url =
-          'http://${AppConstants.local}:8000/api/v1/posts/$postId/spoiler';
+      String url = 'https://www.threadit.tech/api/v1/posts/$postId/spoiler';
       final headers = {
         "Content-Type": "application/json",
         "Authorization": "Bearer $jwtToken",
@@ -54,8 +54,7 @@ class PostRepository {
 
   Future<Post> fetchPost(String postId) async {
     String? token = await getToken();
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/$postId');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/posts/$postId');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",
@@ -80,8 +79,8 @@ class PostRepository {
 
   Future<Votes> getUserUpvotes() async {
     String? token = await getToken();
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/users/me/upvoted?page=1');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/users/me/upvoted?page=1');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",
@@ -105,8 +104,8 @@ class PostRepository {
 
   Future<Votes> getUserDownvotes() async {
     String? token = await getToken();
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/users/me/downvoted?page=1');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/users/me/downvoted?page=1');
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token",
@@ -128,28 +127,79 @@ class PostRepository {
     }
   }
 }
- final votePost=FutureProvider.family<void,votingParameters>((ref,arguments) async {
-  
-    try {
-      String? token = await getToken();
-      final url = 'http://${AppConstants.local}:8000/api/v1/posts/${arguments.postID}/vote';
-      final Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      };
-      final response = await http.patch(
-        Uri.parse(url),
-        body: jsonEncode({'voteType': arguments.voteType}),
-        headers: headers,
-      );
 
-      if (response.statusCode == 200) {
-        print("post upvoted");
-      } else {
-        print('Failed to vote on post: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error voting on post: $e');
+final votePost =
+    FutureProvider.family<void, votingParameters>((ref, arguments) async {
+  try {
+    String? token = await getToken();
+    final url =
+        'https://www.threadit.tech/api/v1/posts/${arguments.postID}/vote';
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final response = await http.patch(
+      Uri.parse(url),
+      body: jsonEncode({'voteType': arguments.voteType}),
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      print("post upvoted");
+    } else {
+      print('Failed to vote on post: ${response.statusCode}');
     }
+  } catch (e) {
+    print('Error voting on post: $e');
   }
-  );
+});
+final votePoll =
+    FutureProvider.family<void, pollVotingParameters>((ref, arguments) async {
+  try {
+    String? token = await getToken();
+    final url =
+        'https://www.threadit.tech/api/v1/posts/${arguments.postID}/votepoll';
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode({'option': arguments.option}),
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      print("poll voted");
+    } else {
+      print('Failed to vote on poll: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error voting on poll: $e');
+  }
+});
+final getPostInsights =
+    FutureProvider.family<PostInsights, String>((ref, postId) async {
+  try {
+    String? token = await getToken();
+    final url =
+        'https://www.threadit.tech/api/v1/posts/$postId/insights';
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final response = await http.get(
+      Uri.parse(url),
+      headers: headers,
+    );
+    if (response.statusCode == 200) {
+          final jsonBody = jsonDecode(response.body);
+          print('insights fetched');
+      return PostInsights.fromJson(jsonBody['data']);
+    } else {
+      throw Exception('failed to fetch post insights');
+    }
+  } catch (e) {
+    throw Exception('failed to fetch post insights $e');
+  }
+});

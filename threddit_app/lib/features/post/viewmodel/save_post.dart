@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
+
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -32,8 +32,8 @@ class SavePost extends StateNotifier<bool> {
   /// identified by the provided [postid]. It updates the saved status
   /// of the post and returns a boolean indicating the success of the operation.
   FutureEither<bool> savePostRequest(String postid) async {
-    final url = Uri.parse(
-        'http://${AppConstants.local}:8000/api/v1/posts/$postid/save');
+    final url =
+        Uri.parse('https://www.threadit.tech/api/v1/posts/$postid/save');
     final token = await getToken();
     try {
       final response = await http.patch(
@@ -67,8 +67,8 @@ class SavePost extends StateNotifier<bool> {
   /// the IDs of posts saved by the current user. It returns
   /// a list of post IDs or an error if the operation fails.
   FutureEither<List<String>> getSavedPostIds() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/saved?page=1");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/saved?page=1");
     final token = await getToken();
     try {
       final response = await http.get(
@@ -120,8 +120,8 @@ class SavePost extends StateNotifier<bool> {
   /// a list of saved posts and a list of comments associated with them,
   /// or an error if the operation fails.
   FutureEither<Tuple2<List<Post>, List<Comment>>> getSaved() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/saved?page=1");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/saved?page=1");
     final token = await getToken();
     try {
       final response = await http.get(

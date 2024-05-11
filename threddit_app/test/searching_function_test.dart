@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_function.dart';

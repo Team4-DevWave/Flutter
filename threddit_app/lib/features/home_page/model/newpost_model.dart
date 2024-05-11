@@ -28,8 +28,9 @@ class Post {
   bool? hidden;
   bool? saved;
   String? userVote;
-
+  String? userPollVote;
   final String? linkURL;
+  Map<String, int>? poll;
   Post({
     required this.id,
     required this.title,
@@ -52,6 +53,8 @@ class Post {
     this.saved,
     this.userVote,
     this.type,
+    this.userPollVote='',
+    this.poll,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -87,6 +90,8 @@ class Post {
       hidden: json['hidden'],
       saved: json['saved'],
       userVote: json['userVote'],
+      userPollVote: json['userPollVote'],
+      poll:json['poll']!=null? Map<String, int>.from(json['poll']):null,
     );
   }
   Map<String, dynamic> toJson() {
@@ -111,7 +116,10 @@ class Post {
       'saved': saved,
       'userVote': userVote,
       'type': type,
-      'url': linkURL
+      'url': linkURL,
+      'userPollVote': userPollVote,
+      'poll': poll,
+
     };
   }
 
@@ -159,22 +167,29 @@ class Post {
 class User {
   final String id;
   final String username;
+  String? displayName;
+  String? profilePicture;
 
-  User({required this.id, required this.username});
+  User({required this.id, required this.username,this.displayName,this.profilePicture});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'],
       username: json['username'],
+      displayName: json['displayName'],
+      profilePicture: json['profilePicture'],
     );
   }
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
       'username': username,
+      'displayName': displayName,
+      'profilePicture': profilePicture,
     };
   }
 }
+
 
 class SubredditInfo {
   final String id;
@@ -249,24 +264,24 @@ Future<PostApiResponse> fetchPosts(
     String feedID, String subreddit, int pageNumber) async {
   String? token = await getToken();
 
-  String url = "http://10.0.2.2:8000/api/v1/posts/best?page=$pageNumber";
+  String url = "https://www.threadit.tech/api/v1/posts/best?page=$pageNumber";
   if (feedID == 'Hot Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/hot?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/hot?page=$pageNumber";
   }
   if (feedID == 'New Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/new?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/new?page=$pageNumber";
   }
   if (feedID == 'Top Posts') {
-    url = "http://10.0.2.2:8000/api/v1/r/$subreddit/top?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/r/$subreddit/top?page=$pageNumber";
   }
   if (feedID == 'Hot') {
-    url = "http://10.0.2.2:8000/api/v1/posts/hot?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/posts/hot?page=$pageNumber";
   }
   if (feedID == 'New') {
-    url = "http://10.0.2.2:8000/api/v1/posts/new?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/posts/new?page=$pageNumber";
   }
   if (feedID == 'Top') {
-    url = "http://10.0.2.2:8000/api/v1/posts/top?page=$pageNumber";
+    url = "https://www.threadit.tech/api/v1/posts/top?page=$pageNumber";
   }
   final response = await http.get(
     Uri.parse(url),

@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
@@ -21,8 +20,8 @@ class GetCommunityRules extends StateNotifier<bool> {
 
   Future<Either<Failure, List<String>>> getCommunityRules(
       String communityName) async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/r/$communityName/rules");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/r/$communityName/rules");
     final token = await getToken();
     try {
       final response = await http.get(
@@ -54,11 +53,19 @@ class GetCommunityRules extends StateNotifier<bool> {
 
 Future<SubredditList> fetchSubredditsAll() async {
   final response = await http
-      .get(Uri.parse('http://${AppConstants.local}:8000/api/v1/r/all'));
+      .get(Uri.parse('https://www.threadit.tech/api/v1/r/all?page=1'));
+  final response2 = await http
+      .get(Uri.parse('https://www.threadit.tech/api/v1/r/all?page=2'));
+  final response3 = await http
+      .get(Uri.parse('https://www.threadit.tech/api/v1/r/all?page=3'));
 
   if (response.statusCode == 200) {
     Map<String, dynamic> body = jsonDecode(response.body);
+    Map<String, dynamic> body2 = jsonDecode(response2.body);
+    Map<String, dynamic> body3 = jsonDecode(response3.body);
     List<dynamic> subredditList = body['data']['subreddits'];
+    subredditList.append(body2['data']['subreddits']);
+    subredditList.append(body3['data']['subreddits']);
 
     return SubredditList.fromJson(subredditList);
   } else {

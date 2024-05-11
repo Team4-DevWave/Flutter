@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/model/user_mock.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/password_form.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -20,10 +20,8 @@ class _ConfirmPasswordScreenState extends ConsumerState<ConfirmPasswordScreen> {
   final PasswordForm confirmPasswordForm = PasswordForm("Reddit Password");
   final client = http.Client();
   String? token;
-  Future<UserMock> fetchUser() async {
-    return ref
-        .watch(settingsFetchProvider.notifier)
-        .getUserInfo(client: client, token: token!);
+  Future<UserModelMe> fetchUser() async {
+    return ref.watch(settingsFetchProvider.notifier).getMe();
   }
 
   Future getUserToken() async {
@@ -56,7 +54,7 @@ class _ConfirmPasswordScreenState extends ConsumerState<ConfirmPasswordScreen> {
                 if (snapshot.hasError) {
                   return const Text("ERROR LOADING USER DATA");
                 } else {
-                  final UserMock user = snapshot.data!;
+                  final UserModelMe user = snapshot.data!;
                   return Row(
                     children: [
                       const Icon(
@@ -66,10 +64,10 @@ class _ConfirmPasswordScreenState extends ConsumerState<ConfirmPasswordScreen> {
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("u/${user.getUsername}",
+                            Text("u/${user.username}",
                                 style: AppTextStyles.primaryTextStyle),
                             Text(
-                              user.getEmail,
+                              user.email!,
                               style: AppTextStyles.primaryTextStyle,
                             ),
                           ])

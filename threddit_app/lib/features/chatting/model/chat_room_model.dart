@@ -55,23 +55,33 @@ class Chatroom {
 class ChatroomMember {
   final String displayName;
   final String id;
-  final String username;
+  String username;
+  String? profilePicture;
 
   ChatroomMember({
     required this.displayName,
     required this.id,
     required this.username,
+    this.profilePicture,
   });
 
   factory ChatroomMember.fromJson(Map<String, dynamic> json) => ChatroomMember(
         displayName: json['displayName'],
         id: json['_id'],
         username: json['username'],
+        profilePicture: json['profilePicture'],
       );
 
   Map<String, dynamic> toJson() => {
         'displayName': displayName,
         '_id': id,
         'username': username,
+        'profilePicture': profilePicture,
       };
+      @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChatroomMember &&
+          runtimeType == other.runtimeType &&
+          username == other.username;
 }

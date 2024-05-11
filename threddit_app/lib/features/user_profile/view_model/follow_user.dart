@@ -21,7 +21,7 @@ FutureEither<bool> followUser(String userName, WidgetRef ref) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
   final token = await getToken();
-  final url = "http://$local:8000/api/v1/users/me/friend/$userName";
+  final url = "https://www.threadit.tech/api/v1/users/me/friend/$userName";
   final headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer $token',
@@ -66,7 +66,7 @@ FutureEither<bool> unfollowUser(String userName) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
   final token = await getToken();
-  final url = "http://$local:8000/api/v1/users/me/friend/$userName";
+  final url = "https://www.threadit.tech/api/v1/users/me/friend/$userName";
   final headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer $token',

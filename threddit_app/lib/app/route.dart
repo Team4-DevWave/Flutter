@@ -27,6 +27,7 @@ import 'package:threddit_clone/features/Moderation/view/screens/banned_users_scr
 import 'package:threddit_clone/features/Moderation/view/screens/update_ban_screen.dart';
 import 'package:threddit_clone/features/post/view/edit_post_screen.dart';
 import 'package:threddit_clone/features/posting/view/screens/history_screen.dart';
+import 'package:threddit_clone/features/posting/view/screens/post_insights_screen.dart';
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
 import 'package:threddit_clone/features/searching/view/screens/search_results_screen.dart';
@@ -38,7 +39,6 @@ import 'package:threddit_clone/features/user_system/view/screens/activity_screen
 import 'package:threddit_clone/features/user_system/view/screens/block_user_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/confirm_password_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/forgot_password.dart';
-import 'package:threddit_clone/features/user_system/view/screens/mod_mail_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/mod_notifications_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/posts_notifcation_screen.dart';
 import 'package:threddit_clone/features/user_system/view/screens/reports_screen.dart';
@@ -132,7 +132,7 @@ class RouteClass {
   static const String renameChatroom = '/rename-chatroom';
   static const String chatMembers = '/chat-members';
   static const String inviteMembers = '/invite-members';
-  static const String CommunitySearchResults = '/search-community-results';
+  static const String communitySearchResults = '/search-community-results';
 
   static const String modNotificationsSettings = '/mod-notifications';
   static const String activitySettings = '/activity-settings';
@@ -145,6 +145,7 @@ class RouteClass {
   static const String communityTypes = '/community-types';
   static const String scheduledPosts = '/scheduled-posts';
   static const String postSchedule = '/post-schedule';
+  static const String postInsights = '/post-insights';
 
   static const String searchResultsScreen = '/serach-results';
 
@@ -170,7 +171,7 @@ class RouteClass {
       case accountSettingScreen:
         return MaterialPageRoute(builder: (_) => const AccountSettingsScreen());
       case searchScreen:
-        return MaterialPageRoute(builder: (_) => SearchScreen());
+        return MaterialPageRoute(builder: (_) => const SearchScreen());
       case communityInfo:
         final args = settings.arguments as Map<String, dynamic>;
         final community =
@@ -273,7 +274,7 @@ class RouteClass {
             uid: uid,
           ),
         );
-      case CommunitySearchResults:
+      case communitySearchResults:
         final args = settings.arguments as Map<String, dynamic>;
         final communityName = args['communityName'] as String;
         final searchedItem = args['searchedItem'] as String;
@@ -299,6 +300,15 @@ class RouteClass {
         return MaterialPageRoute(
             builder: (_) => PostScreen(
                   currentPost: currentpost,
+                  uid: uid,
+                ));
+      case postInsights:
+        final args = settings.arguments as Map<String, dynamic>;
+        final post = args['post'] as Post; // Extract the community object
+        final uid = args['uid'] as String;
+        return MaterialPageRoute(
+            builder: (_) => PostInsightsScreen(
+                  post: post,
                   uid: uid,
                 ));
       case messageScreen:

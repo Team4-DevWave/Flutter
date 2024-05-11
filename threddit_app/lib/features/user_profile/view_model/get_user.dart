@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/user_profile/models/other_user_data.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -37,7 +36,7 @@ class GetUserNotifier extends StateNotifier<UserModelNotMe> {
     String? token = await getToken();
     try {
       http.Response response = await http.get(
-        Uri.parse("http://${AppConstants.local}:8000/api/v1/users/$username"),
+        Uri.parse("https://www.threadit.tech/api/v1/users/$username"),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
