@@ -5,6 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+bool isValid(String nameValue, String linkValue) {
+  return (nameValue.trim().isNotEmpty && linkValue.trim().isNotEmpty);
+}
+
+Color validColor(bool isValid) {
+  return isValid ? AppColors.whiteGlowColor : AppColors.whiteColor;
+}
+
 /// A widget for editing and inserting a link.
 ///
 /// This widget provides a UI for users to input a name and a link.
@@ -61,8 +69,7 @@ class _EditLinkState extends ConsumerState<EditLink> {
                                 onChanged: (value) {
                                   nameValue = value;
                                   setState(() {
-                                    _isValid = nameValue.trim().isNotEmpty &&
-                                        linkValue.trim().isNotEmpty;
+                                    _isValid = isValid(nameValue, linkValue);
                                   });
                                 },
                                 cursorColor: AppColors.blueColor,
@@ -84,8 +91,7 @@ class _EditLinkState extends ConsumerState<EditLink> {
                                 onChanged: (value) {
                                   linkValue = value;
                                   setState(() {
-                                    _isValid = nameValue.trim().isNotEmpty &&
-                                        linkValue.trim().isNotEmpty;
+                                    _isValid = isValid(nameValue, linkValue);
                                   });
                                 },
                                 cursorColor: AppColors.blueColor,
@@ -145,9 +151,7 @@ class _EditLinkState extends ConsumerState<EditLink> {
                                       "Insert",
                                       style: AppTextStyles.buttonTextStyle
                                           .copyWith(
-                                              color: _isValid
-                                                  ? AppColors.whiteGlowColor
-                                                  : AppColors.whiteColor),
+                                              color: validColor(_isValid)),
                                     ),
                                   ),
                                 ],

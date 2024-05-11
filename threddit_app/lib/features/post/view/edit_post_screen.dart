@@ -10,6 +10,61 @@ import 'package:threddit_clone/features/post/viewmodel/edit_post.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:tuple/tuple.dart';
+
+String onInsertData(String name, String link, String value) {
+  if (link.contains("http")) {
+    return "$value[$name]($link)";
+  } else {
+    return "$value[$name](http://$link)";
+  }
+}
+
+/// Updates the form validity based on the text body changes.
+Tuple2<bool, bool> updateFormValidity(String value, String initialValue) {
+  Tuple2<bool, bool> tuple2 = Tuple2(value != initialValue,
+      value.trim().isNotEmpty && value.trim() != initialValue.trim());
+  return tuple2;
+}
+
+/// Toggles the bottom sheet buttons visibility.
+bool onIsOn(bool isOn) {
+  return !isOn;
+}
+
+/// Toggles the NSFW option.
+bool onIsNSFW(bool isNSFW) {
+  return !isNSFW;
+}
+
+/// Toggles the spoiler option.
+bool onIsSpoiler(bool isSpoiler) {
+  return !isSpoiler;
+}
+
+Color saveButtonColor(bool isValid) {
+  return isValid ? AppColors.blueColor : AppColors.whiteHideColor;
+}
+
+/// Determines the background color of the NSFW button based on its status.
+Color isNSFWButtonBackgroundColor(bool isNSFW) {
+  return isNSFW ? AppColors.redColor : AppColors.backgroundColor;
+}
+
+/// Determines the text color of the NSFW button based on its status.
+Color isNSFWButtonTextColor(bool isNSFW) {
+  return isNSFW ? AppColors.backgroundColor : AppColors.whiteColor;
+}
+
+/// Determines the text color of the spoiler button based on its status.
+Color isSpoilerButtonTextColor(bool isSpoiler) {
+  return isSpoiler ? AppColors.backgroundColor : AppColors.whiteColor;
+}
+
+/// Determines the background color of the spoiler button based on its status.
+Color isSpoilerButtonBackgroundColor(bool isSpoiler) {
+  return isSpoiler ? AppColors.whiteGlowColor : AppColors.backgroundColor;
+}
 
 /// A StatefulWidget for editing an existing post.
 ///
@@ -35,40 +90,6 @@ class _EditPostState extends ConsumerState<EditPost> {
   bool _isValid = true;
   bool _isChanged = false;
 
-  /// Updates the form validity based on the text body changes.
-  void _updateFormValidity() {
-    _isChanged = (textBodyController.text != initialValue);
-    setState(
-      () {
-        _isValid = textBodyController.text.trim().isNotEmpty &&
-                textBodyController.text.trim() != initialValue.trim()
-            ? true
-            : false;
-      },
-    );
-  }
-
-  /// Toggles the bottom sheet buttons visibility.
-  void onIsOn() {
-    setState(() {
-      isOn = !isOn;
-    });
-  }
-
-  /// Toggles the NSFW option.
-  void onIsNSFW() {
-    setState(() {
-      isNSFW = !isNSFW;
-    });
-  }
-
-  /// Toggles the spoiler option.
-  void onIsSpoiler() {
-    setState(() {
-      isSpoiler = !isSpoiler;
-    });
-  }
-
   void onSave() async {
     ref.read(editPostProvider.notifier).updateNFSW(isNSFW);
     ref
@@ -91,12 +112,8 @@ class _EditPostState extends ConsumerState<EditPost> {
 
   void onInsert(String name, String link) {
     setState(() {
-      if (link.contains("http")) {
-        textBodyController.text = "${textBodyController.text}[$name]($link)";
-      } else {
-        textBodyController.text =
-            "${textBodyController.text}[$name](http://$link)";
-      }
+      textBodyController.text =
+          onInsertData(name, link, textBodyController.text);
     });
   }
 
@@ -111,6 +128,15 @@ class _EditPostState extends ConsumerState<EditPost> {
         : false;
   }
 
+  void _updateFormValidityData() {
+    setState(() {
+      Tuple2<bool, bool> tuple2 =
+          updateFormValidity(textBodyController.text, initialValue);
+      _isChanged = tuple2.item1;
+      _isValid = tuple2.item2;
+    });
+  }
+
   @override
   void initState() {
     _setData();
@@ -119,7 +145,7 @@ class _EditPostState extends ConsumerState<EditPost> {
 
   @override
   Widget build(BuildContext context) {
-    _updateFormValidity();
+    _updateFormValidityData();
     return Scaffold(
       appBar: AppBar(
         leading: _isChanged
@@ -141,8 +167,7 @@ class _EditPostState extends ConsumerState<EditPost> {
               'Save',
               style: AppTextStyles.primaryTextStyle.copyWith(
                   fontSize: 20.spMin,
-                  color:
-                      _isValid ? AppColors.blueColor : AppColors.whiteHideColor,
+                  color: saveButtonColor(_isValid),
                   fontWeight: FontWeight.bold),
             ),
           ),
@@ -163,7 +188,7 @@ class _EditPostState extends ConsumerState<EditPost> {
               controller: textBodyController,
               onChanged: (value) {
                 textBodyController.text = value;
-                _updateFormValidity();
+                _updateFormValidityData();
               },
               style:
                   AppTextStyles.primaryTextStyle.copyWith(fontSize: 20.spMin),
@@ -189,7 +214,11 @@ class _EditPostState extends ConsumerState<EditPost> {
           children: [
             EditLink(onInsert),
             IconButton(
-              onPressed: onIsOn,
+              onPressed: () {
+                setState(() {
+                  isOn = onIsOn(isOn);
+                });
+              },
               icon:
                   const Icon(Icons.more_vert, color: AppColors.whiteHideColor),
             ),
@@ -198,11 +227,13 @@ class _EditPostState extends ConsumerState<EditPost> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       ElevatedButton(
-                        onPressed: onIsNSFW,
+                        onPressed: () {
+                          setState(() {
+                            isNSFW = onIsNSFW(isNSFW);
+                          });
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isNSFW
-                              ? AppColors.redColor
-                              : AppColors.backgroundColor,
+                          backgroundColor: isNSFWButtonBackgroundColor(isNSFW),
                           side: BorderSide(
                             color: AppColors.whiteColor,
                             width: 2.0.spMin,
@@ -211,20 +242,22 @@ class _EditPostState extends ConsumerState<EditPost> {
                         child: Text(
                           'NSFW',
                           style: AppTextStyles.primaryTextStyle.copyWith(
-                              color: isNSFW
-                                  ? AppColors.backgroundColor
-                                  : AppColors.whiteColor),
+                            color: isNSFWButtonTextColor(isNSFW),
+                          ),
                         ),
                       ),
                       SizedBox(
                         width: 5.w,
                       ),
                       ElevatedButton(
-                        onPressed: onIsSpoiler,
+                        onPressed: () {
+                          setState(() {
+                            isSpoiler = onIsSpoiler(isSpoiler);
+                          });
+                        },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isSpoiler
-                              ? AppColors.whiteGlowColor
-                              : AppColors.backgroundColor,
+                          backgroundColor:
+                              isSpoilerButtonBackgroundColor(isSpoiler),
                           side: BorderSide(
                             color: AppColors.whiteColor,
                             width: 2.0.spMin,
@@ -233,9 +266,7 @@ class _EditPostState extends ConsumerState<EditPost> {
                         child: Text(
                           'SPOILER',
                           style: AppTextStyles.primaryTextStyle.copyWith(
-                              color: isSpoiler
-                                  ? AppColors.backgroundColor
-                                  : AppColors.whiteColor),
+                              color: isSpoilerButtonTextColor(isSpoiler)),
                         ),
                       ),
                     ],
