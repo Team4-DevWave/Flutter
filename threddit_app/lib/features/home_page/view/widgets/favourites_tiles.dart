@@ -10,8 +10,24 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A widget that displays a list of the user's favorite communities and users.
+///
+/// This widget displays a list of the user's favorite items (communities and users).
+/// It fetches the list of favorites from the `favouriteList` provider in Riverpod and
+/// displays them in an [ExpansionTile].
+///
+/// Each favorite item is represented by a [ListTile] with its icon, name, and a
+/// star icon to indicate that the item is favorited. Pressing the star icon
+/// removes the item from the user's favorites.
+
 class FavouriteTiles extends ConsumerStatefulWidget {
+  /// Creates a [FavouriteTiles] widget.
+  ///
+  /// The [title] argument is required and specifies the title displayed in the
+  /// [ExpansionTile].
   const FavouriteTiles({super.key, required this.title});
+  
+  /// The title of the [ExpansionTile].
   final String title;
   @override
   ConsumerState<FavouriteTiles> createState() => _FavouriteTilesState();

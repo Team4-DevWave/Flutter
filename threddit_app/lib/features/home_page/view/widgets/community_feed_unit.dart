@@ -8,7 +8,18 @@ import 'package:threddit_clone/features/community/view%20model/community_provide
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
+import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+
+/// A widget that displays a grid of communities.
+///
+/// This widget displays a horizontally scrolling grid of communities using a 
+/// [GridView.builder]. Each community is represented by a [Container] that
+/// shows the community's icon, name, member count, status, and a button to
+/// join or leave the community.
+///
+/// The widget uses the `joinCommunityProvider` and `unjoinCommunityProvider`
+/// to handle joining and leaving communities.
 
 class CommunityUnit extends ConsumerStatefulWidget {
   final List<Subreddit> subreddit;
@@ -21,14 +32,7 @@ class CommunityUnit extends ConsumerStatefulWidget {
 }
 
 class _CommunityUnitState extends ConsumerState<CommunityUnit> {
-  ImageProvider setCommunityImage(Subreddit sub) {
-    if (sub.srLooks.icon != '') {
-      return NetworkImage(sub.srLooks.icon);
-    } else {
-      return const NetworkImage(
-          "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg");
-    }
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -144,3 +148,14 @@ class _CommunityUnitState extends ConsumerState<CommunityUnit> {
     );
   }
 }
+
+/// sets the community icon to the default image if the [sub.srLooks.icon] is an empty string
+/// else, it sets to the [sub.srLooks.icon]
+ ImageProvider setCommunityImage(Subreddit sub) {
+    if (sub.srLooks.icon != '') {
+      return NetworkImage(sub.srLooks.icon);
+    } else {
+      return const NetworkImage(
+         Photos.communityDefault);
+    }
+  }

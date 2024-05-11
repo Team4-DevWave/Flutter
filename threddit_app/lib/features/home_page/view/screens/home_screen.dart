@@ -8,6 +8,17 @@ import 'package:threddit_clone/features/listing/view/widgets/feed_widget.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+
+/// The main screen of the application, displaying the feed of posts in 4 categories
+/// (Best, New, Top, Hot).
+///
+/// The screen contains 2 drawers [LeftDrawer] and [RightDrawer] and the main 
+/// conent area which is the feed of posts using [FeedWidget].
+/// 
+/// The [AppBar] contains a [DropdownMenu] allowing the user to switch between
+/// different feed types ("Best", "Hot", "New", "Top"). It also has icons for
+/// searching and accessing the user's profile. 
+
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   @override
@@ -63,7 +74,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             });
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Changed to tab $value'),
-              duration: Durations.short1,
+              duration: Durations.short2,
             ));
           },
         ),

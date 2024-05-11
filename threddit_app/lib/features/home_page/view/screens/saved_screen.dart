@@ -14,6 +14,19 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+
+/// A screen displaying the user's saved posts and comments. 
+///
+/// This screen uses a [TabBarView] to present two tabs: "Posts" and "Comments". 
+/// It fetches the user's saved posts and comments from the backend and displays
+/// them in their respective tabs.
+///
+/// If there are no saved posts or comments, a message indicating that the list
+/// is empty is displayed. The screen also listens for updates to the
+/// `updatesSaveProvider` provider, which signals when a post or comment has
+/// been saved or unsaved. Upon receiving an update, the screen refreshes
+/// its data by calling `_getSaved()` again.
+
 class SavedScreen extends ConsumerStatefulWidget {
   const SavedScreen({super.key});
   @override
@@ -26,6 +39,10 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   List<Post> _savedPosts = [];
   List<Comment> _savedComments = [];
 
+
+  /// gets the saved posts and comments from the getSaved() function in the "savePostProvider" 
+  /// and sets the private variables [_savedPosts] and [_savedComments] witht the data
+  /// coming from the backend
   Future<void> _getSaved() async {
     setState(() {
       _isLoading = true;

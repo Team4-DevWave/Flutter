@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-// import 'package:dartz/dartz.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -24,7 +23,8 @@ class UserCommunities extends StateNotifier<bool> {
   final String communitiesURL =
       "https://www.threadit.tech/api/v1/r/user_subreddits";
 
-  ///The function returns the names of the user's communities
+  /// The function returns the names and icons of the user's communities
+  /// from the backend.
   FutureEither<List<List<String>>> getUserCommunities() async {
     final token = await getToken();
     try {
@@ -55,7 +55,10 @@ class UserCommunities extends StateNotifier<bool> {
     }
   }
 
-  ///The function returns the names of the user's communities
+  /// The function returns the name and icon of the communities
+  /// which the user moderates by fetching all the user communiites
+  /// and then filter the communities that has the user's username in
+  /// their moderators list
   FutureEither<List<List<String>>> getUserModerating() async {
     final token = await getToken();
     try {
@@ -69,7 +72,8 @@ class UserCommunities extends StateNotifier<bool> {
         List<List<String>> moderatorsData =
             (body["data"]["userSubreddits"] as List<dynamic>).map((e) {
           final moderators = e["moderators"] as List;
-          final moderatorUserNames = moderators.map((mod)=> mod["username"] as String).toList();
+          final moderatorUserNames =
+              moderators.map((mod) => mod["username"] as String).toList();
           final name = e["name"] as String;
           final icon = e["icon"] as String? ?? "";
           return [name, icon, ...moderatorUserNames];
@@ -78,10 +82,8 @@ class UserCommunities extends StateNotifier<bool> {
         List<List<String>> userModerating = [];
         String username = ref.read(userModelProvider)!.username!;
 
-        for(var mod in moderatorsData)
-        {
-          if(mod[2].contains(username))
-          {
+        for (var mod in moderatorsData) {
+          if (mod[2].contains(username)) {
             userModerating.add([mod[0], mod[1]]);
           }
         }
@@ -99,6 +101,10 @@ class UserCommunities extends StateNotifier<bool> {
     }
   }
 
+  ///This returns the search results that match the searchString
+  ///by fetching all communties from the backend
+  ///and then filter them according to the the [searchString] variable
+  ///and return the filtered list.
   FutureEither<List<List<String>>> searchResults(String searchString) async {
     final token = await getToken();
     try {
@@ -106,8 +112,6 @@ class UserCommunities extends StateNotifier<bool> {
         'Content-Type': 'application/json',
         "Authorization": "Bearer $token",
       });
-
-      ///This returns the search results that match the searchString
 
       if (res.statusCode == 200) {
         Map<String, dynamic> body = jsonDecode(res.body);

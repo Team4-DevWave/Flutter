@@ -10,6 +10,12 @@ import 'package:threddit_clone/features/home_page/view/widgets/left_drawer.dart'
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/theme.dart';
+
+/// This file contains the implementation of the main chat screen.
+/// The main chat screen is responsible for displaying the chat interface
+/// and handling user interactions related to chatting.
+
+/// function to sort the chats in the main chatrooms screen
 List<Chatroom> sortChatroomsByLatestMessage(List<Chatroom> chatrooms) {
   chatrooms.sort((a, b) {
     final latestMessageA = a.latestMessage;

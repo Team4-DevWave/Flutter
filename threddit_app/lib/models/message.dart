@@ -20,7 +20,7 @@ class Message {
   final String subject;
   final String message;
   final DateTime createdAt;
-  final bool read;
+  bool read;
   final bool collapsed;
   final String? comment;
   final String? post;
@@ -58,5 +58,9 @@ class Message {
       post: json['post'],
       version: json['__v'],
     );
+  }
+  markMessageAsRead()
+  {
+    read=true;
   }
 }

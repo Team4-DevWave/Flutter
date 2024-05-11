@@ -94,56 +94,42 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
   /// Function to remove the currently selected image.
   Future<void> _removeImage() async {
     setState(() {
-      image = null;
-      isImage = false;
+      removeImage(image, isImage);
     });
   }
 
   /// Function to remove the currently selected video.
   Future<void> _removeVideo() async {
     setState(() {
-      video = null;
-      isVideo = false;
+      removeVideo(video, isVideo);
     });
   }
 
   /// Function to enable the link input field.
   Future<void> _addLink() async {
     setState(() {
-      isLink = true;
+      addLink(isLink);
     });
   }
 
   Future<void> _addPoll() async {
     setState(() {
-      isPoll = true;
+      addPoll(isPoll);
     });
   }
-
-  // Future<void> _addPoll() async {
-  //   setState(() {
-  //     isPoll = true;
-  //   });
-  // }
 
   /// Function to disable the link input field.
   Future<void> _removeLink() async {
     setState(() {
-      isLink = false;
+     removeLink(isLink);
     });
   }
 
   void _removePoll() {
     setState(() {
-      isPoll = false;
+      removePoll(isPoll);
     });
   }
-
-  // void _removePoll() {
-  //   setState(() {
-  //     isPoll = false;
-  //   });
-  // }
 
   /// Function to reset all entered data.
   void resetAll() {
@@ -192,7 +178,6 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
       return AddImageWidget(onPressed: _removeImage, imagePath: imageFile!);
     }
 
-
     Widget buildVideoContent() {
       if (video == null || isLink || isImage) {
         return const SizedBox();
@@ -226,7 +211,7 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
             isImage: isImage,
             isLink: isLink,
             isVideo: isVideo,
-            isPoll : isPoll),
+            isPoll: isPoll),
         actions: [
           NextButton(titleController: _titleController),
         ],
@@ -333,5 +318,67 @@ class _AddPostScreenState extends ConsumerState<AddPostScreen> {
         ),
       ),
     );
+  }
+}
+
+bool addPoll(bool isPoll) {
+  isPoll = true;
+  if (isPoll == true) {
+    return true;
+  }
+  return false;
+}
+
+bool removePoll(bool isPoll)
+{
+  isPoll = false;
+  if (isPoll == false) {
+    return false;
+  }
+  return true;
+}
+
+bool removeLink(bool isLink)
+{
+   isLink = false;
+    if(isLink ==false)
+    { 
+      return false;
+    }
+    else 
+    {
+      return true;
+    }
+}
+
+ bool addLink(bool isLink) {
+    isLink = true;
+    if(isLink ==true)
+    { 
+      return true;
+    }
+    else 
+    {
+      return false;
+    }
+  }
+
+bool removeImage(String? image, bool isImage) {
+  image = null;
+  isImage = false;
+  if (image == null && isImage == false) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool removeVideo(String? video, bool isVideo) {
+  video = null;
+  isVideo = false;
+  if (video == null && isVideo == false) {
+    return true;
+  } else {
+    return false;
   }
 }

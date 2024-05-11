@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/post/model/post_model.dart';
+import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_image.dart';
 import 'package:threddit_clone/features/post/view/widgets/add_link.dart';
@@ -100,42 +101,40 @@ class _ConfirmPostState extends ConsumerState<ConfirmPost> {
   /// Removes the selected image.
   Future<void> _removeImage() async {
     setState(() {
-      image = null;
-      isImage = false;
+      removeImage(image, isImage);
     });
   }
 
   /// Adds a link to the post.
   Future<void> _addLink() async {
     setState(() {
-      isLink = true;
+      addLink(isLink);
     });
   }
 
   /// Removes the selected video.
   Future<void> _removeVideo() async {
     setState(() {
-      video = null;
-      isVideo = false;
+     removeVideo(video, isVideo);
     });
   }
 
   /// Removes the added link.
   Future<void> _removeLink() async {
     setState(() {
-      isLink = false;
+     removeLink(isLink);
     });
   }
 
   Future<void> _addPoll() async {
     setState(() {
-      isPoll = true;
+      addPoll(isPoll);
     });
   }
 
   void _removePoll() {
     setState(() {
-      isPoll = false;
+      removePoll(isPoll);
     });
   }
 

@@ -6,26 +6,29 @@ import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 
+/// class the is used in the chatting feture to notify the UI to update based on new events 
+/// creates a socket object to connect to the backend 
+
 final socketProvider = Provider((ref) async {
   String socketUrl = "https://www.threadit.tech/";
 
   // Fetch token asynchronously
   String? token = await getToken();
 
-  // Initialize socket provider with the obtained token
+  /// Initialize socket provider with the obtained token
   IO.Socket socket = IO.io(socketUrl, <String, dynamic>{
     "transports": ["websocket"],
     "autoConnect": false,
     'query': {'token': token},
   });
-
+/// connects to the socket
   socket.connect();
   socket.on('connect', (_) {
     print('connected');
   });
   return socket;
 });
-
+///initializations for the notifier 
 final chatNotifierProvider =
     StateNotifierProvider<ChatNotifier, List<ChatMessage>>((ref) {
   final socketFuture = ref.watch(socketProvider);
@@ -33,11 +36,13 @@ final chatNotifierProvider =
   chatNotifier.setupListeners();
   return chatNotifier;
 });
-
+///notifier class
 class ChatNotifier extends StateNotifier<List<ChatMessage>> {
   final Future<IO.Socket> socketFuture;
 
   ChatNotifier(this.socketFuture) : super([]);
+
+  ///fetching room messages upon navigating to the chat tab in the bottom drawer 
   Future<void> fetchRoomMessages(String roomId) async {
     try {
       final url = Uri.parse(
@@ -69,7 +74,7 @@ class ChatNotifier extends StateNotifier<List<ChatMessage>> {
       throw Exception('Failed to ftech room messages: $e');
     }
   }
-
+/// sets up listeners to listen to the backend socket and notify the UI upon receiving a new message 
   void setupListeners() {
     socketFuture.then((socket) async {
       socket.on('message received', (data) {
@@ -92,7 +97,7 @@ class ChatNotifier extends StateNotifier<List<ChatMessage>> {
       print('Error initializing socket: $error');
     });
   }
-
+///join chatroom to receive messages in the joined chatroom 
   Future<void> joinRooms(IO.Socket socket) async {
     try {
       // Fetch the list of rooms to join (e.g., from your application state)
@@ -107,14 +112,14 @@ class ChatNotifier extends StateNotifier<List<ChatMessage>> {
       print('Error joining rooms: $e');
     }
   }
-
+/// uses socket to send a message 
   Future<void> sendMessage(
       String message, String roomId, String username) async {
     socketFuture.then((socket) {
       socket.emit('new message', {'message': message, 'roomID': roomId});
     });
   }
-
+/// deleting of a message and setting the notifier state to remove the message 
   Future<void> deleteMessage(String messageId) async {
     try {
       final url =
@@ -136,7 +141,7 @@ class ChatNotifier extends StateNotifier<List<ChatMessage>> {
       throw Exception('Failed to delete message : $e');
     }
   }
-
+/// disposing the socket 
   @override
   void dispose() {
     socketFuture.then((socket) {

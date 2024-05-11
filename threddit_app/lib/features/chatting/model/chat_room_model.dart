@@ -1,5 +1,5 @@
 import 'package:threddit_clone/features/chatting/model/chat_message_model.dart';
-
+/// model for chatroom object received from the backend 
 class Chatroom {
   final String id;
   final DateTime dateCreated;

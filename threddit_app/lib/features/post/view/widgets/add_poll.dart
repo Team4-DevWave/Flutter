@@ -50,17 +50,10 @@ class _AddPollState extends ConsumerState<AddPoll> {
   }
 
   void addChoice(int index) {
-    if (choices.length < 6) {
-      setState(() {
-        choiceControllers.add(TextEditingController(text: ""));
-        choices.add(choiceControllers[index].text);
-        final newPoll = <String, dynamic>{'option${index + 1}': choices[index]};
-        poll.addEntries(newPoll.entries);
-
-      });
-
-      ref.read(postDataProvider.notifier).updatePoll(poll);
-    }
+    setState(() {
+      addPollChoice(choiceControllers, index, choices, poll);
+    });
+    ref.read(postDataProvider.notifier).updatePoll(poll);
   }
 
   //removes a choice from the poll
@@ -249,5 +242,18 @@ class _AddPollState extends ConsumerState<AddPoll> {
         ),
       ),
     );
+  }
+}
+
+bool addPollChoice(List<TextEditingController> choiceControllers, int index,
+    List<String> choices, Map<String, dynamic> poll) {
+  if (choices.length < 6) {
+    choiceControllers.add(TextEditingController(text: ""));
+    choices.add(choiceControllers[index].text);
+    final newPoll = <String, dynamic>{'option${index + 1}': choices[index]};
+    poll.addEntries(newPoll.entries);
+    return true;
+  } else {
+    return false;
   }
 }

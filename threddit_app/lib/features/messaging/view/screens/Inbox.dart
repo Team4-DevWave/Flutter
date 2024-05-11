@@ -14,6 +14,10 @@ import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// This file contains the implementation of the Inbox screen.
+/// The Inbox screen displays the user's messages and allows them to interact with them.
+/// It is a part of the messaging feature in the Threddit app.
+
 class MainInboxScreen extends ConsumerStatefulWidget {
   const MainInboxScreen({super.key});
 

@@ -11,6 +11,19 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/features/home_page/view_model/home_page_provider.dart';
 import 'package:threddit_clone/features/chatting/view/screens/main_chat_screen.dart';
 
+/// The main layout of the application, handling navigation between different screens.
+///
+/// This widget uses a [Scaffold] to structure its layout, providing a
+/// [BottomNavigationBar] to navigate between the main screens of the application:
+/// - Home ([HomeScreen])
+/// - Communities ([MainCommunityScreen])
+/// - Create Post ([AddPostScreen])
+/// - Chat ([MainChatScreen])
+/// - Inbox ([MainInboxScreen])
+///
+/// The `currentScreenProvider` is used to track which screen is 
+/// currently selected, and the [BottomNavigationBar] updates accordingly. 
+
 class MainScreenLayout extends ConsumerStatefulWidget {
   const MainScreenLayout({super.key});
   @override

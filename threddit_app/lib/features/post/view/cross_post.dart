@@ -16,6 +16,57 @@ import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+// Callback function toggles the visibilty of the Spoiler flag and NSFW flag buttons
+bool onIsOn(bool isOn) {
+  return !isOn;
+}
+
+/// Callback function to toggle the NSFW (Not Safe For Work) status.
+bool onIsNSFW(bool isNSFW) {
+  return !isNSFW;
+}
+
+/// Callback function to toggle the spoiler status.
+bool onIsSpoiler(bool isSpoiler) {
+  return !isSpoiler;
+}
+
+/// Determines the color of the post button based on its validity.
+Color postButtonColor(bool isValid) {
+  return isValid ? AppColors.blueColor : AppColors.whiteHideColor;
+}
+
+/// Determines the background color of the NSFW button based on its status.
+Color isNSFWButtonBackgroundColor(bool isNSFW) {
+  return isNSFW ? AppColors.redColor : AppColors.backgroundColor;
+}
+
+/// Determines the text color of the NSFW button based on its status.
+Color isNSFWButtonTextColor(bool isNSFW) {
+  return isNSFW ? AppColors.backgroundColor : AppColors.whiteColor;
+}
+
+/// Determines the text color of the spoiler button based on its status.
+Color isSpoilerButtonTextColor(bool isSpoiler) {
+  return isSpoiler ? AppColors.backgroundColor : AppColors.whiteColor;
+}
+
+/// Determines the background color of the spoiler button based on its status.
+Color isSpoilerButtonBackgroundColor(bool isSpoiler) {
+  return isSpoiler ? AppColors.whiteGlowColor : AppColors.backgroundColor;
+}
+
+/// Updates the validity of the form based on the last input value.
+bool updateFormValidity(String lastValue) {
+  return lastValue.trim().isNotEmpty ? true : false;
+}
+
+/// A widget for creating a crosspost.
+///
+/// This widget allows users to create a crosspost, which is a post shared
+/// from one community or user profile to another. Users can select the
+/// destination community or profile, set the post title, and optionally
+/// mark the post as NSFW (Not Safe For Work) or spoiler.
 class CrossPost extends ConsumerStatefulWidget {
   const CrossPost({super.key});
 
@@ -24,21 +75,31 @@ class CrossPost extends ConsumerStatefulWidget {
 }
 
 class _CrossPostState extends ConsumerState<CrossPost> {
+  /// The current title value for the post being shared.
   String lastValue = '';
+
+  /// The destination where the post is being shared, defaults to 'My Profile'.
   String? postingIn;
+
+  /// Flag to control visibility of NSFW and Spoiler options.
   bool isOn = false;
+
+  /// Flag to mark a post as NSFW.
   bool isNSFW = false;
+
+  /// Flag to mark a post as spoiler.
   bool isSpoiler = false;
+
+  /// Flag to indicate if the post is not being shared to the user's own profile.
   bool isNotProfile = true;
+
+  /// Flag to indicate if a loading indicator should be displayed.
   bool _isLoading = false;
+
+  /// Flag to indicate if the current form input is valid for submission.
   bool _isValid = true;
 
-  void _updateFormValidity() {
-    setState(() {
-      _isValid = lastValue.trim().isNotEmpty ? true : false;
-    });
-  }
-
+  /// Handles the action to be taken when the user exits the crosspost screen.
   void onExit() {
     for (int i = 0; i <= ref.watch(popCounter); i++) {
       Navigator.pop(context);
@@ -47,24 +108,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     ref.read(popCounter.notifier).update((state) => state = 1);
   }
 
-  void onIsOn() {
-    setState(() {
-      isOn = !isOn;
-    });
-  }
-
-  void onIsNSFW() {
-    setState(() {
-      isNSFW = !isNSFW;
-    });
-  }
-
-  void onIsSpoiler() {
-    setState(() {
-      isSpoiler = !isSpoiler;
-    });
-  }
-
+  /// Opens the rules overlay for the selected community.
   void openRulesOverlay() {
     final shared = ref.read(sharedPostProvider);
     showModalBottomSheet(
@@ -78,6 +122,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
     );
   }
 
+  /// Posts the crosspost to the selected destination.
   Future<void> onPost() async {
     ref.read(sharedPostProvider.notifier).setNSFW(isNSFW, isSpoiler);
     ref.read(sharedPostProvider.notifier).setTitle(lastValue);
@@ -134,9 +179,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                     'Post',
                     style: AppTextStyles.primaryTextStyle.copyWith(
                         fontSize: 20.spMin,
-                        color: _isValid
-                            ? AppColors.blueColor
-                            : AppColors.whiteHideColor,
+                        color: postButtonColor(_isValid),
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -208,7 +251,9 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                       ref.read(sharedPostProvider.notifier).setTitle(value);
 
                       lastValue = value;
-                      _updateFormValidity();
+                      setState(() {
+                        _isValid = updateFormValidity(lastValue);
+                      });
                     },
                     initialValue: ref.read(isFirstTimeEnter)
                         ? lastValue =
@@ -238,18 +283,23 @@ class _CrossPostState extends ConsumerState<CrossPost> {
               child: Row(
                 children: [
                   IconButton(
-                    onPressed: onIsOn,
+                    onPressed: () {
+                      setState(() {
+                        isOn = onIsOn(isOn);
+                      });
+                    },
                     icon: const Icon(Icons.more_vert),
                   ),
                   isOn
                       ? Row(
                           children: [
                             ElevatedButton(
-                              onPressed: onIsNSFW,
+                              onPressed: () {
+                                isNSFW = onIsNSFW(isNSFW);
+                              },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: isNSFW
-                                    ? AppColors.redColor
-                                    : AppColors.backgroundColor,
+                                backgroundColor:
+                                    isNSFWButtonBackgroundColor(isNSFW),
                                 side: BorderSide(
                                   color: AppColors.whiteColor,
                                   width: 2.0.spMin,
@@ -258,20 +308,19 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                               child: Text(
                                 'NSFW',
                                 style: AppTextStyles.primaryTextStyle.copyWith(
-                                    color: isNSFW
-                                        ? AppColors.backgroundColor
-                                        : AppColors.whiteColor),
+                                    color: isNSFWButtonTextColor(isNSFW)),
                               ),
                             ),
                             SizedBox(
                               width: 5.w,
                             ),
                             ElevatedButton(
-                              onPressed: onIsSpoiler,
+                              onPressed: () {
+                                isSpoiler = onIsSpoiler(isSpoiler);
+                              },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: isSpoiler
-                                    ? AppColors.whiteGlowColor
-                                    : AppColors.backgroundColor,
+                                backgroundColor:
+                                    isSpoilerButtonBackgroundColor(isSpoiler),
                                 side: BorderSide(
                                   color: AppColors.whiteColor,
                                   width: 2.0.spMin,
@@ -280,9 +329,7 @@ class _CrossPostState extends ConsumerState<CrossPost> {
                               child: Text(
                                 'SPOILER',
                                 style: AppTextStyles.primaryTextStyle.copyWith(
-                                    color: isSpoiler
-                                        ? AppColors.backgroundColor
-                                        : AppColors.whiteColor),
+                                    color: isSpoilerButtonTextColor(isSpoiler)),
                               ),
                             ),
                           ],

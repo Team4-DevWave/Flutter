@@ -12,6 +12,19 @@ import 'package:threddit_clone/models/subreddit.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+///
+/// This screen fetches a list of all subreddits and presents them in two
+/// categories: "Trending Globally" and "Top Globally". The fetched list
+/// is divided using a randomization function that randomly splits the list
+/// into the two lists displayed in "Trending Globally" and "Top Globally"
+/// 
+/// It uses a [FutureBuilder] to handle the asynchronous 
+/// fetching of subreddit data.
+///
+/// The screen layout includes an [AppBar], a [Drawer] on the left 
+/// (provided by [LeftDrawer]), an end [Drawer] on the right (provided by
+/// [RightDrawer]), and the main content area displaying the communities.
+
 class MainCommunityScreen extends ConsumerStatefulWidget {
   const MainCommunityScreen({super.key});
 
@@ -23,30 +36,15 @@ class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late Future<SubredditList> futuredata;
   late String userId;
-  List<List<Subreddit>> dividedSubs = [];
   @override
   void initState() {
     futuredata = fetchSubredditsAll();
     setUserid();
     super.initState();
   }
-
+  /// Get the user Id from the [userModelProvider] provider
   void setUserid() {
     userId = ref.read(userModelProvider)!.id!;
-  }
-
-  List<List<Subreddit>> _getRandomSubreddits(List<Subreddit> allSubreddits) {
-    // Shuffle the list
-    allSubreddits.shuffle();
-    // Divide the list into two
-    int length = allSubreddits.length;
-    int half = (length / 2).round();
-    List<Subreddit> list1 = allSubreddits.take(half).toList();
-    List<Subreddit> list2 =
-        allSubreddits.skip(half).take(length - half).toList();
-    dividedSubs.add(list1);
-    dividedSubs.add(list2);
-    return dividedSubs;
   }
 
   void _openEndDrawer() {
@@ -90,7 +88,7 @@ class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
                 return Text('${snapshot.error}');
               } else if (snapshot.hasData) {
                 final subredditData =
-                    _getRandomSubreddits(snapshot.data!.subreddits);
+                    getRandomSubreddits(snapshot.data!.subreddits);
                 return ListView.builder(
                   itemCount: 2,
                   itemBuilder: (BuildContext context, int index) {
@@ -123,3 +121,21 @@ class _CommunityScreenState extends ConsumerState<MainCommunityScreen> {
     );
   }
 }
+
+ /// This function takes the fetched user subreddits and shuffles the list
+  /// After shuffling, the list is divided into two lists  to be displayed in 
+  /// "Top Globally" and "Trending Globally"
+  List<List<Subreddit>> getRandomSubreddits(List<Subreddit> allSubreddits) {
+    List<List<Subreddit>> dividedSubs = [];
+    // Shuffle the list
+    allSubreddits.shuffle();
+    // Divide the list into two
+    int length = allSubreddits.length;
+    int half = (length / 2).round();
+    List<Subreddit> list1 = allSubreddits.take(half).toList();
+    List<Subreddit> list2 =
+        allSubreddits.skip(half).take(length - half).toList();
+    dividedSubs.add(list1);
+    dividedSubs.add(list2);
+    return dividedSubs;
+  }

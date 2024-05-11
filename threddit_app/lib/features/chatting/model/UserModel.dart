@@ -1,3 +1,5 @@
+/// model for the User received with any chat response 
+
 class UserProfile {
   final String about;
   final bool nsfw;

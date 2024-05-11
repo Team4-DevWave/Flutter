@@ -20,6 +20,22 @@ import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// A drawer widget displaying user activity and navigation options.
+///
+/// This drawer displays various sections related to the user's activity:
+/// - Recently visited communities and users.
+/// - Favorite communities and users ([FavouriteTiles]).
+/// - Communities the user moderates ([ModeratingTiles]).
+/// - Communities the user is a member of ([CommunitiesTiles]).
+/// - Users the current user is following ([FollowingTiles]).
+///
+/// The drawer fetches data for these sections from various providers.
+/// It also handles displaying a second drawer for showing all recently visited
+/// items if the user clicks on "See all".
+///
+/// If there are no items in any of the sections, a message indicating that the
+/// drawer is empty is displayed.
+
 class LeftDrawer extends ConsumerStatefulWidget {
   const LeftDrawer({super.key});
 
@@ -34,6 +50,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
   List<String>? favouritesList;
   bool isLoading = false;
 
+  /// Gets all the initial data of the drawer from the provider on opening the screen
   Future<void> _setData() async {
     setState(() {
       isLoading = true;
@@ -218,8 +235,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                       if (moderatingCommunities.isNotEmpty)
                         const ModeratingTiles(title: "Moderating"),
                       if (userCommunitiesData.isNotEmpty)
-                        const CommunitiesTiles(
-                          title: "Your Communities"),
+                        const CommunitiesTiles(title: "Your Communities"),
                       if (ref
                           .read(userModelProvider)!
                           .followedUsers!
