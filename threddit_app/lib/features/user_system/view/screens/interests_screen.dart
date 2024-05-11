@@ -14,6 +14,14 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+void toggleInterest(String value, List<String> interestsListData) {
+  if (interestsListData.contains(value)) {
+    interestsListData.remove(value);
+  } else {
+    interestsListData.add(value);
+  }
+}
+
 ///This [Interest] screen starts by rendering all the [interestsList] items where it contains
 ///a list of interests, each item has: title, first row interests, and second row interests.
 ///
@@ -32,16 +40,6 @@ class Interests extends ConsumerStatefulWidget {
 class _InterestsState extends ConsumerState<Interests> {
   bool _isLoading = false;
   final List<String> _selectedInterests = [];
-
-  void _toggleInterest(String value) {
-    setState(() {
-      if (_selectedInterests.contains(value)) {
-        _selectedInterests.remove(value);
-      } else {
-        _selectedInterests.add(value);
-      }
-    });
-  }
 
   Future<void> onContinue() async {
     ref.watch(authProvider.notifier).saveUserInterests(_selectedInterests);
@@ -145,11 +143,14 @@ class _InterestsState extends ConsumerState<Interests> {
                                       return Padding(
                                         padding: EdgeInsets.only(right: 1.w),
                                         child: InterestButton(
-                                          answerText: interestName,
-                                          isSelected: isSelected,
-                                          onTap: () =>
-                                              _toggleInterest(interestName),
-                                        ),
+                                            answerText: interestName,
+                                            isSelected: isSelected,
+                                            onTap: () {
+                                              setState(() {
+                                                toggleInterest(interestName,
+                                                    _selectedInterests);
+                                              });
+                                            }),
                                       );
                                     }).toList(),
                                   ),
@@ -167,11 +168,14 @@ class _InterestsState extends ConsumerState<Interests> {
                                       return Padding(
                                         padding: EdgeInsets.only(right: 1.w),
                                         child: InterestButton(
-                                          answerText: interestName,
-                                          isSelected: isSelected,
-                                          onTap: () =>
-                                              _toggleInterest(interestName),
-                                        ),
+                                            answerText: interestName,
+                                            isSelected: isSelected,
+                                            onTap: () {
+                                              setState(() {
+                                                toggleInterest(interestName,
+                                                    _selectedInterests);
+                                              });
+                                            }),
                                       );
                                     }).toList(),
                                   ),

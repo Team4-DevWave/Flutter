@@ -49,7 +49,7 @@ class _UpdateBanScreenState extends ConsumerState<UpdateBanScreen> {
                 final String banLength = banLengthForm.input;
                 final String message = messageForm.input;
                 final String modNote = modForm.input;
-                int statusCode = await ref
+                await ref
                     .watch(moderationApisProvider.notifier)
                     .updateBannedUser(
                         client: client,

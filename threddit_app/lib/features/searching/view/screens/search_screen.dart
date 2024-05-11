@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:threddit_clone/app/route.dart';
-import 'package:threddit_clone/features/community/view/search_community.dart';
 import 'package:threddit_clone/features/searching/model/search_model.dart';
-import 'package:threddit_clone/features/searching/model/trends.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_apis.dart';
 import 'package:threddit_clone/features/searching/view_model/searching_function.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
-import 'package:threddit_clone/features/user_system/view/widgets/settings_title.dart';
 import 'package:threddit_clone/models/subreddit.dart';
-import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
-import 'package:threddit_clone/theme/theme.dart';
 
 /// The `SearchScreen` widget provides functionality for searching and browsing communities, posts, and trending topics within the Threddit app.
 /// Users can enter search queries to find relevant communities and posts, view trending topics, and access their search history.

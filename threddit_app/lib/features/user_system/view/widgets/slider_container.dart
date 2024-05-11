@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 
+// ignore: must_be_immutable
 class SliderContainer extends StatefulWidget {
   double number;
   final bool isOn;
@@ -10,12 +11,12 @@ class SliderContainer extends StatefulWidget {
   final String subredditName;
 
   SliderContainer({
-    Key? key,
+    super.key,
     required this.number,
     required this.isOn,
     required this.type,
     required this.subredditName,
-  }) : super(key: key);
+  });
 
   @override
   State<SliderContainer> createState() => _SliderContainerState();

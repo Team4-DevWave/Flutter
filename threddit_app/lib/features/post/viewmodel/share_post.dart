@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
@@ -35,8 +34,7 @@ class SharePosts extends StateNotifier<bool> {
     state = true;
     final sharedPost = ref.watch(sharedPostProvider);
 
-    final url =
-        Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/share');
+    final url = Uri.parse('https://www.threadit.tech/api/v1/posts/share');
     final token = await getToken();
 
     try {
@@ -60,7 +58,7 @@ class SharePosts extends StateNotifier<bool> {
         final pid = json.decode(response.body)["data"]["post"]["_id"];
 
         final urlPost =
-            Uri.parse('http://${AppConstants.local}:8000/api/v1/posts/$pid');
+            Uri.parse('https://www.threadit.tech/api/v1/posts/$pid');
 
         final responsePost = await http.get(urlPost, headers: {
           'Content-Type': 'application/json',

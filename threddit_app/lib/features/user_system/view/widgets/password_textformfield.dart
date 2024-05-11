@@ -10,13 +10,22 @@ import 'package:threddit_clone/theme/text_styles.dart';
 ///
 ///For each process; signup or login, there is a validation function called once
 ///the continue button is pressed
-class PasswordTextFormField extends ConsumerWidget {
+class PasswordTextFormField extends ConsumerStatefulWidget {
   const PasswordTextFormField(
       {super.key, required this.controller, required this.identifier});
+
   final TextEditingController controller;
   final String identifier;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PasswordTextFormFieldState();
+}
+
+class _PasswordTextFormFieldState extends ConsumerState<PasswordTextFormField> {
+  bool showText = false;
+  @override
+  Widget build(BuildContext context) {
     final passwordSignupValidator =
         ref.watch(Validation().passwordSignupValidatorProvider);
 
@@ -24,12 +33,21 @@ class PasswordTextFormField extends ConsumerWidget {
         ref.watch(Validation().passwordLoginValidatorProvider);
 
     return TextFormField(
-      controller: controller,
+      controller: widget.controller,
       style: AppTextStyles.primaryTextStyle,
       maxLength: 50,
       cursorColor: AppColors.redditOrangeColor,
-      obscureText: true,
+      obscureText: !showText,
       decoration: InputDecoration(
+        suffixIcon: IconButton(
+            onPressed: () {
+              setState(() {
+                showText = !showText;
+              });
+            },
+            icon: showText
+                ? const Icon(Icons.visibility_off)
+                : const Icon(Icons.visibility)),
         hintText: 'Password',
         hintStyle: AppTextStyles.primaryTextStyle,
         filled: true,
@@ -55,7 +73,7 @@ class PasswordTextFormField extends ConsumerWidget {
         counter: const SizedBox.shrink(),
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: identifier == 'signup'
+      validator: widget.identifier == 'signup'
           ? passwordSignupValidator
           : passwordLoginValidator,
     );

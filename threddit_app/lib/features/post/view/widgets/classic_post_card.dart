@@ -78,11 +78,18 @@ class _PostClassicState extends ConsumerState<PostClassic> {
                         ? [
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8.0.w),
-                              child: CircleAvatar(
-                                radius: 10.r,
-                                backgroundImage: const AssetImage(
-                                    'assets/images/Default_Avatar.png'),
-                              ),
+                              child: widget.post.userID!.profilePicture !=
+                                          null &&
+                                      widget.post.userID!.profilePicture != ''
+                                  ? CircleAvatar(
+                                      radius: 16,
+                                      backgroundImage: NetworkImage(
+                                          widget.post.userID!.profilePicture!))
+                                  : const CircleAvatar(
+                                      radius: 16,
+                                      backgroundImage: AssetImage(
+                                          'assets/images/Default_Avatar.png'),
+                                    ),
                             ),
                             Text(
                               'u/${widget.post.userID}',

@@ -25,7 +25,7 @@ FutureEither<bool> updateDisplayName(String dispName, WidgetRef ref) async {
   String local = Platform.isAndroid ? '10.0.2.2' : 'localhost';
 
   final token = await getToken();
-  final url = "http://$local:8000/api/v1/users/me/changeDisplayName";
+  final url = "https://www.threadit.tech/api/v1/users/me/changeDisplayName";
   final headers = {
     'Authorization': 'Bearer $token',
   };
@@ -34,9 +34,10 @@ FutureEither<bool> updateDisplayName(String dispName, WidgetRef ref) async {
     final response = await http.patch(Uri.parse(url),
         headers: headers, body: {"displayName": dispName});
 
-    if(response.statusCode == 200)
-    {
-      ref.read(userModelProvider.notifier).update((state) => state?.copyWith(displayName: dispName));
+    if (response.statusCode == 200) {
+      ref
+          .read(userModelProvider.notifier)
+          .update((state) => state?.copyWith(displayName: dispName));
       return right(true);
     } else {
       return left(Failure("Failed to update display name"));

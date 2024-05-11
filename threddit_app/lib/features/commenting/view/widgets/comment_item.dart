@@ -5,12 +5,15 @@ import 'package:threddit_clone/features/commenting/model/comment_notifier.dart';
 import 'package:threddit_clone/features/commenting/view_model/comment_provider.dart';
 import 'package:threddit_clone/features/home_page/view_model/saved_post.dart';
 import 'package:threddit_clone/features/post/viewmodel/save_post.dart';
+import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
 import 'package:threddit_clone/features/reporting/view/report_bottom_sheet.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
+import 'package:threddit_clone/features/user_system/view_model/settings_functions.dart';
 import 'package:threddit_clone/models/comment.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+import 'package:http/http.dart' as http;
 
 ///this class is used to display a single comment in the comments section of a post
 ///it displays the user's avatar, username, the content of the comment, the time since the comment was posted, the number of upvotes and downvotes on the comment
@@ -31,13 +34,15 @@ class _CommentItemState extends ConsumerState<CommentItem> {
 
   bool _isLoading = false;
   bool _isSaved = false;
-  
+  bool _isBlocked = false;
+
   void _setVariables() async {
     setState(() {
       _isLoading = true;
     });
     final response =
         await ref.read(savecommentProvider.notifier).isSaved(widget.comment.id);
+    final isBlocked = await checkUserBlockState(widget.comment.user.id);
     response.fold(
         (l) => showSnackBar(
             navigatorKey.currentContext!, "Could not retrieve saved state"),
@@ -45,6 +50,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
       setState(() {
         _isSaved = success;
         _isLoading = false;
+        _isBlocked = isBlocked;
       });
     });
   }
@@ -57,43 +63,43 @@ class _CommentItemState extends ConsumerState<CommentItem> {
   }
 
   void upVoteComment(WidgetRef ref) async {
-      ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
-      if (widget.comment.userVote == 'upvoted') {
-        widget.comment.votes.upvotes--;
-        widget.comment.userVote = 'none';
-      } else if (widget.comment.userVote == 'downvoted') {
-        widget.comment.votes.downvotes--;
-        widget.comment.votes.upvotes++;
-        widget.comment.userVote = 'upvoted';
-      } else {
-        widget.comment.votes.upvotes++;
-        widget.comment.userVote = 'upvoted';
-      }
-      setState(() {});
+    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: 1)));
+    if (widget.comment.userVote == 'upvoted') {
+      widget.comment.votes.upvotes--;
+      widget.comment.userVote = 'none';
+    } else if (widget.comment.userVote == 'downvoted') {
+      widget.comment.votes.downvotes--;
+      widget.comment.votes.upvotes++;
+      widget.comment.userVote = 'upvoted';
+    } else {
+      widget.comment.votes.upvotes++;
+      widget.comment.userVote = 'upvoted';
     }
+    setState(() {});
+  }
 
-    void downVoteComment(WidgetRef ref) async {
-      ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
-      if (widget.comment.userVote == 'upvoted') {
-        widget.comment.votes.upvotes--;
-      }
-      if (widget.comment.userVote == 'downvoted') {
-        widget.comment.votes.downvotes--;
-        widget.comment.userVote = 'none';
-      }
-       else {
-        widget.comment.votes.downvotes++;
-        widget.comment.userVote = 'downvoted';
-      }
-      setState(() {});
+  void downVoteComment(WidgetRef ref) async {
+    ref.read(commentVoteProvider((commentID: widget.comment.id, voteType: -1)));
+    if (widget.comment.userVote == 'upvoted') {
+      widget.comment.votes.upvotes--;
     }
+    if (widget.comment.userVote == 'downvoted') {
+      widget.comment.votes.downvotes--;
+      widget.comment.userVote = 'none';
+    } else {
+      widget.comment.votes.downvotes++;
+      widget.comment.userVote = 'downvoted';
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    
     // Function to delete the comment
     void deleteComment() {
-      ref.read(commentsProvider.notifier).deleteComment(widget.comment.id, widget.comment.post);
+      ref
+          .read(commentsProvider.notifier)
+          .deleteComment(widget.comment.id, widget.comment.post);
     }
 
     Future<void> showDeleteConfirmationDialog(BuildContext context) async {
@@ -170,7 +176,7 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(right: 10.0),
-                      child:  CircleAvatar(
+                      child: CircleAvatar(
                         radius: 18,
                         backgroundImage:
                             AssetImage('assets/images/Default_Avatar.png'),
@@ -313,16 +319,36 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                             },
                                           ),
                                           ListTile(
-                                            title: const Text(
-                                              'Block account',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
+                                            title: _isBlocked
+                                                ? const Text(
+                                                    'Unblock account',
+                                                    style: TextStyle(
+                                                        color: Colors.orange),
+                                                  )
+                                                : const Text(
+                                                    'Block account',
+                                                    style: TextStyle(
+                                                        color: Colors.orange),
+                                                  ),
                                             leading: const Icon(
                                               Icons.block,
-                                              color: Colors.white,
+                                              color: Colors.orange,
                                             ),
-                                            onTap: () {},
+                                            onTap: () {
+                                              _isBlocked
+                                                  ? unblockUser(
+                                                      client: http.Client(),
+                                                      userToUnBlock: widget.comment
+                                                          .user.username,
+                                                      context: context)
+                                                  : blockUser(
+                                                      userToBlock: widget.comment
+                                                          .user.username,
+                                                      context: context,
+                                                    );
+                                              _isBlocked = !_isBlocked;
+                                              setState(() {});
+                                            },
                                           ),
                                           ListTile(
                                             title: const Text(
@@ -483,7 +509,9 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                                                                             context);
                                                                         Navigator.pop(
                                                                             context);
-                                                                       ref.read(commentsProvider.notifier).editComment(widget.comment.id, _commentController.text);
+                                                                        ref.read(commentsProvider.notifier).editComment(
+                                                                            widget.comment.id,
+                                                                            _commentController.text);
                                                                       } else {
                                                                         showDialog(
                                                                             context:
@@ -555,17 +583,16 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         onPressed: () {},
                         icon: const Icon(Icons.reply_outlined)),
                     IconButton(
-                      onPressed: () {
-                        upVoteComment(ref);
-                      },
-                      icon: Icon(
-                        Icons.arrow_upward_outlined,
-                        size: 30.spMin,
-                      ),
-                      color: widget.comment.userVote == 'upvoted'
-                        ? Colors.red
-                        : Colors.white),
-                    
+                        onPressed: () {
+                          upVoteComment(ref);
+                        },
+                        icon: Icon(
+                          Icons.arrow_upward_outlined,
+                          size: 30.spMin,
+                        ),
+                        color: widget.comment.userVote == 'upvoted'
+                            ? Colors.red
+                            : Colors.white),
                     Text(
                       '${widget.comment.votes.upvotes - widget.comment.votes.downvotes == 0 ? "vote" : widget.comment.votes.upvotes - widget.comment.votes.downvotes}',
                       style: AppTextStyles.primaryTextStyle
@@ -580,8 +607,8 @@ class _CommentItemState extends ConsumerState<CommentItem> {
                         size: 30.spMin,
                       ),
                       color: widget.comment.userVote == 'downvoted'
-                      ? Colors.blue
-                      : Colors.white,
+                          ? Colors.blue
+                          : Colors.white,
                     ),
                   ],
                 )

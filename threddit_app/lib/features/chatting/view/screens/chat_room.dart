@@ -2,6 +2,7 @@
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/route.dart';
@@ -99,11 +100,13 @@ class ChatBody extends ConsumerStatefulWidget {
 
 class _ChatBodyState extends ConsumerState<ChatBody> {
   final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   List<ChatMessage> messages = [];
   void sendChat() {
     ref.read(chatNotifierProvider.notifier).sendMessage(
         _messageController.text, widget.chatroom.id, widget.username);
     _messageController.clear();
+     FocusScope.of(context).unfocus();
   }
 
   @override
@@ -118,177 +121,184 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
   Widget build(BuildContext context) {
     final chatReceiver=widget.chatroom.chatroomMembers[0].username==widget.username?widget.chatroom.chatroomMembers[1]:widget.chatroom.chatroomMembers[0];
     // ignore: invalid_use_of_visible_for_testing_member
+     SchedulerBinding.instance.addPostFrameCallback((_) {
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+  });
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-          child: ListView(
-            reverse: true,
-            children: [
-              Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Stack(
-                      children: [
-                        Positioned(
-                          child:widget.chatroom.chatroomName != "New Chat"? const CircleAvatar(
-                          radius: 58.0,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage('assets/images/group-avatars.png'),
-                        )
-                      :  chatReceiver.profilePicture!=null && chatReceiver.profilePicture!=''? CircleAvatar(
-                          radius: 58.0,
-                          backgroundColor: const Color.fromARGB(255, 76, 175, 172),
-                          backgroundImage:
-                              NetworkImage(
-                              chatReceiver.profilePicture!),
-                        ):const CircleAvatar(
-                          radius: 58.0,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage('assets/images/Default_Avatar.png'),
-                        ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      widget.chatroom.chatroomName != "New Chat"
-                          ? widget.chatroom.chatroomName
-                          : (widget.chatroom.chatroomMembers[0].username !=
-                                  widget.username
-                              ? widget.chatroom.chatroomMembers[0].username
-                              : widget.chatroom.chatroomMembers[1].username),
-                      style: const TextStyle(
-                        fontSize: 17.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+          child: Center(
+            child: ListView(
+              controller: _scrollController,
+              shrinkWrap: true,
+              children: [
+                Center(
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        child:widget.chatroom.chatroomName != "New Chat"? const CircleAvatar(
+                        radius: 58.0,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage:
+                            AssetImage('assets/images/group-avatars.png'),
+                      )
+                    :  chatReceiver.profilePicture!=null && chatReceiver.profilePicture!=''? CircleAvatar(
+                        radius: 58.0,
+                        backgroundColor: const Color.fromARGB(255, 76, 175, 172),
+                        backgroundImage:
+                            NetworkImage(
+                            chatReceiver.profilePicture!),
+                      ):const CircleAvatar(
+                        radius: 58.0,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage:
+                            AssetImage('assets/images/Default_Avatar.png'),
                       ),
+                      ),
+                    ],
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    widget.chatroom.chatroomName != "New Chat"
+                        ? widget.chatroom.chatroomName
+                        : (widget.chatroom.chatroomMembers[0].username !=
+                                widget.username
+                            ? widget.chatroom.chatroomMembers[0].username
+                            : widget.chatroom.chatroomMembers[1].username),
+                    style: const TextStyle(
+                      fontSize: 17.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    if (widget.chatroom.chatroomName != "New Chat")
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  RouteClass.chatMembers,
-                                  arguments: {
-                                    'chatroom': widget.chatroom,
-                                    'username': widget.username,
-                                  },
-                                );
+                  ),
+                ),
+                if (widget.chatroom.chatroomName != "New Chat")
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              RouteClass.chatMembers,
+                              arguments: {
+                                'chatroom': widget.chatroom,
+                                'username': widget.username,
                               },
-                              child: Column(
-                                children: [
-                                  const Icon(
-                                    Icons.person,
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(width: 10.0.w),
-                                  const Text(
-                                    'Members',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 8.0.w),
-                              child: TextButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    RouteClass.inviteMembers,
-                                    arguments: {
-                                      'chatroom': widget.chatroom,
-                                      'username': widget.username,
-                                    },
-                                  );
-                                },
-                                child: Column(
-                                  children: [
-                                    const Icon(
-                                      Icons.person_add_alt_rounded,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(width: 10.0.w),
-                                    const Text(
-                                      'Invite',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ]),
-                    SizedBox(
-                      height: 60.h,
-                    ),
-                    Consumer(
-                      builder: (context, watch, child) {
-                        final messages = ref.watch(chatNotifierProvider);
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) {
-                            final message = messages[index];
-                            final DateTime messageDate =
-                                DateTime.parse(message.dateSent);
-                            final bool isFirstMessage = index == 0 ||
-                                messageDate.day !=
-                                    DateTime.parse(
-                                            messages[index - 1].dateSent)
-                                        .day;
-                        
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (isFirstMessage)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0, vertical: 8.0),
-                                    child: Text(
-                                      _formatDate(messageDate), // Helper method to format date
-                                      style: const TextStyle(color: Colors.grey),
-                                    ),
-                                  ),
-                                ChatItem(
-                                  message: message,
-                                  username: widget.username,
-                                ),
-                              ],
                             );
                           },
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.person,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 10.0.w),
+                              const Text(
+                                'Members',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 8.0.w),
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                RouteClass.inviteMembers,
+                                arguments: {
+                                  'chatroom': widget.chatroom,
+                                  'username': widget.username,
+                                },
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                const Icon(
+                                  Icons.person_add_alt_rounded,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 10.0.w),
+                                const Text(
+                                  'Invite',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ]),
+                SizedBox(
+                  height: 60.h,
+                ),
+                Consumer(
+                  builder: (context, watch, child) {
+                    final messages = ref.watch(chatNotifierProvider);
+                    return ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      
+                      shrinkWrap: true,
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        final DateTime messageDate =
+                            DateTime.parse(message.dateSent);
+                        final bool isFirstMessage = index == 0 ||
+                            messageDate.day !=
+                                DateTime.parse(
+                                        messages[index - 1].dateSent)
+                                    .day;
+                    
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (isFirstMessage)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0, vertical: 8.0),
+                                child: Text(
+                                  _formatDate(messageDate), // Helper method to format date
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            ChatItem(
+                              message: message,
+                              username: widget.username,
+                            ),
+                          ],
                         );
                       },
-                    ),
-                  ],
+                    );
+                  },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.camera_alt),
-                onPressed: () {
-                  // Handle camera button press
-                },
-              ),
               Expanded(
                 child: TextField(
                   controller: _messageController,
                   onChanged: (value) {
                     setState(() {});
                   },
-                  onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                  
+                  onSubmitted:(text) {
+                  if (_messageController.text != '') {
+                    sendChat();
+                    _messageController
+                        .clear(); // Clear the text field after sending message
+                  } else {
+                    return;
+                  }
+                }, 
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     fillColor: const Color.fromARGB(199, 10, 10, 10),
@@ -310,12 +320,7 @@ class _ChatBodyState extends ConsumerState<ChatBody> {
                 icon: const Icon(Icons.emoji_emotions),
                 onPressed: () => _showEmojiPicker(context),
               ),
-              IconButton(
-                icon: const Icon(Icons.gif),
-                onPressed: () {
-                  // Handle GIF button press
-                },
-              ),
+             
               IconButton(
                 icon: Icon(
                   Icons.send,

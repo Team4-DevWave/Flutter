@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:threddit_clone/app/pref_constants.dart';
 import 'package:threddit_clone/features/home_page/model/favourite_model.dart';
 import 'package:threddit_clone/features/user_system/model/failure.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -19,8 +18,8 @@ class FavouriteNotifier extends StateNotifier<Favourite> {
   FavouriteNotifier(this.ref) : super(Favourite("", "", ""));
 
   FutureEither<bool> getFavourite() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/favorites");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/favorites");
 
     final token = await getToken();
 
@@ -52,8 +51,8 @@ class FavouriteNotifier extends StateNotifier<Favourite> {
   }
 
   FutureEither<bool> removeItem() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/favorites");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/favorites");
 
     final token = await getToken();
 
@@ -89,8 +88,8 @@ class FavouriteNotifier extends StateNotifier<Favourite> {
   }
 
   FutureEither<bool> addItem() async {
-    final url = Uri.parse(
-        "http://${AppConstants.local}:8000/api/v1/users/me/favorites");
+    final url =
+        Uri.parse("https://www.threadit.tech/api/v1/users/me/favorites");
 
     final token = await getToken();
 

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +8,7 @@ import 'package:threddit_clone/features/home_page/model/visited_item.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/communities_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/favourites_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.dart';
+import 'package:threddit_clone/features/home_page/view/widgets/moderating_tiles.dart';
 import 'package:threddit_clone/features/home_page/view_model/favrourite_notifier.dart';
 import 'package:threddit_clone/features/home_page/view_model/get_user_communities.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
@@ -31,6 +30,7 @@ class LeftDrawer extends ConsumerStatefulWidget {
 class _LeftDrawerState extends ConsumerState<LeftDrawer> {
   List<VisitedItem> recentlyVisted = [];
   List<List<String>> userCommunitiesData = [];
+  List<List<String>> moderatingCommunities = [];
   List<String>? favouritesList;
   bool isLoading = false;
 
@@ -38,9 +38,6 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
     setState(() {
       isLoading = true;
     });
-    // print(await getCommunitiesState(ref));
-    // await getFavouritesState(ref);
-    // await getFollowingState(ref);
     await ref.read(settingsFetchProvider.notifier).getMe();
     recentlyVisted = await getRecentVisits();
     final response =
@@ -49,6 +46,13 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
         (list) => userCommunitiesData = list);
+
+    final response2 =
+        await ref.read(userCommunitisProvider.notifier).getUserModerating();
+    response2.fold(
+        (failure) =>
+            showSnackBar(navigatorKey.currentContext!, failure.message),
+        (list) => moderatingCommunities = list);
 
     final resp = await ref.read(favouriteProvider.notifier).getFavourite();
     resp.fold(
@@ -76,9 +80,9 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
     return Stack(children: [
       Drawer(
         elevation: double.maxFinite,
-        backgroundColor: AppColors.mainColor,
-        shadowColor: AppColors.mainColor,
-        surfaceTintColor: AppColors.mainColor,
+        backgroundColor: AppColors.backgroundColor,
+        shadowColor: AppColors.backgroundColor,
+        surfaceTintColor: AppColors.backgroundColor,
         child: isLoading
             ? const Loading()
             : recentlyVisted.isEmpty &&
@@ -86,6 +90,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                     ref.read(userModelProvider)!.followedUsers!.isEmpty &&
                     userCommunitiesData.isEmpty
                 ? Column(
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -100,91 +105,108 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                     ],
                   )
                 : ListView(
-                    itemExtent: null,
                     padding: EdgeInsets.zero,
                     children: <Widget>[
                       if (recentlyVisted.isNotEmpty)
-                        Expanded(
+                        SizedBox(
+                          height: limitedRecentlyVisited.length * 50.h + 50.h,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              SizedBox(height: 40.h),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(
-                                      'Recently Visited',
-                                      style: AppTextStyles.primaryTextStyle
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          _showSecondDrawer = true;
-                                        });
-                                      },
-                                      child: Text(
-                                        'See all',
-                                        style: AppTextStyles.primaryTextStyle
-                                            .copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15.spMin),
+                                    SizedBox(height: 40.h),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 15.spMin),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Recently Visited',
+                                            style: AppTextStyles
+                                                .primaryTextStyle
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                _showSecondDrawer = true;
+                                              });
+                                            },
+                                            child: Text(
+                                              'See all',
+                                              style: AppTextStyles
+                                                  .primaryTextStyle
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 15.spMin),
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                    ),
+                                    ListView.builder(
+                                      padding: EdgeInsets.all(0.spMin),
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(), // Disable scrolling within the list
+                                      itemCount: limitedRecentlyVisited.length,
+                                      itemBuilder: (context, index) {
+                                        final item =
+                                            limitedRecentlyVisited[index];
+                                        return ListTile(
+                                          onTap: () {
+                                            //go to the community/user's profile screen
+                                            Navigator.pop(context);
+                                            if (item.type ==
+                                                PrefConstants.userType) {
+                                              Navigator.pushNamed(context,
+                                                  RouteClass.otherUsers,
+                                                  arguments: {
+                                                    'username': item.username,
+                                                  });
+                                            } else {
+                                              Navigator.pushNamed(context,
+                                                  RouteClass.communityScreen,
+                                                  arguments: {
+                                                    'id': item.username,
+                                                    'uid': ref
+                                                        .read(userModelProvider)
+                                                        ?.id
+                                                  });
+                                            }
+                                          },
+                                          leading: item.imageUrl == ""
+                                              ? CircleAvatar(
+                                                  radius: 15.spMin,
+                                                  backgroundImage:
+                                                      const AssetImage(Photos
+                                                          .profileDefault))
+                                              : CircleAvatar(
+                                                  radius: 15.spMin,
+                                                  backgroundImage: NetworkImage(
+                                                      item.imageUrl)),
+                                          title: Text(item.username,
+                                              maxLines: 1,
+                                              style: AppTextStyles
+                                                  .primaryTextStyle
+                                                  .copyWith(
+                                                fontSize: 17.spMin,
+                                              )),
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
-                              ),
-                              ListView.builder(
-                                padding: const EdgeInsets.all(0),
-                                shrinkWrap: true,
-                                physics:
-                                    const NeverScrollableScrollPhysics(), // Disable scrolling within the list
-                                itemCount: limitedRecentlyVisited.length,
-                                itemBuilder: (context, index) {
-                                  final item = limitedRecentlyVisited[index];
-                                  return ListTile(
-                                    onTap: () {
-                                      //go to the community/user's profile screen
-                                      Navigator.pop(context);
-                                      if (item.type == PrefConstants.userType) {
-                                        Navigator.pushNamed(
-                                            context, RouteClass.otherUsers,
-                                            arguments: {
-                                              'username': item.username,
-                                            });
-                                      } else {
-                                        Navigator.pushNamed(
-                                            context, RouteClass.communityScreen,
-                                            arguments: {
-                                              'id': item.username,
-                                              'uid': ref
-                                                  .read(userModelProvider)
-                                                  ?.id
-                                            });
-                                      }
-                                    },
-                                    leading: item.imageUrl == ""
-                                        ? CircleAvatar(
-                                            radius: 15.spMin,
-                                            backgroundImage: const AssetImage(
-                                                Photos.profileDefault))
-                                        : CircleAvatar(
-                                            radius: 15.spMin,
-                                            backgroundImage:
-                                                NetworkImage(item.imageUrl)),
-                                    title: Text(item.username,
-                                        maxLines: 1,
-                                        style: AppTextStyles.primaryTextStyle
-                                            .copyWith(
-                                          fontSize: 17.spMin,
-                                        )),
-                                  );
-                                },
                               ),
                             ],
                           ),
@@ -193,8 +215,11 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                       if (recentlyVisted.isEmpty) SizedBox(height: 30.h),
                       if (ref.read(favouriteList).isNotEmpty)
                         const FavouriteTiles(title: "Favourites"),
+                      if (moderatingCommunities.isNotEmpty)
+                        const ModeratingTiles(title: "Moderating"),
                       if (userCommunitiesData.isNotEmpty)
-                        const CommunitiesTiles(title: "Your Communities"),
+                        const CommunitiesTiles(
+                          title: "Your Communities"),
                       if (ref
                           .read(userModelProvider)!
                           .followedUsers!
@@ -204,111 +229,131 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                   ),
       ),
       if (_showSecondDrawer)
-        Expanded(
-          child: Drawer(
-            elevation: double.maxFinite,
-            backgroundColor: AppColors.mainColor,
-            shadowColor: AppColors.mainColor,
-            surfaceTintColor: AppColors.mainColor,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 40.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _showSecondDrawer = false;
-                                  });
-                                },
-                                child: const Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                )),
-                            SizedBox(width: Platform.isAndroid?15.w:7.w),
-                            Text(
-                              'Recently Visited',
-                              style: AppTextStyles.primaryTextStyle
-                                  .copyWith(fontWeight: FontWeight.bold),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: Drawer(
+                elevation: double.maxFinite,
+                backgroundColor: AppColors.mainColor,
+                shadowColor: AppColors.mainColor,
+                surfaceTintColor: AppColors.mainColor,
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height.h,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(height: 40.h),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 15.spMin),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              _showSecondDrawer = false;
+                                            });
+                                          },
+                                          child: const Icon(
+                                            Icons.arrow_back,
+                                            color: Colors.white,
+                                          )),
+                                      SizedBox(width: 15.spMin),
+                                      Text(
+                                        'Recently Visited',
+                                        style: AppTextStyles.primaryTextStyle
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(width: 60.spMin),
+                                      InkWell(
+                                        onTap: () async {
+                                          await deleteAll();
+                                          setState(() {
+                                            recentlyVisted = [];
+                                            _showSecondDrawer = false;
+                                          });
+                                        },
+                                        child: Text(
+                                          'Clear all',
+                                          style: AppTextStyles.primaryTextStyle
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15.spMin),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                ListView.builder(
+                                  padding: EdgeInsets.all(0.spMin),
+                                  shrinkWrap: true,
+                                  physics:
+                                      const NeverScrollableScrollPhysics(), // Disable scrolling within the list
+                                  itemCount: recentlyVisted.length,
+                                  itemBuilder: (context, index) {
+                                    final item = recentlyVisted[index];
+                                    return ListTile(
+                                      onTap: () {
+                                        //go to the community/user's profile screen
+                                        Navigator.pop(context);
+                                        if (item.type ==
+                                            PrefConstants.userType) {
+                                          Navigator.pushNamed(
+                                              context, RouteClass.otherUsers,
+                                              arguments: {
+                                                'username': item.username,
+                                              });
+                                        } else {
+                                          Navigator.pushNamed(context,
+                                              RouteClass.communityScreen,
+                                              arguments: {
+                                                'id': item.username,
+                                                'uid': ref
+                                                    .read(userModelProvider)
+                                                    ?.id
+                                              });
+                                        }
+                                      },
+                                      leading: item.imageUrl == ""
+                                          ? CircleAvatar(
+                                              radius: 15.spMin,
+                                              backgroundImage: const AssetImage(
+                                                  Photos.profileDefault))
+                                          : CircleAvatar(
+                                              radius: 15.spMin,
+                                              backgroundImage:
+                                                  NetworkImage(item.imageUrl)),
+                                      title: Text(item.username,
+                                          maxLines: 1,
+                                          style: AppTextStyles.primaryTextStyle
+                                              .copyWith(
+                                            fontSize: 17.spMin,
+                                          )),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                            SizedBox(width: Platform.isAndroid?60.w:15.w),
-                            InkWell(
-                              onTap: () async {
-                                await deleteAll();
-                                setState(() {
-                                  recentlyVisted = [];
-                                  _showSecondDrawer = false;
-                                });
-                              },
-                              child: Text(
-                                'Clear all',
-                                style: AppTextStyles.primaryTextStyle.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15.spMin),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      ListView.builder(
-                        padding: const EdgeInsets.all(0),
-                        shrinkWrap: true,
-                        physics:
-                            const NeverScrollableScrollPhysics(), // Disable scrolling within the list
-                        itemCount: recentlyVisted.length,
-                        itemBuilder: (context, index) {
-                          final item = recentlyVisted[index];
-                          return ListTile(
-                            onTap: () {
-                              //go to the community/user's profile screen
-                              Navigator.pop(context);
-                              if (item.type == PrefConstants.userType) {
-                                Navigator.pushNamed(
-                                    context, RouteClass.otherUsers,
-                                    arguments: {
-                                      'username': item.username,
-                                    });
-                              } else {
-                                Navigator.pushNamed(
-                                    context, RouteClass.communityScreen,
-                                    arguments: {
-                                      'id': item.username,
-                                      'uid': ref.read(userModelProvider)?.id
-                                    });
-                              }
-                            },
-                            leading: item.imageUrl == ""
-                                ? CircleAvatar(
-                                    radius: 15.spMin,
-                                    backgroundImage:
-                                        const AssetImage(Photos.profileDefault))
-                                : CircleAvatar(
-                                    radius: 15.spMin,
-                                    backgroundImage:
-                                        NetworkImage(item.imageUrl)),
-                            title: Text(item.username,
-                                maxLines: 1,
-                                style: AppTextStyles.primaryTextStyle.copyWith(
-                                  fontSize: 17.spMin,
-                                )),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
     ]);
   }

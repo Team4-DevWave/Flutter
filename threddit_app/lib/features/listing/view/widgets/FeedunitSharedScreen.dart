@@ -94,8 +94,7 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
     if (widget.parentPost.userVote == 'downvoted') {
       widget.parentPost.votes!.downvotes--;
       widget.parentPost.userVote = 'none';
-    }
-    else if (widget.parentPost.userVote == 'upvoted') {
+    } else if (widget.parentPost.userVote == 'upvoted') {
       widget.parentPost.votes!.upvotes--;
       widget.parentPost.votes!.downvotes++;
       widget.parentPost.userVote = 'downvoted';
@@ -235,17 +234,6 @@ class _FeedUnitShareState extends ConsumerState<FeedUnitShare> {
                 child: FeedUnitSharedPost(widget.dataOfPost),
               ),
             ),
-            widget.dataOfPost.type == 'url'
-                ? Center(
-                    child: AnyLinkPreview(
-                      link: widget.dataOfPost.linkURL ?? '',
-                      onTap: () {
-                        launchUrlFunction(
-                            Uri.parse(widget.dataOfPost.linkURL ?? ''));
-                      },
-                    ),
-                  )
-                : const SizedBox(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

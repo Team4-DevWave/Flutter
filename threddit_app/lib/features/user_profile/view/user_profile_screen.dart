@@ -222,7 +222,7 @@ class _UserProfileState extends ConsumerState<UserProfile>
                           context),
                       sliver: SliverAppBar(
                         stretch: true,
-                        title: user?.username != "SuperMario"
+                        title: user?.username != "Super Mario"
                             ? Text(
                                 "u/${user?.username}",
                                 style: AppTextStyles.secondaryTextStyle,
@@ -522,19 +522,28 @@ class _UserProfileState extends ConsumerState<UserProfile>
                                     return CommentItemForProfile(
                                         comment: _comments[index], uid: uid!);
                                   } else {
-                                    return SizedBox(
-                                        child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Center(
-                                        child: Text(
-                                          'No more Comments ',
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ));
+                                    return _fetchingCommentsFinish
+                                        ? SizedBox(
+                                            height: 75.h,
+                                            width: 75.w,
+                                            child: Lottie.asset(
+                                              'assets/animation/loading2.json',
+                                              repeat: true,
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Center(
+                                              child: Text(
+                                                'No more Comments ',
+                                                style: TextStyle(
+                                                  fontSize: 16.sp,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ));
                                   }
                                 },
                               ),

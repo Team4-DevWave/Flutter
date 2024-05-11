@@ -1,11 +1,11 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/home_page/view_model/saved_post.dart';
-import 'package:threddit_clone/features/posting/view/screens/post_screen.dart';
-
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_post_feed_widget.dart';
 import 'package:threddit_clone/features/searching/view/widgets/search_shared_feed_unit.dart';
@@ -89,8 +89,8 @@ class _SearchCommentItemState extends ConsumerState<SearchCommentItem> {
                         ? SearchFeedUnitShare(
                             dataOfPost: widget.comment.post!.parentPost!,
                             parentPost: widget.comment.post!,
-                            widget.uid!)
-                        : SearchFeedUnit(widget.comment.post!, widget.uid!),
+                            widget.uid)
+                        : SearchFeedUnit(widget.comment.post!, widget.uid),
                     subtitle: Container(
                       padding: const EdgeInsets.all(6.0),
                       decoration: BoxDecoration(

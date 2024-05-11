@@ -1,4 +1,6 @@
 // // ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -31,8 +33,8 @@ class PostData {
   final String? url;
   final bool NSFW;
   final bool spoiler;
-  final String?image;
-  final String?video;
+  final String? image;
+  final String? video;
   final String type;
   final bool locked;
   final String? community;
@@ -64,23 +66,22 @@ class PostData {
     this.poll,
   });
 
-  PostData copyWith({
-    String? title,
-    String? text_body,
-    String? url,
-    bool? NSFW,
-    bool? spoiler,
-    String? image,
-    String? type,
-    bool? locked,
-    String? community,
-    String? video,
-    File? imagePath,
-    File? videoPath,
-    bool? availableForVoting,
-    int? duration,
-    Map<String,dynamic>? poll
-  }) {
+  PostData copyWith(
+      {String? title,
+      String? text_body,
+      String? url,
+      bool? NSFW,
+      bool? spoiler,
+      String? image,
+      String? type,
+      bool? locked,
+      String? community,
+      String? video,
+      File? imagePath,
+      File? videoPath,
+      bool? availableForVoting,
+      int? duration,
+      Map<String, dynamic>? poll}) {
     return PostData(
       title: title ?? this.title,
       text_body: text_body ?? this.text_body,
@@ -115,27 +116,26 @@ class PostData {
       'video': video,
       'availableForVoting': availableForVoting,
       'duration': duration,
-      'poll' : poll
+      'poll': poll
     };
   }
 
   /// Creates an instance from a map.
   factory PostData.fromMap(Map<String, dynamic> map) {
     return PostData(
-      title: map['title'] as String,
-      text_body: map['text_body'] != null ? map['text_body'] as String : null,
-      url: map['url'] != null ? map['url'] as String : null,
-      NSFW: map['NSFW'] as bool,
-      spoiler: map['spoiler'] as bool,
-      imageURL: map['image'] != null ? map['image'] as String : null,
-      type: map['type'] as String,
-      locked: map['locked'] as bool,
-      community: map['community'] != null ? map['community'] as String : null,
-      videoURL: map['video'] != null ? map['video']as String : null,
-      availableForVoting: map['availableForVoting'] as bool,
-      duration: map['duration'] as int,
-      poll : map['poll'] as Map<String, dynamic>
-    );
+        title: map['title'] as String,
+        text_body: map['text_body'] != null ? map['text_body'] as String : null,
+        url: map['url'] != null ? map['url'] as String : null,
+        NSFW: map['NSFW'] as bool,
+        spoiler: map['spoiler'] as bool,
+        imageURL: map['image'] != null ? map['image'] as String : null,
+        type: map['type'] as String,
+        locked: map['locked'] as bool,
+        community: map['community'] != null ? map['community'] as String : null,
+        videoURL: map['video'] != null ? map['video'] as String : null,
+        availableForVoting: map['availableForVoting'] as bool,
+        duration: map['duration'] as int,
+        poll: map['poll'] as Map<String, dynamic>);
   }
 
   /// Converts the instance into a JSON string.

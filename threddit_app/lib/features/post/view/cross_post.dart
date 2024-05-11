@@ -6,6 +6,7 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/post/view/rules_screen.dart';
 import 'package:threddit_clone/features/post/view/widgets/classic_post_card.dart';
 import 'package:threddit_clone/features/post/view/widgets/onexit_share.dart';
+import 'package:threddit_clone/features/post/viewmodel/delete_post.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post.dart';
 import 'package:threddit_clone/features/post/viewmodel/share_post_provider.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -93,10 +94,14 @@ class _CrossPostState extends ConsumerState<CrossPost> {
         (post) {
       showSnackBar(
           navigatorKey.currentContext!, 'Your post shared to $message');
+      ref.read(deletePostScreen.notifier).update((state) => true);
       Navigator.pushNamed(context, RouteClass.postScreen, arguments: {
         'currentpost': post,
         'uid': ref.read(userModelProvider)?.id
-      }).then((value) => onExit());
+      }).then((value) {
+        ref.read(deletePostScreen.notifier).update((state) => false);
+        onExit();
+      });
     });
   }
 

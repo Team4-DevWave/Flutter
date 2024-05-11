@@ -5,6 +5,7 @@ import 'package:threddit_clone/features/commenting/view/widgets/comment_item.dar
 import 'package:threddit_clone/features/commenting/view/widgets/add_comment.dart';
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer.dart';
+import 'package:threddit_clone/features/post/viewmodel/delete_post.dart';
 import 'package:threddit_clone/features/posting/view/widgets/shared_post_card.dart';
 import 'package:threddit_clone/features/posting/view/widgets/bottom_sheet_owner.dart';
 import 'package:threddit_clone/features/posting/view/widgets/options_bottom%20sheet.dart';
@@ -32,7 +33,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
   @override
   void initState() {
     super.initState();
-   ref.read(commentsProvider.notifier).fetchComments(widget.currentPost.id);
+    ref.read(commentsProvider.notifier).fetchComments(widget.currentPost.id);
     HistoryManager.addPostToHistory(widget.currentPost);
     print(widget.currentPost.id);
   }
@@ -50,7 +51,6 @@ class _PostScreenState extends ConsumerState<PostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    
     void toggleNsfw() async {
       ref.read(toggleNSFW(widget.currentPost.id));
       widget.currentPost.nsfw = !widget.currentPost.nsfw;
@@ -73,6 +73,7 @@ class _PostScreenState extends ConsumerState<PostScreen> {
           backgroundColor: const Color.fromRGBO(19, 19, 19, 1),
           leading: IconButton(
             onPressed: () {
+              ref.read(deletePostScreen.notifier).update((state) => false);
               Navigator.of(context).pop();
             },
             icon: const Icon(Icons.arrow_back),
@@ -80,11 +81,6 @@ class _PostScreenState extends ConsumerState<PostScreen> {
           actions: [
             Row(
               children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search),
-                ),
-                IconButton(onPressed: () {}, icon: const Icon(Icons.sort)),
                 IconButton(
                     onPressed: () {
                       showModalBottomSheet(
@@ -142,11 +138,34 @@ class _PostScreenState extends ConsumerState<PostScreen> {
                   Consumer(
                     builder: (context, watch, child) {
                       final comments = ref.watch(commentsProvider);
-                      return Column(
-                        children: comments.map((comment) {
-                          return CommentItem(comment: comment,uid:widget.uid);
-                        }).toList(),
-                      );
+                      return comments.isNotEmpty
+                          ? Column(
+                              children: comments.map((comment) {
+                                return CommentItem(
+                                    comment: comment, uid: widget.uid);
+                              }).toList(),
+                            )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    height: 50.h,
+                                  ),
+                                  Image(
+                                    image: const AssetImage(
+                                        'assets/images/thinking-snoo.png'),
+                                    height: 100.h,
+                                  ),
+                                  Text('Be the first to comment?',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                            );
+                      
                     },
                   ),
                 ],
@@ -156,7 +175,6 @@ class _PostScreenState extends ConsumerState<PostScreen> {
               post: widget.currentPost,
               uid: widget.uid,
             )
-            
           ],
         ),
       ),
