@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
+import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
 
 class Post {
   final String id;
@@ -161,6 +162,53 @@ class Post {
       votes: votes ?? this.votes,
       parentPost: parentPost ?? this.parentPost,
     );
+  }
+  void upVotePost(UserModelMe me)
+  {
+    if(userVote=='upvote')
+    {
+      userVote='none';
+      votes!.upvotes--;
+      me.upvotes!.posts.remove(id);
+    }
+    else if(userVote=='downvote')
+    {
+      userVote='upvote';
+      votes!.upvotes++;
+      votes!.downvotes--;
+      me.downvotes!.posts.add(id);
+    }
+    else
+    {
+      userVote='upvote';
+      votes!.upvotes++;
+      me.upvotes!.posts.add(id);
+    }
+  
+  }
+  void downVotePost(UserModelMe me)
+  {
+    if(userVote=='downvote')
+    {
+      userVote='none';
+      votes!.downvotes--;
+      me.downvotes!.posts.remove(id);
+    }
+    else if(userVote=='upvote')
+    {
+      userVote='downvote';
+      votes!.downvotes++;
+      votes!.upvotes--;
+      me.upvotes!.posts.remove(id);
+      me.downvotes!.posts.add(id);
+    }
+    else
+    {
+      userVote='downvote';
+      votes!.downvotes++;
+      me.downvotes!.posts.add(id);
+    }
+  
   }
 }
 
