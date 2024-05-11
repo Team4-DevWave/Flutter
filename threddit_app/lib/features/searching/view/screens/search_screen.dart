@@ -95,6 +95,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               icon: const Icon(Icons.clear))
         ],
         title: TextFormField(
+          key: const Key("searchForm"),
           style: AppTextStyles.primaryTextStyle,
           controller: searchController,
           onFieldSubmitted: (value) {
