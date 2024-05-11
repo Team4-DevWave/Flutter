@@ -4,6 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 
+
+/// This file contains the [ChatRoomPreview] widget, which is responsible for displaying a preview of a chat room.
+/// It provides information such as the chat room name, last message, and timestamp.
+
+
+/// formats time to be correctly displayed 
 String formatDateTime(DateTime messageTime) {
    DateTime now = DateTime.now();
   Duration difference = now.difference(messageTime);

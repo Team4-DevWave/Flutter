@@ -5,6 +5,11 @@ import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 
+/// This file contains the implementation of the [MemberScreen] class.
+/// The [MemberScreen] class is responsible for displaying the list of members in a chat group.
+/// It provides functionality to view member profiles and send direct messages to members.
+
+
 // ignore: must_be_immutable
 class MembersScreen extends ConsumerStatefulWidget {
   MembersScreen({super.key, required this.username, required this.chatroom});

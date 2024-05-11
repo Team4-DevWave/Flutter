@@ -5,6 +5,8 @@ import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/chatting/model/chat_repository.dart';
 import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 
+/// widget class for the chatroom options screen 
+
 // ignore: must_be_immutable
 class ChatOptionsScreen extends ConsumerStatefulWidget {
   ChatOptionsScreen(
@@ -28,7 +30,7 @@ class _ChatOptionsScreenState extends ConsumerState<ChatOptionsScreen>
   void dispose() {
     super.dispose();
   }
-
+/// leave chatroom function 
   void leaveChatroomfn(BuildContext context) async{
     showDialog(
       context: context,

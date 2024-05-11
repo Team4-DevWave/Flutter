@@ -6,6 +6,9 @@ import 'package:threddit_clone/features/chatting/model/chat_room_model.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:http/http.dart' as http;
 
+/// class the is used in the chatting feture to notify the UI to update based on new events
+/// handles functions such as deleting a chat message, leaving a chatroom and adding members to chat rooms 
+
 Future<List<Chatroom>> fetchUserChatrooms() async {
   String? token = await getToken();
   final url = Uri.parse('https://www.threadit.tech/api/v1/chatrooms/');

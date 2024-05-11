@@ -7,6 +7,10 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// This file contains the implementation of the `RenameScreen` widget.
+/// The `RenameScreen` widget is responsible for displaying a screen where users can rename a chat.
+/// It is used in the `Chatting` feature of the Threddit app.
+
 // ignore: must_be_immutable
 class RenameChatroom extends ConsumerStatefulWidget {
   RenameChatroom(

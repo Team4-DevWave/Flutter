@@ -6,6 +6,9 @@ import 'package:threddit_clone/features/community/view/widgets/posts_searched.da
 import 'package:threddit_clone/features/home_page/model/newpost_model.dart';
 import 'package:threddit_clone/features/searching/model/search_comment_model.dart';
 
+/// result screen for search results
+/// contains tabs for comments and posts returned from the search operation 
+
 
 class SearchResultsCommunity extends ConsumerStatefulWidget {
   const SearchResultsCommunity(
