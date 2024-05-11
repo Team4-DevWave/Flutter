@@ -16,6 +16,12 @@ import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// The [CrossPost] widget allows users to cross-post an existing post to other communities.
+///
+/// Users can select a community to cross-post to, and optionally mark the post as NSFW or a spoiler.
+///
+/// The [CrossPost] widget relies on the [sharedPostProvider] for managing the post being cross-posted, and
+/// the [sharePostsProvider] for handling the cross-posting action.
 class CrossPost extends ConsumerStatefulWidget {
   const CrossPost({super.key});
 
@@ -24,21 +30,38 @@ class CrossPost extends ConsumerStatefulWidget {
 }
 
 class _CrossPostState extends ConsumerState<CrossPost> {
+  /// The current title value for the post being shared.
   String lastValue = '';
+
+  /// The destination where the post is being shared, defaults to 'My Profile'.
   String? postingIn;
+
+  /// Flag to control visibility of NSFW and Spoiler options.
   bool isOn = false;
+
+  /// Flag to mark a post as NSFW.
   bool isNSFW = false;
+
+  /// Flag to mark a post as spoiler.
   bool isSpoiler = false;
+
+  /// Flag to indicate if the post is not being shared to the user's own profile.
   bool isNotProfile = true;
+
+  /// Flag to indicate if a loading indicator should be displayed.
   bool _isLoading = false;
+
+  /// Flag to indicate if the current form input is valid for submission.
   bool _isValid = true;
 
+  /// Updates the validity of the form based on the title input.
   void _updateFormValidity() {
     setState(() {
-      _isValid = lastValue.trim().isNotEmpty ? true : false;
+      _isValid = lastValue.trim().isNotEmpty;
     });
   }
 
+  /// Navigates back to the previous screens and resets navigation-related states.
   void onExit() {
     for (int i = 0; i <= ref.watch(popCounter); i++) {
       Navigator.pop(context);

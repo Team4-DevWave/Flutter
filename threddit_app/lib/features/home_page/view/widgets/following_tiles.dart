@@ -14,6 +14,17 @@ import 'package:threddit_clone/features/user_system/view_model/settings_function
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+/// A widget that displays a list of users the current user is following.
+///
+/// This widget displays a list of users the current user is following. 
+/// It fetches the list of followed users from the `userModelProvider`,
+/// retrieves additional data for each followed user (such as their
+/// profile picture), and displays them in an [ExpansionTile].
+///
+/// Each followed user is represented by a [ListTile] with their profile picture,
+/// username, and a star icon to indicate if the followed user is also a favorite.
+/// Pressing the star icon adds or removes the user from the user's favorites list.
+
 class FollowingTiles extends ConsumerStatefulWidget {
   const FollowingTiles({super.key, required this.title});
   final String title;
@@ -31,6 +42,8 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
   String pressedOn = "";
   bool initialState = false;
 
+  /// gets the user data in the [user] variable
+  /// gets the following list data in the [_followingList]
   Future<void> _getUserData() async {
     setState(() {
       isLoading = true;
@@ -56,6 +69,7 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
     });
   }
 
+  /// On pressing the star button, the user is added to the favourites list
   Future<void> _onPress(String username) async {
     setState(() {
       isStarLoading = true;
@@ -97,26 +111,9 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
   @override
   Widget build(BuildContext context) {
     favouriteData = ref.watch(favouriteList);
-    // initialState = ref.read(followingStateProvider) ?? false;
 
-    ImageProvider putProfilepic(String pfpLink) {
-      if (pfpLink == "") {
-        return const AssetImage('assets/images/Default_Avatar.png');
-      } else {
-        return NetworkImage(pfpLink);
-      }
-    }
 
     return ExpansionTile(
-        // initiallyExpanded: ref.read(followingStateProvider) ?? false,
-        // onExpansionChanged: (value) async {
-        //   print(initialState);
-        //   print("DDDDDDDDDD$value");
-        //   await saveCommunitiesState(value);
-        //   setState(() {
-        //     initialState = value;
-        //   });
-        // },
         title: Text(
           widget.title,
           style: AppTextStyles.primaryTextStyle,
@@ -135,7 +132,7 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
                   leading: CircleAvatar(
                       radius: 15.spMin,
                       backgroundImage:
-                          putProfilepic(followed['profilePicture']!)),
+                          putUserProfilepic(followed['profilePicture']!)),
                   title: Text(followed['username']!,
                       maxLines: 1,
                       style: AppTextStyles.primaryTextStyle.copyWith(
@@ -171,3 +168,11 @@ class _FollowingTilesState extends ConsumerState<FollowingTiles> {
         ]);
   }
 }
+
+ImageProvider putUserProfilepic(String pfpLink) {
+      if (pfpLink == "") {
+        return const AssetImage('assets/images/Default_Avatar.png');
+      } else {
+        return NetworkImage(pfpLink);
+      }
+    }

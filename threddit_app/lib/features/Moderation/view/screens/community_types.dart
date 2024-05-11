@@ -8,6 +8,19 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// A screen that allows the user to configure the type of a community.
+///
+/// This screen provides options to set the restriction level (public, restricted,
+/// or private) and whether the community is for adults (18+).
+///
+/// The screen uses a [Slider] to select the restriction level and a [Switch]
+/// to toggle the adult setting. The initial values for these settings are fetched
+/// from the `communityTypesProvider` in Riverpod.
+///
+/// When the user makes changes to the settings, a "Save" button in the [AppBar]
+/// becomes active. Pressing the "Save" button updates the `communityTypesProvider`
+/// with the new settings and navigates back to the previous screen.
+
 class CommunityTypes extends ConsumerStatefulWidget {
   const CommunityTypes({super.key});
 

@@ -9,8 +9,24 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// A widget that displays a list of communities.
+///
+/// This widget displays a list of communities. The list of communities to display
+/// can either be provided through the `searchRes` property (for search results) or
+/// fetched from the backend using the `userCommunitisProvider`.
+///
+/// The widget handles loading states using a [Loading] indicator and displays a
+/// list of [ListTile] widgets, each representing a community.
+
 class CommunityList extends ConsumerStatefulWidget {
+  /// Creates a [CommunityList] widget.
+  ///
+  /// The [searchRes] argument is required and specifies a list of communities to display.
+  /// Each community is represented as a list of strings: [community name, community icon URL]
   const CommunityList({super.key, required this.searchRes});
+
+  /// A list of communities to display, each represented as a list of strings:
+  /// [community name, community icon URL].
   final List<List<String>> searchRes;
 
   @override
@@ -20,6 +36,9 @@ class CommunityList extends ConsumerStatefulWidget {
 class _CommunityListState extends ConsumerState<CommunityList> {
   bool _isLoading = false;
   List<List<String>> _communityData = [[]];
+
+  /// get user communities from thhe "getUserCommunities()" funciton in the 
+  /// "userCommunitisProvider" that fetches it from the backend.
   Future<void> _fetchCommunities() async {
     setState(() {
       _isLoading = true;
@@ -40,18 +59,9 @@ class _CommunityListState extends ConsumerState<CommunityList> {
 
   @override
   void initState() {
-    ///fetches the data when the widget is intialized
+    /// fetches the data when the widget is intialized
     _fetchCommunities();
     super.initState();
-  }
-
-  ImageProvider putProfilepic(String commLink) {
-    if (commLink == "") {
-      return const NetworkImage(
-          "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg");
-    } else {
-      return NetworkImage(commLink);
-    }
   }
 
   @override
@@ -87,3 +97,15 @@ class _CommunityListState extends ConsumerState<CommunityList> {
           ]);
   }
 }
+
+  /// Chooses the profile picture based on the commLink
+  /// If it is empty, it returns the default image
+  /// else it returns the image in the link.
+  ImageProvider putProfilepic(String commLink) {
+    if (commLink == "") {
+      return const NetworkImage(
+          "https://st2.depositphotos.com/1432405/8410/v/450/depositphotos_84106432-stock-illustration-saturn-icon-simple.jpg");
+    } else {
+      return NetworkImage(commLink);
+    }
+  }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:threddit_clone/features/post/view/add_post_screen.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/add_social_link.dart';
 import 'package:threddit_clone/features/user_profile/view/widgets/onSave_button.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -34,16 +35,19 @@ class _EditProfileState extends ConsumerState<EditProfile> {
   String? displayName;
   String? about;
   List<List<String>>? socialLinks;
-  bool? initIsActive; // the initial state of the isActive controller
-  bool? initIsVisible; // the initial state of the isVisible controller
+  /// the initial state of the isActive controller
+  bool? initIsActive; 
+  /// the initial state of the isVisible controller
+  bool? initIsVisible;
   bool? isActive;
   bool? isVisible;
-  bool isAnythingChanged =
-      false; //checker for changes in the screen to be used in the saved button
+  ///checker for changes in the screen to be used in the saved button
+  bool isAnythingChanged = false; 
   final ImagePicker picker = ImagePicker();
-  String? image; // holding the base64 string to be sent to the backend
-  File?
-      imageFile; //holds the image file path, used in converting the image to base64
+  /// holding the base64 string to be sent to the backend
+  String? image;   
+  ///holds the image file path, used in converting the image to base64
+  File? imageFile; 
   bool? isImage;
   bool? initIsImage;
 
@@ -66,7 +70,6 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     ref.read(userProfileProvider.notifier).updateSocialLinks(socialLinks);
     final response =
         await ref.read(userProfileProvider.notifier).updateUserLinks();
-
     response.fold(
         (failure) =>
             showSnackBar(navigatorKey.currentContext!, failure.message),
@@ -77,13 +80,13 @@ class _EditProfileState extends ConsumerState<EditProfile> {
     });
   }
 
-  Future<void> _removeImage() async {
+  bool _removeImage()  {
     setState(() {
-      image = "";
-      isImage = false;
+      removeImage(image, isImage!);
       imageFile = null;
     });
     isAnythingChanged = true;
+    return isImage!;
   }
 
   @override

@@ -43,13 +43,6 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
     super.dispose();
   }
 
-  bool _validateLink(String value) {
-    // Regular expression for URL validation
-    final urlRegex = RegExp(r'^(http|https):\/\/[^ "]+$', caseSensitive: false);
-
-    // Check if the input string matches the URL format
-    return urlRegex.hasMatch(value);
-  }
   
   @override
   Widget build(BuildContext context) {
@@ -62,7 +55,7 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
         style: AppTextStyles.primaryTextStyle,
         onChanged: (data) {
           ///check the validity of the.url
-          final bool result = _validateLink(data);
+          final bool result = validateLink(data);
           setState(() {
             isValid = result;
             ref.watch(validLink.notifier).update((state) => isValid);
@@ -104,3 +97,11 @@ class _AddLinkWidgetState extends ConsumerState<AddLinkWidget> {
     );
   } 
 }
+
+ bool validateLink(String value) {
+    // Regular expression for URL validation
+    final urlRegex = RegExp(r'^(http|https):\/\/[^ "]+$', caseSensitive: false);
+
+    // Check if the input string matches the URL format
+    return urlRegex.hasMatch(value);
+  }

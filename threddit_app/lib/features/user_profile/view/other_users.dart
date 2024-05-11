@@ -25,6 +25,20 @@ import 'package:threddit_clone/theme/button_styles.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 
+
+  /// Public function that checks the existence of a followed user in the followedUsers list
+  bool checkExistance(
+      String username, List<Map<String, dynamic>>? followedUsers, UserModelNotMe?user) {
+    bool isExist = false;
+
+    if (user != null && followedUsers != null) {
+      for (var followedUser in followedUsers) {
+        if (username == followedUser['username']) isExist = true;
+      }
+    }
+    return isExist;
+  }
+
 /// A widget responsible for displaying the profile of other users.
 ///
 /// This widget provides a detailed view of the profile of other users, including their posts, comments,
@@ -60,17 +74,6 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
   bool isLoading = true;
   bool? isFollowed;
 
-  bool checkExistance(
-      String username, List<Map<String, dynamic>>? followedUsers) {
-    bool isExist = false;
-
-    if (user != null && followedUsers != null) {
-      for (var followedUser in followedUsers) {
-        if (username == followedUser['username']) isExist = true;
-      }
-    }
-    return isExist;
-  }
 
   /// Method to set user data.
   void setData() async {
@@ -96,7 +99,7 @@ class _OtherUsersProfileState extends ConsumerState<OtherUsersProfile>
 
     //check if the user is followed or not
     isFollowed = checkExistance(
-        widget.username, ref.read(userModelProvider)!.followedUsers);
+        widget.username, ref.read(userModelProvider)!.followedUsers, user!);
 
     setState(() {
       isLoading = false;

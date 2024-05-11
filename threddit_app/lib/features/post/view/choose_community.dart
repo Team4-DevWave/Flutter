@@ -13,6 +13,17 @@ import 'package:threddit_clone/theme/photos.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+/// A screen that allows the user to choose a community or their profile to share a post to.
+///
+/// This screen presents a list of communities the user is a member of, as well
+/// as an option to share the post to the user's own profile.
+///
+/// The user can select a community or their profile to share the post to. The selected
+/// destination is stored in the `sharedPostProvider` and the associated profile
+/// picture is stored in the `shareProfilePic` provider using Riverpod.
+///
+/// The screen fetches the list of communities the user is a member of from the
+/// `userCommunitisProvider`.
 class ChooseCommunity extends ConsumerStatefulWidget {
   const ChooseCommunity({super.key});
 

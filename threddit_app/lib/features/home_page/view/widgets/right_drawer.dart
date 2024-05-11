@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:threddit_clone/app/global_keys.dart';
 import 'package:threddit_clone/app/route.dart';
 import 'package:threddit_clone/features/home_page/view/screens/saved_screen.dart';
+import 'package:threddit_clone/features/home_page/view/widgets/following_tiles.dart';
 import 'package:threddit_clone/features/home_page/view/widgets/right_drawer_buttons.dart';
 import 'package:threddit_clone/features/user_system/model/token_storage.dart';
 import 'package:threddit_clone/features/user_system/model/user_model_me.dart';
@@ -11,6 +12,20 @@ import 'package:threddit_clone/features/user_system/view/widgets/utils.dart';
 import 'package:threddit_clone/features/user_system/view_model/sign_in_with_google/google_auth_controller.dart';
 import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
+
+/// A drawer widget providing user-specific actions and navigation options.
+///
+/// This drawer displays a header with the user's profile picture and username,
+/// followed by buttons that allow the user to:
+/// - View their profile ([userProfileScreen]).
+/// - Create a community ([createCommunityScreen]).
+/// - View their saved posts and comments ([SavedScreen]).
+/// - View their history ([historyScreen]).
+/// - Log out of the application.
+/// - Go to settings ([settingsScreen]).
+///
+/// The drawer fetches the user's data from the `userModelProvider`
+/// to display their profile information. 
 
 class RightDrawer extends ConsumerStatefulWidget {
   const RightDrawer({super.key});
@@ -39,13 +54,6 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    ImageProvider setProfilePic() {
-      if (user!.profilePicture != "") {
-        return NetworkImage(user!.profilePicture!);
-      } else {
-        return const AssetImage('assets/images/Default_Avatar.png');
-      }
-    }
 
     return Drawer(
       backgroundColor: AppColors.backgroundColor,
@@ -66,7 +74,7 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
                             context, RouteClass.userProfileScreen);
                       },
                       child: CircleAvatar(
-                        backgroundImage: setProfilePic(),
+                        backgroundImage: putUserProfilepic(user!.profilePicture!),
                         radius: 30.spMin,
                       )),
                   SizedBox(height: 10.h),
