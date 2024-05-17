@@ -25,7 +25,7 @@ import 'package:threddit_clone/theme/text_styles.dart';
 /// - Go to settings ([settingsScreen]).
 ///
 /// The drawer fetches the user's data from the `userModelProvider`
-/// to display their profile information. 
+/// to display their profile information.
 
 class RightDrawer extends ConsumerStatefulWidget {
   const RightDrawer({super.key});
@@ -54,7 +54,6 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
 
   @override
   Widget build(BuildContext context) {
-
     return Drawer(
       backgroundColor: AppColors.backgroundColor,
       shadowColor: AppColors.backgroundColor,
@@ -74,7 +73,8 @@ class _RightDrawerState extends ConsumerState<RightDrawer> {
                             context, RouteClass.userProfileScreen);
                       },
                       child: CircleAvatar(
-                        backgroundImage: putUserProfilepic(user!.profilePicture!),
+                        backgroundImage:
+                            putUserProfilepic(user!.profilePicture!),
                         radius: 30.spMin,
                       )),
                   SizedBox(height: 10.h),

@@ -129,7 +129,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           child: Text(
                             'No feed available.',
                             style: TextStyle(
-                              fontSize: 20.sp,
+                              fontSize: 20.spMin,
                               color: Colors.white,
                             ),
                           ),
@@ -141,7 +141,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           Text(
                             "Communities",
                             style: AppTextStyles.boldTextStyle
-                                .copyWith(fontSize: 15.sp),
+                                .copyWith(fontSize: 15.spMin),
                           ),
                           ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
@@ -173,7 +173,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 title: Text(
                                   "r/${search.subreddits[index].name}",
                                   style: AppTextStyles.boldTextStyle
-                                      .copyWith(fontSize: 15.sp),
+                                      .copyWith(fontSize: 15.spMin),
                                 ),
                                 onTap: () {
                                   print(userId);
@@ -235,7 +235,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                     title: Text(
                                       localSearchHistory[index],
                                       style: AppTextStyles.boldTextStyle
-                                          .copyWith(fontSize: 15.sp),
+                                          .copyWith(fontSize: 15.spMin),
                                     ),
                                   );
                                 } else {
@@ -281,7 +281,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         key: const Key("trendingText"),
                         "Trending Today",
                         style: AppTextStyles.boldTextStyle
-                            .copyWith(fontSize: 15.sp),
+                            .copyWith(fontSize: 15.spMin),
                       ),
                       SizedBox(height: 10.h),
                       futureData.when(

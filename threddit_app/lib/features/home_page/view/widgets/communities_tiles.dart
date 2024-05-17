@@ -15,15 +15,15 @@ import 'package:threddit_clone/theme/text_styles.dart';
 
 /// A [StatefulWidget] that displays a list of communities the user is a member of.
 ///
-/// It fetches the list of communities from the 
+/// It fetches the list of communities from the
 /// [userCommunitisProvider] and displays them in an [ExpansionTile].
-/// 
-/// Each community is represented by a [ListTile] with its icon, name, and a 
+///
+/// Each community is represented by a [ListTile] with its icon, name, and a
 /// star icon to indicate if the user has favorited the community.
 class CommunitiesTiles extends ConsumerStatefulWidget {
   /// Creates a [CommunitiesTiles] widget.
   ///
-  /// The [title] argument is required and specifies the title displayed 
+  /// The [title] argument is required and specifies the title displayed
   /// in the [ExpansionTile].
   const CommunitiesTiles({super.key, required this.title});
 
@@ -36,13 +36,13 @@ class CommunitiesTiles extends ConsumerStatefulWidget {
 
 /// The state class for the [CommunitiesTiles] widget.
 ///
-/// This class manages the state of the widget, including the list of communities, 
-/// loading state, favorite state, and user information. 
+/// This class manages the state of the widget, including the list of communities,
+/// loading state, favorite state, and user information.
 class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
   /// The list of communities data. Each sublist contains the community name and icon.
   List<List<String>>? _userCommunitiesData;
 
-  /// Indicates whether the communities data is being loaded. 
+  /// Indicates whether the communities data is being loaded.
   bool isLoading = false;
 
   /// Indicates whether the favorite star icon is in a loading state.
@@ -55,11 +55,11 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
   String pressedOn = "";
 
   /// The user's information.
-  UserModelMe? user; 
+  UserModelMe? user;
 
   /// Initializes the state of the widget.
   ///
-  /// This method calls [_initializeData] to fetch the communities data 
+  /// This method calls [_initializeData] to fetch the communities data
   /// and [_setData] to get the user's favorite communities.
   @override
   void initState() {
@@ -75,15 +75,15 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
 
   /// Handles the press event on the star icon.
   ///
-  /// This method updates the favorite state of the community and 
+  /// This method updates the favorite state of the community and
   /// refreshes the widget.
   Future<void> _onPress(List<String> community) async {
     setState(() {
       isStarLoading = true;
-    }); 
+    });
 
-    final Favourite favItem = Favourite(
-        community[0], PrefConstants.subredditType, community[1]);
+    final Favourite favItem =
+        Favourite(community[0], PrefConstants.subredditType, community[1]);
     ref.read(favouriteProvider.notifier).updateItem(favItem);
 
     if (favouriteData.any((item) => item.username == community[0])) {
@@ -100,17 +100,19 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
 
   /// Fetches the list of communities from the [userCommunitisProvider].
   ///
-  /// This method updates the [_userCommunitiesData] and [isLoading] state 
+  /// This method updates the [_userCommunitiesData] and [isLoading] state
   /// based on the response.
   Future<void> _initializeData() async {
     setState(() {
       isLoading = true;
     });
 
-    final response = await ref.read(userCommunitisProvider.notifier).getUserCommunities();
+    final response =
+        await ref.read(userCommunitisProvider.notifier).getUserCommunities();
 
     response.fold(
-        (failure) => showSnackBar(navigatorKey.currentContext!, failure.message),
+        (failure) =>
+            showSnackBar(navigatorKey.currentContext!, failure.message),
         (list) {
       setState(() {
         _userCommunitiesData = list;
@@ -122,7 +124,7 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
   @override
   Widget build(BuildContext context) {
     // Refresh the favorite data from the state
-    favouriteData = ref.watch(favouriteList); 
+    favouriteData = ref.watch(favouriteList);
 
     return ExpansionTile(
       title: Text(
@@ -138,11 +140,11 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                 arguments: ref.read(userModelProvider)?.id);
           },
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.w),
+            padding: EdgeInsets.symmetric(horizontal: 15.spMin),
             child: Row(
               children: [
                 const Icon(
-                  Icons.add, 
+                  Icons.add,
                   color: Colors.white,
                 ),
                 SizedBox(width: 15.w),
@@ -164,28 +166,28 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
               onTap: () {
                 // Navigate to the community screen
                 Navigator.pop(context);
-                Navigator.pushNamed(context, RouteClass.communityScreen, 
+                Navigator.pushNamed(context, RouteClass.communityScreen,
                     arguments: {
-                  'id': community[0], 
-                  'uid': ref.read(userModelProvider)?.id
-                });
-              }, 
-              leading: community[1].isEmpty 
-                  ? CircleAvatar( 
+                      'id': community[0],
+                      'uid': ref.read(userModelProvider)?.id
+                    });
+              },
+              leading: community[1].isEmpty
+                  ? CircleAvatar(
                       radius: 15.spMin,
-                      backgroundImage: 
+                      backgroundImage:
                           const AssetImage(Photos.communityDefault))
                   : CircleAvatar(
-                      radius: 15.spMin, 
+                      radius: 15.spMin,
                       backgroundImage: NetworkImage(community[1])),
-              title: Text(community[0], 
-                  maxLines: 1, 
+              title: Text(community[0],
+                  maxLines: 1,
                   style: AppTextStyles.primaryTextStyle.copyWith(
                     fontSize: 17.spMin,
                   )),
               trailing: isStarLoading && pressedOn == community[0]
                   ? CircularProgressIndicator(
-                      strokeWidth: 2.w, 
+                      strokeWidth: 2.w,
                       color: AppColors.whiteColor,
                     )
                   : IconButton(
@@ -193,22 +195,22 @@ class _CommunitiesTilesState extends ConsumerState<CommunitiesTiles> {
                         pressedOn = community[0];
                         _onPress(community);
                       },
-                      icon: favouriteData.any(
-                              (item) => item.username == community[0])
+                      icon: favouriteData
+                              .any((item) => item.username == community[0])
                           ? const Icon(
                               Icons.star_rounded,
-                              color: AppColors.whiteGlowColor, 
+                              color: AppColors.whiteGlowColor,
                               size: 24,
                             )
                           : Icon(
-                              Icons.star_border_rounded, 
+                              Icons.star_border_rounded,
                               size: 24.spMin,
-                            ), 
+                            ),
                     ),
-            ), 
-          ) 
+            ),
+          )
         ]
       ],
-    ); 
+    );
   }
 }
