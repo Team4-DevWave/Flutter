@@ -126,7 +126,7 @@ class _LeftDrawerState extends ConsumerState<LeftDrawer> {
                     children: <Widget>[
                       if (recentlyVisted.isNotEmpty)
                         SizedBox(
-                          height: limitedRecentlyVisited.length * 50.h + 50.h,
+                          height: limitedRecentlyVisited.length * 50.h + 60.h,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

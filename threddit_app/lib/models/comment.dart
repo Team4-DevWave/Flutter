@@ -115,8 +115,7 @@ class Comment {
     );
   }
 
-  void addComment(User user, String post,String content,UserModelMe meModel)
-  {
+  void addComment(User user, String post, String content, UserModelMe meModel) {
     Comment newComment = Comment(
       user: user,
       content: content,
@@ -128,73 +127,57 @@ class Comment {
       id: 'newId',
       version: 0,
     );
-    newComment.post=post;
+    newComment.post = post;
     meModel.karma!.comments++;
   }
-  void deleteComment(UserModelMe me,Comment comment)
-  {
-    if(me.id==comment.user.id)
-    {
+
+  void deleteComment(UserModelMe me, Comment comment) {
+    if (me.id == comment.user.id) {
       me.karma!.comments--;
-    }
-  
- 
-  }
-   void editComment(UserModelMe me,Comment comment,String content)
-  {
-    if(me.id==comment.user.id)
-    {
-      comment.content=content;
-    }
-  }
-  void upVoteComment(UserModelMe me,Comment comment)
-  {
-    if(comment.userVote=='upvote')
-    {
-      comment.votes.upvotes--;
-      comment.userVote='none';
-      me.upvotes!.comments.remove(comment.id);
-    }
-    else if(comment.userVote=='downvote')
-    {
-      comment.votes.upvotes++;
-      comment.votes.downvotes--;
-      comment.userVote='upvote';
-      me.upvotes!.comments.add(comment.id);
-      me.downvotes!.comments.remove(comment.id);
-    }
-    else
-    {
-      comment.votes.upvotes++;
-      comment.userVote='upvote';
-      me.upvotes!.comments.add(comment.id);
-    }
-  
-  }
-  void downVoteComment(UserModelMe me,Comment comment)
-  {
-    if(comment.userVote=='downvote')
-    {
-      comment.votes.downvotes--;
-      comment.userVote='none';
-      me.downvotes!.comments.remove(comment.id);
-    }
-    else if(comment.userVote=='upvote')
-    {
-      comment.votes.downvotes++;
-      comment.votes.upvotes--;
-      comment.userVote='downvote';
-      me.downvotes!.comments.add(comment.id);
-      me.upvotes!.comments.remove(comment.id);
-    }
-    else
-    {
-      comment.votes.downvotes++;
-      comment.userVote='downvote';
-      me.downvotes!.comments.add(comment.id);
     }
   }
 
+  void editComment(UserModelMe me, Comment comment, String content) {
+    if (me.id == comment.user.id) {
+      comment.content = content;
+    }
+  }
+
+  void upVoteComment(UserModelMe me, Comment comment) {
+    if (comment.userVote == 'upvote') {
+      comment.votes.upvotes--;
+      comment.userVote = 'none';
+      me.upvotes!.comments.remove(comment.id);
+    } else if (comment.userVote == 'downvote') {
+      comment.votes.upvotes++;
+      comment.votes.downvotes--;
+      comment.userVote = 'upvote';
+      me.upvotes!.comments.add(comment.id);
+      me.downvotes!.comments.remove(comment.id);
+    } else {
+      comment.votes.upvotes++;
+      comment.userVote = 'upvote';
+      me.upvotes!.comments.add(comment.id);
+    }
+  }
+
+  void downVoteComment(UserModelMe me, Comment comment) {
+    if (comment.userVote == 'downvote') {
+      comment.votes.downvotes--;
+      comment.userVote = 'none';
+      me.downvotes!.comments.remove(comment.id);
+    } else if (comment.userVote == 'upvote') {
+      comment.votes.downvotes++;
+      comment.votes.upvotes--;
+      comment.userVote = 'downvote';
+      me.downvotes!.comments.add(comment.id);
+      me.upvotes!.comments.remove(comment.id);
+    } else {
+      comment.votes.downvotes++;
+      comment.userVote = 'downvote';
+      me.downvotes!.comments.add(comment.id);
+    }
+  }
 }
 
 Future<List<Comment>> fetchComments(String username) async {

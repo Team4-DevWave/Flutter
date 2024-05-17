@@ -18,7 +18,6 @@ import 'package:flutter/foundation.dart';
 ///[isGoogle] is needed in the signing with google to control the flow of the user process.
 ///
 ///[interests] is the list of interest collected in the interests right before signing up the user.
-
 class UserModel {
   final String username;
   final String email;
@@ -131,4 +130,16 @@ class UserModel {
         isGoogle.hashCode ^
         interests.hashCode;
   }
+}
+
+void addUsername(UserModel user, String username) {
+  user.copyWith(username: username);
+}
+
+void addUserEmail(UserModel user, String email) {
+  user.copyWith(email: email);
+}
+
+void addUserPassword(UserModel user, String password) {
+  user.copyWith(password: password, passwordConfirm: password);
 }

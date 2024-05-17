@@ -11,6 +11,13 @@ import 'package:threddit_clone/theme/colors.dart';
 import 'package:threddit_clone/theme/text_styles.dart';
 import 'package:threddit_clone/theme/theme.dart';
 
+void resetButtonStyles(
+    Map<String, ButtonStyle> buttonStyles, List<String> types) {
+  for (var type in types) {
+    buttonStyles[type] = AppButtons.registerButtons;
+  }
+}
+
 ///This is screen is one of the registration process screens, where here in the [AboutYou] screen.
 ///
 ///user can choose option from the user types list; "man", "woman", and "I prefer not to say".
@@ -32,9 +39,7 @@ class _AboutYouState extends ConsumerState {
   @override
   void initState() {
     super.initState();
-    for (var type in types) {
-      _buttonStyles[type] = AppButtons.registerButtons;
-    }
+    resetButtonStyles(_buttonStyles, types);
   }
 
   void onTap(String type) {
